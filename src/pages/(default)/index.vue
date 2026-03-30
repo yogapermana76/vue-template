@@ -5,6 +5,9 @@
     TechStackSection,
     QuickActionsSection,
     CTASection,
+    FeaturedBannerCarousel,
+    RecommendedProductsCarousel,
+    TestimonialCarousel,
   } from '@/components/home'
 
   definePage({
@@ -16,8 +19,11 @@
 
 <template>
   <HeroSection />
+  <FeaturedBannerCarousel />
   <FeaturesSection />
+  <RecommendedProductsCarousel />
   <TechStackSection />
+  <TestimonialCarousel />
   <QuickActionsSection />
   <CTASection />
 </template>
