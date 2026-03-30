@@ -1,13 +1,8 @@
-/**
- * Product Service
- * Handles all product-related API operations with type validation
- */
-
 import { z } from 'zod'
 import { http } from './http'
 
 // ============================================
-// Zod Schemas for Runtime Validation
+// Schemas
 // ============================================
 
 const DummyProductSchema = z.object({
@@ -39,7 +34,7 @@ const DummyCategorySchema = z.object({
 })
 
 // ============================================
-// TypeScript Interfaces
+// Types
 // ============================================
 
 export interface Product {
@@ -70,13 +65,9 @@ export interface PaginationParams {
 type DummyProduct = z.infer<typeof DummyProductSchema>
 
 // ============================================
-// Data Transformers (Adapter Pattern)
+// Adapter
 // ============================================
 
-/**
- * Transform DummyJSON product to our Product interface
- * Single Responsibility: Only handles data transformation
- */
 const productAdapter = {
   fromApi(dummyProduct: DummyProduct): Product {
     return {

@@ -1,9 +1,3 @@
-/**
- * Auth Composable
- *
- * Simple authentication dengan token-based auth.
- */
-
 import { computed, ref, readonly } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { config } from '@/config'
@@ -25,7 +19,7 @@ export interface LoginCredentials {
 }
 
 // ============================================
-// State (Singleton - shared across all calls)
+// State
 // ============================================
 
 const token = useStorage<string | null>(STORAGE_KEYS.AUTH_TOKEN, null)
@@ -33,7 +27,6 @@ const user = ref<User | null>(null)
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
-// Shared computed (dibuat sekali, dipakai semua)
 const isAuthenticated = computed(() => {
   if (!token.value) return false
   return !isTokenExpired(token.value)
@@ -52,7 +45,6 @@ function isTokenExpired(tokenValue: string): boolean {
   }
 }
 
-// Demo credentials (hanya untuk development)
 const DEMO = {
   email: 'demo@example.com',
   password: 'password',
@@ -88,7 +80,7 @@ async function mockLogin(credentials: LoginCredentials) {
 }
 
 // ============================================
-// Actions (defined once, shared)
+// Actions
 // ============================================
 
 async function login(credentials: LoginCredentials) {
@@ -125,7 +117,6 @@ function clearError() {
 // Composables
 // ============================================
 
-/** Full auth composable */
 export function useAuth() {
   return {
     // State (readonly)
@@ -141,7 +132,6 @@ export function useAuth() {
   }
 }
 
-/** Hanya cek status auth */
 export function useAuthState() {
   return {
     token: readonly(token),
@@ -150,12 +140,10 @@ export function useAuthState() {
   }
 }
 
-/** Hanya login/logout */
 export function useAuthActions() {
   return { login, logout }
 }
 
-/** Hanya loading state */
 export function useAuthLoading() {
   return {
     isLoading: readonly(isLoading),

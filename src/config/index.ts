@@ -1,8 +1,3 @@
-/**
- * Application Configuration
- * Centralized configuration management with type safety
- */
-
 import { z } from 'zod'
 
 // ============================================
@@ -21,10 +16,6 @@ const envSchema = z.object({
   PROD: z.boolean(),
 })
 
-/**
- * Validate environment variables at startup
- * Warns in console if validation fails (doesn't throw to allow defaults)
- */
 function validateEnv(): void {
   const result = envSchema.safeParse(import.meta.env)
   if (!result.success && import.meta.env.DEV) {
@@ -32,7 +23,6 @@ function validateEnv(): void {
   }
 }
 
-// Run validation on module load (dev only)
 if (import.meta.env.DEV) {
   validateEnv()
 }
