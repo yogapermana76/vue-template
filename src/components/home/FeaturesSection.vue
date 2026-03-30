@@ -70,13 +70,14 @@
     </div>
 
     <!-- Horizontal scroll -->
-    <div
-      class="scrollbar-none flex snap-x snap-mandatory flex-nowrap gap-4 overflow-x-auto px-4 pb-4"
-    >
+    <div class="scrollbar-none flex flex-nowrap gap-4 overflow-x-auto pb-4">
+      <!-- Left spacer -->
+      <div class="w-4 shrink-0" />
+
       <Card
         v-for="feature in features"
         :key="feature.title"
-        class="group w-64 min-w-64 shrink-0 snap-start transition-all duration-300"
+        class="group w-64 min-w-64 shrink-0 transition-all duration-300"
       >
         <CardHeader class="p-4">
           <div class="bg-primary/10 mb-3 flex size-10 items-center justify-center rounded-lg">
@@ -88,6 +89,9 @@
           </CardDescription>
         </CardHeader>
       </Card>
+
+      <!-- Right spacer -->
+      <div class="w-4 shrink-0" />
     </div>
   </section>
 </template>
