@@ -32,8 +32,7 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
   const canScrollPrev = ref(false)
   const canScrollNext = ref(true)
 
-  // Instance-level state: Each composable call has its own timer
-  // CRITICAL FIX: Moved from module-level to prevent multiple carousels interfering
+  // Instance-level state to prevent timer interference between carousel instances
   let autoplayTimer: ReturnType<typeof setInterval> | null = null
 
   const defaultOptions = {
