@@ -1,0 +1,5 @@
+export { default as HeroSection } from './HeroSection.vue'
+export { default as FeaturesSection } from './FeaturesSection.vue'
+export { default as TechStackSection } from './TechStackSection.vue'
+export { default as QuickActionsSection } from './QuickActionsSection.vue'
+export { default as CTASection } from './CTASection.vue'
