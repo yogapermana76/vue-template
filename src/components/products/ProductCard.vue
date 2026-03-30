@@ -9,15 +9,27 @@
   }
 
   defineProps<Props>()
+
+  const handleImageError = (event: Event) => {
+    const img = event.target as HTMLImageElement
+    img?.remove()
+  }
 </script>
 
 <template>
   <Card class="overflow-hidden transition-shadow hover:shadow-lg">
     <RouterLink :to="`/products/${product.id}`">
-      <CardHeader class="p-0">
-        <img :src="product.image" :alt="product.title" class="aspect-square w-full object-cover" />
+      <CardHeader class="bg-muted p-0">
+        <img
+          :src="product.image"
+          :alt="product.title"
+          class="aspect-square w-full object-cover"
+          loading="lazy"
+          decoding="async"
+          @error="handleImageError"
+        />
       </CardHeader>
-      <CardContent class="space-y-1 p-2">
+      <CardContent class="space-y-1 p-3">
         <CardTitle class="line-clamp-2 text-xs leading-tight font-medium">
           {{ product.title }}
         </CardTitle>

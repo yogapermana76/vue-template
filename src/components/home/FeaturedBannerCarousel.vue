@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { useCarouselState } from '@/composables/useCarouselState'
   import {
     Carousel,
     CarouselContent,
@@ -22,14 +22,14 @@
     }>
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     slides: () => [
       {
         id: 1,
         title: 'Discover Amazing Products',
         description: 'Explore our curated collection of high-quality items',
         badge: 'New Collection',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=400&fit=crop',
+        image: 'https://picsum.photos/800/400?random=1',
         cta: 'Shop Now',
       },
       {
@@ -37,7 +37,7 @@
         title: 'Summer Sale - Up to 50% Off',
         description: 'Limited time offer on selected items',
         badge: 'Hot Deals',
-        image: 'https://images.unsplash.com/photo-1556821552-5ff63b1b66d5?w=800&h=400&fit=crop',
+        image: 'https://picsum.photos/800/400?random=2',
         cta: 'Browse Deals',
       },
       {
@@ -45,43 +45,41 @@
         title: 'Premium Quality Guaranteed',
         description: 'We only offer the best products for our customers',
         badge: 'Premium',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=400&fit=crop',
+        image: 'https://picsum.photos/800/400?random=3',
         cta: 'Learn More',
       },
     ],
   })
 
-  const carouselRef = ref()
-  const selectedIndex = ref(0)
-
-  const handlePrevious = () => carouselRef.value?.scrollPrev()
-  const handleNext = () => carouselRef.value?.scrollNext()
+  // Use composable for carousel state synchronization
+  const { carouselRef, currentIndex, handlePrevious, handleNext, handleDotClick } =
+    useCarouselState()
 </script>
 
 <template>
-  <section class="relative py-8 md:py-12">
+  <section class="w-full">
     <Carousel
       ref="carouselRef"
       :autoplay="true"
       :autoplay-delay="5000"
-      class="overflow-hidden rounded-lg"
+      class="h-96 w-full md:h-[500px]"
     >
       <CarouselContent>
-        <CarouselItem v-for="slide in slides" :key="slide.id" basis="full">
-          <div
-            class="bg-muted relative aspect-video w-full overflow-hidden rounded-lg md:aspect-[2/1]"
-          >
+        <CarouselItem v-for="slide in props.slides" :key="slide.id" basis="full">
+          <div class="relative h-full w-full overflow-hidden rounded-lg">
             <!-- Background Image -->
             <img
               v-if="slide.image"
               :src="slide.image"
               :alt="slide.title"
               class="absolute inset-0 size-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
 
             <!-- Overlay gradient -->
             <div
-              class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"
+              class="absolute inset-0 bg-linear-to-r from-black/60 via-black/40 to-transparent"
             />
 
             <!-- Content -->
@@ -94,7 +92,7 @@
                 {{ slide.title }}
               </h2>
 
-              <p class="text-muted mb-6 max-w-md text-sm text-gray-200 md:text-base">
+              <p class="mb-6 max-w-md text-sm text-gray-200 md:text-base">
                 {{ slide.description }}
               </p>
 
@@ -109,14 +107,14 @@
       </CarouselContent>
 
       <!-- Navigation -->
-      <CarouselPrevious :disabled="carouselRef?.isBeginning" @click="handlePrevious" />
-      <CarouselNext :disabled="carouselRef?.isEnd" @click="handleNext" />
+      <CarouselPrevious :disabled="!carouselRef?.canScrollPrev" @click="handlePrevious" />
+      <CarouselNext :disabled="!carouselRef?.canScrollNext" @click="handleNext" />
 
       <!-- Indicators -->
       <CarouselIndicators
-        :total="slides.length"
-        :selected="selectedIndex"
-        @dot-click="carouselRef?.scrollTo"
+        :total="props.slides.length"
+        :selected="currentIndex"
+        @dot-click="handleDotClick"
       />
     </Carousel>
   </section>

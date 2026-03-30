@@ -1,11 +1,12 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { useCarouselState } from '@/composables/useCarouselState'
   import {
     Carousel,
     CarouselContent,
     CarouselItem,
     CarouselPrevious,
     CarouselNext,
+    CarouselIndicators,
   } from '@/components/ui/carousel'
   import { ProductCard } from '@/components/products'
   import type { Product } from '@/services/product'
@@ -15,7 +16,7 @@
     title?: string
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     title: 'Recommended for You',
     products: () => [
       {
@@ -24,7 +25,7 @@
         price: 299.99,
         description: 'High-quality audio',
         category: 'Electronics',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop',
+        image: 'https://picsum.photos/300/300?random=1',
         rating: { rate: 4.5, count: 128 },
       },
       {
@@ -33,7 +34,7 @@
         price: 49.99,
         description: 'Ergonomic design',
         category: 'Electronics',
-        image: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&h=300&fit=crop',
+        image: 'https://picsum.photos/300/300?random=2',
         rating: { rate: 4.2, count: 94 },
       },
       {
@@ -42,7 +43,7 @@
         price: 19.99,
         description: 'Fast charging',
         category: 'Accessories',
-        image: 'https://images.unsplash.com/photo-1588872657840-218e412ee62e?w=300&h=300&fit=crop',
+        image: 'https://picsum.photos/300/300?random=3',
         rating: { rate: 4.8, count: 203 },
       },
       {
@@ -51,7 +52,7 @@
         price: 29.99,
         description: 'Adjustable angle',
         category: 'Accessories',
-        image: 'https://images.unsplash.com/photo-1586435984159-0e1b57e8d4a5?w=300&h=300&fit=crop',
+        image: 'https://picsum.photos/300/300?random=4',
         rating: { rate: 4.6, count: 156 },
       },
       {
@@ -60,31 +61,30 @@
         price: 9.99,
         description: 'Tempered glass',
         category: 'Accessories',
-        image: 'https://images.unsplash.com/photo-1606933248051-5ce98750ebdf?w=300&h=300&fit=crop',
+        image: 'https://picsum.photos/300/300?random=5',
         rating: { rate: 4.3, count: 312 },
       },
     ],
   })
 
-  const carouselRef = ref()
-
-  const handlePrevious = () => carouselRef.value?.scrollPrev()
-  const handleNext = () => carouselRef.value?.scrollNext()
+  // Use composable for carousel state  synchronization
+  const { carouselRef, currentIndex, handlePrevious, handleNext, handleDotClick } =
+    useCarouselState()
 </script>
 
 <template>
-  <section class="py-12 md:py-16">
+  <section class="py-8">
     <!-- Section Header -->
-    <div class="mb-6 px-4 md:mb-8">
-      <h2 class="text-2xl font-bold md:text-3xl">{{ title }}</h2>
+    <div class="mb-4 px-4">
+      <h2 class="text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
     </div>
 
     <!-- Carousel -->
     <div class="relative">
-      <Carousel ref="carouselRef" class="px-4">
-        <CarouselContent>
+      <Carousel ref="carouselRef" class="h-[300px] px-4 md:h-[400px]">
+        <CarouselContent gap="gap-4">
           <CarouselItem
-            v-for="product in products"
+            v-for="product in props.products"
             :key="product.id"
             basis="1/2"
             class="md:basis-1/4"
@@ -92,15 +92,27 @@
             <ProductCard :product="product" />
           </CarouselItem>
         </CarouselContent>
-      </Carousel>
 
-      <!-- Navigation -->
-      <CarouselPrevious
-        :disabled="carouselRef?.isBeginning"
-        class="left-0"
-        @click="handlePrevious"
-      />
-      <CarouselNext :disabled="carouselRef?.isEnd" class="right-0" @click="handleNext" />
+        <!-- Navigation -->
+        <CarouselPrevious
+          :disabled="!carouselRef?.canScrollPrev"
+          position-class="top-1/3"
+          @click="handlePrevious"
+        />
+        <CarouselNext
+          :disabled="!carouselRef?.canScrollNext"
+          position-class="top-1/3"
+          @click="handleNext"
+        />
+
+        <!-- Indicators -->
+        <CarouselIndicators
+          :total="props.products.length"
+          :selected="currentIndex"
+          position-class="bottom-32"
+          @dot-click="handleDotClick"
+        />
+      </Carousel>
     </div>
   </section>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { useCarouselState } from '@/composables/useCarouselState'
   import { Star, Quote } from 'lucide-vue-next'
   import {
     Carousel,
@@ -23,7 +23,7 @@
     title?: string
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     title: 'What Customers Say',
     testimonials: () => [
       {
@@ -65,8 +65,12 @@
     ],
   })
 
-  const carouselRef = ref()
-  const selectedIndex = ref(0)
+  // Use composable for carousel state synchronization
+  // carouselRef is used in template via ref="carouselRef" binding
+  const { carouselRef, currentIndex, handleDotClick } = useCarouselState()
+
+  // Ensure TypeScript recognizes carouselRef is used (referenced in template)
+  void carouselRef
 </script>
 
 <template>
@@ -74,7 +78,7 @@
     <div class="mx-auto max-w-6xl px-4">
       <!-- Section Header -->
       <div class="mb-8 text-center md:mb-12">
-        <h2 class="mb-2 text-2xl font-bold md:text-3xl">{{ title }}</h2>
+        <h2 class="mb-2 text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
         <p class="text-muted-foreground text-sm md:text-base">
           Hear from our satisfied customers and community members
         </p>
@@ -82,8 +86,12 @@
 
       <!-- Carousel -->
       <Carousel ref="carouselRef" :autoplay="true" :autoplay-delay="6000" class="mx-auto max-w-4xl">
-        <CarouselContent class="md:gap-4">
-          <CarouselItem v-for="testimonial in testimonials" :key="testimonial.id" basis="full">
+        <CarouselContent gap="gap-6">
+          <CarouselItem
+            v-for="testimonial in props.testimonials"
+            :key="testimonial.id"
+            basis="full"
+          >
             <Card class="h-full">
               <CardContent class="flex flex-col p-6 md:p-8">
                 <!-- Quote Icon -->
@@ -120,16 +128,15 @@
             </Card>
           </CarouselItem>
         </CarouselContent>
-      </Carousel>
 
-      <!-- Indicators -->
-      <div class="mt-8 flex justify-center">
+        <!-- Indicators -->
         <CarouselIndicators
-          :total="testimonials.length"
-          :selected="selectedIndex"
-          @dot-click="carouselRef?.scrollTo"
+          :total="props.testimonials.length"
+          :selected="currentIndex"
+          position-class="bottom-4"
+          @dot-click="handleDotClick"
         />
-      </div>
+      </Carousel>
     </div>
   </section>
 </template>

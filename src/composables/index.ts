@@ -17,5 +17,6 @@ export { useToast, type ToastOptions, type ToastType } from './useToast'
 // Pull to refresh composable
 export { usePullToRefresh, type UsePullToRefreshOptions } from './usePullToRefresh'
 
-// Carousel composable
+// Carousel composables
 export { useEmblaCarousel } from './useEmblaCarousel'
+export { useCarouselState } from './useCarouselState'
