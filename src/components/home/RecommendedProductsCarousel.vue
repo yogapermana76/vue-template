@@ -81,7 +81,7 @@
 
     <!-- Carousel -->
     <div class="relative">
-      <Carousel ref="carouselRef" class="h-[300px] px-4 md:h-[400px]">
+      <Carousel ref="carouselRef" class="min-h-80 px-4">
         <CarouselContent gap="gap-4">
           <CarouselItem
             v-for="product in props.products"
@@ -96,12 +96,12 @@
         <!-- Navigation -->
         <CarouselPrevious
           :disabled="!carouselRef?.canScrollPrev"
-          position-class="top-1/3"
+          position-class="top-1/2 -translate-y-1/2"
           @click="handlePrevious"
         />
         <CarouselNext
           :disabled="!carouselRef?.canScrollNext"
-          position-class="top-1/3"
+          position-class="top-1/2 -translate-y-1/2"
           @click="handleNext"
         />
 
@@ -109,7 +109,7 @@
         <CarouselIndicators
           :total="props.products.length"
           :selected="currentIndex"
-          position-class="bottom-32"
+          position-class="bottom-2"
           @dot-click="handleDotClick"
         />
       </Carousel>
