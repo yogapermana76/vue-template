@@ -1,2 +1,6 @@
 export { default as StatsCard } from './StatsCard.vue'
 export { default as ActivityItem } from './ActivityItem.vue'
+export { default as DashboardHeader } from './DashboardHeader.vue'
+export { default as StatsCarousel } from './StatsCarousel.vue'
+export { default as OverviewCard } from './OverviewCard.vue'
+export { default as ActivitySection } from './ActivitySection.vue'

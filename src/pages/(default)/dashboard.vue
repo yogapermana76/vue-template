@@ -1,10 +1,13 @@
 <script setup lang="ts">
-  import { BarChart3, Users, ShoppingBag, TrendingUp, LogOut } from 'lucide-vue-next'
+  import { BarChart3, Users, ShoppingBag, TrendingUp } from 'lucide-vue-next'
   import { useRouter } from 'vue-router'
   import { useAuth } from '@/composables/useAuth'
-  import { Button } from '@/components/ui/button'
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-  import { StatsCard, ActivityItem } from '@/components/dashboard'
+  import {
+    DashboardHeader,
+    StatsCarousel,
+    OverviewCard,
+    ActivitySection,
+  } from '@/components/dashboard'
 
   definePage({
     meta: {
@@ -45,60 +48,15 @@
 <template>
   <div class="space-y-4 px-4">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-xl font-bold">Dashboard</h1>
-        <p class="text-muted-foreground text-sm">Welcome, {{ user?.name || 'User' }}</p>
-      </div>
-      <Button variant="outline" size="icon" class="size-9" @click="handleLogout">
-        <LogOut class="size-4" />
-      </Button>
-    </div>
+    <DashboardHeader :user-name="user?.name" @logout="handleLogout" />
 
-    <!-- Stats Grid - Horizontal Scroll -->
-    <div class="scrollbar-none -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
-      <StatsCard
-        v-for="stat in stats"
-        :key="stat.title"
-        :title="stat.title"
-        :value="stat.value"
-        :change="stat.change"
-        :icon="stat.icon"
-        class="w-32 min-w-32 shrink-0"
-      />
-    </div>
+    <!-- Stats Carousel -->
+    <StatsCarousel :stats="stats" />
 
     <!-- Overview Card -->
-    <Card>
-      <CardHeader class="p-3 pb-2">
-        <CardTitle class="text-sm">Overview</CardTitle>
-      </CardHeader>
-      <CardContent class="p-3 pt-0">
-        <div
-          class="text-muted-foreground flex h-32 items-center justify-center rounded-lg border border-dashed text-xs"
-        >
-          Chart placeholder
-        </div>
-      </CardContent>
-    </Card>
+    <OverviewCard />
 
-    <!-- Recent Activity -->
-    <Card>
-      <CardHeader class="p-3 pb-2">
-        <CardTitle class="text-sm">Recent Activity</CardTitle>
-        <CardDescription class="text-xs">Latest actions</CardDescription>
-      </CardHeader>
-      <CardContent class="p-3 pt-0">
-        <div class="space-y-3">
-          <ActivityItem
-            v-for="(activity, index) in activities"
-            :key="index"
-            :title="activity.title"
-            :description="activity.time"
-            :icon="Users"
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <!-- Activity Section -->
+    <ActivitySection :activities="activities" />
   </div>
 </template>
