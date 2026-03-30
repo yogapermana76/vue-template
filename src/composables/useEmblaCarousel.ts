@@ -4,9 +4,9 @@
  * Reusable composition for carousel functionality
  */
 
-import { ref, computed, onMounted } from 'vue'
+import { ref } from 'vue'
 import EmblaCarousel from 'embla-carousel'
-import type { EmblaCarouselType, EmblaEventEmitterType } from 'embla-carousel'
+import type { EmblaCarouselType } from 'embla-carousel'
 
 interface UseEmblaCarouselOptions {
   align?: 'start' | 'center' | 'end'
@@ -66,7 +66,8 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
   // Handle selection change
   const onSelect = () => {
     if (!emblaApi.value) return
-    selectedIndex.value = emblaApi.value.selectedIndex()
+    // Get selected index from scroll snaps - embla tracks this internally
+    selectedIndex.value = emblaApi.value.scrollProgress() * (scrollSnaps.value.length - 1)
     updateNavigation()
   }
 

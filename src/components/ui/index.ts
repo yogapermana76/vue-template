@@ -10,6 +10,16 @@ export { Badge, badgeVariants } from './badge'
 // Button
 export { Button, buttonVariants } from './button'
 
+// Carousel
+export {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselIndicators,
+} from './carousel'
+
 // Card
 export {
   Card,
