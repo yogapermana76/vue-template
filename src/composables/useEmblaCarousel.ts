@@ -8,6 +8,8 @@ import type { EmblaCarouselType } from 'embla-carousel'
 interface UseEmblaCarouselOptions {
   /** Start alignment: start | center | end */
   align?: 'start' | 'center' | 'end'
+  /** Text direction: ltr | rtl */
+  direction?: 'ltr' | 'rtl'
   /** Enable infinite looping */
   loop?: boolean
   /** Skip intermediate snap points */
@@ -36,6 +38,7 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
 
   const defaultOptions = {
     align: 'start' as const,
+    direction: 'ltr' as const,
     loop: true,
     skipSnaps: false,
     dragFree: false,

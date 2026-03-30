@@ -16,12 +16,20 @@
 
     /** Enable infinite looping (default: true) */
     loop?: boolean
+
+    /** Carousel alignment: start | center | end (default: start) */
+    align?: 'start' | 'center' | 'end'
+
+    /** Text direction for RTL support: ltr | rtl (default: ltr) */
+    direction?: 'ltr' | 'rtl'
   }
 
   const props = withDefaults(defineProps<Props>(), {
     autoplay: false,
     autoplayDelay: 4000,
     loop: true,
+    align: 'start',
+    direction: 'ltr',
   })
 
   const {
@@ -37,6 +45,8 @@
     scrollSnaps,
   } = useEmblaCarousel({
     loop: props.loop,
+    align: props.align,
+    direction: props.direction,
     autoplay: {
       enabled: props.autoplay,
       delay: props.autoplayDelay,
@@ -64,8 +74,8 @@
 </script>
 
 <template>
-  <!-- Carousel wrapper: relative + overflow-hidden for clipping -->
-  <div :class="cn('relative overflow-hidden', props.class)">
+  <!-- Carousel wrapper: relative + overflow-hidden for clipping, dir for RTL -->
+  <div :class="cn('relative overflow-hidden', props.class)" :dir="props.direction">
     <!-- Embla container: flex + h-full for proper stretching -->
     <div ref="containerRef" class="flex h-full">
       <slot />
