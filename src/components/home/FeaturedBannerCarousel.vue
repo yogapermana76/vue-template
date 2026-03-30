@@ -62,7 +62,7 @@
       ref="carouselRef"
       :autoplay="true"
       :autoplay-delay="5000"
-      class="h-96 w-full md:h-[500px]"
+      class="h-96 w-full md:h-125"
     >
       <CarouselContent>
         <CarouselItem v-for="slide in props.slides" :key="slide.id" basis="full">
