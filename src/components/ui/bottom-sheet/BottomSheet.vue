@@ -10,24 +10,65 @@
     DrawerTitle,
   } from '@/components/ui/drawer'
 
+  // ============================================================================
+  // Type Definitions & Constants
+  // ============================================================================
+
+  type FooterPosition = 'sticky' | 'normal'
+
+  const FOOTER_POSITION_CLASSES: Record<FooterPosition, string> = {
+    sticky: 'sticky bottom-0 bg-background',
+    normal: '',
+  }
+
+  // ============================================================================
+  // Props Interface
+  // ============================================================================
+
   interface Props {
-    /** Is the bottom sheet open */
+    // State Props
+    /** Whether the bottom sheet is open */
     open?: boolean
+    /** Allow dismissing by backdrop click or escape key */
+    dismissible?: boolean
+
+    // Content Props
     /** Title of the bottom sheet */
     title?: string
-    /** Description of the bottom sheet */
+    /** Description text (shown below title) */
     description?: string
-    /** Show close button */
+    /** Show close button in top right */
     showClose?: boolean
-    /** Custom class for content */
+    /** Custom CSS class for content area */
     contentClass?: string
+
+    // Footer Props
+    /** Show footer section */
+    hasFooter?: boolean
+    /** Footer positioning behavior
+     * @param 'sticky' - fixed at bottom (default)
+     * @param 'normal' - part of scrollable content
+     */
+    footerPosition?: FooterPosition
+    /** Custom CSS class for footer */
+    footerClass?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
     open: false,
+    dismissible: true,
+    title: undefined,
+    description: undefined,
     showClose: true,
     contentClass: '',
+    hasFooter: false,
+    footerPosition: 'sticky',
+    footerClass: '',
   })
+
+  // ============================================================================
+  // Emits & Computed
+  // ============================================================================
 
   const emit = defineEmits<{
     'update:open': [value: boolean]
@@ -37,33 +78,46 @@
     get: () => props.open,
     set: value => emit('update:open', value),
   })
+
+  const footerClasses = computed(() => {
+    return [
+      props.footerClass,
+      'shrink-0 px-4 py-3 border-t',
+      FOOTER_POSITION_CLASSES[props.footerPosition],
+    ]
+  })
 </script>
 
 <template>
-  <Drawer v-model:open="isOpen" direction="bottom">
+  <Drawer v-model:open="isOpen" direction="bottom" :dismissible="dismissible">
     <slot name="trigger" />
 
-    <DrawerContent :class="contentClass">
+    <DrawerContent :class="contentClass" class="flex flex-col">
       <!-- Header (optional) -->
       <template v-if="title || description || showClose">
-        <DrawerHeader class="flex items-start justify-between">
-          <div class="text-left">
+        <DrawerHeader class="shrink-0 flex-row gap-2! px-4 py-2">
+          <div class="flex-1">
             <DrawerTitle v-if="title">{{ title }}</DrawerTitle>
             <DrawerDescription v-if="description">
               {{ description }}
             </DrawerDescription>
           </div>
           <DrawerClose v-if="showClose" as-child>
-            <button class="hover:bg-accent rounded-lg p-1">
+            <button class="hover:bg-accent shrink-0 rounded-lg p-1">
               <X class="size-5" />
             </button>
           </DrawerClose>
         </DrawerHeader>
       </template>
 
-      <!-- Flexible content slot -->
-      <div class="px-4 pb-6">
+      <!-- Flexible content slot (scrollable) -->
+      <div class="scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 pb-6">
         <slot />
+      </div>
+
+      <!-- Footer (optional) -->
+      <div v-if="hasFooter" :class="footerClasses">
+        <slot name="footer" />
       </div>
     </DrawerContent>
   </Drawer>
