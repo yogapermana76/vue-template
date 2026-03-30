@@ -47,7 +47,7 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
   }
 
   // Create carousel: align (start/center/end), loop (true/false), watchResize (always true)
-  const init = () => {
+  const init = (): void => {
     if (!containerRef.value) return
 
     // Embla best practice: watchResize true for responsive layouts, no containScroll
@@ -75,7 +75,7 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
   }
 
   // Update selected index and nav button states
-  const onSelect = () => {
+  const onSelect = (): void => {
     if (!emblaApi.value) return
     // Current snap index is authoritative carousel state
     selectedIndex.value = emblaApi.value.selectedScrollSnap()
@@ -83,32 +83,32 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
   }
 
   // Update prev/next button disabled states
-  const updateNavigation = () => {
+  const updateNavigation = (): void => {
     if (!emblaApi.value) return
     canScrollPrev.value = emblaApi.value.canScrollPrev()
     canScrollNext.value = emblaApi.value.canScrollNext()
   }
 
   // Navigation: call onSelect() after move for immediate state update
-  const scrollPrev = () => {
+  const scrollPrev = (): void => {
     emblaApi.value?.scrollPrev()
     onSelect() // Immediate state update
   }
 
-  const scrollNext = () => {
+  const scrollNext = (): void => {
     emblaApi.value?.scrollNext()
     onSelect() // Immediate state update
   }
 
   // Scroll to index with delay (allow animation to start)
-  const scrollTo = (index: number) => {
+  const scrollTo = (index: number): void => {
     emblaApi.value?.scrollTo(index)
     // Brief delay ensures animation starts before state update
     setTimeout(() => onSelect(), 100)
   }
 
   // Auto-play: advance slide at interval, stop on user interaction
-  const setupAutoplay = () => {
+  const setupAutoplay = (): void => {
     if (autoplayTimer) clearInterval(autoplayTimer)
 
     autoplayTimer = setInterval(() => {
@@ -123,7 +123,7 @@ export function useEmblaCarousel(options: UseEmblaCarouselOptions = {}) {
   }
 
   // Clear timer
-  const stopAutoplay = () => {
+  const stopAutoplay = (): void => {
     if (autoplayTimer) {
       clearInterval(autoplayTimer)
       autoplayTimer = null
