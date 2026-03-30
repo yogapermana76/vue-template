@@ -3,71 +3,18 @@
   import { useEmblaCarousel } from '@/composables/useEmblaCarousel'
   import { cn } from '@/utils/cn'
 
-  /**
-   * Carousel Component - Universal Embla Carousel wrapper
-   *
-   * Works with ANY carousel configuration:
-   * - Infinite carousels (loop: true)
-   * - Fixed-length carousels (loop: false)
-   * - Auto-play and manual navigation
-   * - Responsive single or multi-column layouts
-   * - Thumbnail galleries and hero sections
-   *
-   * Container Best Practices:
-   * - Fixed height (h-[300px] md:h-[400px]) ensures proper flex context
-   * - Overflow hidden clips items outside carousel bounds
-   * - Position relative enables absolute-positioned children (buttons, indicators)
-   * - Direct containerRef child with flex h-full stretches items to full height
-   *
-   * Component Structure:
-   * ```vue
-   * <Carousel :autoplay="true" :loop="true">
-   *   <CarouselContent :gap="gap">
-   *     <CarouselItem :basis="basis"> Content </CarouselItem>
-   *   </CarouselContent>
-   *   <CarouselPrevious /> <!-- Absolute positioned -->
-   *   <CarouselNext /> <!-- Absolute positioned -->
-   *   <CarouselIndicators /> <!-- Absolute positioned at bottom -->
-   * </Carousel>
-   * ```
-   *
-   * Key Exposed API:
-   * - containerRef: Direct access to Embla container for advanced usage
-   * - selectedIndex: Current slide index (reactive)
-   * - canScrollPrev / canScrollNext: Navigation state (reactive)
-   * - scrollPrev() / scrollNext() / scrollTo(): Navigation methods
-   * - scrollSnaps: Array of snap points for indicators
-   */
+  // Embla carousel wrapper - supports loop, autoplay, responsive layouts
   interface Props {
     /** Additional CSS classes applied to outer wrapper */
     class?: string
 
-    /**
-     * Enable automatic slide advancement
-     * - Works with any carousel type (infinite or fixed)
-     * - Stops on user interaction (drag, touch, click)
-     * - Use autoplayDelay to control speed
-     * @default false
-     */
+    /** Enable automatic slide advancement. Stops on user interaction */
     autoplay?: boolean
 
-    /**
-     * Milliseconds between automatic slide advances
-     * Typical values:
-     * - 3000ms: Quick pace
-     * - 5000ms: Balanced (recommended for hero banners)
-     * - 6000ms: Leisurely pace (recommended for testimonials)
-     * @default 4000
-     */
+    /** Delay between auto advances in ms (default: 4000ms) */
     autoplayDelay?: number
 
-    /**
-     * Enable infinite carousel looping
-     * - true: Clones items, creates seamless infinite cycle
-     * - false: Stops at last slide, no wrapping
-     * Spacing is consistent regardless of loop value
-     * @default true
-     */
+    /** Enable infinite looping (default: true) */
     loop?: boolean
   }
 
@@ -117,12 +64,9 @@
 </script>
 
 <template>
-  <!-- Container with overflow hidden - essential for carousel clipping -->
-  <!-- Height configured via class prop - flexible for different use cases -->
-  <!-- Position relative for absolute-positioned children (prev/next buttons, indicators) -->
+  <!-- Carousel wrapper: relative + overflow-hidden for clipping -->
   <div :class="cn('relative overflow-hidden', props.class)">
-    <!-- Embla carousel container - must be direct child of scoped container -->
-    <!-- flex + h-full ensures items stretch to container height -->
+    <!-- Embla container: flex + h-full for proper stretching -->
     <div ref="containerRef" class="flex h-full">
       <slot />
     </div>
