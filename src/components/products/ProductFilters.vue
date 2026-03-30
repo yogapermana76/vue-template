@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { SlidersHorizontal, ArrowUpDown } from 'lucide-vue-next'
+  import { computed, ref } from 'vue'
+  import { SlidersHorizontal } from 'lucide-vue-next'
   import { SearchInput } from '@/components/shared'
+  import { BottomSheet } from '@/components/ui/bottom-sheet'
   import {
     Select,
     SelectContent,
@@ -33,6 +34,8 @@
     reset: []
   }>()
 
+  const isFilterOpen = ref(false)
+
   const hasActiveFilters = computed(() => {
     return props.search || props.category || props.sort !== 'asc'
   })
@@ -47,67 +50,21 @@
 
 <template>
   <div class="space-y-3">
-    <!-- Search -->
-    <SearchInput
-      :model-value="search"
-      placeholder="Search products..."
-      @update:model-value="emit('update:search', $event)"
-    />
-
-    <!-- Filters Row -->
+    <!-- Search + Filter Button -->
     <div class="flex items-center gap-2">
-      <!-- Category Select -->
-      <Select
-        :model-value="category || 'all'"
-        @update:model-value="val => emit('update:category', val === 'all' ? '' : String(val))"
-      >
-        <SelectTrigger class="h-9 flex-1 text-xs">
-          <SlidersHorizontal class="mr-1.5 size-3.5" />
-          <SelectValue placeholder="Category" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All</SelectItem>
-          <SelectItem v-for="cat in categories" :key="cat" :value="cat">
-            {{ cat }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
-
-      <!-- Sort Select -->
-      <Select
-        :model-value="sort"
-        @update:model-value="val => emit('update:sort', val as 'asc' | 'desc')"
-      >
-        <SelectTrigger class="h-9 flex-1 text-xs">
-          <ArrowUpDown class="mr-1.5 size-3.5" />
-          <SelectValue placeholder="Sort" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="asc">Low to High</SelectItem>
-          <SelectItem value="desc">High to Low</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <!-- Reset Button -->
-      <Button
-        v-if="hasActiveFilters"
-        variant="ghost"
-        size="sm"
-        class="h-9 px-2 text-xs"
-        @click="handleReset"
-      >
-        Reset
+      <SearchInput
+        :model-value="search"
+        placeholder="Search products..."
+        class="flex-1"
+        @update:model-value="emit('update:search', $event)"
+      />
+      <Button variant="outline" size="icon" class="shrink-0" @click="isFilterOpen = true">
+        <SlidersHorizontal class="size-4" />
       </Button>
     </div>
 
-    <!-- Active Filters -->
+    <!-- Active Filters Display -->
     <div v-if="hasActiveFilters" class="scrollbar-none flex gap-2 overflow-x-auto">
-      <Badge v-if="search" variant="secondary" class="shrink-0 gap-1 text-xs">
-        {{ search }}
-        <button class="hover:text-foreground ml-1" @click="emit('update:search', '')">
-          &times;
-        </button>
-      </Badge>
       <Badge v-if="category" variant="secondary" class="shrink-0 gap-1 text-xs">
         {{ category }}
         <button class="hover:text-foreground ml-1" @click="emit('update:category', '')">
@@ -121,5 +78,57 @@
         </button>
       </Badge>
     </div>
+
+    <!-- Bottom Sheet with Filters (for non-search filters) -->
+    <BottomSheet v-model:open="isFilterOpen" title="Filters" content-class="max-h-[80vh]">
+      <template #trigger />
+      <!-- Trigger handled by button above -->
+
+      <div class="space-y-4">
+        <!-- Category Filter -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Category</label>
+          <Select
+            :model-value="category || 'all'"
+            @update:model-value="val => emit('update:category', val === 'all' ? '' : String(val))"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem v-for="cat in categories" :key="cat" :value="cat">
+                {{ cat }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Sort Filter -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Sort By</label>
+          <Select
+            :model-value="sort"
+            @update:model-value="val => emit('update:sort', val as 'asc' | 'desc')"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select sort order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">Low to High</SelectItem>
+              <SelectItem value="desc">High to Low</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2 pt-4">
+          <Button v-if="hasActiveFilters" variant="outline" class="flex-1" @click="handleReset">
+            Reset
+          </Button>
+          <Button class="flex-1" @click="isFilterOpen = false"> Apply Filters </Button>
+        </div>
+      </div>
+    </BottomSheet>
   </div>
 </template>

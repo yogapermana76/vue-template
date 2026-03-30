@@ -24,6 +24,7 @@ declare module 'vue' {
     AppHeader: typeof import('./../components/layout/AppHeader.vue')['default']
     Badge: typeof import('./../components/ui/badge/Badge.vue')['default']
     BottomNav: typeof import('./../components/layout/BottomNav.vue')['default']
+    BottomSheet: typeof import('./../components/ui/bottom-sheet/BottomSheet.vue')['default']
     Button: typeof import('./../components/ui/button/Button.vue')['default']
     Card: typeof import('./../components/ui/card/Card.vue')['default']
     CardAction: typeof import('./../components/ui/card/CardAction.vue')['default']
