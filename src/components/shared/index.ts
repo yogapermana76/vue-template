@@ -1,11 +1,3 @@
-// Page header components
-export {
-  PageHeader,
-  PageHeaderHeading,
-  PageHeaderDescription,
-  PageHeaderActions,
-} from './page-header'
-
 // State components
 export { EmptyState } from './empty-state'
 export { ErrorState } from './error-state'
