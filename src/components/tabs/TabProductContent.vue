@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
-  import { Search } from 'lucide-vue-next'
-  import { Input } from '@/components/ui/input'
+  import { SearchInput } from '@/components/shared'
   import ProductCard from '@/components/products/ProductCard.vue'
   import ProductCardSkeleton from '@/components/products/ProductCardSkeleton.vue'
   import ProductGrid from '@/components/products/ProductGrid.vue'
@@ -24,15 +23,7 @@
 <template>
   <div class="space-y-4">
     <!-- Search Bar -->
-    <div class="relative">
-      <Search class="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-      <Input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search products..."
-        class="h-11 rounded-xl pl-10"
-      />
-    </div>
+    <SearchInput v-model="searchQuery" placeholder="Search products..." />
 
     <!-- Product Grid -->
     <ProductGrid>
