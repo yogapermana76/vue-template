@@ -20,3 +20,11 @@ export { usePullToRefresh, type UsePullToRefreshOptions } from './usePullToRefre
 // Carousel composables
 export { useEmblaCarousel } from './useEmblaCarousel'
 export { useCarouselState } from './useCarouselState'
+
+// Swipeable tabs composable
+export {
+  useSwipeableTabs,
+  type TabItem,
+  type UseSwipeableTabsOptions,
+  type UseSwipeableTabsReturn,
+} from './useSwipeableTabs'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { RouterView, useRouter } from 'vue-router'
-  import { Home, Package, LayoutDashboard } from 'lucide-vue-next'
+  import { Home, Package, LayoutDashboard, Layers } from 'lucide-vue-next'
   import { computed, ref, watch } from 'vue'
   import { AppHeader, AppFooter, MobileHeader, BottomNav } from '@/components/layout'
   import { config } from '@/config'
@@ -13,6 +13,7 @@
     { name: 'Home', to: '/', icon: Home },
     { name: 'Products', to: '/products', icon: Package },
     { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'Tabs', to: '/tabs', icon: Layers },
   ]
 
   watch(

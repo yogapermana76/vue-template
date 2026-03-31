@@ -43,6 +43,10 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/dashboard'
       | '/(default)/products/'
       | '/(default)/products/[id]'
+      | '/(default)/tabs'
+      | '/(default)/tabs/components/TabDashboardContent'
+      | '/(default)/tabs/components/TabHomeContent'
+      | '/(default)/tabs/components/TabProductContent'
     >,
     '/(default)/': RouteRecordInfo<
       '/(default)/',
@@ -70,6 +74,36 @@ declare module 'vue-router/auto-routes' {
       '/products/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | never
+    >,
+    '/(default)/tabs': RouteRecordInfo<
+      '/(default)/tabs',
+      '/tabs',
+      Record<never, never>,
+      Record<never, never>,
+      | '/(default)/tabs/components/TabDashboardContent'
+      | '/(default)/tabs/components/TabHomeContent'
+      | '/(default)/tabs/components/TabProductContent'
+    >,
+    '/(default)/tabs/components/TabDashboardContent': RouteRecordInfo<
+      '/(default)/tabs/components/TabDashboardContent',
+      '/tabs/components/TabDashboardContent',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(default)/tabs/components/TabHomeContent': RouteRecordInfo<
+      '/(default)/tabs/components/TabHomeContent',
+      '/tabs/components/TabHomeContent',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(default)/tabs/components/TabProductContent': RouteRecordInfo<
+      '/(default)/tabs/components/TabProductContent',
+      '/tabs/components/TabProductContent',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     '/[...all]': RouteRecordInfo<
@@ -105,6 +139,10 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/dashboard'
         | '/(default)/products/'
         | '/(default)/products/[id]'
+        | '/(default)/tabs'
+        | '/(default)/tabs/components/TabDashboardContent'
+        | '/(default)/tabs/components/TabHomeContent'
+        | '/(default)/tabs/components/TabProductContent'
       views:
         | 'default'
     }
@@ -129,6 +167,33 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(default)/products/[id].vue': {
       routes:
         | '/(default)/products/[id]'
+      views:
+        | never
+    }
+    'src/pages/(default)/tabs.vue': {
+      routes:
+        | '/(default)/tabs'
+        | '/(default)/tabs/components/TabDashboardContent'
+        | '/(default)/tabs/components/TabHomeContent'
+        | '/(default)/tabs/components/TabProductContent'
+      views:
+        | 'default'
+    }
+    'src/pages/(default)/tabs/components/TabDashboardContent.vue': {
+      routes:
+        | '/(default)/tabs/components/TabDashboardContent'
+      views:
+        | never
+    }
+    'src/pages/(default)/tabs/components/TabHomeContent.vue': {
+      routes:
+        | '/(default)/tabs/components/TabHomeContent'
+      views:
+        | never
+    }
+    'src/pages/(default)/tabs/components/TabProductContent.vue': {
+      routes:
+        | '/(default)/tabs/components/TabProductContent'
       views:
         | never
     }
