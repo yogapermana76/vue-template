@@ -1,2 +1,6 @@
-export { default as MobileHeader } from './MobileHeader.vue'
+export { default as AppLayout } from './AppLayout.vue'
+export { default as Header } from './Header.vue'
 export { default as BottomNav } from './BottomNav.vue'
+export { default as HeaderActionItem } from './HeaderActionItem.vue'
+export { default as CartActionItem } from './CartActionItem.vue'
+export { default as Footer } from './Footer.vue'
