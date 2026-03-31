@@ -1,9 +1,12 @@
 <script setup lang="ts">
   import { RouterView } from 'vue-router'
+  import { AppLayout } from '@/components/layout'
   import { Toaster } from '@/components/ui/sonner'
 </script>
 
 <template>
-  <RouterView />
-  <Toaster />
+  <AppLayout>
+    <RouterView />
+  </AppLayout>
+  <Toaster position="top-center" rich-colors />
 </template>

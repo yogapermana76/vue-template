@@ -7,6 +7,7 @@ import router from './router'
 import { vueQueryOptions, setupViewport } from './plugins'
 
 import './assets/css/main.css'
+import 'vue-sonner/style.css'
 
 setupViewport()
 
