@@ -11,7 +11,6 @@ const envSchema = z.object({
   VITE_API_AUTH_URL: z.string().optional(),
   VITE_API_USER_URL: z.string().optional(),
   VITE_API_PAYMENT_URL: z.string().optional(),
-  VITE_GA_ID: z.string().optional(),
   DEV: z.boolean(),
   PROD: z.boolean(),
 })
@@ -67,7 +66,6 @@ export const config = {
   },
 
   features: {
-    analytics: !!import.meta.env.VITE_GA_ID,
     debugMode: import.meta.env.DEV,
     /** Demo mode allows mock authentication */
     demoMode: import.meta.env.DEV || import.meta.env.VITE_DEMO_MODE === 'true',
