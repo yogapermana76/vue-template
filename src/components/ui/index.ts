@@ -40,21 +40,6 @@ export { Input } from './input'
 // Label
 export { Label } from './label'
 
-// Select
-export {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectItemText,
-  SelectLabel,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from './select'
-
 // Skeleton
 export { Skeleton } from './skeleton'
 
