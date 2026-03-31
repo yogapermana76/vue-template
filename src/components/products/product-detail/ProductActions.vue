@@ -1,16 +1,23 @@
 <script setup lang="ts">
   import { ShoppingCart } from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
+  import { Footer } from '@/components/layout'
+
+  const props = defineProps<{
+    onAddToCart?: () => void
+    onCancel?: () => void
+  }>()
 </script>
 
 <template>
-  <div class="bg-background sticky bottom-0 border-t p-4">
-    <div class="flex gap-3">
-      <Button variant="outline" size="lg" class="flex-1"> Buy Now </Button>
-      <Button size="lg" class="flex-1">
+  <!-- Fixed Footer Actions -->
+  <Footer position="fixed">
+    <div class="flex gap-2 p-4">
+      <Button variant="outline" class="flex-1" @click="props.onCancel"> Cancel </Button>
+      <Button class="flex-1" @click="props.onAddToCart">
         <ShoppingCart class="mr-2 size-4" />
         Add to Cart
       </Button>
     </div>
-  </div>
+  </Footer>
 </template>
