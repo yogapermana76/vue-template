@@ -37,6 +37,28 @@ export function usePullToRefresh(options: UsePullToRefreshOptions) {
   let startY = 0
   let currentY = 0
 
+  /**
+   * Check if touch event originates from inside an overlay (modal, drawer, dialog, etc.)
+   * Uses a generic approach that works with any overlay library
+   */
+  const isInsideOverlay = (target: EventTarget | null): boolean => {
+    if (!(target instanceof Element)) return false
+
+    // Generic selectors for common overlay patterns
+    const overlaySelectors = [
+      '[role="dialog"]',
+      '[role="alertdialog"]',
+      '[data-state="open"][data-vaul-drawer]',
+      '[data-radix-dialog-content]',
+      '[data-radix-alert-dialog-content]',
+      '.modal',
+      '.drawer',
+      '.bottom-sheet',
+    ]
+
+    return overlaySelectors.some(selector => target.closest(selector))
+  }
+
   const canPull = (): boolean => {
     if (!enabled) return false
     if (isRefreshing.value) return false
@@ -47,6 +69,8 @@ export function usePullToRefresh(options: UsePullToRefreshOptions) {
   }
 
   const handleTouchStart = (e: TouchEvent) => {
+    // Check overlay at touch start to avoid interference
+    if (isInsideOverlay(e.target)) return
     if (!canPull()) return
 
     startY = e.touches[0].clientY
