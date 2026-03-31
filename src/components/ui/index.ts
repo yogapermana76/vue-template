@@ -90,9 +90,6 @@ export { Toaster } from './sonner'
 // Switch
 export { Switch } from './switch'
 
-// Tabs
-export { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs'
-
 // Textarea
 export { Textarea } from './textarea'
 
