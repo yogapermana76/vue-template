@@ -41,9 +41,9 @@
 </script>
 
 <template>
-  <section class="bg-muted/30 px-4 py-16 md:py-24">
-    <div class="mb-12 text-center md:mb-16">
-      <h2 class="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+  <section class="bg-muted/30 px-4 py-12">
+    <div class="mb-8 text-center">
+      <h2 class="mb-4 text-2xl font-bold tracking-tight">
         {{ title }}
       </h2>
       <p class="text-muted-foreground mx-auto max-w-2xl text-lg">
@@ -68,12 +68,12 @@
     </div>
 
     <!-- Tech badges -->
-    <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+    <div class="flex flex-wrap justify-center gap-2">
       <span
         v-for="tech in techStack"
         :key="tech.name"
         :class="[
-          'rounded-lg border px-3 py-2 text-xs font-medium transition-all duration-200 hover:scale-105 sm:px-4 sm:py-2.5 sm:text-sm',
+          'rounded-lg border px-3 py-2 text-xs font-medium transition-all duration-200 hover:scale-105',
           categoryColors[tech.category],
         ]"
       >

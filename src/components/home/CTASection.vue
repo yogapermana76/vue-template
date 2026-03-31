@@ -25,9 +25,9 @@
 </script>
 
 <template>
-  <section class="px-4 py-16 md:py-24">
+  <section class="px-4 py-12">
     <Card class="from-primary/5 via-primary/10 to-primary/5 overflow-hidden bg-linear-to-r">
-      <CardContent class="relative p-8 md:p-12 lg:p-16">
+      <CardContent class="relative p-6">
         <!-- Background decoration -->
         <div class="bg-primary/10 absolute -top-20 -right-20 size-64 rounded-full blur-3xl" />
         <div class="bg-primary/10 absolute -bottom-20 -left-20 size-64 rounded-full blur-3xl" />
@@ -37,7 +37,7 @@
             <Sparkles class="text-primary size-8" />
           </div>
 
-          <h2 class="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+          <h2 class="mb-4 text-2xl font-bold tracking-tight">
             {{ title }}
           </h2>
 
@@ -45,7 +45,7 @@
             {{ description }}
           </p>
 
-          <div class="flex flex-col gap-4 sm:flex-row">
+          <div class="flex flex-col gap-3">
             <Button as-child size="lg" class="min-w-40">
               <RouterLink :to="primaryTo">
                 {{ primaryText }}

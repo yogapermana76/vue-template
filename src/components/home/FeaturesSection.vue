@@ -58,10 +58,10 @@
 </script>
 
 <template>
-  <section class="py-16 md:py-24">
+  <section class="py-12">
     <!-- Section header -->
-    <div class="mb-12 px-4 text-center md:mb-16">
-      <h2 class="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+    <div class="mb-8 px-4 text-center">
+      <h2 class="mb-4 text-2xl font-bold tracking-tight">
         {{ title }}
       </h2>
       <p class="text-muted-foreground mx-auto max-w-2xl text-lg">

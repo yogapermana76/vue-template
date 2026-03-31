@@ -58,12 +58,7 @@
 
 <template>
   <section class="w-full">
-    <Carousel
-      ref="carouselRef"
-      :autoplay="true"
-      :autoplay-delay="5000"
-      class="h-96 w-full md:h-125"
-    >
+    <Carousel ref="carouselRef" :autoplay="true" :autoplay-delay="5000" class="h-72 w-full">
       <CarouselContent>
         <CarouselItem v-for="slide in props.slides" :key="slide.id" basis="full">
           <div class="relative h-full w-full overflow-hidden rounded-lg">
@@ -83,16 +78,16 @@
             />
 
             <!-- Content -->
-            <div class="absolute inset-0 flex flex-col justify-center px-6 md:px-12">
+            <div class="absolute inset-0 flex flex-col justify-center px-6">
               <Badge v-if="slide.badge" variant="secondary" class="mb-3 w-fit">
                 {{ slide.badge }}
               </Badge>
 
-              <h2 class="mb-2 max-w-xl text-2xl font-bold text-white md:text-4xl">
+              <h2 class="mb-2 max-w-xl text-xl font-bold text-white">
                 {{ slide.title }}
               </h2>
 
-              <p class="mb-6 max-w-md text-sm text-gray-200 md:text-base">
+              <p class="mb-4 max-w-md text-sm text-gray-200">
                 {{ slide.description }}
               </p>
 
