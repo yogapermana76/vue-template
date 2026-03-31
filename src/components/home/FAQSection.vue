@@ -1,81 +1,103 @@
 <script setup lang="ts">
-  import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-  } from '@/components/ui/accordion'
+  import type { Component, HTMLAttributes } from 'vue'
+  import { Mail } from 'lucide-vue-next'
+  import { AccordionList } from '@/components/ui/accordion'
+  import { Button } from '@/components/ui/button'
+  import FAQDetailedAnswer from './FAQDetailedAnswer.vue'
 
-  const faqs = [
+  interface FAQItem {
+    id: string
+    question: string
+    answer: string | Component // text, HTML, or component
+    advanced?: boolean
+  }
+
+  interface Props {
+    items?: FAQItem[]
+    title?: string
+    description?: string
+    supportEmail?: string
+    showCTA?: boolean
+    class?: HTMLAttributes['class']
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    title: 'Pertanyaan yang Sering Diajukan',
+    description: 'Temukan jawaban untuk pertanyaan umum tentang aplikasi kami dan cara kerjanya.',
+    supportEmail: 'support@example.com',
+    showCTA: true,
+  })
+
+  // Default FAQ items
+  const DEFAULT_FAQS: FAQItem[] = [
     {
       id: 'faq-1',
       question: 'Bagaimana cara memulai dengan aplikasi ini?',
-      answer:
-        'Anda dapat memulai dengan mendaftar akun baru atau masuk dengan akun yang sudah ada. Setelah itu, jelajahi fitur-fitur yang tersedia di dashboard atau halaman produk.',
+      answer: FAQDetailedAnswer,
+      advanced: true,
     },
     {
       id: 'faq-2',
       question: 'Apakah aplikasi ini gratis digunakan?',
       answer:
-        'Ya, aplikasi ini sepenuhnya gratis untuk digunakan. Kami menyediakan semua fitur dasar tanpa biaya tambahan.',
+        'Ya, aplikasi ini <strong>sepenuhnya gratis</strong> untuk digunakan. Kami menyediakan semua fitur dasar tanpa biaya tambahan. Tidak ada biaya tersembunyi atau upgrade paksa.',
     },
     {
       id: 'faq-3',
       question: 'Bagaimana jika saya mengalami masalah teknis?',
       answer:
-        'Tim dukungan kami siap membantu Anda 24/7. Hubungi kami melalui email support atau chat untuk penyelesaian cepat.',
+        'Tim dukungan kami siap membantu Anda <strong>24/7</strong>. Hubungi kami melalui email support atau chat untuk penyelesaian cepat. Rata-rata response time kami adalah kurang dari 1 jam.',
     },
     {
       id: 'faq-4',
       question: 'Apakah data saya aman?',
       answer:
-        'Keamanan data Anda adalah prioritas utama kami. Kami menggunakan enkripsi tingkat enterprise dan standar keamanan industri terbaru.',
+        'Keamanan data Anda adalah prioritas utama kami. Kami menggunakan <em>enkripsi tingkat enterprise</em> dan standar keamanan industri terbaru termasuk SSL/TLS, two-factor authentication, dan regular security audits.',
     },
     {
       id: 'faq-5',
       question: 'Bisakah saya mengakses aplikasi dari perangkat berbeda?',
       answer:
-        'Tentu saja! Akun Anda dapat diakses dari perangkat apa pun. Cukup masuk dengan kredensial yang sama dan lanjutkan di mana pun Anda berada.',
+        'Tentu saja! Akun Anda dapat diakses dari perangkat apa pun. Cukup masuk dengan kredensial yang sama dan lanjutkan di mana pun Anda berada. Data Anda akan tersinkronisasi otomatis.',
     },
   ]
+
+  const faqs = props.items || DEFAULT_FAQS
+  const { title, description, supportEmail, showCTA, class: className } = props
+
+  const accordionItems = faqs.map(faq => ({
+    id: faq.id,
+    title: faq.question,
+    content: faq.answer,
+  }))
 </script>
 
 <template>
-  <section class="bg-muted w-full py-16 md:py-24">
+  <section :class="['bg-muted w-full py-16 md:py-24', className]">
     <div class="container px-4 md:px-6">
-      <!-- Section Header -->
+      <!-- Section header -->
       <div class="mx-auto mb-12 max-w-2xl text-center">
         <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">
-          Pertanyaan yang Sering Diajukan
+          {{ title }}
         </h2>
         <p class="text-muted-foreground">
-          Temukan jawaban untuk pertanyaan umum tentang aplikasi kami dan cara kerjanya.
+          {{ description }}
         </p>
       </div>
 
-      <!-- FAQ Accordion -->
       <div class="mx-auto max-w-2xl">
-        <Accordion type="single" collapsible class="w-full">
-          <AccordionItem v-for="faq in faqs" :key="faq.id" :value="faq.id">
-            <AccordionTrigger class="text-left text-base font-semibold hover:no-underline">
-              {{ faq.question }}
-            </AccordionTrigger>
-            <AccordionContent class="text-muted-foreground">
-              {{ faq.answer }}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <AccordionList :items="accordionItems" />
       </div>
 
       <!-- Support CTA -->
-      <div class="mt-12 text-center">
+      <div v-if="showCTA" class="mt-12 text-center">
         <p class="text-muted-foreground mb-4">Tidak menemukan jawaban yang Anda cari?</p>
-        <a
-          href="mailto:support@example.com"
-          class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md px-6 py-2 text-sm font-medium"
-        >
-          Hubungi Dukungan
-        </a>
+        <Button as-child>
+          <a :href="`mailto:${supportEmail}`" class="flex items-center gap-2">
+            <Mail class="h-4 w-4" />
+            Hubungi Dukungan
+          </a>
+        </Button>
       </div>
     </div>
   </section>
