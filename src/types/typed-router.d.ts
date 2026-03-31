@@ -34,76 +34,56 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/(default)': RouteRecordInfo<
-      '/(default)',
+    '/(main)': RouteRecordInfo<
+      '/(main)',
       '/',
       Record<never, never>,
       Record<never, never>,
-      | '/(default)/'
-      | '/(default)/dashboard'
-      | '/(default)/products/'
-      | '/(default)/products/[id]'
-      | '/(default)/tabs'
-      | '/(default)/tabs/components/TabDashboardContent'
-      | '/(default)/tabs/components/TabHomeContent'
-      | '/(default)/tabs/components/TabProductContent'
+      | '/(main)/'
+      | '/(main)/dashboard'
+      | '/(main)/products'
+      | '/(main)/tabs'
     >,
-    '/(default)/': RouteRecordInfo<
-      '/(default)/',
+    '/(main)/': RouteRecordInfo<
+      '/(main)/',
       '/',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/(default)/dashboard': RouteRecordInfo<
-      '/(default)/dashboard',
+    '/(main)/dashboard': RouteRecordInfo<
+      '/(main)/dashboard',
       '/dashboard',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/(default)/products/': RouteRecordInfo<
-      '/(default)/products/',
+    '/(main)/products': RouteRecordInfo<
+      '/(main)/products',
       '/products',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/(default)/products/[id]': RouteRecordInfo<
-      '/(default)/products/[id]',
-      '/products/:id',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
-    '/(default)/tabs': RouteRecordInfo<
-      '/(default)/tabs',
+    '/(main)/tabs': RouteRecordInfo<
+      '/(main)/tabs',
       '/tabs',
       Record<never, never>,
       Record<never, never>,
-      | '/(default)/tabs/components/TabDashboardContent'
-      | '/(default)/tabs/components/TabHomeContent'
-      | '/(default)/tabs/components/TabProductContent'
-    >,
-    '/(default)/tabs/components/TabDashboardContent': RouteRecordInfo<
-      '/(default)/tabs/components/TabDashboardContent',
-      '/tabs/components/TabDashboardContent',
-      Record<never, never>,
-      Record<never, never>,
       | never
     >,
-    '/(default)/tabs/components/TabHomeContent': RouteRecordInfo<
-      '/(default)/tabs/components/TabHomeContent',
-      '/tabs/components/TabHomeContent',
+    '/(secondary)': RouteRecordInfo<
+      '/(secondary)',
+      '/',
       Record<never, never>,
       Record<never, never>,
-      | never
+      | '/(secondary)/products/[id]'
     >,
-    '/(default)/tabs/components/TabProductContent': RouteRecordInfo<
-      '/(default)/tabs/components/TabProductContent',
-      '/tabs/components/TabProductContent',
-      Record<never, never>,
-      Record<never, never>,
+    '/(secondary)/products/[id]': RouteRecordInfo<
+      '/(secondary)/products/[id]',
+      '/products/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
       | never
     >,
     '/[...all]': RouteRecordInfo<
@@ -132,68 +112,50 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(default).vue': {
+    'src/pages/(main).vue': {
       routes:
-        | '/(default)'
-        | '/(default)/'
-        | '/(default)/dashboard'
-        | '/(default)/products/'
-        | '/(default)/products/[id]'
-        | '/(default)/tabs'
-        | '/(default)/tabs/components/TabDashboardContent'
-        | '/(default)/tabs/components/TabHomeContent'
-        | '/(default)/tabs/components/TabProductContent'
+        | '/(main)'
+        | '/(main)/'
+        | '/(main)/dashboard'
+        | '/(main)/products'
+        | '/(main)/tabs'
       views:
         | 'default'
     }
-    'src/pages/(default)/index.vue': {
+    'src/pages/(main)/index.vue': {
       routes:
-        | '/(default)/'
+        | '/(main)/'
       views:
         | never
     }
-    'src/pages/(default)/dashboard.vue': {
+    'src/pages/(main)/dashboard.vue': {
       routes:
-        | '/(default)/dashboard'
+        | '/(main)/dashboard'
       views:
         | never
     }
-    'src/pages/(default)/products/index.vue': {
+    'src/pages/(main)/products.vue': {
       routes:
-        | '/(default)/products/'
+        | '/(main)/products'
       views:
         | never
     }
-    'src/pages/(default)/products/[id].vue': {
+    'src/pages/(main)/tabs.vue': {
       routes:
-        | '/(default)/products/[id]'
+        | '/(main)/tabs'
       views:
         | never
     }
-    'src/pages/(default)/tabs.vue': {
+    'src/pages/(secondary).vue': {
       routes:
-        | '/(default)/tabs'
-        | '/(default)/tabs/components/TabDashboardContent'
-        | '/(default)/tabs/components/TabHomeContent'
-        | '/(default)/tabs/components/TabProductContent'
+        | '/(secondary)'
+        | '/(secondary)/products/[id]'
       views:
         | 'default'
     }
-    'src/pages/(default)/tabs/components/TabDashboardContent.vue': {
+    'src/pages/(secondary)/products/[id].vue': {
       routes:
-        | '/(default)/tabs/components/TabDashboardContent'
-      views:
-        | never
-    }
-    'src/pages/(default)/tabs/components/TabHomeContent.vue': {
-      routes:
-        | '/(default)/tabs/components/TabHomeContent'
-      views:
-        | never
-    }
-    'src/pages/(default)/tabs/components/TabProductContent.vue': {
-      routes:
-        | '/(default)/tabs/components/TabProductContent'
+        | '/(secondary)/products/[id]'
       views:
         | never
     }
