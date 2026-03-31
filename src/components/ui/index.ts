@@ -34,37 +34,11 @@ export {
 // Checkbox
 export { Checkbox } from './checkbox'
 
-// Dialog
-export {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogScrollContent,
-  DialogTitle,
-  DialogTrigger,
-} from './dialog'
-
 // Input
 export { Input } from './input'
 
 // Label
 export { Label } from './label'
-
-// Pagination
-export {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationFirst,
-  PaginationItem,
-  PaginationLast,
-  PaginationNext,
-  PaginationPrevious,
-} from './pagination'
 
 // Select
 export {

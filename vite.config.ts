@@ -24,7 +24,16 @@ export default defineConfig({
         'vue',
         'vue-router',
         'pinia',
-        '@vueuse/core',
+        {
+          '@vueuse/core': [
+            'useStorage',
+            'useDark',
+            'useMediaQuery',
+            'reactiveOmit',
+            'useVModel',
+            'useIntersectionObserver',
+          ],
+        },
         {
           '@tanstack/vue-query': [
             'useQuery',
