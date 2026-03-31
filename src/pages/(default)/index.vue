@@ -5,6 +5,7 @@
     TechStackSection,
     QuickActionsSection,
     CTASection,
+    FAQSection,
     FeaturedBannerCarousel,
     RecommendedProductsCarousel,
     TestimonialCarousel,
@@ -25,5 +26,6 @@
   <TechStackSection />
   <TestimonialCarousel />
   <QuickActionsSection />
+  <FAQSection />
   <CTASection />
 </template>

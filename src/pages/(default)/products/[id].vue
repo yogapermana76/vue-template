@@ -2,7 +2,7 @@
   import { computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { useProduct } from '@/composables/services/useProducts'
-  import { usePullToRefresh } from '@/composables/usePullToRefresh'
+  import { usePullToRefresh } from '@/composables/ui'
   import { Skeleton } from '@/components/ui/skeleton'
   import { ErrorState, PullToRefresh } from '@/components/shared'
   import {

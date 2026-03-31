@@ -1,5 +1,5 @@
 import type { InjectionKey, ComputedRef, Ref } from 'vue'
-import type { TabItem } from '@/composables/useSwipeableTabs'
+import type { TabItem } from '@/composables/ui'
 
 export interface SwipeableTabsProps {
   tabs: TabItem[]

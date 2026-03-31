@@ -65,6 +65,7 @@ declare module 'vue' {
     DrawerTrigger: typeof import('./../components/ui/drawer/DrawerTrigger.vue')['default']
     EmptyState: typeof import('./../components/shared/empty-state/EmptyState.vue')['default']
     ErrorState: typeof import('./../components/shared/error-state/ErrorState.vue')['default']
+    FAQSection: typeof import('./../components/home/FAQSection.vue')['default']
     FeaturedBannerCarousel: typeof import('./../components/home/FeaturedBannerCarousel.vue')['default']
     FeaturesSection: typeof import('./../components/home/FeaturesSection.vue')['default']
     FilterChips: typeof import('./../components/products/filters/FilterChips.vue')['default']

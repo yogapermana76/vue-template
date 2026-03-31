@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { BarChart3, Users, ShoppingBag, TrendingUp } from 'lucide-vue-next'
   import { useRouter } from 'vue-router'
-  import { useAuth } from '@/composables/useAuth'
+  import { useAuth } from '@/composables/auth'
   import {
     DashboardHeader,
     StatsCarousel,

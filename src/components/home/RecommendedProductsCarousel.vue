@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useCarouselState } from '@/composables/useCarouselState'
+  import { useCarouselState } from '@/composables/carousel'
   import {
     Carousel,
     CarouselContent,

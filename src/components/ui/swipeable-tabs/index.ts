@@ -7,4 +7,4 @@ export {
   type SwipeableTabsProps,
   type SwipeableTabsContext,
 } from './types'
-export type { TabItem } from '@/composables/useSwipeableTabs'
+export type { TabItem } from '@/composables/ui'

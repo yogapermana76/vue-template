@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { onMounted, onBeforeUnmount } from 'vue'
-  import { useEmblaCarousel } from '@/composables/useEmblaCarousel'
+  import { useEmblaCarousel } from '@/composables/carousel'
   import { cn } from '@/utils/cn'
 
   // Embla carousel wrapper - supports loop, autoplay, responsive layouts

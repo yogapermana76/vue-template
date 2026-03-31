@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { provide } from 'vue'
-  import { useSwipeableTabs } from '@/composables/useSwipeableTabs'
+  import { useSwipeableTabs } from '@/composables/ui'
   import { cn } from '@/utils/cn'
   import {
     SWIPEABLE_TABS_INJECTION_KEY,

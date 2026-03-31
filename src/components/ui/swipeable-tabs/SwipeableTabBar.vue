@@ -2,7 +2,7 @@
   import { inject, onMounted, onUnmounted, ref, type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
   import { SWIPEABLE_TABS_INJECTION_KEY, type SwipeableTabsContext } from './types'
-  import type { TabItem } from '@/composables/useSwipeableTabs'
+  import type { TabItem } from '@/composables/ui'
 
   interface Props {
     class?: HTMLAttributes['class']

@@ -4,7 +4,7 @@
   import { toTypedSchema } from '@vee-validate/zod'
   import { z } from 'zod'
   import { Loader2 } from 'lucide-vue-next'
-  import { useAuth } from '@/composables/useAuth'
+  import { useAuth } from '@/composables/auth'
   import { Button } from '@/components/ui/button'
   import { Input } from '@/components/ui/input'
   import { Label } from '@/components/ui/label'

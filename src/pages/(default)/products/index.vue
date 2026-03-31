@@ -3,7 +3,7 @@
   import { useIntersectionObserver } from '@vueuse/core'
   import { Filter, Loader2 } from 'lucide-vue-next'
   import { useProductsInfinite, useProductCategories } from '@/composables/services/useProducts'
-  import { usePullToRefresh } from '@/composables/usePullToRefresh'
+  import { usePullToRefresh } from '@/composables/ui'
   import { Button } from '@/components/ui/button'
   import { EmptyState, ErrorState, PullToRefresh } from '@/components/shared'
   import {

@@ -8,7 +8,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { config } from '@/config'
-import { useAuthState } from '@/composables/useAuth'
+import { useAuthState } from '@/composables/auth'
 
 // ============================================
 // Router Instance
