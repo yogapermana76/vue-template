@@ -10,7 +10,7 @@
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    positionClass: 'bottom-4',
+    positionClass: 'absolute bottom-4',
   })
 
   const emit = defineEmits<{
@@ -22,7 +22,7 @@
   <!-- Indicator dots at bottom center -->
   <div
     :class="[
-      'absolute left-1/2 flex -translate-x-1/2 items-center justify-center gap-2',
+      'left-1/2 flex -translate-x-1/2 items-center justify-center gap-2',
       props.positionClass,
     ]"
   >

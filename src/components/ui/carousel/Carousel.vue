@@ -74,11 +74,13 @@
 </script>
 
 <template>
-  <!-- Carousel wrapper: relative + overflow-hidden for clipping, dir for RTL -->
-  <div :class="cn('relative overflow-hidden', props.class)" :dir="props.direction">
-    <!-- Embla container: flex + h-full for proper stretching -->
-    <div ref="containerRef" class="flex h-full">
+  <!-- Carousel wrapper: relative for absolute positioned children, dir for RTL -->
+  <div :class="cn('relative', props.class)" :dir="props.direction">
+    <!-- Embla container: overflow-hidden + flex for proper stretching -->
+    <div ref="containerRef" class="flex h-full overflow-hidden">
       <slot />
     </div>
+    <!-- Slot for elements outside embla container (e.g. indicators with absolute=false) -->
+    <slot name="outside" />
   </div>
 </template>

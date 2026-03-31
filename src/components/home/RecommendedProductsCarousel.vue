@@ -76,43 +76,30 @@
   <section class="py-8">
     <!-- Section Header -->
     <div class="mb-4 px-4">
-      <h2 class="text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
+      <h2 class="text-xl font-bold">{{ props.title }}</h2>
     </div>
 
     <!-- Carousel -->
-    <div class="relative">
-      <Carousel ref="carouselRef" class="min-h-80 px-4">
-        <CarouselContent gap="gap-4">
-          <CarouselItem
-            v-for="product in props.products"
-            :key="product.id"
-            basis="1/2"
-            class="md:basis-1/4"
-          >
-            <ProductCard :product="product" />
-          </CarouselItem>
-        </CarouselContent>
+    <Carousel ref="carouselRef" class="px-4">
+      <CarouselContent gap="gap-4">
+        <CarouselItem v-for="product in props.products" :key="product.id" basis="1/2">
+          <ProductCard :product="product" />
+        </CarouselItem>
+      </CarouselContent>
 
-        <!-- Navigation -->
-        <CarouselPrevious
-          :disabled="!carouselRef?.canScrollPrev"
-          position-class="top-1/2 -translate-y-1/2"
-          @click="handlePrevious"
-        />
-        <CarouselNext
-          :disabled="!carouselRef?.canScrollNext"
-          position-class="top-1/2 -translate-y-1/2"
-          @click="handleNext"
-        />
+      <!-- Navigation -->
+      <CarouselPrevious :disabled="!carouselRef?.canScrollPrev" @click="handlePrevious" />
+      <CarouselNext :disabled="!carouselRef?.canScrollNext" @click="handleNext" />
 
-        <!-- Indicators -->
+      <!-- Indicators - using outside slot for positioning below carousel -->
+      <template #outside>
         <CarouselIndicators
           :total="props.products.length"
           :selected="currentIndex"
-          position-class="bottom-2"
+          position-class="relative mt-2"
           @dot-click="handleDotClick"
         />
-      </Carousel>
-    </div>
+      </template>
+    </Carousel>
   </section>
 </template>

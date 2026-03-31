@@ -133,7 +133,6 @@
         <CarouselIndicators
           :total="props.testimonials.length"
           :selected="currentIndex"
-          position-class="bottom-4"
           @dot-click="handleDotClick"
         />
       </Carousel>
