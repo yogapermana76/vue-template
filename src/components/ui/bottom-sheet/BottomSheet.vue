@@ -16,11 +16,6 @@
 
   type FooterPosition = 'sticky' | 'normal'
 
-  const FOOTER_POSITION_CLASSES: Record<FooterPosition, string> = {
-    sticky: 'sticky bottom-0 bg-background',
-    normal: '',
-  }
-
   // ============================================================================
   // Props Interface
   // ============================================================================
@@ -80,11 +75,14 @@
   })
 
   const footerClasses = computed(() => {
-    return [
-      props.footerClass,
-      'shrink-0 px-4 py-3 border-t border-neutral-200',
-      FOOTER_POSITION_CLASSES[props.footerPosition],
-    ]
+    const baseStyles = [props.footerClass, 'shrink-0 flex flex-col items-start gap-3 w-full']
+
+    const variantStyles =
+      props.footerPosition === 'sticky'
+        ? 'py-3 px-4 border border-neutral-200 rounded-t-3xl sticky bottom-0 bg-background'
+        : 'px-4 py-3 border-t border-neutral-200'
+
+    return [...baseStyles, variantStyles]
   })
 </script>
 

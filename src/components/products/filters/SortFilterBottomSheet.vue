@@ -8,7 +8,7 @@
     sort?: 'asc' | 'desc'
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     open: false,
     sort: 'asc',
   })
@@ -41,7 +41,7 @@
   >
     <div class="space-y-2">
       <Button
-        :variant="sort === 'asc' ? 'default' : 'outline'"
+        :variant="sort === 'asc' ? 'primary' : 'secondary'"
         :class="[
           'w-full justify-start',
           sort === 'asc'
@@ -53,7 +53,7 @@
         Low to High
       </Button>
       <Button
-        :variant="sort === 'desc' ? 'default' : 'outline'"
+        :variant="sort === 'desc' ? 'primary' : 'secondary'"
         :class="[
           'w-full justify-start',
           sort === 'desc'
