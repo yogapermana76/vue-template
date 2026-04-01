@@ -9,7 +9,7 @@
     categories?: string[]
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     open: false,
     category: '',
     categories: () => [],
