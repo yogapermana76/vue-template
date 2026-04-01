@@ -4,32 +4,77 @@ import { cva } from 'class-variance-authority'
 export { default as Button } from './Button.vue'
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-        outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'text-primary underline-offset-4 hover:underline',
+        primary:
+          'bg-primary-500 text-white active:bg-primary-600 active:text-white disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed',
+        secondary:
+          'border border-primary-600/50 text-primary-700 bg-transparent active:bg-primary-600 active:text-white active:border-primary-600 disabled:border-slate-200 disabled:text-slate-500 disabled:bg-transparent disabled:cursor-not-allowed',
+        tertiary:
+          'text-primary-700 bg-transparent active:text-teal-800 disabled:text-slate-500 disabled:cursor-not-allowed',
       },
+
       size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'size-9',
-        'icon-sm': 'size-8',
-        'icon-lg': 'size-10',
+        lg: 'h-12 px-8 text-base leading-6 gap-2',
+        md: 'h-10 px-6 text-sm leading-5 gap-2',
+        sm: 'h-10 px-6 text-sm leading-5 gap-2',
+        xs: 'h-8 px-4 text-xs leading-4.5 gap-1.5',
+      },
+
+      layout: {
+        iconOnly: '',
+        iconLeft: 'flex-row',
+        iconRight: 'flex-row-reverse',
+      },
+
+      isDarkBg: {
+        false: '',
+        true: '',
       },
     },
+
+    compoundVariants: [
+      // Icon sizing for buttons with text + icon
+      { size: 'lg', layout: ['iconLeft', 'iconRight'], class: '[&_svg]:size-5' },
+      { size: 'md', layout: ['iconLeft', 'iconRight'], class: '[&_svg]:size-4' },
+      { size: 'sm', layout: ['iconLeft', 'iconRight'], class: '[&_svg]:size-4' },
+      { size: 'xs', layout: ['iconLeft', 'iconRight'], class: '[&_svg]:size-3.5' },
+
+      // Icon sizing for icon-only buttons
+      { size: 'lg', layout: 'iconOnly', class: 'px-0 w-12 [&_svg]:size-5' },
+      { size: 'md', layout: 'iconOnly', class: 'px-0 w-10 [&_svg]:size-4' },
+      { size: 'sm', layout: 'iconOnly', class: 'px-0 w-10 [&_svg]:size-4' },
+      { size: 'xs', layout: 'iconOnly', class: 'px-0 w-8 [&_svg]:size-3.5' },
+
+      // Dark background variations
+      {
+        variant: 'primary',
+        isDarkBg: true,
+        class:
+          'bg-white text-teal-700 active:bg-teal-500 active:text-white disabled:bg-white/10 disabled:text-slate-500',
+      },
+      {
+        variant: 'secondary',
+        isDarkBg: true,
+        class:
+          'border-white/20 text-white bg-transparent active:bg-teal-500 active:text-white active:border-teal-500 disabled:border-white/10 disabled:text-white/40 disabled:bg-transparent',
+      },
+      {
+        variant: 'tertiary',
+        isDarkBg: true,
+        class: 'text-white active:text-teal-200 disabled:text-white/40',
+      },
+    ],
+
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: 'primary',
+      size: 'md',
+      layout: 'iconLeft',
+      isDarkBg: false,
     },
   },
 )
+
 export type ButtonVariants = VariantProps<typeof buttonVariants>
