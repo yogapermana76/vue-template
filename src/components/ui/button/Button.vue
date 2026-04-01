@@ -23,7 +23,7 @@
     as: 'button',
     variant: 'primary',
     size: 'md',
-    layout: 'text',
+    layout: 'iconLeft',
     isDarkBg: false,
     state: 'default',
     disabled: false,
