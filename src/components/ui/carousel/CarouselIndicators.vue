@@ -32,7 +32,7 @@
       :key="index"
       :class="[
         'h-2 rounded-full transition-all',
-        selected === index ? 'bg-primary w-8' : 'bg-muted-foreground/30 w-2',
+        selected === index ? 'bg-primary-500 w-8' : 'w-2 bg-neutral-300',
       ]"
       @click="emit('dot-click', index)"
       :aria-label="`Go to slide ${index + 1} of ${total}`"

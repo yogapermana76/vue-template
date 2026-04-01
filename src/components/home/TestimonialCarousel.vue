@@ -74,12 +74,12 @@
 </script>
 
 <template>
-  <section class="bg-muted/30 py-12 md:py-16">
+  <section class="bg-secondary-50 py-12 md:py-16">
     <div class="mx-auto max-w-6xl px-4">
       <!-- Section Header -->
       <div class="mb-8 text-center md:mb-12">
-        <h2 class="mb-2 text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
-        <p class="text-muted-foreground text-sm md:text-base">
+        <h2 class="text-secondary-900 mb-2 text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
+        <p class="text-secondary-600 text-sm md:text-base">
           Hear from our satisfied customers and community members
         </p>
       </div>
@@ -92,17 +92,17 @@
             :key="testimonial.id"
             basis="full"
           >
-            <Card class="h-full">
+            <Card class="border-secondary-200 h-full">
               <CardContent class="flex flex-col p-6 md:p-8">
                 <!-- Quote Icon -->
-                <Quote class="text-primary mb-4 size-8" />
+                <Quote class="text-primary-500 mb-4 size-8" />
 
                 <!-- Rating -->
                 <div class="mb-4 flex gap-1">
                   <Star
                     v-for="n in testimonial.rating"
                     :key="`star-${n}`"
-                    class="size-4 fill-yellow-400 text-yellow-400"
+                    class="fill-warning-400 text-warning-400 size-4"
                   />
                 </div>
 

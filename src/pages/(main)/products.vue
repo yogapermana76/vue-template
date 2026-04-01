@@ -112,10 +112,10 @@
       <!-- Load More Trigger -->
       <div ref="loadMoreRef" class="flex justify-center py-4">
         <div v-if="isFetchingNextPage" class="flex items-center gap-2">
-          <Loader2 class="size-5 animate-spin" />
-          <span class="text-muted-foreground text-sm">Loading more...</span>
+          <Loader2 class="text-primary-500 size-5 animate-spin" />
+          <span class="text-sm text-neutral-500">Loading more...</span>
         </div>
-        <p v-else-if="!hasNextPage" class="text-muted-foreground text-sm">You've reached the end</p>
+        <p v-else-if="!hasNextPage" class="text-sm text-neutral-500">You've reached the end</p>
       </div>
     </template>
 
@@ -127,7 +127,12 @@
       description="Try adjusting your search or filter criteria"
     >
       <template #action>
-        <Button variant="outline" @click="handleReset">Clear Filters</Button>
+        <Button
+          variant="outline"
+          class="border-primary-300 text-primary-600 hover:bg-primary-50"
+          @click="handleReset"
+          >Clear Filters</Button
+        >
       </template>
     </EmptyState>
   </div>

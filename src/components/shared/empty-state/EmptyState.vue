@@ -14,10 +14,10 @@
 
 <template>
   <div :class="cn('py-12 text-center', props.class)">
-    <component v-if="icon" :is="icon" class="text-muted-foreground mx-auto mb-4 size-12" />
+    <component v-if="icon" :is="icon" class="text-primary-400 mx-auto mb-4 size-12" />
     <slot v-else name="icon" />
-    <h3 class="text-lg font-semibold">{{ title }}</h3>
-    <p v-if="description" class="text-muted-foreground mt-1">
+    <h3 class="text-lg font-semibold text-neutral-800">{{ title }}</h3>
+    <p v-if="description" class="mt-1 text-neutral-500">
       {{ description }}
     </p>
     <slot name="description" />

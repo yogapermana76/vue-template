@@ -9,7 +9,7 @@
 </script>
 
 <template>
-  <div class="bg-muted relative aspect-square w-full overflow-hidden">
+  <div class="relative aspect-square w-full overflow-hidden bg-neutral-100">
     <img :src="product.image" :alt="product.title" class="size-full object-cover" />
   </div>
 </template>

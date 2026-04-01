@@ -54,7 +54,7 @@
 <template>
   <div
     ref="tabBarRef"
-    :class="cn('relative flex w-full shrink-0 border-b border-gray-200 bg-white', props.class)"
+    :class="cn('border-border bg-background relative flex w-full shrink-0 border-b', props.class)"
     data-slot="swipeable-tab-bar"
   >
     <button
@@ -66,8 +66,8 @@
         cn(
           'relative flex-1 px-4 py-3 text-center text-sm font-medium transition-colors',
           context.activeTab.value === tab.key
-            ? 'text-primary'
-            : 'text-muted-foreground hover:text-foreground',
+            ? 'text-primary-600 font-semibold'
+            : 'text-neutral-400 hover:text-neutral-600',
         )
       "
       @click="handleTabClick(tab.key)"
@@ -83,7 +83,7 @@
     <div
       :class="
         cn(
-          'bg-primary absolute bottom-0 h-1 rounded-t-full',
+          'bg-primary-500 absolute bottom-0 h-1 rounded-t-full',
           !context.isDragging.value && 'transition-all duration-300 ease-out',
           props.indicatorClass,
         )

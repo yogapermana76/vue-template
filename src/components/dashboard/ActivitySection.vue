@@ -21,10 +21,10 @@
 </script>
 
 <template>
-  <Card>
+  <Card class="hover:border-primary-200 border-neutral-200 transition-colors">
     <CardHeader class="p-3 pb-2">
-      <CardTitle class="text-sm">{{ title }}</CardTitle>
-      <CardDescription class="text-xs">{{ description }}</CardDescription>
+      <CardTitle class="text-sm text-neutral-800">{{ title }}</CardTitle>
+      <CardDescription class="text-xs text-neutral-500">{{ description }}</CardDescription>
     </CardHeader>
     <CardContent class="p-3 pt-0">
       <div class="space-y-3">

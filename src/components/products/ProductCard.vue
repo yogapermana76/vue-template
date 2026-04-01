@@ -17,9 +17,9 @@
 </script>
 
 <template>
-  <Card class="overflow-hidden transition-shadow hover:shadow-lg">
+  <Card class="hover:border-primary-300 overflow-hidden transition-shadow hover:shadow-lg">
     <RouterLink :to="`/products/${product.id}`">
-      <CardHeader class="bg-muted p-0">
+      <CardHeader class="bg-neutral-100 p-0">
         <img
           :src="product.image"
           :alt="product.title"
@@ -34,8 +34,10 @@
           {{ product.title }}
         </CardTitle>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-bold">{{ formatCurrency(product.price, 'USD') }}</span>
-          <div class="text-muted-foreground flex items-center text-xs">
+          <span class="text-primary-600 text-sm font-bold">{{
+            formatCurrency(product.price, 'USD')
+          }}</span>
+          <div class="text-warning-600 flex items-center text-xs font-medium">
             <span>{{ product.rating.rate.toFixed(1) }}</span>
           </div>
         </div>

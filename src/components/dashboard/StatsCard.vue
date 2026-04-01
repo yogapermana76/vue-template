@@ -13,17 +13,17 @@
 </script>
 
 <template>
-  <Card>
+  <Card class="border-primary-100 hover:border-primary-200 transition-colors">
     <CardHeader class="p-3 pb-1">
       <div class="flex items-center justify-between">
-        <CardTitle class="text-xs font-medium">{{ title }}</CardTitle>
-        <component v-if="icon" :is="icon" class="text-muted-foreground size-3.5" />
+        <CardTitle class="text-xs font-medium text-neutral-600">{{ title }}</CardTitle>
+        <component v-if="icon" :is="icon" class="text-primary-400 size-3.5" />
       </div>
     </CardHeader>
     <CardContent class="p-3 pt-0">
-      <div class="text-lg leading-none font-bold">{{ value }}</div>
+      <div class="text-primary-700 text-lg leading-none font-bold">{{ value }}</div>
       <p v-if="change" class="text-muted-foreground mt-1 text-[10px]">
-        <span class="text-green-500">{{ change }}</span>
+        <span class="text-success-600 font-medium">{{ change }}</span>
       </p>
       <slot />
     </CardContent>

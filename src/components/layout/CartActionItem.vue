@@ -21,7 +21,7 @@
     <!-- Badge (count) -->
     <span
       v-if="showBadge"
-      class="animate-in zoom-in-75 pointer-events-none absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white duration-200"
+      class="animate-in zoom-in-75 bg-error-500 pointer-events-none absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full text-[10px] font-bold text-white duration-200"
     >
       {{ cartStore.cartCount > 99 ? '99+' : cartStore.cartCount }}
     </span>

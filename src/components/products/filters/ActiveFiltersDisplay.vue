@@ -28,20 +28,20 @@
     <Badge
       v-if="category"
       variant="secondary"
-      class="flex shrink-0 cursor-pointer items-center gap-1"
+      class="bg-primary-100 text-primary-700 border-primary-200 flex shrink-0 cursor-pointer items-center gap-1"
     >
       {{ category }}
-      <button class="ml-0.5 hover:opacity-70" @click="emit('update:category', '')">✕</button>
+      <button class="hover:text-primary-900 ml-0.5" @click="emit('update:category', '')">✕</button>
     </Badge>
 
     <!-- Active Sort Badge -->
     <Badge
       v-if="sort === 'desc'"
       variant="secondary"
-      class="flex shrink-0 cursor-pointer items-center gap-1"
+      class="bg-secondary-100 text-secondary-700 border-secondary-200 flex shrink-0 cursor-pointer items-center gap-1"
     >
       High to Low
-      <button class="ml-0.5 hover:opacity-70" @click="emit('update:sort', 'asc')">✕</button>
+      <button class="hover:text-secondary-900 ml-0.5" @click="emit('update:sort', 'asc')">✕</button>
     </Badge>
   </div>
 </template>

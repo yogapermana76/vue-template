@@ -4,29 +4,29 @@
   import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
   const stats = [
-    { label: 'Sales', value: 75, color: 'bg-blue-500' },
-    { label: 'Revenue', value: 60, color: 'bg-green-500' },
-    { label: 'Customers', value: 90, color: 'bg-purple-500' },
+    { label: 'Sales', value: 75, color: 'bg-primary-500' },
+    { label: 'Revenue', value: 60, color: 'bg-secondary-500' },
+    { label: 'Customers', value: 90, color: 'bg-success-500' },
   ]
 
   const quickActions = [
     {
       icon: Plus,
       label: 'Add',
-      bgColor: 'bg-blue-50 hover:bg-blue-100',
-      textColor: 'text-blue-600',
+      bgColor: 'bg-primary-100 hover:bg-primary-200',
+      textColor: 'text-primary-700',
     },
     {
       icon: Upload,
       label: 'Export',
-      bgColor: 'bg-green-50 hover:bg-green-100',
-      textColor: 'text-green-600',
+      bgColor: 'bg-secondary-100 hover:bg-secondary-200',
+      textColor: 'text-secondary-700',
     },
     {
       icon: Settings,
       label: 'Settings',
-      bgColor: 'bg-purple-50 hover:bg-purple-100',
-      textColor: 'text-purple-600',
+      bgColor: 'bg-neutral-100 hover:bg-neutral-200',
+      textColor: 'text-neutral-700',
     },
   ]
 </script>
@@ -62,9 +62,9 @@
       </CardHeader>
       <CardContent>
         <div
-          class="from-muted/50 to-muted flex h-40 items-center justify-center rounded-lg bg-linear-to-br"
+          class="from-primary-50 to-secondary-50 flex h-40 items-center justify-center rounded-lg bg-linear-to-br"
         >
-          <div class="text-muted-foreground text-center">
+          <div class="text-primary-600 text-center">
             <TrendingUp class="mx-auto mb-2 size-12" :stroke-width="1" />
             <span class="text-sm">Chart visualization</span>
           </div>

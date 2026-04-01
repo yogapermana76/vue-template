@@ -27,12 +27,12 @@
 <template>
   <div :class="cn('relative', props.class)">
     <Search
-      class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+      class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-400"
     />
     <Input
       type="search"
       :placeholder="placeholder"
-      class="pl-10"
+      class="focus:border-primary-400 focus:ring-primary-400 border-neutral-200 pl-10"
       :model-value="modelValue"
       @input="handleInput"
     />

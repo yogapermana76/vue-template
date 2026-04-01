@@ -24,9 +24,9 @@
         v-for="item in navigation"
         :key="item.name"
         :to="item.to"
-        class="text-muted-foreground flex h-full flex-1 flex-col items-center justify-center gap-1 transition-colors"
-        active-class="!text-primary"
-        exact-active-class="!text-primary"
+        class="flex h-full flex-1 flex-col items-center justify-center gap-1 text-neutral-400 transition-colors"
+        active-class="!text-primary-500 font-semibold"
+        exact-active-class="!text-primary-500 font-semibold"
       >
         <component :is="item.icon" class="size-5" />
         <span class="text-xs font-medium">{{ item.name }}</span>

@@ -116,7 +116,7 @@
         <ProductInfo :product="product" />
 
         <!-- Divider -->
-        <div class="my-3 border-t" />
+        <div class="my-3 border-t border-neutral-200" />
 
         <!-- Product Description -->
         <ProductDescription :product="product" />

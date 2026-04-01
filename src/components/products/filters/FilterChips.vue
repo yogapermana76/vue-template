@@ -51,26 +51,32 @@
       <Badge
         as="button"
         variant="outline"
-        class="hover:bg-accent cursor-pointer"
+        class="hover:bg-primary-50 hover:border-primary-300 cursor-pointer border-neutral-200"
         @click="emit('open:category')"
       >
-        <span class="font-medium">Category:</span>
-        <span class="text-muted-foreground ml-1">{{ categoryLabel }}</span>
+        <span class="text-primary-700 font-medium">Category:</span>
+        <span class="ml-1 text-neutral-600">{{ categoryLabel }}</span>
       </Badge>
 
       <!-- Sort Filter Chip -->
       <Badge
         as="button"
         variant="outline"
-        class="hover:bg-accent cursor-pointer"
+        class="hover:bg-secondary-50 hover:border-secondary-300 cursor-pointer border-neutral-200"
         @click="emit('open:sort')"
       >
-        <span class="font-medium">Sort:</span>
-        <span class="text-muted-foreground ml-1">{{ sortLabel }}</span>
+        <span class="text-secondary-700 font-medium">Sort:</span>
+        <span class="ml-1 text-neutral-600">{{ sortLabel }}</span>
       </Badge>
 
       <!-- Reset Button -->
-      <Button v-if="hasActiveFilters" variant="ghost" size="sm" @click="emit('reset')">
+      <Button
+        v-if="hasActiveFilters"
+        variant="ghost"
+        size="sm"
+        class="text-error-600 hover:bg-error-50 hover:text-error-700"
+        @click="emit('reset')"
+      >
         Reset
       </Button>
     </div>

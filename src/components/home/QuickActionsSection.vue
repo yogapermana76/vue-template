@@ -41,8 +41,8 @@
 <template>
   <section class="py-12">
     <div class="mb-8 px-4 text-center">
-      <h2 class="mb-4 text-2xl font-bold tracking-tight">Quick Actions</h2>
-      <p class="text-muted-foreground mx-auto max-w-2xl text-lg">
+      <h2 class="mb-4 text-2xl font-bold tracking-tight text-neutral-900">Quick Actions</h2>
+      <p class="mx-auto max-w-2xl text-lg text-neutral-600">
         Jump right into the features and explore what's available.
       </p>
     </div>
@@ -50,13 +50,18 @@
     <!-- 2 columns grid -->
     <div class="grid grid-cols-2 gap-3 px-4">
       <RouterLink v-for="action in actions" :key="action.title" :to="action.to" class="group">
-        <Card class="h-full transition-all duration-300">
+        <Card class="hover:border-primary-300 h-full transition-all duration-300 hover:shadow-md">
           <CardHeader class="p-3">
-            <div class="bg-primary/10 mb-2 flex size-9 items-center justify-center rounded-lg">
-              <component :is="action.icon" class="text-primary size-4" />
+            <div
+              class="bg-primary-100 group-hover:bg-primary-500 mb-2 flex size-9 items-center justify-center rounded-lg transition-colors"
+            >
+              <component
+                :is="action.icon"
+                class="text-primary-600 size-4 transition-colors group-hover:text-white"
+              />
             </div>
-            <CardTitle class="text-sm leading-tight">{{ action.title }}</CardTitle>
-            <CardDescription class="text-xs leading-tight">
+            <CardTitle class="text-sm leading-tight text-neutral-800">{{ action.title }}</CardTitle>
+            <CardDescription class="text-xs leading-tight text-neutral-500">
               {{ action.description }}
             </CardDescription>
           </CardHeader>

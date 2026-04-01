@@ -73,10 +73,10 @@
 </script>
 
 <template>
-  <section class="py-8">
+  <section class="bg-primary-50/50 py-8">
     <!-- Section Header -->
     <div class="mb-4 px-4">
-      <h2 class="text-xl font-bold">{{ props.title }}</h2>
+      <h2 class="text-xl font-bold text-neutral-900">{{ props.title }}</h2>
     </div>
 
     <!-- Carousel -->

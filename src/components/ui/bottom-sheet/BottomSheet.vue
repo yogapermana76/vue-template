@@ -82,7 +82,7 @@
   const footerClasses = computed(() => {
     return [
       props.footerClass,
-      'shrink-0 px-4 py-3 border-t',
+      'shrink-0 px-4 py-3 border-t border-neutral-200',
       FOOTER_POSITION_CLASSES[props.footerPosition],
     ]
   })
@@ -103,8 +103,8 @@
             </DrawerDescription>
           </div>
           <DrawerClose v-if="showClose" as-child>
-            <button class="hover:bg-accent shrink-0 rounded-lg p-1">
-              <X class="size-5" />
+            <button class="shrink-0 rounded-lg p-1 hover:bg-neutral-100">
+              <X class="size-5 text-neutral-500" />
             </button>
           </DrawerClose>
         </DrawerHeader>

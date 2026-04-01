@@ -30,13 +30,18 @@
     </ol>
 
     <div class="mt-4 flex gap-2">
-      <Button variant="default"> Daftar Sekarang </Button>
-      <Button variant="outline"> Lihat Tutorial </Button>
+      <Button class="bg-primary-500 hover:bg-primary-600 text-white"> Daftar Sekarang </Button>
+      <Button
+        variant="outline"
+        class="border-secondary-300 text-secondary-600 hover:bg-secondary-50"
+      >
+        Lihat Tutorial
+      </Button>
     </div>
 
-    <Alert variant="default" class="mt-4 border-blue-200 bg-blue-50">
-      <AlertTitle class="text-blue-900">💡 Tips:</AlertTitle>
-      <AlertDescription class="text-blue-700">
+    <Alert variant="default" class="border-primary-200 bg-primary-50 mt-4">
+      <AlertTitle class="text-primary-800">💡 Tips:</AlertTitle>
+      <AlertDescription class="text-primary-700">
         Proses registrasi hanya membutuhkan waktu kurang dari 2 menit. Kami akan memandu Anda di
         setiap langkah!
       </AlertDescription>

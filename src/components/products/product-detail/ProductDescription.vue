@@ -11,7 +11,7 @@
 <template>
   <div class="flex flex-1 flex-col px-4">
     <!-- Description -->
-    <p class="text-muted-foreground text-sm leading-relaxed">
+    <p class="text-sm leading-relaxed text-neutral-600">
       {{ product.description }}
     </p>
   </div>

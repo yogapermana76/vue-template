@@ -58,11 +58,13 @@
 </script>
 
 <template>
-  <div class="bg-background flex min-h-screen items-center justify-center px-4">
+  <div
+    class="from-primary-50 via-background to-secondary-50 flex min-h-screen items-center justify-center bg-linear-to-br px-4"
+  >
     <div class="w-full max-w-md">
-      <Card>
+      <Card class="border-primary-200">
         <CardHeader class="text-center">
-          <CardTitle class="text-2xl">Welcome back</CardTitle>
+          <CardTitle class="text-primary-700 text-2xl">Welcome back</CardTitle>
           <CardDescription> Enter your credentials to access your account </CardDescription>
         </CardHeader>
         <CardContent>
@@ -103,7 +105,11 @@
               {{ error }}
             </div>
 
-            <Button type="submit" class="w-full" :disabled="isLoading">
+            <Button
+              type="submit"
+              class="bg-primary-500 hover:bg-primary-600 w-full text-white"
+              :disabled="isLoading"
+            >
               <Loader2 v-if="isLoading" class="mr-2 size-4 animate-spin" />
               Sign In
             </Button>

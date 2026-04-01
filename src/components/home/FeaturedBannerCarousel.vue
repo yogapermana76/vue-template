@@ -87,12 +87,12 @@
                 {{ slide.title }}
               </h2>
 
-              <p class="mb-4 max-w-md text-sm text-gray-200">
+              <p class="mb-4 max-w-md text-sm text-neutral-200">
                 {{ slide.description }}
               </p>
 
               <div>
-                <Button class="bg-white text-black hover:bg-gray-200">
+                <Button class="bg-white text-neutral-950 hover:bg-neutral-100">
                   {{ slide.cta || 'Learn More' }}
                 </Button>
               </div>

@@ -3,8 +3,8 @@
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
   const stats = [
-    { label: 'Total Orders', value: '128', color: 'text-blue-600' },
-    { label: 'Revenue', value: '$2,450', color: 'text-green-600' },
+    { label: 'Total Orders', value: '128', color: 'text-primary-600' },
+    { label: 'Revenue', value: '$2,450', color: 'text-secondary-600' },
   ]
 
   const activities = [
@@ -12,15 +12,15 @@
       icon: ShoppingBag,
       title: 'New order received',
       time: '2 minutes ago',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
+      iconBg: 'bg-primary-100',
+      iconColor: 'text-primary-600',
     },
     {
       icon: CircleCheck,
       title: 'Payment confirmed',
       time: '15 minutes ago',
-      iconBg: 'bg-green-100',
-      iconColor: 'text-green-600',
+      iconBg: 'bg-success-100',
+      iconColor: 'text-success-600',
     },
   ]
 </script>
@@ -28,10 +28,10 @@
 <template>
   <div class="space-y-4">
     <!-- Welcome Card -->
-    <Card class="border-0 bg-linear-to-r from-blue-500 to-blue-600 text-white">
+    <Card class="from-primary-500 to-secondary-500 border-0 bg-linear-to-r text-white">
       <CardHeader>
         <CardTitle class="text-2xl text-white">Welcome Back!</CardTitle>
-        <CardDescription class="text-blue-100">
+        <CardDescription class="text-white/80">
           Explore our latest features and updates
         </CardDescription>
       </CardHeader>

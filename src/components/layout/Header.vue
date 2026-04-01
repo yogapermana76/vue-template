@@ -51,10 +51,10 @@
 
       <!-- Title Section -->
       <div class="min-w-0 flex-1">
-        <h1 v-if="title" class="truncate text-lg font-semibold">
+        <h1 v-if="title" class="text-primary-800 truncate text-lg font-semibold">
           {{ title }}
         </h1>
-        <p v-if="subtitle" class="text-muted-foreground truncate text-xs">
+        <p v-if="subtitle" class="truncate text-xs text-neutral-500">
           {{ subtitle }}
         </p>
       </div>

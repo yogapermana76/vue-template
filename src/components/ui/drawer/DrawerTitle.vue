@@ -14,7 +14,7 @@
   <DrawerTitle
     data-slot="drawer-title"
     v-bind="delegatedProps"
-    :class="cn('text-foreground font-semibold', props.class)"
+    :class="cn('font-semibold text-neutral-900', props.class)"
   >
     <slot />
   </DrawerTitle>

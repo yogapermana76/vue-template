@@ -42,14 +42,24 @@
     <div class="space-y-2">
       <Button
         :variant="sort === 'asc' ? 'default' : 'outline'"
-        class="w-full justify-start"
+        :class="[
+          'w-full justify-start',
+          sort === 'asc'
+            ? 'bg-primary-500 hover:bg-primary-600 text-white'
+            : 'hover:border-primary-300 hover:bg-primary-50 border-neutral-300 text-neutral-700',
+        ]"
         @click="handleSelectSort('asc')"
       >
         Low to High
       </Button>
       <Button
         :variant="sort === 'desc' ? 'default' : 'outline'"
-        class="w-full justify-start"
+        :class="[
+          'w-full justify-start',
+          sort === 'desc'
+            ? 'bg-primary-500 hover:bg-primary-600 text-white'
+            : 'hover:border-primary-300 hover:bg-primary-50 border-neutral-300 text-neutral-700',
+        ]"
         @click="handleSelectSort('desc')"
       >
         High to Low

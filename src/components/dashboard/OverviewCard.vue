@@ -11,13 +11,13 @@
 </script>
 
 <template>
-  <Card>
+  <Card class="hover:border-primary-200 border-neutral-200 transition-colors">
     <CardHeader class="p-3 pb-2">
-      <CardTitle class="text-sm">{{ title }}</CardTitle>
+      <CardTitle class="text-sm text-neutral-800">{{ title }}</CardTitle>
     </CardHeader>
     <CardContent class="p-3 pt-0">
       <div
-        class="text-muted-foreground flex h-32 items-center justify-center rounded-lg border border-dashed text-xs"
+        class="border-primary-200 bg-primary-50/50 flex h-32 items-center justify-center rounded-lg border border-dashed text-xs text-neutral-400"
       >
         <slot>Chart placeholder</slot>
       </div>

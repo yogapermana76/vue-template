@@ -58,13 +58,13 @@
 </script>
 
 <template>
-  <section class="py-12">
+  <section class="bg-secondary-50 py-12">
     <!-- Section header -->
     <div class="mb-8 px-4 text-center">
-      <h2 class="mb-4 text-2xl font-bold tracking-tight">
+      <h2 class="mb-4 text-2xl font-bold tracking-tight text-neutral-900">
         {{ title }}
       </h2>
-      <p class="text-muted-foreground mx-auto max-w-2xl text-lg">
+      <p class="mx-auto max-w-2xl text-lg text-neutral-600">
         {{ subtitle }}
       </p>
     </div>
@@ -74,14 +74,14 @@
       <Card
         v-for="feature in features"
         :key="feature.title"
-        class="group w-64 min-w-64 shrink-0 transition-all duration-300"
+        class="group hover:border-primary-300 w-64 min-w-64 shrink-0 transition-all duration-300"
       >
         <CardHeader class="p-4">
-          <div class="bg-primary/10 mb-3 flex size-10 items-center justify-center rounded-lg">
-            <component :is="feature.icon" class="text-primary size-5" />
+          <div class="bg-primary-100 mb-3 flex size-10 items-center justify-center rounded-lg">
+            <component :is="feature.icon" class="text-primary-600 size-5" />
           </div>
-          <CardTitle class="text-base">{{ feature.title }}</CardTitle>
-          <CardDescription class="text-sm">
+          <CardTitle class="text-base text-neutral-900">{{ feature.title }}</CardTitle>
+          <CardDescription class="text-sm text-neutral-500">
             {{ feature.description }}
           </CardDescription>
         </CardHeader>

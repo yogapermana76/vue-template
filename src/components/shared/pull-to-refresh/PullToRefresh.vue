@@ -30,9 +30,11 @@
     class="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center"
     :style="indicatorStyle"
   >
-    <div class="bg-background flex size-10 items-center justify-center rounded-full shadow-lg">
-      <Loader2 v-if="isRefreshing" class="text-primary size-5 animate-spin" />
-      <div v-else class="text-primary transition-transform" :style="iconRotation">
+    <div
+      class="border-primary-200 flex size-10 items-center justify-center rounded-full border bg-white shadow-lg"
+    >
+      <Loader2 v-if="isRefreshing" class="text-primary-500 size-5 animate-spin" />
+      <div v-else class="text-primary-500 transition-transform" :style="iconRotation">
         <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 5v14M5 12l7-7 7 7" />
         </svg>

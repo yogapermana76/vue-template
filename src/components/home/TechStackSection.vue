@@ -34,19 +34,19 @@
   ]
 
   const categoryColors = {
-    core: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
-    ui: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
-    tools: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20',
+    core: 'bg-primary-100 text-primary-700 dark:text-primary-400 border-primary-300',
+    ui: 'bg-secondary-100 text-secondary-700 dark:text-secondary-400 border-secondary-300',
+    tools: 'bg-success-100 text-success-700 dark:text-success-400 border-success-300',
   }
 </script>
 
 <template>
-  <section class="bg-muted/30 px-4 py-12">
+  <section class="bg-primary-50 px-4 py-12">
     <div class="mb-8 text-center">
-      <h2 class="mb-4 text-2xl font-bold tracking-tight">
+      <h2 class="text-primary-900 mb-4 text-2xl font-bold tracking-tight">
         {{ title }}
       </h2>
-      <p class="text-muted-foreground mx-auto max-w-2xl text-lg">
+      <p class="text-primary-600 mx-auto max-w-2xl text-lg">
         {{ subtitle }}
       </p>
     </div>
@@ -54,15 +54,15 @@
     <!-- Category legend -->
     <div class="mb-8 flex flex-wrap items-center justify-center gap-4">
       <div class="flex items-center gap-2">
-        <span class="size-3 rounded-full bg-blue-500" />
+        <span class="bg-primary-500 size-3 rounded-full" />
         <span class="text-muted-foreground text-sm">Core</span>
       </div>
       <div class="flex items-center gap-2">
-        <span class="size-3 rounded-full bg-purple-500" />
+        <span class="bg-secondary-500 size-3 rounded-full" />
         <span class="text-muted-foreground text-sm">UI</span>
       </div>
       <div class="flex items-center gap-2">
-        <span class="size-3 rounded-full bg-green-500" />
+        <span class="bg-success-500 size-3 rounded-full" />
         <span class="text-muted-foreground text-sm">Tools</span>
       </div>
     </div>
