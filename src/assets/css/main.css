@@ -331,15 +331,16 @@
   --color-ring: var(--ring);
 
   /* Border radius */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xs: var(--radius); /* 8px */
+  --radius-sm: calc(var(--radius) + 0.25rem); /* 12px */
+  --radius-md: calc(var(--radius) + 0.5rem); /* 16px */
+  --radius-xl: calc(var(--radius) * 6); /* 48px */
+  --radius-full: calc(var(--radius) * 12); /* 96px */
 }
 
 /* Light theme */
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
 
   /* Core colors - using design system */
   --background: #ffffff;
