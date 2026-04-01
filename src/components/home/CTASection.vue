@@ -61,7 +61,7 @@
               </RouterLink>
             </Button>
             <Button
-              variant="outline"
+              variant="secondary"
               size="lg"
               class="border-secondary-400 text-secondary-600 hover:bg-secondary-50 min-w-40"
               as-child

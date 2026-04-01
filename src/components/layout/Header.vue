@@ -45,8 +45,15 @@
   >
     <div class="flex h-14 items-center gap-3 px-4">
       <!-- Back Button -->
-      <Button v-if="showBack" variant="ghost" size="icon" class="-ml-2" @click="handleBack">
-        <ArrowLeft class="size-5" />
+      <Button
+        v-if="showBack"
+        variant="tertiary"
+        size="md"
+        layout="iconOnly"
+        class="-ml-2"
+        @click="handleBack"
+      >
+        <ArrowLeft class="size-4" />
       </Button>
 
       <!-- Title Section -->
@@ -72,12 +79,13 @@
         <!-- Theme Toggle -->
         <Button
           v-if="!hideThemeToggle"
-          variant="ghost"
-          size="icon"
+          variant="tertiary"
+          size="md"
+          layout="iconOnly"
           @click="themeStore.toggleDark()"
         >
-          <Sun v-if="themeStore.isDark" class="size-5" />
-          <Moon v-else class="size-5" />
+          <Sun v-if="themeStore.isDark" class="size-4" />
+          <Moon v-else class="size-4" />
           <span class="sr-only">Toggle theme</span>
         </Button>
       </div>

@@ -21,8 +21,9 @@
 
 <template>
   <Button
-    variant="outline"
-    size="icon"
+    variant="secondary"
+    size="md"
+    layout="iconOnly"
     :disabled="disabled"
     :class="['absolute left-2 z-10 -translate-y-1/2 rounded-full', props.positionClass]"
     @click="emit('click')"

@@ -92,7 +92,10 @@
               </p>
 
               <div>
-                <Button class="bg-white text-neutral-950 hover:bg-neutral-100">
+                <Button
+                  size="lg"
+                  class="bg-white text-neutral-950 hover:bg-neutral-100 active:bg-neutral-200 disabled:bg-neutral-100 disabled:text-neutral-400"
+                >
                   {{ slide.cta || 'Learn More' }}
                 </Button>
               </div>

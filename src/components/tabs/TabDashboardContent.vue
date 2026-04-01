@@ -82,7 +82,7 @@
           <Button
             v-for="action in quickActions"
             :key="action.label"
-            variant="ghost"
+            variant="tertiary"
             class="h-auto flex-col gap-2 p-3"
             :class="[action.bgColor, action.textColor]"
           >

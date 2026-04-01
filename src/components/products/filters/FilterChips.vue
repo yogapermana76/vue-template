@@ -72,7 +72,7 @@
       <!-- Reset Button -->
       <Button
         v-if="hasActiveFilters"
-        variant="ghost"
+        variant="tertiary"
         size="sm"
         class="text-error-600 hover:bg-error-50 hover:text-error-700"
         @click="emit('reset')"

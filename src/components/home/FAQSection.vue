@@ -92,11 +92,9 @@
       <!-- Support CTA -->
       <div v-if="showCTA" class="mt-12 text-center">
         <p class="text-muted-foreground mb-4">Tidak menemukan jawaban yang Anda cari?</p>
-        <Button as-child>
-          <a :href="`mailto:${supportEmail}`" class="flex items-center gap-2">
-            <Mail class="h-4 w-4" />
-            Hubungi Dukungan
-          </a>
+        <Button as="a" :href="`mailto:${supportEmail}`" variant="primary" size="lg">
+          <Mail class="size-5" />
+          Hubungi Dukungan
         </Button>
       </div>
     </div>

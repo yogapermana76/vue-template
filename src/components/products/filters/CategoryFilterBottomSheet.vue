@@ -45,13 +45,9 @@
       <Button
         v-for="cat in ['All', ...categories]"
         :key="cat"
-        :variant="(cat === 'All' && !category) || cat === category ? 'default' : 'outline'"
-        :class="[
-          'w-full justify-start',
-          (cat === 'All' && !category) || cat === category
-            ? 'bg-primary-500 hover:bg-primary-600 text-white'
-            : 'hover:border-primary-300 hover:bg-primary-50 border-neutral-300 text-neutral-700',
-        ]"
+        :variant="(cat === 'All' && !category) || cat === category ? 'primary' : 'secondary'"
+        size="md"
+        :class="['w-full justify-start']"
         @click="handleSelectCategory(cat)"
       >
         {{ cat }}

@@ -30,9 +30,12 @@
     </ol>
 
     <div class="mt-4 flex gap-2">
-      <Button class="bg-primary-500 hover:bg-primary-600 text-white"> Daftar Sekarang </Button>
+      <Button variant="primary" size="lg" class="bg-primary-500 hover:bg-primary-600 text-white">
+        Daftar Sekarang
+      </Button>
       <Button
-        variant="outline"
+        variant="secondary"
+        size="lg"
         class="border-secondary-300 text-secondary-600 hover:bg-secondary-50"
       >
         Lihat Tutorial

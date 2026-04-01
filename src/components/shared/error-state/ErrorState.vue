@@ -29,7 +29,7 @@
     <slot name="description" />
     <div class="mt-4 flex justify-center gap-4">
       <Button
-        variant="outline"
+        variant="secondary"
         class="border-primary-300 text-primary-600 hover:bg-primary-50"
         @click="emit('retry')"
       >

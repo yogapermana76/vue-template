@@ -14,16 +14,14 @@
   <Footer position="fixed">
     <div class="flex gap-2 p-4">
       <Button
-        variant="outline"
+        variant="secondary"
+        size="md"
         class="flex-1 border-neutral-300 text-neutral-700 hover:bg-neutral-100"
         @click="props.onCancel"
       >
         Cancel
       </Button>
-      <Button
-        class="bg-primary-500 hover:bg-primary-600 flex-1 text-white"
-        @click="props.onAddToCart"
-      >
+      <Button variant="primary" size="md" class="flex-1" @click="props.onAddToCart">
         <ShoppingCart class="mr-2 size-4" />
         Add to Cart
       </Button>

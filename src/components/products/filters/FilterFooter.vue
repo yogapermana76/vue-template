@@ -17,13 +17,18 @@
 <template>
   <div class="flex gap-2">
     <Button
-      variant="outline"
+      variant="secondary"
       class="flex-1 border-neutral-300 text-neutral-600 hover:bg-neutral-50"
       @click="onCancel"
     >
       Cancel
     </Button>
-    <Button class="bg-primary-500 hover:bg-primary-600 flex-1 text-white" @click="emit('apply')">
+    <Button
+      variant="primary"
+      size="md"
+      class="bg-primary-500 hover:bg-primary-600 flex-1 text-white"
+      @click="emit('apply')"
+    >
       Apply
     </Button>
   </div>

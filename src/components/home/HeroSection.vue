@@ -49,17 +49,13 @@
 
       <!-- CTA Buttons -->
       <div class="flex flex-col gap-3 pt-4">
-        <Button as-child size="lg" class="bg-primary-500 hover:bg-primary-600 min-w-40 text-white">
+        <Button variant="primary" size="lg" as-child class="min-w-40">
           <RouterLink to="/products">
             Get Started
             <ArrowRight class="ml-2 size-4" />
           </RouterLink>
         </Button>
-        <Button
-          size="lg"
-          class="bg-secondary-500 hover:bg-secondary-600 min-w-40 text-white"
-          as-child
-        >
+        <Button variant="secondary" size="lg" as-child class="min-w-40">
           <a href="https://github.com" target="_blank" rel="noopener noreferrer">
             <Github class="mr-2 size-4" />
             View on GitHub
