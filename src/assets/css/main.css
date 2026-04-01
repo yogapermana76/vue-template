@@ -1,3 +1,11 @@
+/* Figtree - Optimized local font loading with all weights */
+@import '@fontsource/figtree/300.css';
+@import '@fontsource/figtree/400.css';
+@import '@fontsource/figtree/500.css';
+@import '@fontsource/figtree/600.css';
+@import '@fontsource/figtree/700.css';
+@import '@fontsource/figtree/800.css';
+
 @import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
@@ -19,6 +27,43 @@
    ============================================ */
 
 @theme inline {
+  /* ==========================================
+     FONT FAMILY & WEIGHTS
+     ========================================== */
+  --font-family-sans:
+    'Figtree', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-family-base:
+    'Figtree', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+
+  /* Font weight scale for Figtree */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Font size scale */
+  --font-size-xxs: 10px;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+
+  /* Line height scale */
+  --line-height-xxxs: 12px;
+  --line-height-xxs: 16px;
+  --line-height-xs: 18px;
+  --line-height-sm: 20px;
+  --line-height-md: 24px;
+  --line-height-lg: 28px;
+  --line-height-xl: 32px;
+  --line-height-xxl: 36px;
+
   /* ==========================================
      PRIMITIVE COLORS
      ========================================== */
@@ -456,7 +501,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 
   html {
@@ -480,6 +525,73 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* ============================================
+   TYPOGRAPHY COMPONENTS
+   ============================================ */
+@layer components {
+  /* Heading styles - All SemiBold/600 weight */
+  .heading-2xl {
+    @apply leading-xxl text-2xl font-semibold;
+  }
+
+  .heading-xl {
+    @apply leading-xl text-xl font-semibold;
+  }
+
+  .heading-lg {
+    @apply leading-lg text-lg font-semibold;
+  }
+
+  /* Body styles - With Regular (400), Medium (500), SemiBold (600) variants */
+  .body-md {
+    @apply text-md leading-md font-normal;
+  }
+
+  .body-md-medium {
+    @apply text-md leading-md font-medium;
+  }
+
+  .body-md-semibold {
+    @apply text-md leading-md font-semibold;
+  }
+
+  .body-sm {
+    @apply leading-sm text-sm font-normal;
+  }
+
+  .body-sm-medium {
+    @apply leading-sm text-sm font-medium;
+  }
+
+  .body-sm-semibold {
+    @apply leading-sm text-sm font-semibold;
+  }
+
+  .body-xs {
+    @apply leading-xs text-xs font-normal;
+  }
+
+  .body-xs-medium {
+    @apply leading-xs text-xs font-medium;
+  }
+
+  .body-xs-semibold {
+    @apply leading-xs text-xs font-semibold;
+  }
+
+  .body-xxs {
+    @apply text-xxs leading-xxs font-normal;
+  }
+
+  .body-xxs-medium {
+    @apply text-xxs leading-xxs font-medium;
+  }
+
+  .body-xxs-semibold {
+    @apply text-xxs leading-xxs font-semibold;
   }
 }
 
