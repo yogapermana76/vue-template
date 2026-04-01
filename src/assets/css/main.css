@@ -11,25 +11,18 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================
-   DESIGN SYSTEM - TAILWIND V4
+   Design System
    ============================================
 
-   Structure:
-   1. Primitive Colors - Raw color palette (slate, blue, teal, etc.)
-   2. Semantic Colors - Purpose-based aliases (primary, success, error, etc.)
-   3. Component Tokens - UI component colors (shadcn-vue compatible)
-
-   Usage:
-   - Primitives: bg-slate-500, text-blue-700, border-red-300
-   - Semantics: bg-primary-500, text-success-600, border-error-400
-   - Components: bg-background, text-foreground, border-border
+   Layers:
+   - Primitives: Base colors (slate, blue, teal, etc)
+   - Semantics: Semantic names (primary, error, success)
+   - Components: UI tokens (background, foreground, border)
 
    ============================================ */
 
 @theme inline {
-  /* ==========================================
-     FONT FAMILY & WEIGHTS
-     ========================================== */
+  /* Typography */
   --font-family-sans:
     'Figtree', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
@@ -37,7 +30,7 @@
     'Figtree', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
 
-  /* Font weight scale for Figtree */
+  /* Font weights */
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
@@ -45,28 +38,26 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
-  /* Font size scale */
-  --font-size-xxs: 10px;
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-md: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
+  /* Font sizes */
+  --text-xxs: 0.625rem; /* 10px */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
 
-  /* Line height scale */
-  --line-height-xxxs: 12px;
-  --line-height-xxs: 16px;
-  --line-height-xs: 18px;
-  --line-height-sm: 20px;
-  --line-height-md: 24px;
-  --line-height-lg: 28px;
-  --line-height-xl: 32px;
-  --line-height-xxl: 36px;
+  /* Line heights */
+  --leading-xxxs: 0.75;
+  --leading-xxs: 1;
+  --leading-xs: 1.125;
+  --leading-sm: 1.25;
+  --leading-md: 1.5;
+  --leading-lg: 1.75;
+  --leading-xl: 2;
+  --leading-xxl: 2.25;
 
-  /* ==========================================
-     PRIMITIVE COLORS
-     ========================================== */
+  /* Colors */
 
   /* White & Black */
   --color-white: #ffffff;
@@ -202,12 +193,7 @@
   --color-purple-900: #59168b;
   --color-purple-950: #3c0366;
 
-  /* ==========================================
-     SEMANTIC COLORS (Aliases)
-     ==========================================
-     Maps semantic meaning to primitive colors
-     Usage: bg-primary-500, text-error-600, etc.
-     ========================================== */
+  /* Semantic aliases */
 
   /* Neutral → Slate */
   --color-neutral-50: var(--color-slate-50);
@@ -313,9 +299,7 @@
   --color-info-900: var(--color-sky-900);
   --color-info-950: var(--color-sky-950);
 
-  /* ==========================================
-     COMPONENT TOKENS (shadcn-vue compatible)
-     ========================================== */
+  /* Component tokens */
 
   /* Background & Foreground */
   --color-background: var(--background);
@@ -363,18 +347,14 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* ==========================================
-     BORDER RADIUS
-     ========================================== */
+  /* Border radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ============================================
-   LIGHT MODE THEME (Default)
-   ============================================ */
+/* Light theme */
 :root {
   --radius: 0.625rem;
 
@@ -433,9 +413,7 @@
   --sidebar-ring: #36aeb4;
 }
 
-/* ============================================
-   DARK MODE THEME
-   ============================================ */
+/* Dark theme */
 .dark {
   /* Core colors - using design system */
   --background: #0f172b;
@@ -492,9 +470,7 @@
   --sidebar-ring: #4ebec2;
 }
 
-/* ============================================
-   BASE STYLES
-   ============================================ */
+/* Base styles */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -528,77 +504,125 @@
   }
 }
 
-/* ============================================
-   TYPOGRAPHY COMPONENTS
-   ============================================ */
+/* Typography */
 @layer components {
   /* Heading styles - All SemiBold/600 weight */
   .heading-2xl {
-    @apply leading-xxl text-2xl font-semibold;
+    font-size: var(--text-2xl);
+    line-height: var(--leading-xxl);
+    @apply font-semibold;
   }
 
   .heading-xl {
-    @apply leading-xl text-xl font-semibold;
+    font-size: var(--text-xl);
+    line-height: var(--leading-xl);
+    @apply font-semibold;
   }
 
   .heading-lg {
-    @apply leading-lg text-lg font-semibold;
+    font-size: var(--text-lg);
+    line-height: var(--leading-lg);
+    @apply font-semibold;
   }
 
   /* Body styles - With Regular (400), Medium (500), SemiBold (600) variants */
   .body-md {
-    @apply text-md leading-md font-normal;
+    font-size: var(--text-base);
+    line-height: var(--leading-md);
+    @apply font-normal;
   }
 
   .body-md-medium {
-    @apply text-md leading-md font-medium;
+    font-size: var(--text-base);
+    line-height: var(--leading-md);
+    @apply font-medium;
   }
 
   .body-md-semibold {
-    @apply text-md leading-md font-semibold;
+    font-size: var(--text-base);
+    line-height: var(--leading-md);
+    @apply font-semibold;
   }
 
   .body-sm {
-    @apply leading-sm text-sm font-normal;
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    @apply font-normal;
   }
 
   .body-sm-medium {
-    @apply leading-sm text-sm font-medium;
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    @apply font-medium;
   }
 
   .body-sm-semibold {
-    @apply leading-sm text-sm font-semibold;
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    @apply font-semibold;
   }
 
   .body-xs {
-    @apply leading-xs text-xs font-normal;
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+    @apply font-normal;
   }
 
   .body-xs-medium {
-    @apply leading-xs text-xs font-medium;
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+    @apply font-medium;
   }
 
   .body-xs-semibold {
-    @apply leading-xs text-xs font-semibold;
+    font-size: var(--text-xs);
+    line-height: var(--leading-xs);
+    @apply font-semibold;
   }
 
   .body-xxs {
-    @apply text-xxs leading-xxs font-normal;
+    font-size: var(--text-xxs);
+    line-height: var(--leading-xxs);
+    @apply font-normal;
   }
 
   .body-xxs-medium {
-    @apply text-xxs leading-xxs font-medium;
+    font-size: var(--text-xxs);
+    line-height: var(--leading-xxs);
+    @apply font-medium;
   }
 
   .body-xxs-semibold {
-    @apply text-xxs leading-xxs font-semibold;
+    font-size: var(--text-xxs);
+    line-height: var(--leading-xxs);
+    @apply font-semibold;
   }
 }
 
-/* ============================================
-   CUSTOM UTILITIES
-   ============================================ */
+/* Utilities */
 @layer utilities {
+  .text-xxs {
+    font-size: var(--text-xxs);
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+  }
+  .text-md {
+    font-size: var(--text-base);
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+  }
+
   /* Hide scrollbar */
   .scrollbar-none {
     scrollbar-width: none;
