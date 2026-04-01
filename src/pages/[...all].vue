@@ -31,7 +31,7 @@
           </RouterLink>
         </Button>
         <Button
-          variant="outline"
+          variant="secondary"
           class="border-secondary-300 text-secondary-600 hover:bg-secondary-50"
           @click="$router.back()"
         >
