@@ -49,7 +49,7 @@
   <!-- Header -->
   <DashboardHeader :user-name="user?.name" @logout="handleLogout" />
 
-  <div class="space-y-4 px-4">
+  <div class="space-y-4 px-4 pt-4">
     <!-- Stats Carousel -->
     <StatsCarousel :stats="stats" />
 

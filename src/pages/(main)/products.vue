@@ -81,7 +81,7 @@
   <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
 
   <!-- Content (with padding) -->
-  <div class="space-y-4 px-4">
+  <div class="space-y-4 px-4 pt-4">
     <!-- Filters -->
     <ProductFilters
       v-model:search="filters.search"
