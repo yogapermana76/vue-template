@@ -66,6 +66,7 @@ declare module 'vue' {
     Header: typeof import('./../components/layout/Header.vue')['default']
     HeaderActionItem: typeof import('./../components/layout/HeaderActionItem.vue')['default']
     HeroSection: typeof import('./../components/home/HeroSection.vue')['default']
+    IconButton: typeof import('./../components/ui/button/IconButton.vue')['default']
     Input: typeof import('./../components/ui/input/Input.vue')['default']
     Label: typeof import('./../components/ui/label/Label.vue')['default']
     OverviewCard: typeof import('./../components/dashboard/OverviewCard.vue')['default']

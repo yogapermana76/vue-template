@@ -3,7 +3,7 @@
   import { useRouter } from 'vue-router'
   import { useThemeStore } from '@/stores/theme'
   import { config } from '@/config'
-  import { Button } from '@/components/ui/button'
+  import { IconButton } from '@/components/ui/button'
   import { HeaderActionItem } from '@/components/layout'
   import type { HeaderProps } from '@/types/header'
   import { defaultHeaderProps } from '@/types/header'
@@ -45,16 +45,9 @@
   >
     <div class="flex h-14 items-center gap-3 px-4">
       <!-- Back Button -->
-      <Button
-        v-if="showBack"
-        variant="tertiary"
-        size="md"
-        layout="iconOnly"
-        class="-ml-2"
-        @click="handleBack"
-      >
-        <ArrowLeft class="size-4" />
-      </Button>
+      <IconButton v-if="showBack" variant="tertiary" size="md" class="-ml-2" @click="handleBack">
+        <ArrowLeft />
+      </IconButton>
 
       <!-- Title Section -->
       <div class="min-w-0 flex-1">
@@ -67,7 +60,7 @@
       </div>
 
       <!-- Right Actions -->
-      <div class="flex items-center gap-1">
+      <div class="flex items-center">
         <HeaderActionItem v-for="action in rightActions" :key="action.id" :action="action" />
 
         <!-- Slot for custom components -->
@@ -77,17 +70,16 @@
         <div id="header-actions-teleport" />
 
         <!-- Theme Toggle -->
-        <Button
+        <IconButton
           v-if="!hideThemeToggle"
           variant="tertiary"
           size="md"
-          layout="iconOnly"
+          title="Toggle theme"
           @click="themeStore.toggleDark()"
         >
-          <Sun v-if="themeStore.isDark" class="size-4" />
-          <Moon v-else class="size-4" />
-          <span class="sr-only">Toggle theme</span>
-        </Button>
+          <Sun v-if="themeStore.isDark" />
+          <Moon v-else />
+        </IconButton>
       </div>
     </div>
   </header>

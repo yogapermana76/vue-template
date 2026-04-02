@@ -8,7 +8,7 @@ export { Alert, AlertDescription, AlertTitle } from './alert'
 export { Badge, badgeVariants } from './badge'
 
 // Button
-export { Button, buttonVariants } from './button'
+export { Button, IconButton, buttonVariants } from './button'
 
 // Carousel
 export {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { ShoppingCart } from 'lucide-vue-next'
-  import { Button } from '@/components/ui/button'
+  import { IconButton } from '@/components/ui/button'
   import { useCartStore } from '@/stores/cart'
 
   const props = defineProps<{
@@ -15,15 +15,14 @@
 
 <template>
   <!-- Cart button with count badge -->
-  <Button
+  <IconButton
     variant="tertiary"
     size="md"
-    layout="iconOnly"
     class="relative"
     title="Shopping Cart"
     @click="props.onClick"
   >
-    <ShoppingCart class="size-4" />
+    <ShoppingCart />
 
     <!-- Badge (count) -->
     <span
@@ -32,5 +31,5 @@
     >
       {{ cartStore.cartCount > 99 ? '99+' : cartStore.cartCount }}
     </span>
-  </Button>
+  </IconButton>
 </template>

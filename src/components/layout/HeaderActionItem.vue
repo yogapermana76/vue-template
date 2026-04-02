@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, type Component } from 'vue'
   import * as icons from 'lucide-vue-next'
-  import { Button } from '@/components/ui/button'
+  import { IconButton } from '@/components/ui/button'
   import type { HeaderAction } from '@/types/header'
 
   const props = defineProps<{
@@ -23,14 +23,8 @@
 </script>
 
 <template>
-  <Button
-    variant="tertiary"
-    size="md"
-    layout="iconOnly"
-    :title="action.label"
-    @click="action.onClick"
-  >
-    <component v-if="iconComponent" :is="iconComponent" class="size-4" />
+  <IconButton variant="tertiary" size="md" :title="action.label" @click="action.onClick">
+    <component v-if="iconComponent" :is="iconComponent" />
     <span v-else class="text-sm">{{ action.label }}</span>
-  </Button>
+  </IconButton>
 </template>

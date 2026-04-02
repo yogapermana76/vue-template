@@ -128,7 +128,7 @@
     >
       <template #action>
         <Button
-          variant="outline"
+          variant="secondary"
           class="border-primary-300 text-primary-600 hover:bg-primary-50"
           @click="handleReset"
           >Clear Filters</Button

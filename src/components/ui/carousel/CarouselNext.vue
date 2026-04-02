@@ -1,7 +1,7 @@
 <script setup lang="ts">
   // Next button - absolute positioned over carousel content
   import { ChevronRight } from 'lucide-vue-next'
-  import { Button } from '@/components/ui/button'
+  import { IconButton } from '@/components/ui/button'
 
   interface Props {
     /** Button disabled state */
@@ -20,15 +20,14 @@
 </script>
 
 <template>
-  <Button
-    variant="secondary"
+  <IconButton
+    variant="primary"
     size="md"
-    layout="iconOnly"
     :disabled="disabled"
-    :class="['absolute right-2 z-10 -translate-y-1/2 rounded-full', props.positionClass]"
+    :class="['absolute right-2 z-10 -translate-y-1/2', props.positionClass]"
+    title="Next slide"
     @click="emit('click')"
   >
-    <ChevronRight class="size-4" />
-    <span class="sr-only">Next slide</span>
-  </Button>
+    <ChevronRight />
+  </IconButton>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { LogOut } from 'lucide-vue-next'
-  import { Button } from '@/components/ui/button'
+  import { IconButton } from '@/components/ui/button'
   import { Header } from '@/components/layout'
 
   interface Props {
@@ -29,15 +29,9 @@
     :hide-theme-toggle="true"
   >
     <template #actions>
-      <Button
-        variant="secondary"
-        size="md"
-        layout="iconOnly"
-        class="border-primary-300 text-primary-600 hover:bg-primary-50"
-        @click="emit('logout')"
-      >
-        <LogOut class="size-4" />
-      </Button>
+      <IconButton variant="secondary" size="md" title="Logout" @click="emit('logout')">
+        <LogOut />
+      </IconButton>
     </template>
   </Header>
 </template>
