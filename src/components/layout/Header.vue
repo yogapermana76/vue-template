@@ -43,7 +43,7 @@
         : undefined
     "
   >
-    <div class="flex h-14 items-center gap-3 px-4">
+    <div class="flex items-center gap-2 px-4">
       <!-- Left: Back Button -->
       <IconButton v-if="showBack" variant="tertiary" size="md" class="-ml-2" @click="handleBack">
         <ArrowLeft />
@@ -62,7 +62,7 @@
       </slot>
 
       <!-- Right: Action buttons -->
-      <div class="flex items-center gap-1">
+      <div class="flex items-center">
         <HeaderActionItem v-for="action in rightActions" :key="action.id" :action="action" />
 
         <!-- Slot for custom components -->

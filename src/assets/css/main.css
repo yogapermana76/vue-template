@@ -547,6 +547,11 @@
     line-height: var(--leading-xxs);
     @apply font-semibold;
   }
+
+  /* Header */
+  header {
+    @apply h-12;
+  }
 }
 
 /* Utilities */
