@@ -36,7 +36,7 @@
     <!-- Stats Overview -->
     <Card>
       <CardHeader class="pb-3">
-        <CardTitle class="text-base">Overview</CardTitle>
+        <CardTitle class="body-l">Overview</CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
         <div v-for="stat in stats" :key="stat.label">
@@ -58,7 +58,7 @@
     <!-- Chart Placeholder -->
     <Card>
       <CardHeader class="pb-3">
-        <CardTitle class="text-base">Analytics</CardTitle>
+        <CardTitle class="body-l">Analytics</CardTitle>
       </CardHeader>
       <CardContent>
         <div
@@ -66,7 +66,7 @@
         >
           <div class="text-primary-600 text-center">
             <TrendingUp class="mx-auto mb-2 size-12" :stroke-width="1" />
-            <span class="text-sm">Chart visualization</span>
+            <span class="body-m">Chart visualization</span>
           </div>
         </div>
       </CardContent>
@@ -75,7 +75,7 @@
     <!-- Quick Actions -->
     <Card>
       <CardHeader class="pb-3">
-        <CardTitle class="text-base">Quick Actions</CardTitle>
+        <CardTitle class="body-l">Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-3 gap-3">
@@ -87,7 +87,7 @@
             :class="[action.bgColor, action.textColor]"
           >
             <component :is="action.icon" class="size-6" />
-            <span class="text-xs font-medium">{{ action.label }}</span>
+            <span class="body-caption-medium">{{ action.label }}</span>
           </Button>
         </div>
       </CardContent>

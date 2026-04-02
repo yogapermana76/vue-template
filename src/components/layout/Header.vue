@@ -52,10 +52,10 @@
       <!-- Center: Custom slot or default title section -->
       <slot name="center">
         <div class="min-w-0 flex-1">
-          <h1 v-if="title" class="text-primary-800 truncate text-lg font-semibold">
+          <h1 v-if="title" class="text-primary-800 heading-s truncate">
             {{ title }}
           </h1>
-          <p v-if="subtitle" class="truncate text-xs text-neutral-500">
+          <p v-if="subtitle" class="body-caption truncate text-neutral-500">
             {{ subtitle }}
           </p>
         </div>

@@ -64,7 +64,7 @@
     <div class="w-full max-w-md">
       <Card class="border-primary-200">
         <CardHeader class="text-center">
-          <CardTitle class="text-primary-700 text-2xl">Welcome back</CardTitle>
+          <CardTitle class="text-primary-700 heading-l">Welcome back</CardTitle>
           <CardDescription> Enter your credentials to access your account </CardDescription>
         </CardHeader>
         <CardContent>
@@ -95,13 +95,13 @@
                   v-bind="field"
                   :class="{ 'border-destructive': errorMessage }"
                 />
-                <p v-if="errorMessage" class="text-destructive text-sm">
+                <p v-if="errorMessage" class="text-destructive body-m">
                   {{ errorMessage }}
                 </p>
               </div>
             </Field>
 
-            <div v-if="error" class="text-destructive text-sm">
+            <div v-if="error" class="text-destructive body-m">
               {{ error }}
             </div>
 
@@ -116,7 +116,7 @@
           </form>
         </CardContent>
         <CardFooter v-if="config.features.demoMode" class="flex-col space-y-4">
-          <div class="text-muted-foreground text-center text-sm">
+          <div class="text-muted-foreground body-m text-center">
             <p>Demo credentials:</p>
             <p>Email: demo@example.com</p>
             <p>Password: password</p>

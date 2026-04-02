@@ -25,6 +25,6 @@
 <template>
   <IconButton variant="tertiary" size="md" :title="action.label" @click="action.onClick">
     <component v-if="iconComponent" :is="iconComponent" />
-    <span v-else class="text-sm">{{ action.label }}</span>
+    <span v-else class="body-m">{{ action.label }}</span>
   </IconButton>
 </template>

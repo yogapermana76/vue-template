@@ -43,7 +43,7 @@
       </h1>
 
       <!-- Description -->
-      <p class="text-muted-foreground max-w-2xl text-base">
+      <p class="text-muted-foreground body-l max-w-2xl">
         {{ description }}
       </p>
 
@@ -65,20 +65,20 @@
 
       <!-- Stats preview -->
       <div
-        class="text-muted-foreground flex flex-wrap items-center justify-center gap-8 pt-8 text-sm"
+        class="text-muted-foreground body-m flex flex-wrap items-center justify-center gap-8 pt-8"
       >
         <div class="flex items-center gap-2">
-          <span class="text-primary-600 text-2xl font-bold">100+</span>
+          <span class="text-primary-600 heading-l">100+</span>
           Components
         </div>
         <div class="bg-primary-200 h-8 w-px" />
         <div class="flex items-center gap-2">
-          <span class="text-primary-600 text-2xl font-bold">50+</span>
+          <span class="text-primary-600 heading-l">50+</span>
           Examples
         </div>
         <div class="bg-primary-200 h-8 w-px" />
         <div class="flex items-center gap-2">
-          <span class="text-primary-600 text-2xl font-bold">10k+</span>
+          <span class="text-primary-600 heading-l">10k+</span>
           Downloads
         </div>
       </div>

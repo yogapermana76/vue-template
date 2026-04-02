@@ -83,11 +83,11 @@
                 {{ slide.badge }}
               </Badge>
 
-              <h2 class="mb-2 max-w-xl text-xl font-bold text-white">
+              <h2 class="heading-m mb-2 max-w-xl text-white">
                 {{ slide.title }}
               </h2>
 
-              <p class="mb-4 max-w-md text-sm text-neutral-200">
+              <p class="body-m mb-4 max-w-md text-neutral-200">
                 {{ slide.description }}
               </p>
 

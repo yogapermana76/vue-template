@@ -113,9 +113,9 @@
       <div ref="loadMoreRef" class="flex justify-center py-4">
         <div v-if="isFetchingNextPage" class="flex items-center gap-2">
           <Loader2 class="text-primary-500 size-5 animate-spin" />
-          <span class="text-sm text-neutral-500">Loading more...</span>
+          <span class="body-m text-neutral-500">Loading more...</span>
         </div>
-        <p v-else-if="!hasNextPage" class="text-sm text-neutral-500">You've reached the end</p>
+        <p v-else-if="!hasNextPage" class="body-m text-neutral-500">You've reached the end</p>
       </div>
     </template>
 

@@ -457,92 +457,92 @@
 /* Typography */
 @layer components {
   /* Heading styles - All SemiBold/600 weight */
-  .heading-2xl {
+  .heading-l {
     font-size: var(--text-2xl);
     line-height: var(--leading-xxl);
     @apply font-semibold;
   }
 
-  .heading-xl {
+  .heading-m {
     font-size: var(--text-xl);
     line-height: var(--leading-xl);
     @apply font-semibold;
   }
 
-  .heading-lg {
+  .heading-s {
     font-size: var(--text-lg);
     line-height: var(--leading-lg);
     @apply font-semibold;
   }
 
   /* Body styles - With Regular (400), Medium (500), SemiBold (600) variants */
-  .body-md {
+  .body-l {
     font-size: var(--text-base);
     line-height: var(--leading-md);
     @apply font-normal;
   }
 
-  .body-md-medium {
+  .body-l-medium {
     font-size: var(--text-base);
     line-height: var(--leading-md);
     @apply font-medium;
   }
 
-  .body-md-semibold {
+  .body-l-semibold {
     font-size: var(--text-base);
     line-height: var(--leading-md);
     @apply font-semibold;
   }
 
-  .body-sm {
+  .body-m {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
     @apply font-normal;
   }
 
-  .body-sm-medium {
+  .body-m-medium {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
     @apply font-medium;
   }
 
-  .body-sm-semibold {
+  .body-m-semibold {
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
     @apply font-semibold;
   }
 
-  .body-xs {
+  .body-caption {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
     @apply font-normal;
   }
 
-  .body-xs-medium {
+  .body-caption-medium {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
     @apply font-medium;
   }
 
-  .body-xs-semibold {
+  .body-caption-semibold {
     font-size: var(--text-xs);
     line-height: var(--leading-xs);
     @apply font-semibold;
   }
 
-  .body-xxs {
+  .body-small {
     font-size: var(--text-xxs);
     line-height: var(--leading-xxs);
     @apply font-normal;
   }
 
-  .body-xxs-medium {
+  .body-small-medium {
     font-size: var(--text-xxs);
     line-height: var(--leading-xxs);
     @apply font-medium;
   }
 
-  .body-xxs-semibold {
+  .body-small-semibold {
     font-size: var(--text-xxs);
     line-height: var(--leading-xxs);
     @apply font-semibold;

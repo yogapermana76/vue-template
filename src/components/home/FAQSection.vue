@@ -77,7 +77,7 @@
     <div class="container px-4">
       <!-- Section header -->
       <div class="mx-auto mb-12 max-w-2xl text-center">
-        <h2 class="mb-3 text-2xl font-bold tracking-tight">
+        <h2 class="heading-l mb-3 tracking-tight">
           {{ title }}
         </h2>
         <p class="text-muted-foreground">
