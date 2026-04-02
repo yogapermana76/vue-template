@@ -15,6 +15,9 @@
   definePage({
     meta: {
       title: 'Tabs',
+      header: {
+        subtitle: 'Browse our different tab sections',
+      },
     },
   })
 
@@ -29,14 +32,6 @@
 </script>
 
 <template>
-  <!-- Header -->
-  <Header
-    title="Tabs"
-    subtitle="Browse our different tab sections"
-    :show-back="false"
-    positioning="normal"
-  />
-
   <div>
     <SwipeableTabs v-model="activeTab" :tabs="tabs" full-height>
       <SwipeableTabBar v-slot="{ tab }">

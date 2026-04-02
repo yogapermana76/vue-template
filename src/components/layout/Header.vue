@@ -44,23 +44,25 @@
     "
   >
     <div class="flex h-14 items-center gap-3 px-4">
-      <!-- Back Button -->
+      <!-- Left: Back Button -->
       <IconButton v-if="showBack" variant="tertiary" size="md" class="-ml-2" @click="handleBack">
         <ArrowLeft />
       </IconButton>
 
-      <!-- Title Section -->
-      <div class="min-w-0 flex-1">
-        <h1 v-if="title" class="text-primary-800 truncate text-lg font-semibold">
-          {{ title }}
-        </h1>
-        <p v-if="subtitle" class="truncate text-xs text-neutral-500">
-          {{ subtitle }}
-        </p>
-      </div>
+      <!-- Center: Custom slot or default title section -->
+      <slot name="center">
+        <div class="min-w-0 flex-1">
+          <h1 v-if="title" class="text-primary-800 truncate text-lg font-semibold">
+            {{ title }}
+          </h1>
+          <p v-if="subtitle" class="truncate text-xs text-neutral-500">
+            {{ subtitle }}
+          </p>
+        </div>
+      </slot>
 
-      <!-- Right Actions -->
-      <div class="flex items-center">
+      <!-- Right: Action buttons -->
+      <div class="flex items-center gap-1">
         <HeaderActionItem v-for="action in rightActions" :key="action.id" :action="action" />
 
         <!-- Slot for custom components -->

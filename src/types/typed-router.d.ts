@@ -42,6 +42,7 @@ declare module 'vue-router/auto-routes' {
       | '/(main)/'
       | '/(main)/dashboard'
       | '/(main)/products'
+      | '/(main)/search-products'
       | '/(main)/tabs'
     >,
     '/(main)/': RouteRecordInfo<
@@ -61,6 +62,13 @@ declare module 'vue-router/auto-routes' {
     '/(main)/products': RouteRecordInfo<
       '/(main)/products',
       '/products',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(main)/search-products': RouteRecordInfo<
+      '/(main)/search-products',
+      '/search-products',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -118,6 +126,7 @@ declare module 'vue-router/auto-routes' {
         | '/(main)/'
         | '/(main)/dashboard'
         | '/(main)/products'
+        | '/(main)/search-products'
         | '/(main)/tabs'
       views:
         | 'default'
@@ -137,6 +146,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(main)/products.vue': {
       routes:
         | '/(main)/products'
+      views:
+        | never
+    }
+    'src/pages/(main)/search-products.vue': {
+      routes:
+        | '/(main)/search-products'
       views:
         | never
     }

@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
   import { SearchInput } from '@/components/shared'
   import ProductCard from '@/components/products/ProductCard.vue'
   import ProductCardSkeleton from '@/components/products/ProductCardSkeleton.vue'
   import ProductGrid from '@/components/products/ProductGrid.vue'
   import { productService, type Product } from '@/services/product'
 
+  const router = useRouter()
   const searchQuery = ref('')
   const products = ref<Product[]>([])
   const isLoading = ref(true)
@@ -18,12 +20,23 @@
       isLoading.value = false
     }
   })
+
+  const handleSearchFocus = () => {
+    // Navigate to search products page when search input is focused/clicked
+    router.push('/search-products')
+  }
 </script>
 
 <template>
   <div class="space-y-4">
-    <!-- Search Bar -->
-    <SearchInput v-model="searchQuery" placeholder="Search products..." />
+    <!-- Search Bar - clickable to open dedicated search page -->
+    <SearchInput
+      v-model="searchQuery"
+      placeholder="Search products..."
+      readonly
+      @focus="handleSearchFocus"
+      @click="handleSearchFocus"
+    />
 
     <!-- Product Grid -->
     <ProductGrid>
