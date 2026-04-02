@@ -43,7 +43,7 @@
         : undefined
     "
   >
-    <div class="flex items-center gap-2 px-4">
+    <div class="flex h-full items-center gap-2 px-4">
       <!-- Left: Back Button -->
       <IconButton v-if="showBack" variant="tertiary" size="md" class="-ml-2" @click="handleBack">
         <ArrowLeft />
