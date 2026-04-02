@@ -27,7 +27,7 @@
 <template>
   <div
     v-if="pullDistance > 0 || isRefreshing"
-    class="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center"
+    class="pointer-events-none fixed inset-x-0 top-0 z-100 flex justify-center"
     :style="indicatorStyle"
   >
     <div

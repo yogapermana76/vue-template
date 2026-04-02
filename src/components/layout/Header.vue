@@ -68,9 +68,6 @@
         <!-- Slot for custom components -->
         <slot name="actions" />
 
-        <!-- Teleport target for page-level actions -->
-        <div id="header-actions-teleport" />
-
         <!-- Theme Toggle -->
         <IconButton
           v-if="!hideThemeToggle"

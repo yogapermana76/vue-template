@@ -42,7 +42,6 @@ declare module 'vue-router/auto-routes' {
       | '/(main)/'
       | '/(main)/dashboard'
       | '/(main)/products'
-      | '/(main)/search-products'
       | '/(main)/tabs'
     >,
     '/(main)/': RouteRecordInfo<
@@ -66,13 +65,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/(main)/search-products': RouteRecordInfo<
-      '/(main)/search-products',
-      '/search-products',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
     '/(main)/tabs': RouteRecordInfo<
       '/(main)/tabs',
       '/tabs',
@@ -85,13 +77,29 @@ declare module 'vue-router/auto-routes' {
       '/',
       Record<never, never>,
       Record<never, never>,
+      | '/(secondary)/example-scrollable-page'
       | '/(secondary)/products/[id]'
+      | '/(secondary)/products/search-products'
+    >,
+    '/(secondary)/example-scrollable-page': RouteRecordInfo<
+      '/(secondary)/example-scrollable-page',
+      '/example-scrollable-page',
+      Record<never, never>,
+      Record<never, never>,
+      | never
     >,
     '/(secondary)/products/[id]': RouteRecordInfo<
       '/(secondary)/products/[id]',
       '/products/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | never
+    >,
+    '/(secondary)/products/search-products': RouteRecordInfo<
+      '/(secondary)/products/search-products',
+      '/products/search-products',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     '/[...all]': RouteRecordInfo<
@@ -126,7 +134,6 @@ declare module 'vue-router/auto-routes' {
         | '/(main)/'
         | '/(main)/dashboard'
         | '/(main)/products'
-        | '/(main)/search-products'
         | '/(main)/tabs'
       views:
         | 'default'
@@ -149,12 +156,6 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(main)/search-products.vue': {
-      routes:
-        | '/(main)/search-products'
-      views:
-        | never
-    }
     'src/pages/(main)/tabs.vue': {
       routes:
         | '/(main)/tabs'
@@ -164,13 +165,27 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(secondary).vue': {
       routes:
         | '/(secondary)'
+        | '/(secondary)/example-scrollable-page'
         | '/(secondary)/products/[id]'
+        | '/(secondary)/products/search-products'
       views:
         | 'default'
+    }
+    'src/pages/(secondary)/example-scrollable-page.vue': {
+      routes:
+        | '/(secondary)/example-scrollable-page'
+      views:
+        | never
     }
     'src/pages/(secondary)/products/[id].vue': {
       routes:
         | '/(secondary)/products/[id]'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/products/search-products.vue': {
+      routes:
+        | '/(secondary)/products/search-products'
       views:
         | never
     }

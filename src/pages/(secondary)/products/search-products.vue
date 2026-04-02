@@ -78,6 +78,9 @@
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header with Search Bar in Center -->
   <Header :show-back="true" :hide-theme-toggle="true" :on-back="handleBack">
     <template #center>
@@ -104,11 +107,8 @@
     </template>
   </Header>
 
-  <!-- Pull to Refresh Indicator -->
-  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
-
   <!-- Content -->
-  <div class="space-y-4 px-4">
+  <div class="space-y-4 px-4 pt-14">
     <!-- Loading State (initial) -->
     <ProductGrid v-if="isLoading">
       <ProductCardSkeleton v-for="i in 6" :key="i" />

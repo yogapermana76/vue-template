@@ -7,3 +7,4 @@ export {
   type UseSwipeableTabsReturn,
 } from './useSwipeableTabs'
 export { useToast, type ToastOptions, type ToastType } from './useToast'
+export { useScrollableHeader } from './useScrollableHeader'

@@ -84,6 +84,7 @@ declare module 'vue' {
     RecommendedProductsCarousel: typeof import('./../components/home/RecommendedProductsCarousel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScrollableContent: typeof import('./../components/layout/ScrollableContent.vue')['default']
     SearchInput: typeof import('./../components/shared/search-input/SearchInput.vue')['default']
     Skeleton: typeof import('./../components/ui/skeleton/Skeleton.vue')['default']
     Sonner: typeof import('./../components/ui/sonner/Sonner.vue')['default']

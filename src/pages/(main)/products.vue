@@ -68,6 +68,9 @@
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header (outside padded container for proper sticky positioning) -->
   <Header
     title="Products"
@@ -76,9 +79,6 @@
     positioning="normal"
     :hide-theme-toggle="true"
   />
-
-  <!-- Pull to Refresh Indicator -->
-  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
 
   <!-- Content (with padding) -->
   <div class="space-y-4 px-4 pt-4">

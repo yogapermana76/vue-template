@@ -38,7 +38,7 @@ export const defaultHeaderProps: HeaderProps = {
   title: '',
   showBack: true,
   hideThemeToggle: true,
-  positioning: 'sticky',
+  positioning: 'fixed',
   rightActions: [],
 }
 
