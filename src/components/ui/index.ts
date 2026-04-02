@@ -40,6 +40,9 @@ export { Input } from './input'
 // Label
 export { Label } from './label'
 
+// PillTab
+export { PillTab, pillTabVariants } from './pill-tab'
+
 // Skeleton
 export { Skeleton } from './skeleton'
 

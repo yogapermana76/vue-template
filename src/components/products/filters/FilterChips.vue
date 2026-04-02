@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { Filter, ArrowUpDown } from 'lucide-vue-next'
   import { SearchInput } from '@/components/shared'
   import { Button } from '@/components/ui/button'
-  import { Badge } from '@/components/ui/badge'
+  import { PillTab } from '@/components/ui/pill-tab'
 
   interface Props {
     search?: string
@@ -27,12 +28,28 @@
     return props.search || props.category || props.sort !== 'asc'
   })
 
+  const isCategoryActive = computed(() => {
+    return props.category && props.category !== 'All'
+  })
+
+  const isSortActive = computed(() => {
+    return props.sort !== 'asc'
+  })
+
   const categoryLabel = computed(() => {
     return props.category || 'All'
   })
 
   const sortLabel = computed(() => {
     return props.sort === 'asc' ? 'Low to High' : 'High to Low'
+  })
+
+  const getCategoryState = computed(() => {
+    return isCategoryActive.value ? 'filter-active' : 'default'
+  })
+
+  const getSortState = computed(() => {
+    return isSortActive.value ? 'filter-active' : 'default'
   })
 </script>
 
@@ -45,29 +62,24 @@
       @update:model-value="emit('update:search', $event)"
     />
 
-    <!-- Filter Chips (using Badge as button) -->
+    <!-- Filter Pills (using PillTab) -->
     <div class="flex flex-wrap items-center gap-2">
-      <!-- Category Filter Chip -->
-      <Badge
+      <!-- Category Filter Pill -->
+      <PillTab
         as="button"
-        variant="outline"
-        class="hover:bg-primary-50 hover:border-primary-300 cursor-pointer border-neutral-200"
+        :state="getCategoryState"
+        class="cursor-pointer"
         @click="emit('open:category')"
       >
-        <span class="text-primary-700 font-medium">Category:</span>
-        <span class="ml-1 text-neutral-600">{{ categoryLabel }}</span>
-      </Badge>
+        <Filter class="size-4" />
+        Category: <span class="font-semibold">{{ categoryLabel }}</span>
+      </PillTab>
 
-      <!-- Sort Filter Chip -->
-      <Badge
-        as="button"
-        variant="outline"
-        class="hover:bg-secondary-50 hover:border-secondary-300 cursor-pointer border-neutral-200"
-        @click="emit('open:sort')"
-      >
-        <span class="text-secondary-700 font-medium">Sort:</span>
-        <span class="ml-1 text-neutral-600">{{ sortLabel }}</span>
-      </Badge>
+      <!-- Sort Filter Pill -->
+      <PillTab as="button" :state="getSortState" class="cursor-pointer" @click="emit('open:sort')">
+        <ArrowUpDown class="size-4" />
+        Sort: <span class="font-semibold">{{ sortLabel }}</span>
+      </PillTab>
 
       <!-- Reset Button -->
       <Button

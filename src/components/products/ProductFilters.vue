@@ -14,7 +14,7 @@
     categories?: string[]
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     search: '',
     category: '',
     sort: 'asc',

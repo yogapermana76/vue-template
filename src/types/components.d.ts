@@ -69,6 +69,7 @@ declare module 'vue' {
     Input: typeof import('./../components/ui/input/Input.vue')['default']
     Label: typeof import('./../components/ui/label/Label.vue')['default']
     OverviewCard: typeof import('./../components/dashboard/OverviewCard.vue')['default']
+    PillTab: typeof import('./../components/ui/pill-tab/PillTab.vue')['default']
     ProductActions: typeof import('./../components/products/product-detail/ProductActions.vue')['default']
     ProductCard: typeof import('./../components/products/ProductCard.vue')['default']
     ProductCardSkeleton: typeof import('./../components/products/ProductCardSkeleton.vue')['default']
