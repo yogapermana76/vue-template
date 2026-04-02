@@ -9,11 +9,11 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-primary-500 text-white active:bg-primary-600 active:text-white disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed',
+          'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-600 active:text-white disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed',
         secondary:
-          'border border-primary-600/50 text-primary-700 bg-transparent active:bg-primary-600 active:text-white active:border-primary-600 disabled:border-slate-200 disabled:text-slate-500 disabled:bg-transparent disabled:cursor-not-allowed',
+          'border border-primary-600/50 text-primary-700 bg-transparent hover:border-primary-600 active:bg-primary-600 active:text-white active:border-primary-600 disabled:border-slate-200 disabled:text-slate-500 disabled:bg-transparent disabled:cursor-not-allowed',
         tertiary:
-          'text-primary-700 bg-transparent active:text-teal-800 disabled:text-slate-500 disabled:cursor-not-allowed',
+          'text-primary-700 bg-transparent hover:bg-primary-50 active:bg-primary-100 active:text-primary-800 disabled:text-slate-500 disabled:cursor-not-allowed',
       },
 
       size: {
@@ -43,28 +43,29 @@ export const buttonVariants = cva(
       { size: 'xs', layout: ['iconLeft', 'iconRight'], class: '[&_svg]:size-3.5' },
 
       // Icon sizing for icon-only buttons
-      { size: 'lg', layout: 'iconOnly', class: 'px-0 w-12 [&_svg]:size-5' },
-      { size: 'md', layout: 'iconOnly', class: 'px-0 w-10 [&_svg]:size-4' },
-      { size: 'sm', layout: 'iconOnly', class: 'px-0 w-10 [&_svg]:size-4' },
-      { size: 'xs', layout: 'iconOnly', class: 'px-0 w-8 [&_svg]:size-3.5' },
+      { size: 'lg', layout: 'iconOnly', class: 'px-0 w-12 h-12 [&_svg]:size-5' },
+      { size: 'md', layout: 'iconOnly', class: 'px-0 w-10 h-10 [&_svg]:size-4' },
+      { size: 'sm', layout: 'iconOnly', class: 'px-0 w-10 h-10 [&_svg]:size-4' },
+      { size: 'xs', layout: 'iconOnly', class: 'px-0 w-8 h-8 [&_svg]:size-3.5' },
 
       // Dark background variations
       {
         variant: 'primary',
         isDarkBg: true,
         class:
-          'bg-white text-teal-700 active:bg-teal-500 active:text-white disabled:bg-white/10 disabled:text-slate-500',
+          'bg-white text-teal-700 hover:bg-slate-50 active:bg-teal-500 active:text-white disabled:bg-white/10 disabled:text-slate-500',
       },
       {
         variant: 'secondary',
         isDarkBg: true,
         class:
-          'border-white/20 text-white bg-transparent active:bg-teal-500 active:text-white active:border-teal-500 disabled:border-white/10 disabled:text-white/40 disabled:bg-transparent',
+          'border-white/20 text-white bg-transparent hover:border-white/40 active:bg-teal-500 active:text-white active:border-teal-500 disabled:border-white/10 disabled:text-white/40 disabled:bg-transparent',
       },
       {
         variant: 'tertiary',
         isDarkBg: true,
-        class: 'text-white active:text-teal-200 disabled:text-white/40',
+        class:
+          'text-white hover:bg-white/10 active:bg-white/20 active:text-white disabled:text-white/40',
       },
     ],
 
