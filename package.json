@@ -36,7 +36,7 @@
     "lucide-vue-next": "^1.0.0",
     "pinia": "^3.0.4",
     "postcss": "^8.5.8",
-    "reka-ui": "^2.9.2",
+    "reka-ui": "^2.9.3",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
     "vaul-vue": "^0.4.1",
