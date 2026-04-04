@@ -21,17 +21,22 @@
     v-bind="forwarded"
     :class="
       cn(
-        'peer data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 focus-visible:border-primary-400 focus-visible:ring-primary-400/50 aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500 size-4 shrink-0 rounded-lg border border-neutral-300 shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:text-white',
+        'peer size-4 shrink-0 rounded border border-neutral-200 bg-white shadow-xs transition-shadow outline-none',
+        'hover:bg-primary-50 hover:border-primary-600',
+        'focus-visible:border-primary-200 focus-visible:ring-primary-50 focus-visible:ring-4',
+        'data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500 data-[state=checked]:text-white',
+        'disabled:cursor-not-allowed disabled:border-neutral-200 disabled:bg-neutral-100 disabled:data-[state=checked]:border-neutral-200 disabled:data-[state=checked]:bg-neutral-100 disabled:data-[state=checked]:text-neutral-500',
+        'aria-invalid:ring-error-500/20 aria-invalid:border-error-500',
         props.class,
       )
     "
   >
     <CheckboxIndicator
       data-slot="checkbox-indicator"
-      class="grid place-content-center text-current transition-none"
+      class="flex items-center justify-center text-current"
     >
       <slot v-bind="slotProps">
-        <Check class="size-3.5" />
+        <Check class="size-3" />
       </slot>
     </CheckboxIndicator>
   </CheckboxRoot>
