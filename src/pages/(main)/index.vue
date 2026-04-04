@@ -9,6 +9,7 @@
     FeaturedBannerCarousel,
     RecommendedProductsCarousel,
     TestimonialCarousel,
+    PreferencesSection,
   } from '@/components/home'
 
   definePage({
@@ -23,6 +24,7 @@
   <FeaturedBannerCarousel />
   <FeaturesSection />
   <RecommendedProductsCarousel />
+  <PreferencesSection />
   <TechStackSection />
   <TestimonialCarousel />
   <QuickActionsSection />
