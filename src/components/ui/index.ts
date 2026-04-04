@@ -2,7 +2,7 @@
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion'
 
 // Alert
-export { Alert, AlertDescription, AlertTitle } from './alert'
+export { Alert, AlertBox, AlertDescription, AlertTitle } from './alert'
 
 // Badge
 export { Badge, badgeVariants } from './badge'
@@ -33,6 +33,12 @@ export {
 
 // Checkbox
 export { Checkbox } from './checkbox'
+
+// EmptyState
+export { EmptyState } from './empty-state'
+
+// Flag
+export { Flag } from './flag'
 
 // Input
 export { Input } from './input'
