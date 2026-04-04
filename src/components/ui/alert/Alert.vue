@@ -4,10 +4,15 @@
   import { cn } from '@/utils/cn'
   import { alertVariants } from '.'
 
-  const props = defineProps<{
-    class?: HTMLAttributes['class']
-    variant?: AlertVariants['variant']
-  }>()
+  const props = withDefaults(
+    defineProps<{
+      class?: HTMLAttributes['class']
+      variant?: AlertVariants['variant']
+    }>(),
+    {
+      variant: 'info',
+    },
+  )
 </script>
 
 <template>
