@@ -21,7 +21,12 @@
     v-bind="forwarded"
     :class="
       cn(
-        'peer data-[state=checked]:bg-primary-500 focus-visible:border-primary-400 focus-visible:ring-primary-400/50 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[state=unchecked]:bg-neutral-300 dark:data-[state=unchecked]:bg-neutral-600',
+        'peer inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 shadow-xs transition-all outline-none',
+        'data-[state=unchecked]:border-neutral-200 data-[state=unchecked]:bg-neutral-200',
+        'data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500',
+        'hover:data-[state=unchecked]:border-primary-600',
+        'focus-visible:ring-primary-50 focus-visible:ring-4',
+        'disabled:cursor-not-allowed disabled:opacity-50 disabled:data-[state=checked]:bg-neutral-300 disabled:data-[state=unchecked]:bg-neutral-100',
         props.class,
       )
     "
@@ -30,7 +35,9 @@
       data-slot="switch-thumb"
       :class="
         cn(
-          'bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0',
+          'pointer-events-none block size-4 rounded-full bg-white shadow-sm ring-0 transition-transform',
+          'data-[state=unchecked]:translate-x-0',
+          'data-[state=checked]:translate-x-4',
         )
       "
     >
