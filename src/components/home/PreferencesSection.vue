@@ -11,6 +11,10 @@
   import { AlertBox } from '@/components/ui/alert'
   import { EmptyState } from '@/components/ui/empty-state'
   import { Divider } from '@/components/ui/divider'
+  import { Input, InputGroup } from '@/components/ui/input'
+  import { FormField } from '@/components/ui/form-field'
+  import { CountryCodeSelector } from '@/components/ui/country-code-selector'
+  import { CircleCheck, Copy } from 'lucide-vue-next'
   import MakeSureIllustration from '@/assets/illustrations/make-sure.svg'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
@@ -35,6 +39,8 @@
     analytics: true,
     twoFactor: false,
   })
+
+  const phoneCode = ref('+62')
 </script>
 
 <template>
@@ -470,6 +476,204 @@
                   <span class="text-sm">Item 3</span>
                 </div>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Input Card -->
+        <Card class="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Input</CardTitle>
+            <CardDescription>Various input styles with prefix, suffix, and icons.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div class="flex flex-col gap-4">
+              <!-- Basic Input -->
+              <Input placeholder="Placeholder" />
+
+              <!-- With Prefix Text -->
+              <InputGroup prefix="Rp">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Suffix Text -->
+              <InputGroup suffix="Watt">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Left Icon and Right Icon -->
+              <InputGroup :prefix-icon="CircleCheck" :suffix-icon="Copy">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Prefix Text, Left Icon and Right Icon -->
+              <InputGroup prefix="Rp" :prefix-icon="CircleCheck" :suffix-icon="Copy">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Left Icon, Right Icon and Suffix Text -->
+              <InputGroup :prefix-icon="CircleCheck" :suffix-icon="Copy" suffix="Watt">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Left Icon Only -->
+              <InputGroup :prefix-icon="CircleCheck">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Prefix Text and Right Icon -->
+              <InputGroup prefix="Rp" :suffix-icon="Copy">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Left Icon and Suffix Text -->
+              <InputGroup :prefix-icon="CircleCheck" suffix="Watt">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Right Icon Only -->
+              <InputGroup :suffix-icon="Copy">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- With Prefix, Left Icon, Right Icon and Suffix -->
+              <InputGroup prefix="Rp" :prefix-icon="CircleCheck" :suffix-icon="Copy" suffix="Watt">
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- Disabled State -->
+              <InputGroup :prefix-icon="CircleCheck" :suffix-icon="Copy" disabled>
+                <Input placeholder="Placeholder" disabled />
+              </InputGroup>
+
+              <!-- Error State -->
+              <InputGroup :prefix-icon="CircleCheck" :suffix-icon="Copy" invalid>
+                <Input placeholder="Placeholder" aria-invalid="true" />
+              </InputGroup>
+
+              <!-- Phone Input with Country Code Selector -->
+              <InputGroup>
+                <template #prefix>
+                  <CountryCodeSelector v-model="phoneCode" />
+                  <Divider orientation="vertical" class="ml-1.5 h-5" />
+                </template>
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+
+              <!-- Phone Input with Country Code and Suffix Icon -->
+              <InputGroup :suffix-icon="Copy">
+                <template #prefix>
+                  <CountryCodeSelector v-model="phoneCode" />
+                  <Divider orientation="vertical" class="ml-1.5 h-5" />
+                </template>
+                <Input placeholder="Placeholder" />
+              </InputGroup>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Form Field Card -->
+        <Card class="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Form Field</CardTitle>
+            <CardDescription>Input with label, helper text, and validation states.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div class="flex flex-col gap-6">
+              <!-- Basic: Label only -->
+              <FormField label="Label" for="field-1">
+                <Input id="field-1" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- With Label Right (Button) -->
+              <FormField label="Label" for="field-2">
+                <template #labelRight>
+                  <button class="text-primary-600 hover:text-primary-700 font-semibold">
+                    Button
+                  </button>
+                </template>
+                <Input id="field-2" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- Required -->
+              <FormField label="Label" for="field-3" required>
+                <Input id="field-3" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- Required with Label Right -->
+              <FormField label="Label" for="field-4" required>
+                <template #labelRight>
+                  <button class="text-primary-600 hover:text-primary-700 font-semibold">
+                    Button
+                  </button>
+                </template>
+                <Input id="field-4" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- With Helper -->
+              <FormField label="Label" for="field-5" helper="Footnote here">
+                <Input id="field-5" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- With Helper and Label Right -->
+              <FormField label="Label" for="field-6" helper="Footnote here">
+                <template #labelRight>
+                  <button class="text-primary-600 hover:text-primary-700 font-semibold">
+                    Button
+                  </button>
+                </template>
+                <Input id="field-6" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- With Helper and Footer Right -->
+              <FormField
+                label="Label"
+                for="field-7"
+                helper="Footnote here"
+                footer-right="Footnote here"
+              >
+                <Input id="field-7" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- Required with Helper and Footer Right -->
+              <FormField
+                label="Label"
+                for="field-8"
+                required
+                helper="Footnote here"
+                footer-right="Footnote here"
+              >
+                <template #labelRight>
+                  <button class="text-primary-600 hover:text-primary-700 font-semibold">
+                    Button
+                  </button>
+                </template>
+                <Input id="field-8" placeholder="Placeholder" />
+              </FormField>
+
+              <!-- Disabled State -->
+              <FormField label="Label" for="field-9" helper="Footnote here" disabled>
+                <Input id="field-9" placeholder="Placeholder" disabled />
+              </FormField>
+
+              <!-- Error State -->
+              <FormField label="Label" for="field-10" required error="This field is required">
+                <Input id="field-10" placeholder="Placeholder" aria-invalid="true" />
+              </FormField>
+
+              <!-- With InputGroup -->
+              <FormField label="Label" for="field-11" helper="Footnote here">
+                <InputGroup :prefix-icon="CircleCheck" :suffix-icon="Copy">
+                  <Input id="field-11" placeholder="Placeholder" />
+                </InputGroup>
+              </FormField>
+
+              <!-- InputGroup with Error -->
+              <FormField label="Label" for="field-12" required error="Validation error message">
+                <InputGroup :prefix-icon="CircleCheck" :suffix-icon="Copy" invalid>
+                  <Input id="field-12" placeholder="Placeholder" aria-invalid="true" />
+                </InputGroup>
+              </FormField>
             </div>
           </CardContent>
         </Card>
