@@ -8,5 +8,5 @@
   <AppLayout>
     <RouterView />
   </AppLayout>
-  <Toaster position="top-center" rich-colors />
+  <Toaster />
 </template>
