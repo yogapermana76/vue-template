@@ -12,7 +12,7 @@
 <template>
   <!-- Fixed Footer Actions -->
   <Footer position="fixed">
-    <div class="flex gap-2 p-4">
+    <div class="flex w-full gap-3">
       <Button
         variant="secondary"
         size="md"
