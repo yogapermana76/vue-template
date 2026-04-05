@@ -10,6 +10,7 @@
   import { Button } from '@/components/ui/button'
   import { AlertBox } from '@/components/ui/alert'
   import { EmptyState } from '@/components/ui/empty-state'
+  import { Divider } from '@/components/ui/divider'
   import MakeSureIllustration from '@/assets/illustrations/make-sure.svg'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
@@ -422,6 +423,53 @@
                   <Button class="w-full">Mulai Belanja</Button>
                 </template>
               </EmptyState>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Divider Card -->
+        <Card class="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Divider</CardTitle>
+            <CardDescription>Various divider styles for separating content.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div class="flex flex-col gap-6">
+              <!-- Solid Line (default) -->
+              <div class="space-y-2">
+                <p class="text-sm text-neutral-500">Solid Line (default)</p>
+                <Divider />
+              </div>
+
+              <!-- Dashed Line -->
+              <div class="space-y-2">
+                <p class="text-sm text-neutral-500">Dashed Line</p>
+                <Divider variant="dashed" />
+              </div>
+
+              <!-- Thick Solid -->
+              <div class="space-y-2">
+                <p class="text-sm text-neutral-500">Thick Solid</p>
+                <Divider thick />
+              </div>
+
+              <!-- With Connector -->
+              <div class="space-y-2">
+                <p class="text-sm text-neutral-500">With Connector</p>
+                <Divider connector />
+              </div>
+
+              <!-- Vertical Dividers -->
+              <div class="space-y-2">
+                <p class="text-sm text-neutral-500">Vertical Dividers</p>
+                <div class="flex h-10 items-center gap-4">
+                  <span class="text-sm">Item 1</span>
+                  <Divider orientation="vertical" />
+                  <span class="text-sm">Item 2</span>
+                  <Divider orientation="vertical" variant="dashed" />
+                  <span class="text-sm">Item 3</span>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

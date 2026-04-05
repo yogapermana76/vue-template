@@ -47,6 +47,7 @@ declare module 'vue' {
     Checkbox: typeof import('./../components/ui/checkbox/Checkbox.vue')['default']
     CTASection: typeof import('./../components/home/CTASection.vue')['default']
     DashboardHeader: typeof import('./../components/dashboard/DashboardHeader.vue')['default']
+    Divider: typeof import('./../components/ui/divider/Divider.vue')['default']
     Drawer: typeof import('./../components/ui/drawer/Drawer.vue')['default']
     DrawerClose: typeof import('./../components/ui/drawer/DrawerClose.vue')['default']
     DrawerContent: typeof import('./../components/ui/drawer/DrawerContent.vue')['default']

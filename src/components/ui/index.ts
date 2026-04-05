@@ -34,6 +34,9 @@ export {
 // Checkbox
 export { Checkbox } from './checkbox'
 
+// Divider
+export { Divider } from './divider'
+
 // EmptyState
 export { EmptyState } from './empty-state'
 
