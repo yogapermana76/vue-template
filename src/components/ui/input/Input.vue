@@ -1,12 +1,14 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { useVModel } from '@vueuse/core'
+  import { inject } from 'vue'
   import { cn } from '@/utils/cn'
 
   const props = defineProps<{
     defaultValue?: string | number
     modelValue?: string | number
     class?: HTMLAttributes['class']
+    unstyled?: boolean
   }>()
 
   const emits = defineEmits<{
@@ -17,6 +19,9 @@
     passive: true,
     defaultValue: props.defaultValue,
   })
+
+  // Check if inside InputGroup by looking for parent data-slot
+  const isInsideGroup = inject('input-group', false)
 </script>
 
 <template>
@@ -25,9 +30,20 @@
     data-slot="input"
     :class="
       cn(
-        'file:text-foreground selection:bg-primary-500 dark:bg-input/30 h-9 w-full min-w-0 rounded-md border border-neutral-300 bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none selection:text-white file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-400 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-        'focus-visible:border-primary-400 focus-visible:ring-primary-400/50 focus-visible:ring-[3px]',
-        'aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500',
+        // Base styles (always applied)
+        'w-full min-w-0 bg-transparent text-sm leading-5 text-neutral-900 outline-none',
+        'placeholder:text-neutral-400',
+        'disabled:cursor-not-allowed disabled:text-neutral-400',
+        // Standalone styles (not inside group)
+        !unstyled &&
+          !isInsideGroup && [
+            'h-10 rounded-lg border border-neutral-200 bg-white px-3 py-2.5 transition-colors',
+            'hover:border-neutral-300',
+            'focus:border-primary-600 focus:border-2 focus:px-2.75 focus:py-2.25',
+            'disabled:bg-neutral-100',
+            'aria-invalid:border-error-500 aria-invalid:border-2 aria-invalid:px-2.75 aria-invalid:py-2.25',
+          ],
+        'file:border-0 file:bg-transparent file:text-sm file:font-medium',
         props.class,
       )
     "
