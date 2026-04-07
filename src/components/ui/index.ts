@@ -52,6 +52,22 @@ export { FormField } from './form-field'
 // Input
 export { Input, InputGroup } from './input'
 
+// Item
+export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+  itemVariants,
+  itemMediaVariants,
+} from './item'
+
 // Label
 export { Label } from './label'
 

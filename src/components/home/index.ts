@@ -9,3 +9,4 @@ export { default as RecommendedProductsCarousel } from './RecommendedProductsCar
 export { default as TestimonialCarousel } from './TestimonialCarousel.vue'
 export { default as PreferencesSection } from './PreferencesSection.vue'
 export { default as WinnersSection } from './WinnersSection.vue'
+export { default as FaqListSection } from './FaqListSection.vue'

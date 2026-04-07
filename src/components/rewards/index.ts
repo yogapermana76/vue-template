@@ -6,3 +6,5 @@ export {
   type WinnerCardProps,
   type WinnerData,
 } from './winner-card'
+
+export { FaqItem, type FaqItemProps } from './faq'

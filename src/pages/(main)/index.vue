@@ -11,6 +11,7 @@
     TestimonialCarousel,
     PreferencesSection,
     WinnersSection,
+    FaqListSection,
   } from '@/components/home'
 
   definePage({
@@ -22,6 +23,7 @@
 
 <template>
   <WinnersSection />
+  <FaqListSection />
   <HeroSection />
   <FeaturedBannerCarousel />
   <FeaturesSection />
