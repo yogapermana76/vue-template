@@ -10,6 +10,7 @@
     RecommendedProductsCarousel,
     TestimonialCarousel,
     PreferencesSection,
+    WinnersSection,
   } from '@/components/home'
 
   definePage({
@@ -20,6 +21,7 @@
 </script>
 
 <template>
+  <WinnersSection />
   <HeroSection />
   <FeaturedBannerCarousel />
   <FeaturesSection />

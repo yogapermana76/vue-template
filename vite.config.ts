@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import VueRouter from 'vue-router/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import svgLoader from 'vite-svg-loader'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,6 +17,7 @@ export default defineConfig({
     }),
 
     vue(),
+    svgLoader(),
     tailwindcss(),
 
     // Auto import APIs
