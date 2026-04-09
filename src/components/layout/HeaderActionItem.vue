@@ -23,7 +23,13 @@
 </script>
 
 <template>
-  <IconButton variant="tertiary" size="md" :title="action.label" @click="action.onClick">
+  <IconButton
+    variant="tertiary"
+    size="md"
+    class="text-neutral-950"
+    :title="action.label"
+    @click="action.onClick"
+  >
     <component v-if="iconComponent" :is="iconComponent" />
     <span v-else class="body-m">{{ action.label }}</span>
   </IconButton>

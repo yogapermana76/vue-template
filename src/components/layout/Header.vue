@@ -32,7 +32,7 @@
 <template>
   <header
     :class="[
-      'bg-background/95 supports-backdrop-filter:bg-background/60 top-0 z-50 w-full backdrop-blur',
+      'top-0 z-50 w-full bg-white',
       positioning === 'fixed' ? 'fixed' : positioning === 'sticky' ? 'sticky' : '',
       (positioning === 'fixed' || positioning === 'sticky') && 'right-0 left-0 mx-auto',
       $attrs.class,
@@ -45,14 +45,20 @@
   >
     <div class="flex h-full items-center gap-2 px-4">
       <!-- Left: Back Button -->
-      <IconButton v-if="showBack" variant="tertiary" size="md" class="-ml-2" @click="handleBack">
+      <IconButton
+        v-if="showBack"
+        variant="tertiary"
+        size="md"
+        class="-ml-2 text-neutral-950"
+        @click="handleBack"
+      >
         <ArrowLeft />
       </IconButton>
 
       <!-- Center: Custom slot or default title section -->
       <slot name="center">
         <div class="min-w-0 flex-1">
-          <h1 v-if="title" class="text-primary-800 heading-s truncate">
+          <h1 v-if="title" class="heading-s truncate text-neutral-950">
             {{ title }}
           </h1>
           <p v-if="subtitle" class="body-caption truncate text-neutral-500">
@@ -73,6 +79,7 @@
           v-if="!hideThemeToggle"
           variant="tertiary"
           size="md"
+          class="text-neutral-950"
           title="Toggle theme"
           @click="themeStore.toggleDark()"
         >

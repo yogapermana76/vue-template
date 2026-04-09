@@ -40,7 +40,7 @@
     <!-- Header -->
     <Header title="My Rewards" show-back hide-theme-toggle positioning="sticky">
       <template #actions>
-        <IconButton variant="tertiary" size="md">
+        <IconButton variant="tertiary" size="md" class="text-neutral-950">
           <Printer class="size-5" />
         </IconButton>
       </template>
