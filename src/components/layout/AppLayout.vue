@@ -4,7 +4,7 @@
 
 <template>
   <div
-    class="bg-background mx-auto flex h-screen flex-col shadow-xl"
+    class="bg-background mx-auto flex h-full flex-col shadow-xl"
     :style="{ maxWidth: `${config.ui.maxWidth}px` }"
   >
     <slot />

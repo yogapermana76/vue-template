@@ -68,7 +68,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <!-- Filter Pills -->
-    <div class="flex gap-2 overflow-x-auto px-4">
+    <div class="flex gap-2 overflow-x-auto px-4 pt-4">
       <PillTab
         v-for="filter in itemFilters"
         :key="filter.key"

@@ -75,10 +75,7 @@
 </script>
 
 <template>
-  <div
-    :class="cn('swipeable-tabs flex h-full flex-col overflow-hidden', props.class)"
-    data-slot="swipeable-tabs"
-  >
+  <div :class="cn('swipeable-tabs flex h-full flex-col', props.class)" data-slot="swipeable-tabs">
     <slot />
   </div>
 </template>

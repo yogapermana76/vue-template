@@ -33,13 +33,21 @@
     window.removeEventListener('resize', updateContainerWidth)
   })
 
-  // Setup drag gesture
+  // Setup drag gesture for horizontal swipes only
   useDrag(
     state => {
-      const { movement, velocities, dragging, direction } = state
+      const { movement, velocities, dragging, direction, first } = state
       const mx = movement[0]
+      const my = movement[1]
       const vx = velocities[0]
       const dx = direction[0]
+
+      // On first move, determine if it's horizontal or vertical
+      // If vertical, cancel the gesture to allow scroll
+      if (first && Math.abs(my) > Math.abs(mx)) {
+        state.cancel()
+        return
+      }
 
       if (dragging) {
         if (!context.isDragging.value) {
@@ -56,8 +64,8 @@
       domTarget: panelContainerRef,
       eventOptions: { passive: false },
       filterTaps: true,
-      axis: 'x',
       pointer: { touch: true },
+      threshold: 10,
     },
   )
 </script>
@@ -65,12 +73,12 @@
 <template>
   <div
     ref="containerRef"
-    :class="cn('relative min-h-0 flex-1 overflow-x-hidden', props.class)"
+    :class="cn('relative flex-1 overflow-hidden bg-white', props.class)"
     data-slot="swipeable-tab-panels"
   >
     <div
       ref="panelContainerRef"
-      class="flex h-full"
+      class="absolute inset-0 flex"
       :class="!context.isDragging.value && 'transition-transform duration-300 ease-out'"
       :style="{
         transform: `translateX(calc(-${(context.activeIndex.value * 100) / context.tabs.length}% + ${context.translateX.value}px))`,

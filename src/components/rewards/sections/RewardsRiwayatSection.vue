@@ -24,6 +24,30 @@
       imageUrl: 'https://picsum.photos/343/171?random=12',
       points: -50,
     },
+    {
+      id: '3',
+      title: 'Test Item 3',
+      imageUrl: 'https://picsum.photos/343/171?random=13',
+      points: 10,
+    },
+    {
+      id: '4',
+      title: 'Test Item 4',
+      imageUrl: 'https://picsum.photos/343/171?random=14',
+      points: -20,
+    },
+    {
+      id: '5',
+      title: 'Test Item 5',
+      imageUrl: 'https://picsum.photos/343/171?random=15',
+      points: 15,
+    },
+    {
+      id: '6',
+      title: 'Test Item 6',
+      imageUrl: 'https://picsum.photos/343/171?random=16',
+      points: -30,
+    },
   ])
 
   // Event handlers
@@ -33,7 +57,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 px-4 pt-4 pb-4">
     <div v-for="item in historyData" :key="item.id" class="w-full">
       <RewardCouponCard
         :title="item.title"

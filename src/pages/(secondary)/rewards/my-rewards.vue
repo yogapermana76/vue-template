@@ -36,7 +36,7 @@
 </script>
 
 <template>
-  <div class="bg-primary-400 flex h-full flex-col">
+  <div class="flex h-full flex-col">
     <!-- Header -->
     <Header title="My Rewards" show-back hide-theme-toggle positioning="sticky">
       <template #actions>
@@ -58,33 +58,25 @@
         </span>
       </SwipeableTabBar>
 
-      <SwipeableTabPanels class="bg-white">
+      <SwipeableTabPanels>
         <!-- History Tab -->
-        <SwipeableTabPanel value="history">
-          <div class="flex flex-col gap-4 px-4 pt-4 pb-4">
-            <RewardsRiwayatSection />
-          </div>
+        <SwipeableTabPanel value="history" no-padding>
+          <RewardsRiwayatSection />
         </SwipeableTabPanel>
 
         <!-- Voucher Tab -->
-        <SwipeableTabPanel value="voucher">
-          <div class="flex flex-col gap-4 px-4 pt-4 pb-4">
-            <RewardsVoucherSection />
-          </div>
+        <SwipeableTabPanel value="voucher" no-padding>
+          <RewardsVoucherSection />
         </SwipeableTabPanel>
 
         <!-- Lottery Coupons Tab -->
-        <SwipeableTabPanel value="lottery-coupons">
-          <div class="flex flex-col gap-4 px-4 pt-4 pb-4">
-            <RewardsKuponSection />
-          </div>
+        <SwipeableTabPanel value="lottery-coupons" no-padding>
+          <RewardsKuponSection />
         </SwipeableTabPanel>
 
         <!-- Items Tab -->
-        <SwipeableTabPanel value="items">
-          <div class="flex flex-col gap-4 px-4 pt-4 pb-4">
-            <RewardsBarangSection />
-          </div>
+        <SwipeableTabPanel value="items" no-padding>
+          <RewardsBarangSection />
         </SwipeableTabPanel>
       </SwipeableTabPanels>
     </SwipeableTabs>
