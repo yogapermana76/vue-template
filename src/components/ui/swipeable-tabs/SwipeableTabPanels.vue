@@ -65,12 +65,12 @@
 <template>
   <div
     ref="containerRef"
-    :class="cn('relative min-h-0 flex-1 overflow-hidden', props.class)"
+    :class="cn('relative min-h-0 flex-1 overflow-x-hidden', props.class)"
     data-slot="swipeable-tab-panels"
   >
     <div
       ref="panelContainerRef"
-      class="flex h-full touch-pan-y"
+      class="flex h-full"
       :class="!context.isDragging.value && 'transition-transform duration-300 ease-out'"
       :style="{
         transform: `translateX(calc(-${(context.activeIndex.value * 100) / context.tabs.length}% + ${context.translateX.value}px))`,

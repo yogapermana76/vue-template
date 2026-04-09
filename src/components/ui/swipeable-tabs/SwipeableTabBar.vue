@@ -25,21 +25,24 @@
     }
   }
 
-  const updateTabWidths = () => {
+  const updateMeasurements = () => {
     if (tabBarRef.value) {
       context.setContainerWidth(tabBarRef.value.offsetWidth)
     }
+    // Use offsetLeft for accurate position (includes padding)
+    const offsets = tabRefs.value.map(el => el?.offsetLeft || 0)
     const widths = tabRefs.value.map(el => el?.offsetWidth || 0)
+    context.setTabOffsets(offsets)
     context.setTabWidths(widths)
   }
 
   onMounted(() => {
-    updateTabWidths()
-    window.addEventListener('resize', updateTabWidths)
+    updateMeasurements()
+    window.addEventListener('resize', updateMeasurements)
   })
 
   onUnmounted(() => {
-    window.removeEventListener('resize', updateTabWidths)
+    window.removeEventListener('resize', updateMeasurements)
   })
 
   const handleTabClick = (key: string) => {
@@ -54,7 +57,12 @@
 <template>
   <div
     ref="tabBarRef"
-    :class="cn('border-border bg-background relative flex w-full shrink-0 border-b', props.class)"
+    :class="
+      cn(
+        'sticky top-0 z-40 flex w-full shrink-0 gap-5 border-b border-slate-200 bg-white px-4',
+        props.class,
+      )
+    "
     data-slot="swipeable-tab-bar"
   >
     <button
@@ -64,15 +72,15 @@
       type="button"
       :class="
         cn(
-          'relative flex-1 px-4 py-3 text-center text-sm font-medium transition-colors',
+          'body-m-semibold relative shrink-0 py-3 transition-colors',
           context.activeTab.value === tab.key
-            ? 'text-primary-600 font-semibold'
-            : 'text-neutral-400 hover:text-neutral-600',
+            ? 'text-primary-700'
+            : 'text-slate-500 hover:text-slate-600',
         )
       "
       @click="handleTabClick(tab.key)"
     >
-      <span class="relative inline-flex items-center justify-center gap-1">
+      <span class="inline-flex items-center gap-1">
         <slot :tab="tab" :is-active="context.activeTab.value === tab.key">
           {{ tab.label }}
         </slot>
@@ -83,7 +91,7 @@
     <div
       :class="
         cn(
-          'bg-primary-500 absolute bottom-0 h-1 rounded-t-full',
+          'bg-primary-600 absolute bottom-0 h-1 rounded-t-sm',
           !context.isDragging.value && 'transition-all duration-300 ease-out',
           props.indicatorClass,
         )

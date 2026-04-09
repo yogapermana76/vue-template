@@ -16,8 +16,8 @@
   const props = withDefaults(defineProps<Props>(), {
     swipeThreshold: 50,
     swipeVelocityThreshold: 0.3,
-    fullHeight: false,
-    fullHeightOffset: '7.5rem',
+    fullHeight: true,
+    fullHeightOffset: '0px',
   })
 
   const emit = defineEmits<{
@@ -61,6 +61,7 @@
     getTabWidth: swipeableTabs.getTabWidth,
     setContainerWidth: swipeableTabs.setContainerWidth,
     setTabWidths: swipeableTabs.setTabWidths,
+    setTabOffsets: swipeableTabs.setTabOffsets,
   }
 
   provide(SWIPEABLE_TABS_INJECTION_KEY, context)
@@ -75,8 +76,7 @@
 
 <template>
   <div
-    :class="cn('swipeable-tabs flex flex-col', fullHeight && 'overflow-hidden', props.class)"
-    :style="fullHeight ? { height: `calc(100dvh - ${fullHeightOffset})` } : undefined"
+    :class="cn('swipeable-tabs flex h-full flex-col overflow-hidden', props.class)"
     data-slot="swipeable-tabs"
   >
     <slot />

@@ -4,9 +4,10 @@
   import { cn } from '@/utils/cn'
 
   const props = defineProps<{
-    class?: HTMLAttributes['class']
     defaultValue?: string | number
     modelValue?: string | number
+    class?: HTMLAttributes['class']
+    unstyled?: boolean
   }>()
 
   const emits = defineEmits<{
@@ -25,7 +26,18 @@
     data-slot="textarea"
     :class="
       cn(
-        'focus-visible:border-primary-400 focus-visible:ring-primary-400/50 aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500 dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border border-neutral-300 bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-neutral-400 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+        // Base styles (always applied)
+        'w-full min-w-0 bg-transparent text-sm leading-5 text-neutral-900 outline-none',
+        'placeholder:text-neutral-400',
+        'disabled:cursor-not-allowed disabled:text-neutral-400',
+        // Standalone styles
+        !unstyled && [
+          'min-h-16 rounded-lg border border-neutral-200 bg-white px-3 py-2.5 transition-colors',
+          'hover:border-neutral-300',
+          'focus:border-primary-600 focus:border-2 focus:px-2.75 focus:py-2.25',
+          'disabled:bg-neutral-100',
+          'aria-invalid:border-error-500 aria-invalid:border-2 aria-invalid:px-2.75 aria-invalid:py-2.25',
+        ],
         props.class,
       )
     "

@@ -80,6 +80,10 @@ declare module 'vue-router/auto-routes' {
       | '/(secondary)/example-scrollable-page'
       | '/(secondary)/products/[id]'
       | '/(secondary)/products/search-products'
+      | '/(secondary)/rewards/'
+      | '/(secondary)/rewards/history'
+      | '/(secondary)/rewards/my-rewards'
+      | '/(secondary)/rewards/winners'
     >,
     '/(secondary)/example-scrollable-page': RouteRecordInfo<
       '/(secondary)/example-scrollable-page',
@@ -98,6 +102,34 @@ declare module 'vue-router/auto-routes' {
     '/(secondary)/products/search-products': RouteRecordInfo<
       '/(secondary)/products/search-products',
       '/products/search-products',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(secondary)/rewards/': RouteRecordInfo<
+      '/(secondary)/rewards/',
+      '/rewards',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(secondary)/rewards/history': RouteRecordInfo<
+      '/(secondary)/rewards/history',
+      '/rewards/history',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(secondary)/rewards/my-rewards': RouteRecordInfo<
+      '/(secondary)/rewards/my-rewards',
+      '/rewards/my-rewards',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(secondary)/rewards/winners': RouteRecordInfo<
+      '/(secondary)/rewards/winners',
+      '/rewards/winners',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -168,6 +200,10 @@ declare module 'vue-router/auto-routes' {
         | '/(secondary)/example-scrollable-page'
         | '/(secondary)/products/[id]'
         | '/(secondary)/products/search-products'
+        | '/(secondary)/rewards/'
+        | '/(secondary)/rewards/history'
+        | '/(secondary)/rewards/my-rewards'
+        | '/(secondary)/rewards/winners'
       views:
         | 'default'
     }
@@ -186,6 +222,30 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(secondary)/products/search-products.vue': {
       routes:
         | '/(secondary)/products/search-products'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/rewards/index.vue': {
+      routes:
+        | '/(secondary)/rewards/'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/rewards/history.vue': {
+      routes:
+        | '/(secondary)/rewards/history'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/rewards/my-rewards.vue': {
+      routes:
+        | '/(secondary)/rewards/my-rewards'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/rewards/winners.vue': {
+      routes:
+        | '/(secondary)/rewards/winners'
       views:
         | never
     }

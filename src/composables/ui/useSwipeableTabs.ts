@@ -26,6 +26,7 @@ export interface UseSwipeableTabsReturn {
   getTabWidth: () => number
   setContainerWidth: (width: number) => void
   setTabWidths: (widths: number[]) => void
+  setTabOffsets: (offsets: number[]) => void
 }
 
 export function useSwipeableTabs(options: UseSwipeableTabsOptions): UseSwipeableTabsReturn {
@@ -37,6 +38,7 @@ export function useSwipeableTabs(options: UseSwipeableTabsOptions): UseSwipeable
   const isDragging = ref(false)
   const containerWidth = ref(0)
   const tabWidths = ref<number[]>([])
+  const tabOffsets = ref<number[]>([])
 
   const getTabWidth = () => {
     if (containerWidth.value === 0) return 0
@@ -51,35 +53,35 @@ export function useSwipeableTabs(options: UseSwipeableTabsOptions): UseSwipeable
     tabWidths.value = widths
   }
 
+  const setTabOffsets = (offsets: number[]) => {
+    tabOffsets.value = offsets
+  }
+
+  // Indicator uses offsetLeft directly - simple and accurate
   const indicatorStyle = computed(() => {
-    if (tabWidths.value.length === 0) {
+    if (tabWidths.value.length === 0 || tabOffsets.value.length === 0) {
       return { left: '0px', width: '0px' }
     }
 
-    const currentTabWidth = tabWidths.value[activeIndex.value] || 0
-    let baseLeft = 0
-    for (let i = 0; i < activeIndex.value; i++) {
-      baseLeft += tabWidths.value[i] || 0
-    }
+    const currentWidth = tabWidths.value[activeIndex.value] || 0
+    const currentLeft = tabOffsets.value[activeIndex.value] || 0
 
-    // Calculate drag progress relative to container width
+    // Calculate drag progress
     const dragProgress = containerWidth.value > 0 ? -translateX.value / containerWidth.value : 0
 
-    // Calculate offset based on drag progress
-    let indicatorOffset = 0
+    // Interpolate position during drag
+    let left = currentLeft
     if (dragProgress > 0 && activeIndex.value < tabs.length - 1) {
-      // Swiping left (going to next tab)
-      const nextTabWidth = tabWidths.value[activeIndex.value + 1] || 0
-      indicatorOffset = dragProgress * (currentTabWidth + nextTabWidth) * 0.5
+      const nextLeft = tabOffsets.value[activeIndex.value + 1] || 0
+      left = currentLeft + dragProgress * (nextLeft - currentLeft)
     } else if (dragProgress < 0 && activeIndex.value > 0) {
-      // Swiping right (going to previous tab)
-      const prevTabWidth = tabWidths.value[activeIndex.value - 1] || 0
-      indicatorOffset = dragProgress * (currentTabWidth + prevTabWidth) * 0.5
+      const prevLeft = tabOffsets.value[activeIndex.value - 1] || 0
+      left = currentLeft + dragProgress * (currentLeft - prevLeft)
     }
 
     return {
-      left: `${baseLeft + indicatorOffset}px`,
-      width: `${currentTabWidth}px`,
+      left: `${left}px`,
+      width: `${currentWidth}px`,
     }
   })
 
@@ -164,5 +166,6 @@ export function useSwipeableTabs(options: UseSwipeableTabsOptions): UseSwipeable
     getTabWidth,
     setContainerWidth,
     setTabWidths,
+    setTabOffsets,
   }
 }

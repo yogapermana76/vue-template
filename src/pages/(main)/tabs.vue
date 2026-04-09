@@ -32,8 +32,8 @@
 </script>
 
 <template>
-  <div>
-    <SwipeableTabs v-model="activeTab" :tabs="tabs" full-height>
+  <div class="flex flex-col">
+    <SwipeableTabs v-model="activeTab" :tabs="tabs" full-height class="flex-1">
       <SwipeableTabBar v-slot="{ tab }">
         {{ tab.label }}
         <Badge v-if="tab.key === 'product'" variant="destructive" class="ml-1">
@@ -41,17 +41,23 @@
         </Badge>
       </SwipeableTabBar>
 
-      <SwipeableTabPanels>
-        <SwipeableTabPanel value="home" class="p-4">
-          <TabHomeContent />
+      <SwipeableTabPanels class="bg-white">
+        <SwipeableTabPanel value="home">
+          <div class="p-4">
+            <TabHomeContent />
+          </div>
         </SwipeableTabPanel>
 
-        <SwipeableTabPanel value="product" class="p-4">
-          <TabProductContent />
+        <SwipeableTabPanel value="product">
+          <div class="p-4">
+            <TabProductContent />
+          </div>
         </SwipeableTabPanel>
 
-        <SwipeableTabPanel value="dashboard" class="p-4">
-          <TabDashboardContent />
+        <SwipeableTabPanel value="dashboard">
+          <div class="p-4">
+            <TabDashboardContent />
+          </div>
         </SwipeableTabPanel>
       </SwipeableTabPanels>
     </SwipeableTabs>

@@ -28,6 +28,7 @@ export interface SwipeableTabsContext {
   getTabWidth: () => number
   setContainerWidth: (width: number) => void
   setTabWidths: (widths: number[]) => void
+  setTabOffsets: (offsets: number[]) => void
 }
 
 export const SWIPEABLE_TABS_INJECTION_KEY: InjectionKey<SwipeableTabsContext> =
