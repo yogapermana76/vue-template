@@ -22,8 +22,6 @@
 </script>
 
 <template>
-  <WinnersSection />
-  <FaqListSection />
   <HeroSection />
   <FeaturedBannerCarousel />
   <FeaturesSection />
@@ -33,5 +31,7 @@
   <TestimonialCarousel />
   <QuickActionsSection />
   <FAQSection />
+  <FaqListSection />
+  <WinnersSection />
   <CTASection />
 </template>
