@@ -33,6 +33,7 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       Record<never, never>,
       | '/(default)/'
+      | '/(default)/eco-journey-points/[id]'
       | '/(default)/eco-journey-points/history'
       | '/(default)/rewards/[id]'
       | '/(default)/rewards/complete-address'
@@ -47,6 +48,13 @@ declare module 'vue-router/auto-routes' {
       '/',
       Record<never, never>,
       Record<never, never>,
+      | never
+    >,
+    '/(default)/eco-journey-points/[id]': RouteRecordInfo<
+      '/(default)/eco-journey-points/[id]',
+      '/eco-journey-points/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
       | never
     >,
     '/(default)/eco-journey-points/history': RouteRecordInfo<
@@ -195,6 +203,7 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/(default)'
         | '/(default)/'
+        | '/(default)/eco-journey-points/[id]'
         | '/(default)/eco-journey-points/history'
         | '/(default)/rewards/[id]'
         | '/(default)/rewards/complete-address'
@@ -209,6 +218,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(default)/index.vue': {
       routes:
         | '/(default)/'
+      views:
+        | never
+    }
+    'src/pages/(default)/eco-journey-points/[id].vue': {
+      routes:
+        | '/(default)/eco-journey-points/[id]'
       views:
         | never
     }
