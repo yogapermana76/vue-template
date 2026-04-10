@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { FaqItem } from '@/components/rewards'
+  import { ExpandableItem } from '@/components/ui'
 
   const faqItems = [
     {
@@ -37,7 +37,7 @@
   <section class="flex flex-col gap-4 p-4">
     <h2 class="body-l-semibold text-slate-950">FAQ</h2>
     <div class="flex flex-col gap-2">
-      <FaqItem
+      <ExpandableItem
         v-for="item in faqItems"
         :key="item.id"
         :question="item.question"

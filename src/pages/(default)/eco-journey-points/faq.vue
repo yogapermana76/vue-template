@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { Header } from '@/components/layout'
-  import { FaqItem } from '@/components/rewards'
+  import { ExpandableItem } from '@/components/ui'
 
   definePage({
     meta: {
@@ -79,7 +79,7 @@
 
       <!-- FAQ Items -->
       <div class="flex w-full flex-col gap-2">
-        <FaqItem
+        <ExpandableItem
           v-for="item in faqItems"
           :key="item.id"
           :question="item.question"
