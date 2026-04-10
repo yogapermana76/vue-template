@@ -97,92 +97,77 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/(demo)': RouteRecordInfo<
-      '/(demo)',
-      '/',
-      Record<never, never>,
-      Record<never, never>,
-      | '/(demo)/(bottom-nav)'
-      | '/(demo)/(bottom-nav)/dashboard'
-      | '/(demo)/(bottom-nav)/home'
-      | '/(demo)/(bottom-nav)/products'
-      | '/(demo)/(bottom-nav)/tabs'
-      | '/(demo)/demo/example-scrollable-page'
-      | '/(demo)/demo/login'
-      | '/(demo)/demo/products/[id]'
-      | '/(demo)/demo/products/search-products'
-    >,
-    '/(demo)/(bottom-nav)': RouteRecordInfo<
-      '/(demo)/(bottom-nav)',
-      '/',
-      Record<never, never>,
-      Record<never, never>,
-      | '/(demo)/(bottom-nav)/dashboard'
-      | '/(demo)/(bottom-nav)/home'
-      | '/(demo)/(bottom-nav)/products'
-      | '/(demo)/(bottom-nav)/tabs'
-    >,
-    '/(demo)/(bottom-nav)/dashboard': RouteRecordInfo<
-      '/(demo)/(bottom-nav)/dashboard',
-      '/dashboard',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(demo)/(bottom-nav)/home': RouteRecordInfo<
-      '/(demo)/(bottom-nav)/home',
-      '/home',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(demo)/(bottom-nav)/products': RouteRecordInfo<
-      '/(demo)/(bottom-nav)/products',
-      '/products',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(demo)/(bottom-nav)/tabs': RouteRecordInfo<
-      '/(demo)/(bottom-nav)/tabs',
-      '/tabs',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(demo)/demo/example-scrollable-page': RouteRecordInfo<
-      '/(demo)/demo/example-scrollable-page',
-      '/demo/example-scrollable-page',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(demo)/demo/login': RouteRecordInfo<
-      '/(demo)/demo/login',
-      '/demo/login',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(demo)/demo/products/[id]': RouteRecordInfo<
-      '/(demo)/demo/products/[id]',
-      '/demo/products/:id',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
-    '/(demo)/demo/products/search-products': RouteRecordInfo<
-      '/(demo)/demo/products/search-products',
-      '/demo/products/search-products',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
     '/[...all]': RouteRecordInfo<
       '/[...all]',
       '/:all(.*)',
       { all: ParamValue<true> },
       { all: ParamValue<false> },
+      | never
+    >,
+    '/demo/(bottom-nav)': RouteRecordInfo<
+      '/demo/(bottom-nav)',
+      '/demo',
+      Record<never, never>,
+      Record<never, never>,
+      | '/demo/(bottom-nav)/'
+      | '/demo/(bottom-nav)/dashboard'
+      | '/demo/(bottom-nav)/products'
+      | '/demo/(bottom-nav)/tabs'
+    >,
+    '/demo/(bottom-nav)/': RouteRecordInfo<
+      '/demo/(bottom-nav)/',
+      '/demo',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/(bottom-nav)/dashboard': RouteRecordInfo<
+      '/demo/(bottom-nav)/dashboard',
+      '/demo/dashboard',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/(bottom-nav)/products': RouteRecordInfo<
+      '/demo/(bottom-nav)/products',
+      '/demo/products',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/(bottom-nav)/tabs': RouteRecordInfo<
+      '/demo/(bottom-nav)/tabs',
+      '/demo/tabs',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/examples/example-scrollable-page': RouteRecordInfo<
+      '/demo/examples/example-scrollable-page',
+      '/demo/examples/example-scrollable-page',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/examples/login': RouteRecordInfo<
+      '/demo/examples/login',
+      '/demo/examples/login',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/examples/products/[id]': RouteRecordInfo<
+      '/demo/examples/products/[id]',
+      '/demo/examples/products/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/demo/examples/products/search-products': RouteRecordInfo<
+      '/demo/examples/products/search-products',
+      '/demo/examples/products/search-products',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
   }
@@ -260,82 +245,67 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(demo).vue': {
-      routes:
-        | '/(demo)'
-        | '/(demo)/(bottom-nav)'
-        | '/(demo)/(bottom-nav)/dashboard'
-        | '/(demo)/(bottom-nav)/home'
-        | '/(demo)/(bottom-nav)/products'
-        | '/(demo)/(bottom-nav)/tabs'
-        | '/(demo)/demo/example-scrollable-page'
-        | '/(demo)/demo/login'
-        | '/(demo)/demo/products/[id]'
-        | '/(demo)/demo/products/search-products'
-      views:
-        | 'default'
-    }
-    'src/pages/(demo)/(bottom-nav).vue': {
-      routes:
-        | '/(demo)/(bottom-nav)'
-        | '/(demo)/(bottom-nav)/dashboard'
-        | '/(demo)/(bottom-nav)/home'
-        | '/(demo)/(bottom-nav)/products'
-        | '/(demo)/(bottom-nav)/tabs'
-      views:
-        | 'default'
-    }
-    'src/pages/(demo)/(bottom-nav)/dashboard.vue': {
-      routes:
-        | '/(demo)/(bottom-nav)/dashboard'
-      views:
-        | never
-    }
-    'src/pages/(demo)/(bottom-nav)/home.vue': {
-      routes:
-        | '/(demo)/(bottom-nav)/home'
-      views:
-        | never
-    }
-    'src/pages/(demo)/(bottom-nav)/products.vue': {
-      routes:
-        | '/(demo)/(bottom-nav)/products'
-      views:
-        | never
-    }
-    'src/pages/(demo)/(bottom-nav)/tabs.vue': {
-      routes:
-        | '/(demo)/(bottom-nav)/tabs'
-      views:
-        | never
-    }
-    'src/pages/(demo)/demo/example-scrollable-page.vue': {
-      routes:
-        | '/(demo)/demo/example-scrollable-page'
-      views:
-        | never
-    }
-    'src/pages/(demo)/demo/login.vue': {
-      routes:
-        | '/(demo)/demo/login'
-      views:
-        | never
-    }
-    'src/pages/(demo)/demo/products/[id].vue': {
-      routes:
-        | '/(demo)/demo/products/[id]'
-      views:
-        | never
-    }
-    'src/pages/(demo)/demo/products/search-products.vue': {
-      routes:
-        | '/(demo)/demo/products/search-products'
-      views:
-        | never
-    }
     'src/pages/[...all].vue': {
       routes:
         | '/[...all]'
+      views:
+        | never
+    }
+    'src/pages/demo/(bottom-nav).vue': {
+      routes:
+        | '/demo/(bottom-nav)'
+        | '/demo/(bottom-nav)/'
+        | '/demo/(bottom-nav)/dashboard'
+        | '/demo/(bottom-nav)/products'
+        | '/demo/(bottom-nav)/tabs'
+      views:
+        | 'default'
+    }
+    'src/pages/demo/(bottom-nav)/index.vue': {
+      routes:
+        | '/demo/(bottom-nav)/'
+      views:
+        | never
+    }
+    'src/pages/demo/(bottom-nav)/dashboard.vue': {
+      routes:
+        | '/demo/(bottom-nav)/dashboard'
+      views:
+        | never
+    }
+    'src/pages/demo/(bottom-nav)/products.vue': {
+      routes:
+        | '/demo/(bottom-nav)/products'
+      views:
+        | never
+    }
+    'src/pages/demo/(bottom-nav)/tabs.vue': {
+      routes:
+        | '/demo/(bottom-nav)/tabs'
+      views:
+        | never
+    }
+    'src/pages/demo/examples/example-scrollable-page.vue': {
+      routes:
+        | '/demo/examples/example-scrollable-page'
+      views:
+        | never
+    }
+    'src/pages/demo/examples/login.vue': {
+      routes:
+        | '/demo/examples/login'
+      views:
+        | never
+    }
+    'src/pages/demo/examples/products/[id].vue': {
+      routes:
+        | '/demo/examples/products/[id]'
+      views:
+        | never
+    }
+    'src/pages/demo/examples/products/search-products.vue': {
+      routes:
+        | '/demo/examples/products/search-products'
       views:
         | never
     }

@@ -20,7 +20,7 @@
 
   const router = useRouter()
 
-  const route = useRoute('/(secondary)/demo/products/[id]')
+  const route = useRoute('/demo/examples/products/[id]')
   const cartStore = useCartStore()
   const { success, error: toastError } = useToast()
 

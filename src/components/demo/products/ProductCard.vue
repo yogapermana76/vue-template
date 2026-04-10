@@ -18,7 +18,7 @@
 
 <template>
   <Card class="hover:border-primary-300 overflow-hidden transition-shadow hover:shadow-lg">
-    <RouterLink :to="`/demo/products/${product.id}`">
+    <RouterLink :to="`/demo/examples/products/${product.id}`">
       <CardHeader class="bg-neutral-100 p-0">
         <img
           :src="product.image"

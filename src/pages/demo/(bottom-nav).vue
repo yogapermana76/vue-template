@@ -5,10 +5,10 @@
   import { config } from '@/config'
 
   const navigation = [
-    { name: 'Home', to: '/home', icon: Home },
-    { name: 'Products', to: '/products', icon: Package },
-    { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-    { name: 'Tabs', to: '/tabs', icon: Layers },
+    { name: 'Home', to: '/demo', icon: Home },
+    { name: 'Products', to: '/demo/products', icon: Package },
+    { name: 'Dashboard', to: '/demo/dashboard', icon: LayoutDashboard },
+    { name: 'Tabs', to: '/demo/tabs', icon: Layers },
   ]
 </script>
 

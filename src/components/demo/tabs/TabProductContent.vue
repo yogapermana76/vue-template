@@ -23,7 +23,7 @@
 
   const handleSearchFocus = () => {
     // Navigate to search products page when search input is focused/clicked
-    router.push('/demo/products/search-products')
+    router.push('/demo/examples/products/search-products')
   }
 </script>
 

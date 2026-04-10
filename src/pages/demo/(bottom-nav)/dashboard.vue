@@ -21,7 +21,7 @@
 
   const handleLogout = () => {
     logout()
-    router.push('/demo/login')
+    router.push('/demo/examples/login')
   }
 
   const stats = [

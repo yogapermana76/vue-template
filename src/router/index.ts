@@ -38,7 +38,7 @@ router.beforeEach(to => {
 
   // Protected route - redirect to login
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    return { path: '/demo/login', query: { redirect: to.fullPath } }
+    return { path: '/demo/examples/login', query: { redirect: to.fullPath } }
   }
 
   // Guest route - redirect to home if authenticated
