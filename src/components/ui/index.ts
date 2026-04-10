@@ -74,6 +74,9 @@ export { Label } from './label'
 // PillTab
 export { PillTab, pillTabVariants } from './pill-tab'
 
+// RoundedOverlap
+export { RoundedOverlap } from './rounded-overlap'
+
 // Skeleton
 export { Skeleton } from './skeleton'
 

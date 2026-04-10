@@ -138,6 +138,7 @@ declare module 'vue' {
     RewardsVoucherSection: typeof import('./../components/rewards/sections/my-rewards/RewardsVoucherSection.vue')['default']
     RewardsVouchersSection: typeof import('./../components/rewards/sections/my-rewards/RewardsVouchersSection.vue')['default']
     RewardTermsSection: typeof import('./../components/rewards/sections/RewardTermsSection.vue')['default']
+    RoundedOverlap: typeof import('./../components/ui/rounded-overlap/RoundedOverlap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollableContent: typeof import('./../components/layout/ScrollableContent.vue')['default']
