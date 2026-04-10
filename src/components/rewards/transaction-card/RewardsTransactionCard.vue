@@ -37,7 +37,7 @@
     data-slot="rewards-transaction-card"
     :class="
       cn(
-        'flex flex-row items-start gap-2 rounded-lg border border-slate-200 bg-white p-3',
+        'flex flex-row items-start gap-2 rounded-sm border border-slate-200 bg-white p-3',
         props.class,
       )
     "
