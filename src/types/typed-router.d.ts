@@ -70,10 +70,6 @@ declare module 'vue-router/auto-routes' {
       '/',
       Record<never, never>,
       Record<never, never>,
-      | '/(secondary)/demo/example-scrollable-page'
-      | '/(secondary)/demo/login'
-      | '/(secondary)/demo/products/[id]'
-      | '/(secondary)/demo/products/search-products'
       | '/(secondary)/rewards/'
       | '/(secondary)/rewards/[id]'
       | '/(secondary)/rewards/complete-address'
@@ -82,34 +78,6 @@ declare module 'vue-router/auto-routes' {
       | '/(secondary)/rewards/my-rewards'
       | '/(secondary)/rewards/redemption/[id]'
       | '/(secondary)/rewards/winners'
-    >,
-    '/(secondary)/demo/example-scrollable-page': RouteRecordInfo<
-      '/(secondary)/demo/example-scrollable-page',
-      '/demo/example-scrollable-page',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(secondary)/demo/login': RouteRecordInfo<
-      '/(secondary)/demo/login',
-      '/demo/login',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(secondary)/demo/products/[id]': RouteRecordInfo<
-      '/(secondary)/demo/products/[id]',
-      '/demo/products/:id',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
-    '/(secondary)/demo/products/search-products': RouteRecordInfo<
-      '/(secondary)/demo/products/search-products',
-      '/demo/products/search-products',
-      Record<never, never>,
-      Record<never, never>,
-      | never
     >,
     '/(secondary)/rewards/': RouteRecordInfo<
       '/(secondary)/rewards/',
@@ -174,6 +142,34 @@ declare module 'vue-router/auto-routes' {
       { all: ParamValue<false> },
       | never
     >,
+    '/demo/example-scrollable-page': RouteRecordInfo<
+      '/demo/example-scrollable-page',
+      '/demo/example-scrollable-page',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/login': RouteRecordInfo<
+      '/demo/login',
+      '/demo/login',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/demo/products/[id]': RouteRecordInfo<
+      '/demo/products/[id]',
+      '/demo/products/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/demo/products/search-products': RouteRecordInfo<
+      '/demo/products/search-products',
+      '/demo/products/search-products',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
   }
 
   /**
@@ -224,10 +220,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(secondary).vue': {
       routes:
         | '/(secondary)'
-        | '/(secondary)/demo/example-scrollable-page'
-        | '/(secondary)/demo/login'
-        | '/(secondary)/demo/products/[id]'
-        | '/(secondary)/demo/products/search-products'
         | '/(secondary)/rewards/'
         | '/(secondary)/rewards/[id]'
         | '/(secondary)/rewards/complete-address'
@@ -238,30 +230,6 @@ declare module 'vue-router/auto-routes' {
         | '/(secondary)/rewards/winners'
       views:
         | 'default'
-    }
-    'src/pages/(secondary)/demo/example-scrollable-page.vue': {
-      routes:
-        | '/(secondary)/demo/example-scrollable-page'
-      views:
-        | never
-    }
-    'src/pages/(secondary)/demo/login.vue': {
-      routes:
-        | '/(secondary)/demo/login'
-      views:
-        | never
-    }
-    'src/pages/(secondary)/demo/products/[id].vue': {
-      routes:
-        | '/(secondary)/demo/products/[id]'
-      views:
-        | never
-    }
-    'src/pages/(secondary)/demo/products/search-products.vue': {
-      routes:
-        | '/(secondary)/demo/products/search-products'
-      views:
-        | never
     }
     'src/pages/(secondary)/rewards/index.vue': {
       routes:
@@ -314,6 +282,30 @@ declare module 'vue-router/auto-routes' {
     'src/pages/[...all].vue': {
       routes:
         | '/[...all]'
+      views:
+        | never
+    }
+    'src/pages/demo/example-scrollable-page.vue': {
+      routes:
+        | '/demo/example-scrollable-page'
+      views:
+        | never
+    }
+    'src/pages/demo/login.vue': {
+      routes:
+        | '/demo/login'
+      views:
+        | never
+    }
+    'src/pages/demo/products/[id].vue': {
+      routes:
+        | '/demo/products/[id]'
+      views:
+        | never
+    }
+    'src/pages/demo/products/search-products.vue': {
+      routes:
+        | '/demo/products/search-products'
       views:
         | never
     }
