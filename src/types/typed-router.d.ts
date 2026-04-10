@@ -34,6 +34,7 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | '/(default)/'
       | '/(default)/eco-journey-points/[id]'
+      | '/(default)/eco-journey-points/faq'
       | '/(default)/eco-journey-points/history'
       | '/(default)/eco-journey-points/redemption/[id]'
       | '/(default)/rewards/[id]'
@@ -56,6 +57,13 @@ declare module 'vue-router/auto-routes' {
       '/eco-journey-points/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | never
+    >,
+    '/(default)/eco-journey-points/faq': RouteRecordInfo<
+      '/(default)/eco-journey-points/faq',
+      '/eco-journey-points/faq',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     '/(default)/eco-journey-points/history': RouteRecordInfo<
@@ -212,6 +220,7 @@ declare module 'vue-router/auto-routes' {
         | '/(default)'
         | '/(default)/'
         | '/(default)/eco-journey-points/[id]'
+        | '/(default)/eco-journey-points/faq'
         | '/(default)/eco-journey-points/history'
         | '/(default)/eco-journey-points/redemption/[id]'
         | '/(default)/rewards/[id]'
@@ -233,6 +242,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(default)/eco-journey-points/[id].vue': {
       routes:
         | '/(default)/eco-journey-points/[id]'
+      views:
+        | never
+    }
+    'src/pages/(default)/eco-journey-points/faq.vue': {
+      routes:
+        | '/(default)/eco-journey-points/faq'
       views:
         | never
     }
