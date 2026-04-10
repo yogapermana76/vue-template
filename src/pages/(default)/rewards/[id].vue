@@ -19,6 +19,7 @@
   const router = useRouter()
   const showConfirmationSheet = ref(false)
   const showCouponListSheet = ref(false)
+  const imageLoading = ref(true)
 
   // Data
   const programInfo = {
@@ -112,11 +113,18 @@
     <Header title="Detail Promo" positioning="sticky" />
 
     <!-- Hero Background Image -->
-    <div class="bg-primary-400 relative h-46.75 w-full">
+    <div class="relative h-46.75 w-full">
+      <div
+        v-if="imageLoading"
+        class="absolute inset-0 h-full w-full animate-pulse bg-neutral-200"
+      />
       <img
         src="https://picsum.photos/375/187"
         alt="Promo Banner"
         class="h-full w-full object-cover"
+        :class="{ invisible: imageLoading }"
+        @load="imageLoading = false"
+        @error="imageLoading = false"
       />
       <!-- Rounded Overlap Shape -->
       <div class="absolute bottom-0 left-0 h-4 w-full rounded-t-md bg-white" />
