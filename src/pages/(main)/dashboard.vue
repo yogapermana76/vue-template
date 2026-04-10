@@ -7,7 +7,7 @@
     StatsCarousel,
     OverviewCard,
     ActivitySection,
-  } from '@/components/dashboard'
+  } from '@/components/demo/dashboard'
 
   definePage({
     meta: {
@@ -21,7 +21,7 @@
 
   const handleLogout = () => {
     logout()
-    router.push('/login')
+    router.push('/demo/login')
   }
 
   const stats = [

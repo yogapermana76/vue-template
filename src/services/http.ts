@@ -26,7 +26,7 @@ function createHttpClient(service: ServiceName): AxiosInstance {
     error => {
       if (error.response?.status === 401) {
         storage.remove(STORAGE_KEYS.AUTH_TOKEN)
-        window.location.href = '/login'
+        window.location.href = '/demo/login'
       }
       return Promise.reject(error)
     },
