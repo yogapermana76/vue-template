@@ -39,8 +39,8 @@
 
   const variantClasses: Record<FlagVariant, string> = {
     primary: 'bg-primary-500 text-white',
-    success: 'bg-success-600 text-white',
-    danger: 'bg-error-600 text-white',
+    success: 'bg-success-500 text-white',
+    danger: 'bg-error-500 text-white',
     info: 'bg-info-500 text-white',
   }
 
