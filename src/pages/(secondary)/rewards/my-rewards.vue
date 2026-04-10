@@ -1,8 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { Printer } from 'lucide-vue-next'
   import { Header } from '@/components/layout'
-  import { IconButton } from '@/components/ui/button'
   import {
     SwipeableTabs,
     SwipeableTabBar,
@@ -11,72 +9,73 @@
     type TabItem,
   } from '@/components/ui/swipeable-tabs'
   import {
-    RewardsRiwayatSection,
-    RewardsVoucherSection,
-    RewardsKuponSection,
-    RewardsBarangSection,
+    RewardsVouchersSection,
+    RewardsLotteryCouponsSection,
+    RewardsItemsSection,
   } from '@/components/rewards/sections'
 
   definePage({
     meta: {
-      title: 'My Rewards',
+      title: 'Rewards Saya',
     },
   })
 
   // Main tabs
   const mainTabs: TabItem[] = [
-    { key: 'history', label: 'History' },
     { key: 'voucher', label: 'Voucher' },
-    { key: 'lottery-coupons', label: 'Lottery Coupons' },
-    { key: 'items', label: 'Items' },
+    { key: 'lottery-coupons', label: 'Kupon Undian' },
+    { key: 'items', label: 'Barang' },
   ]
 
-  const activeTab = ref('history')
-  const historyBadgeCount = ref(2)
+  const activeTab = ref('voucher')
+  const voucherBadgeCount = ref(2)
+  const lotteryCouponsBadgeCount = ref(2)
+  const itemsBadgeCount = ref(2)
 </script>
 
 <template>
   <div class="flex h-full flex-col">
     <!-- Header -->
-    <Header title="My Rewards" show-back hide-theme-toggle positioning="sticky">
-      <template #actions>
-        <IconButton variant="tertiary" size="md" class="text-neutral-950">
-          <Printer class="size-5" />
-        </IconButton>
-      </template>
-    </Header>
+    <Header title="Rewards Saya" positioning="sticky" />
 
     <!-- Swipeable Tabs -->
     <SwipeableTabs v-model="activeTab" :tabs="mainTabs" class="flex-1">
       <SwipeableTabBar v-slot="{ tab }">
         {{ tab.label }}
         <span
-          v-if="tab.key === 'history'"
+          v-if="tab.key === 'voucher'"
           class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
         >
-          {{ historyBadgeCount }}
+          {{ voucherBadgeCount }}
+        </span>
+        <span
+          v-if="tab.key === 'lottery-coupons'"
+          class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+        >
+          {{ lotteryCouponsBadgeCount }}
+        </span>
+        <span
+          v-if="tab.key === 'items'"
+          class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+        >
+          {{ itemsBadgeCount }}
         </span>
       </SwipeableTabBar>
 
       <SwipeableTabPanels>
-        <!-- History Tab -->
-        <SwipeableTabPanel value="history" no-padding>
-          <RewardsRiwayatSection />
-        </SwipeableTabPanel>
-
         <!-- Voucher Tab -->
         <SwipeableTabPanel value="voucher" no-padding>
-          <RewardsVoucherSection />
+          <RewardsVouchersSection />
         </SwipeableTabPanel>
 
         <!-- Lottery Coupons Tab -->
         <SwipeableTabPanel value="lottery-coupons" no-padding>
-          <RewardsKuponSection />
+          <RewardsLotteryCouponsSection />
         </SwipeableTabPanel>
 
         <!-- Items Tab -->
         <SwipeableTabPanel value="items" no-padding>
-          <RewardsBarangSection />
+          <RewardsItemsSection />
         </SwipeableTabPanel>
       </SwipeableTabPanels>
     </SwipeableTabs>

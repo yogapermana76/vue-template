@@ -1,13 +1,26 @@
 <script setup lang="ts">
+  import { ref, onMounted, onUnmounted } from 'vue'
   import { Header } from '@/components/layout'
   import { WinnerCard, type WinnerData } from '@/components/rewards'
-  import WinnersVector1 from '@/assets/icons/winners-vector-1.svg?component'
-  import WinnersVector2 from '@/assets/icons/winners-vector-2.svg?component'
 
   definePage({
     meta: {
       title: 'Pemenang',
     },
+  })
+
+  const isScrolled = ref(false)
+
+  const handleScroll = () => {
+    isScrolled.value = window.scrollY > 50
+  }
+
+  onMounted(() => {
+    window.addEventListener('scroll', handleScroll)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
   })
 
   // Data
@@ -92,24 +105,21 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header title="Pemenang" show-back hide-theme-toggle positioning="sticky" />
+    <Header
+      title="Pemenang"
+      positioning="fixed"
+      :class="[
+        'transition-all duration-300',
+        isScrolled ? 'bg-white!' : 'bg-transparent!',
+        isScrolled ? '[&_h1]:text-neutral-950' : '[&_h1]:text-white!',
+        isScrolled ? '' : '[&_button_svg]:text-white',
+      ]"
+    />
 
     <!-- Hero Section with Featured Winners -->
-    <div
-      class="bg-primary-400 from-primary-500 to-primary-400 relative flex w-full flex-col overflow-hidden bg-linear-to-b"
-    >
-      <!-- Decorative Vector Illustrations -->
-      <div class="pointer-events-none absolute inset-0">
-        <WinnersVector2
-          class="absolute -top-20 right-0 h-80 w-60 translate-x-1/4 rotate-[14.31deg]"
-        />
-        <WinnersVector1
-          class="absolute -top-24 right-0 h-80 w-60 translate-x-1/4 rotate-[14.31deg]"
-        />
-      </div>
-
+    <div class="bg-gradient-teal relative flex w-full flex-col overflow-hidden pt-14 pb-5">
       <!-- Period Badge -->
-      <div class="z-10 flex justify-center px-4 pt-4 pb-4">
+      <div class="z-10 flex justify-center px-4 pb-3">
         <div
           class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
         >

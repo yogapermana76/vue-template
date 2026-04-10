@@ -1,7 +1,12 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { Header } from '@/components/layout'
-  import { RewardsTransactionCard } from '@/components/rewards'
+  import { EmptyState } from '@/components/ui/empty-state'
+  import {
+    PointsInfoSection,
+    TransactionHistorySection,
+  } from '@/components/rewards/sections/history'
+  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   definePage({
     meta: {
@@ -20,6 +25,10 @@
     label: string
     transactions: TransactionItem[]
   }
+
+  // Points and active until state
+  const points = ref(0)
+  const activeUntil = ref('30 Dec 2026')
 
   // Mock data - grouped by date
   const transactionHistory = ref<TransactionGroup[]>([
@@ -61,10 +70,39 @@
           date: 'Kemarin, 06:00WIB',
           points: 5,
         },
+        {
+          id: '8',
+          title: 'Belanja Marketplace',
+          date: 'Kemarin, 14:30WIB',
+          points: 10,
+        },
       ],
     },
     {
-      label: 'April 2026',
+      label: '8 April 2026',
+      transactions: [
+        {
+          id: '9',
+          title: 'Pembelian Token',
+          date: '08 April 2026, 19:00WIB',
+          points: 5,
+        },
+        {
+          id: '10',
+          title: 'Top Up SPKLU',
+          date: '08 April 2026, 11:00WIB',
+          points: 8,
+        },
+        {
+          id: '11',
+          title: 'Voucher Belanja',
+          date: '08 April 2026, 09:00WIB',
+          points: -25,
+        },
+      ],
+    },
+    {
+      label: '7 April 2026',
       transactions: [
         {
           id: '6',
@@ -78,6 +116,57 @@
           date: '07 April 2026, 06:00WIB',
           points: 5,
         },
+        {
+          id: '12',
+          title: 'Cashback Marketplace',
+          date: '07 April 2026, 20:00WIB',
+          points: 15,
+        },
+      ],
+    },
+    {
+      label: '6 April 2026',
+      transactions: [
+        {
+          id: '13',
+          title: 'Pembelian Token',
+          date: '06 April 2026, 18:00WIB',
+          points: 5,
+        },
+        {
+          id: '14',
+          title: 'Voucher Gratis',
+          date: '06 April 2026, 10:00WIB',
+          points: -30,
+        },
+      ],
+    },
+    {
+      label: '5 April 2026',
+      transactions: [
+        {
+          id: '15',
+          title: 'Top Up Energi',
+          date: '05 April 2026, 16:00WIB',
+          points: 20,
+        },
+        {
+          id: '16',
+          title: 'Pembelian Token',
+          date: '05 April 2026, 08:00WIB',
+          points: 5,
+        },
+      ],
+    },
+    {
+      label: '4 April 2026',
+      transactions: [
+        {
+          id: '17',
+          title: 'Voucher 50.000',
+          date: '04 April 2026, 15:00WIB',
+          points: -40,
+        },
       ],
     },
   ])
@@ -90,30 +179,26 @@
 
     <!-- Content -->
     <main class="flex flex-1 flex-col gap-6 px-4 py-4">
-      <!-- Transaction Groups -->
-      <div v-for="group in transactionHistory" :key="group.label" class="flex flex-col gap-3">
-        <!-- Date Label -->
-        <h3 class="body-m-semibold text-slate-950">{{ group.label }}</h3>
-
-        <!-- Transactions List -->
-        <div class="flex flex-col gap-2">
-          <RewardsTransactionCard
-            v-for="transaction in group.transactions"
-            :key="transaction.id"
-            :title="transaction.title"
-            :date="transaction.date"
-            :points="transaction.points"
-          />
-        </div>
+      <!-- Empty State -->
+      <div
+        v-if="transactionHistory.length === 0"
+        class="flex flex-1 flex-col items-center justify-center"
+      >
+        <EmptyState
+          :image="RiwayatIllustration"
+          title="Belum ada riwayat"
+          description="Anda belum memiliki riwayat penukaran point. Mulai tukar poin anda sekarang!"
+        />
       </div>
-    </main>
 
-    <!-- Empty State Placeholder -->
-    <div
-      v-if="transactionHistory.length === 0"
-      class="flex flex-1 flex-col items-center justify-center px-4"
-    >
-      <p class="body-m text-slate-600">Belum ada riwayat penukaran point</p>
-    </div>
+      <!-- Content when has data -->
+      <template v-else>
+        <!-- Points Info Section -->
+        <PointsInfoSection :points="points" :active-until="activeUntil" />
+
+        <!-- Transaction History Section -->
+        <TransactionHistorySection :transaction-history="transactionHistory" />
+      </template>
+    </main>
   </div>
 </template>
