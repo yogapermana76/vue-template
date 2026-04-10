@@ -90,6 +90,7 @@ declare module 'vue' {
     FilterChips: typeof import('./../components/demo/products/filters/FilterChips.vue')['default']
     FilterFooter: typeof import('./../components/demo/products/filters/FilterFooter.vue')['default']
     Flag: typeof import('./../components/ui/flag/Flag.vue')['default']
+    FloatingScanButton: typeof import('./../components/ui/button/FloatingScanButton.vue')['default']
     Footer: typeof import('./../components/layout/Footer.vue')['default']
     FormField: typeof import('./../components/ui/form/FormField.vue')['default']
     Header: typeof import('./../components/layout/Header.vue')['default']

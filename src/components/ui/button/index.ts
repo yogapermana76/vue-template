@@ -3,6 +3,7 @@ import { cva } from 'class-variance-authority'
 
 export { default as Button } from './Button.vue'
 export { default as IconButton } from './IconButton.vue'
+export { default as FloatingScanButton } from './FloatingScanButton.vue'
 
 export const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 [&_svg]:shrink-0 disabled:bg-slate-100 disabled:text-slate-500 disabled:border-transparent disabled:cursor-not-allowed',

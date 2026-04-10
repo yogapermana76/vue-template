@@ -2,6 +2,7 @@
   import { ref, computed, onMounted, onUnmounted } from 'vue'
   import { Header } from '@/components/layout'
   import { RoundedOverlap } from '@/components/ui'
+  import { FloatingScanButton } from '@/components/ui/button'
   import {
     EcoJourneyInfoSection,
     EcoJourneyRedemptionSection,
@@ -29,6 +30,10 @@
   onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
   })
+
+  const handleScan = () => {
+    // TODO: Implement QR code scanning
+  }
 </script>
 
 <template>
@@ -70,5 +75,8 @@
       <!-- More Section -->
       <EcoJourneyMoreSection />
     </main>
+
+    <!-- Floating Scan Button -->
+    <FloatingScanButton label="Scan QR" @click="handleScan" />
   </div>
 </template>
