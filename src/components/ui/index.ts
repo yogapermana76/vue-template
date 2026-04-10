@@ -1,5 +1,14 @@
 // Accordion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion'
+export {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionList,
+  ExpandableItem,
+  type AccordionListType,
+  type ExpandableItemProps,
+} from './accordion'
 
 // ActionItem
 export { ActionItem } from './action-item'

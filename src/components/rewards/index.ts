@@ -7,7 +7,7 @@ export {
   type WinnerData,
 } from './winner-card'
 
-export { FaqItem, FaqSection, type FaqItemProps, type FaqSectionProps } from './faq'
+export { FaqSection, type FaqSectionProps } from './faq'
 
 export { RewardsTransactionCard, type RewardsTransactionCardProps } from './transaction-card'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { Button } from '@/components/ui/button'
-  import { FaqItem } from '@/components/rewards'
+  import { ExpandableItem } from '@/components/ui/accordion'
 
   export interface FaqData {
     id: number
@@ -63,7 +63,7 @@
 
     <!-- FAQ Items -->
     <div class="flex w-full flex-col gap-2">
-      <FaqItem
+      <ExpandableItem
         v-for="item in faqItems"
         :key="item.id"
         :question="item.question"
