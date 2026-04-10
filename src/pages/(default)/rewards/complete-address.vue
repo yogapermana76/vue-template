@@ -5,8 +5,7 @@
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
   import { TextField, TextAreaField } from '@/components/ui/form'
-  import { RewardPrizeCard } from '@/components/rewards/reward-prize-card'
-  import { RecipientInfoItem } from '@/components/rewards/recipient-info-item'
+  import { RewardPrizeCard, RecipientInfoItem } from '@/components/rewards'
   import { RecipientInfoBottomSheet } from '@/components/rewards'
 
   definePage({
