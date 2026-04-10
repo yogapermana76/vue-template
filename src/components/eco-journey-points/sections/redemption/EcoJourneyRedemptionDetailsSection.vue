@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { Divider } from '@/components/ui/divider'
-  import MapPinIcon from '@/assets/icons/map-pin.svg?component'
 
   interface RedemptionDetail {
     serviceType: string
@@ -63,30 +62,9 @@
     <!-- Divider with background -->
     <Divider thick class="w-full bg-neutral-50" />
 
-    <!-- Alamat Pengiriman Section -->
-    <div class="flex w-full flex-col gap-3 px-4">
-      <h2 class="body-l-semibold text-slate-950">Alamat Pengiriman</h2>
-
-      <div class="flex items-start gap-2">
-        <MapPinIcon class="mt-0.5 size-5 shrink-0" />
-        <div class="flex flex-1 flex-col gap-1">
-          <div class="flex items-center gap-1">
-            <span class="body-m text-slate-950">{{ redemptionData.recipientName }}</span>
-            <span class="body-caption text-slate-700/75"
-              >({{ redemptionData.recipientPhone }})</span
-            >
-          </div>
-          <p class="body-caption-medium text-slate-700">{{ redemptionData.address }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Divider with background -->
-    <Divider thick class="w-full bg-neutral-50" />
-
     <!-- Points Summary Section -->
     <div class="flex w-full flex-col gap-3 px-4">
-      <h2 class="body-l-semibold text-slate-950">Poin</h2>
+      <h2 class="body-l-semibold text-slate-950">Informasi Penukaran</h2>
 
       <div class="flex w-full flex-col gap-2">
         <!-- Points Redeemed -->
