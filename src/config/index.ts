@@ -75,7 +75,7 @@ export const config = {
     // 'webview' = mobile app style (bottom nav, fixed width)
     // 'desktop' = website style (top nav, responsive)
     mode: 'webview' as 'webview' | 'desktop',
-    maxWidth: 480,
+    maxWidth: 425,
   },
 } as const
 

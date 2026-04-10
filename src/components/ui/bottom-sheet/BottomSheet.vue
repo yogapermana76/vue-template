@@ -90,7 +90,7 @@
   <Drawer v-model:open="isOpen" direction="bottom" :dismissible="dismissible">
     <slot name="trigger" />
 
-    <DrawerContent :class="contentClass" class="flex flex-col">
+    <DrawerContent :class="contentClass" :show-drag-handle="!showClose" class="flex flex-col">
       <!-- Header (optional) -->
       <template v-if="title || description || showClose">
         <DrawerHeader class="shrink-0 flex-row gap-2! px-4 py-2">
