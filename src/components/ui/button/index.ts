@@ -5,16 +5,16 @@ export { default as Button } from './Button.vue'
 export { default as IconButton } from './IconButton.vue'
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 [&_svg]:shrink-0 disabled:bg-slate-100 disabled:text-slate-500 disabled:border-transparent disabled:cursor-not-allowed',
   {
     variants: {
       variant: {
         primary:
-          'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-600 active:text-white disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed',
+          'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-600 active:text-white',
         secondary:
-          'border border-primary-600/50 text-primary-700 bg-transparent hover:border-primary-600 active:bg-primary-600 active:text-white active:border-primary-600 disabled:border-slate-200 disabled:text-slate-500 disabled:bg-transparent disabled:cursor-not-allowed',
+          'border border-primary-600/50 text-primary-700 bg-transparent hover:border-primary-600 active:bg-primary-600 active:text-white active:border-primary-600',
         tertiary:
-          'text-primary-700 bg-transparent hover:bg-primary-50 active:bg-primary-100 active:text-primary-800 disabled:text-slate-500 disabled:cursor-not-allowed',
+          'text-primary-700 bg-transparent hover:bg-primary-50 active:bg-primary-100 active:text-primary-800',
       },
 
       size: {
@@ -53,20 +53,18 @@ export const buttonVariants = cva(
       {
         variant: 'primary',
         isDarkBg: true,
-        class:
-          'bg-white text-teal-700 hover:bg-slate-50 active:bg-teal-500 active:text-white disabled:bg-white/10 disabled:text-slate-500',
+        class: 'bg-white text-teal-700 hover:bg-slate-50 active:bg-teal-500 active:text-white',
       },
       {
         variant: 'secondary',
         isDarkBg: true,
         class:
-          'border-white/20 text-white bg-transparent hover:border-white/40 active:bg-teal-500 active:text-white active:border-teal-500 disabled:border-white/10 disabled:text-white/40 disabled:bg-transparent',
+          'border-white/20 text-white bg-transparent hover:border-white/40 active:bg-teal-500 active:text-white active:border-teal-500',
       },
       {
         variant: 'tertiary',
         isDarkBg: true,
-        class:
-          'text-white hover:bg-white/10 active:bg-white/20 active:text-white disabled:text-white/40',
+        class: 'text-white hover:bg-white/10 active:bg-white/20 active:text-white',
       },
     ],
 

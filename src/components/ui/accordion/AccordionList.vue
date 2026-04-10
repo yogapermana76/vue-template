@@ -32,6 +32,7 @@
     collapsible: true,
     defaultValue: undefined,
     ariaLabel: 'Accordion menu',
+    class: 'gap-3',
   })
 
   const emit = defineEmits<{
@@ -58,6 +59,23 @@
   const isItemDisabled = (item: AccordionListItem): boolean => {
     return item.disabled ?? false
   }
+
+  // Default styles for accordion items
+  const getItemClass = (item: AccordionListItem): string => {
+    const defaultClass = 'border-0'
+    return item.itemClass ? `${defaultClass} ${item.itemClass}` : defaultClass
+  }
+
+  const getTriggerClass = (item: AccordionListItem): string => {
+    const defaultClass =
+      'px-0 py-2 border-b border-transparent hover:bg-neutral-50 hover:border-transparent data-[state=open]:border-transparent transition-colors rounded-none'
+    return item.triggerClass ? `${defaultClass} ${item.triggerClass}` : defaultClass
+  }
+
+  const getContentClass = (item: AccordionListItem): string => {
+    const defaultClass = 'pt-3 pb-4 px-0 body-caption text-slate-700'
+    return item.contentClass ? `${defaultClass} ${item.contentClass}` : defaultClass
+  }
 </script>
 
 <template>
@@ -66,7 +84,7 @@
     :collapsible="props.collapsible"
     :default-value="getCurrentValue()"
     :model-value="isControlled() ? props.modelValue : undefined"
-    :class="props.class"
+    :class="`${props.class} *:border-0`"
     :aria-label="props.ariaLabel"
     @update:model-value="handleValueChange"
   >
@@ -74,14 +92,14 @@
       v-for="item in items"
       :key="item.id"
       :value="item.id"
-      :class="item.itemClass"
+      :class="getItemClass(item)"
       :disabled="isItemDisabled(item)"
     >
-      <AccordionTrigger :class="item.triggerClass">
+      <AccordionTrigger :class="getTriggerClass(item)">
         {{ item.title }}
       </AccordionTrigger>
 
-      <AccordionContent :class="item.contentClass">
+      <AccordionContent :class="getContentClass(item)">
         <slot :name="`content-${item.id}`" :item="item">
           <template v-if="isStringContent(item.content)">
             <!-- eslint-disable-next-line vue/no-v-html -->
