@@ -24,6 +24,12 @@
   const showConfirmationSheet = ref(false)
   const showCouponListSheet = ref(false)
 
+  // User points state
+  const userPoints = ref(50)
+  const requiredPoints = 50
+  const insufficientPoints = computed(() => userPoints.value < requiredPoints)
+  const pointsDifference = computed(() => requiredPoints - userPoints.value)
+
   // Data
   const programInfo = {
     title: 'Undian Loyalty Program Gelegar SwaCam',
@@ -86,6 +92,9 @@
   ]
 
   const handleExchangeClick = () => {
+    if (insufficientPoints.value) {
+      return
+    }
     // Randomly choose between showing coupon list or confirmation sheet
     const isRandomCoupon = Math.random() > 0.5
     if (isRandomCoupon) {
@@ -106,7 +115,18 @@
 
   // Computed button label based on reward type
   const buttonLabel = computed(() => {
-    return 'Lihat Hadiah'
+    return insufficientPoints.value ? 'Tukar Hadiah' : 'Tukar Hadiah'
+  })
+
+  const pointLabel = computed(() => {
+    if (insufficientPoints.value) {
+      return 'Poin anda tidak mencukupi'
+    }
+    return 'Tukar dengan'
+  })
+
+  const pointValueColor = computed(() => {
+    return insufficientPoints.value ? 'text-error-500' : 'text-primary-600'
   })
 </script>
 
@@ -129,7 +149,22 @@
 
     <!-- Footer with Button -->
     <Footer position="fixed">
-      <Button variant="primary" size="sm" class="w-full" @click="handleExchangeClick">
+      <!-- Point Information -->
+      <div class="flex w-full items-center justify-between">
+        <span class="body-m-regular text-slate-950">{{ pointLabel }}</span>
+        <span :class="['body-l-semibold', pointValueColor]">
+          {{ insufficientPoints ? `${pointsDifference} poin` : `${requiredPoints} poin` }}
+        </span>
+      </div>
+
+      <!-- Exchange Button -->
+      <Button
+        variant="primary"
+        size="sm"
+        class="w-full"
+        :disabled="insufficientPoints"
+        @click="handleExchangeClick"
+      >
         {{ buttonLabel }}
       </Button>
     </Footer>
