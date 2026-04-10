@@ -1,10 +1,10 @@
-export { TransactionCard, type TransactionCardProps } from './transaction-card'
+export { EcoJourneyTransactionCard, type EcoJourneyTransactionCardProps } from './transaction-card'
 
 export {
-  TransactionHistorySection,
-  type TransactionHistorySectionProps,
-  RewardHeroBanner,
-  RewardProgramInfo,
-  RewardTermsSection,
-  RedemptionDetailsSection,
+  EcoJourneyTransactionHistorySection,
+  type EcoJourneyTransactionHistorySectionProps,
+  EcoJourneyHeroBanner,
+  EcoJourneyProgramInfo,
+  EcoJourneyTermsSection,
+  EcoJourneyRedemptionDetailsSection,
 } from './sections'

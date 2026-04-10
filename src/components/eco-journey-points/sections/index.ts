@@ -1,5 +1,8 @@
-export { TransactionHistorySection, type TransactionHistorySectionProps } from './history'
+export {
+  EcoJourneyTransactionHistorySection,
+  type EcoJourneyTransactionHistorySectionProps,
+} from './history'
 
-export { RewardHeroBanner, RewardProgramInfo, RewardTermsSection } from './detail'
+export { EcoJourneyHeroBanner, EcoJourneyProgramInfo, EcoJourneyTermsSection } from './detail'
 
-export { RedemptionDetailsSection } from './redemption'
+export { EcoJourneyRedemptionDetailsSection } from './redemption'

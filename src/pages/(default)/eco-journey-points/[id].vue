@@ -7,9 +7,9 @@
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
   import { CouponListBottomSheet } from '@/components/rewards'
   import {
-    RewardHeroBanner,
-    RewardProgramInfo,
-    RewardTermsSection,
+    EcoJourneyHeroBanner,
+    EcoJourneyProgramInfo,
+    EcoJourneyTermsSection,
   } from '@/components/eco-journey-points/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
@@ -116,15 +116,15 @@
     <Header title="Detail Voucher" positioning="sticky" />
 
     <!-- Hero Banner Section -->
-    <RewardHeroBanner />
+    <EcoJourneyHeroBanner />
 
     <!-- Content -->
     <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
       <!-- Program Info Section -->
-      <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+      <EcoJourneyProgramInfo :program-info="programInfo" :stats="stats" />
 
       <!-- Terms & Conditions Section -->
-      <RewardTermsSection :items="termsItems" />
+      <EcoJourneyTermsSection :items="termsItems" />
     </main>
 
     <!-- Footer with Button -->

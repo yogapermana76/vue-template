@@ -1,2 +1,2 @@
-export { default as TransactionCard } from './TransactionCard.vue'
-export type { TransactionCardProps } from './TransactionCard.vue'
+export { default as EcoJourneyTransactionCard } from './EcoJourneyTransactionCard.vue'
+export type { TransactionCardProps as EcoJourneyTransactionCardProps } from './EcoJourneyTransactionCard.vue'

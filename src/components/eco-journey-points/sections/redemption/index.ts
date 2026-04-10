@@ -1,1 +1,1 @@
-export { default as RedemptionDetailsSection } from './RedemptionDetailsSection.vue'
+export { default as EcoJourneyRedemptionDetailsSection } from './EcoJourneyRedemptionDetailsSection.vue'

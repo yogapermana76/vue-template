@@ -3,7 +3,7 @@
   import { Header } from '@/components/layout'
   import { EmptyState } from '@/components/ui/empty-state'
   import { Button } from '@/components/ui/button'
-  import { TransactionHistorySection } from '@/components/eco-journey-points/sections/history'
+  import { EcoJourneyTransactionHistorySection } from '@/components/eco-journey-points/sections/history'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   definePage({
@@ -110,7 +110,7 @@
       </div>
 
       <!-- Content when has data -->
-      <TransactionHistorySection v-else :transaction-history="transactionHistory" />
+      <EcoJourneyTransactionHistorySection v-else :transaction-history="transactionHistory" />
     </main>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
-  import { TransactionCard } from '@/components/eco-journey-points/transaction-card'
+  import { EcoJourneyTransactionCard } from '@/components/eco-journey-points/transaction-card'
 
   interface TransactionItem {
     id: string
@@ -34,7 +34,7 @@
 
       <!-- Transactions List -->
       <div class="flex flex-col gap-2">
-        <TransactionCard
+        <EcoJourneyTransactionCard
           v-for="transaction in group.transactions"
           :key="transaction.id"
           :title="transaction.title"

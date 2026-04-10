@@ -1,2 +1,2 @@
-export { default as TransactionHistorySection } from './TransactionHistorySection.vue'
-export type { TransactionHistorySectionProps } from './TransactionHistorySection.vue'
+export { default as EcoJourneyTransactionHistorySection } from './EcoJourneyTransactionHistorySection.vue'
+export type { TransactionHistorySectionProps as EcoJourneyTransactionHistorySectionProps } from './EcoJourneyTransactionHistorySection.vue'

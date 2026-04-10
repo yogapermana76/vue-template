@@ -1,3 +1,3 @@
-export { default as RewardHeroBanner } from './RewardHeroBanner.vue'
-export { default as RewardProgramInfo } from './RewardProgramInfo.vue'
-export { default as RewardTermsSection } from './RewardTermsSection.vue'
+export { default as EcoJourneyHeroBanner } from './EcoJourneyHeroBanner.vue'
+export { default as EcoJourneyProgramInfo } from './EcoJourneyProgramInfo.vue'
+export { default as EcoJourneyTermsSection } from './EcoJourneyTermsSection.vue'

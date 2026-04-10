@@ -4,7 +4,7 @@
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { RoundedOverlap } from '@/components/ui'
-  import { RedemptionDetailsSection } from '@/components/eco-journey-points/sections/redemption'
+  import { EcoJourneyRedemptionDetailsSection } from '@/components/eco-journey-points/sections/redemption'
   import CheckIcon from '@/assets/illustrations/check.svg?component'
 
   definePage({
@@ -81,7 +81,7 @@
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col gap-5 pt-5 pb-6">
-      <RedemptionDetailsSection />
+      <EcoJourneyRedemptionDetailsSection />
     </main>
 
     <!-- Footer with Buttons -->
