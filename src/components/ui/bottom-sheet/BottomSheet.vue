@@ -34,8 +34,10 @@
     description?: string
     /** Show close button in top right */
     showClose?: boolean
-    /** Custom CSS class for content area */
+    /** Custom CSS class for DrawerContent wrapper */
     contentClass?: string
+    /** Custom CSS class for scrollable slot container */
+    contentSlotClass?: string
 
     // Footer Props
     /** Show footer section */
@@ -56,6 +58,7 @@
     description: undefined,
     showClose: true,
     contentClass: '',
+    contentSlotClass: '',
     hasFooter: false,
     footerPosition: 'sticky',
     footerClass: '',
@@ -109,7 +112,7 @@
       </template>
 
       <!-- Flexible content slot (scrollable) -->
-      <div class="scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 pb-6">
+      <div :class="['scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 pb-6', contentSlotClass]">
         <slot />
       </div>
 

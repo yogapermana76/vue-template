@@ -1,10 +1,13 @@
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { HelpCircle, Headphones, Info } from 'lucide-vue-next'
   import { ActionItem } from '@/components/ui'
+  import { ContactBottomSheet } from '@/components/eco-journey-points/bottom-sheets'
   import type { Component } from 'vue'
 
   const router = useRouter()
+  const isContactOpen = ref(false)
 
   interface FaqItem {
     id: string
@@ -27,7 +30,9 @@
       icon: Headphones,
       title: 'Hubungi Kami',
       subtitle: 'Terhubung dengan Green Future Powered Today',
-      action: () => router.push('/eco-journey-points/contact'),
+      action: () => {
+        isContactOpen.value = true
+      },
     },
     {
       id: 'terms',
@@ -42,6 +47,14 @@
     if (item.action) {
       item.action()
     }
+  }
+
+  const handleEmailClick = () => {
+    // TODO: Implement email functionality
+  }
+
+  const handleCallClick = () => {
+    // TODO: Implement call functionality
   }
 </script>
 
@@ -63,5 +76,13 @@
         @click="handleItemClick(item)"
       />
     </div>
+
+    <!-- Contact Bottom Sheet -->
+    <ContactBottomSheet
+      :open="isContactOpen"
+      @update:open="isContactOpen = $event"
+      @email="handleEmailClick"
+      @call="handleCallClick"
+    />
   </div>
 </template>

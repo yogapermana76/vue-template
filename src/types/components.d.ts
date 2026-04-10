@@ -48,6 +48,7 @@ declare module 'vue' {
     CategoryFilterBottomSheet: typeof import('./../components/demo/products/filters/CategoryFilterBottomSheet.vue')['default']
     Checkbox: typeof import('./../components/ui/checkbox/Checkbox.vue')['default']
     ConfirmationBottomSheet: typeof import('./../components/shared/confirmation-bottom-sheet/ConfirmationBottomSheet.vue')['default']
+    ContactBottomSheet: typeof import('./../components/eco-journey-points/bottom-sheets/ContactBottomSheet.vue')['default']
     CountryCodeSelector: typeof import('./../components/ui/country-code-selector/CountryCodeSelector.vue')['default']
     CouponListBottomSheet: typeof import('./../components/rewards/bottom-sheets/coupon-list-bottom-sheet/CouponListBottomSheet.vue')['default']
     CTASection: typeof import('./../components/demo/home/CTASection.vue')['default']
