@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router'
   import { HelpCircle, Headphones, Info } from 'lucide-vue-next'
-  import { ActionItem } from '@/components/ui/action-item'
+  import { ActionItem } from '@/components/ui'
   import type { Component } from 'vue'
 
   const router = useRouter()

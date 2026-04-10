@@ -10,8 +10,25 @@ export {
   type ExpandableItemProps,
 } from './accordion'
 
-// ActionItem
-export { ActionItem } from './action-item'
+// Item
+export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+  ActionItem,
+  type ActionItemProps,
+  itemVariants,
+  itemMediaVariants,
+  type ItemVariants,
+  type ItemMediaVariants,
+} from './item'
 
 // Alert
 export { Alert, AlertBox, AlertDescription, AlertTitle } from './alert'
