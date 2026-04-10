@@ -4,9 +4,13 @@
   import { Ticket, Calendar } from 'lucide-vue-next'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { AccordionList } from '@/components/ui/accordion'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
   import { CouponListBottomSheet } from '@/components/rewards'
+  import {
+    RewardHeroBanner,
+    RewardProgramInfo,
+    RewardTermsSection,
+  } from '@/components/rewards/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
@@ -19,7 +23,6 @@
   const router = useRouter()
   const showConfirmationSheet = ref(false)
   const showCouponListSheet = ref(false)
-  const imageLoading = ref(true)
 
   // Data
   const programInfo = {
@@ -112,50 +115,16 @@
     <!-- Header -->
     <Header title="Detail Promo" positioning="sticky" />
 
-    <!-- Hero Background Image -->
-    <div class="relative h-46.75 w-full">
-      <div
-        v-if="imageLoading"
-        class="absolute inset-0 h-full w-full animate-pulse bg-neutral-200"
-      />
-      <img
-        src="https://picsum.photos/375/187"
-        alt="Promo Banner"
-        class="h-full w-full object-cover"
-        :class="{ invisible: imageLoading }"
-        @load="imageLoading = false"
-        @error="imageLoading = false"
-      />
-      <!-- Rounded Overlap Shape -->
-      <div class="absolute bottom-0 left-0 h-4 w-full rounded-t-md bg-white" />
-    </div>
+    <!-- Hero Banner Section -->
+    <RewardHeroBanner />
 
     <!-- Content -->
     <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
       <!-- Program Info Section -->
-      <section class="flex flex-col gap-3">
-        <!-- Title & Description -->
-        <div class="flex flex-col gap-1">
-          <h1 class="heading-s text-slate-950">{{ programInfo.title }}</h1>
-          <p class="body-caption text-slate-600">{{ programInfo.description }}</p>
-        </div>
-
-        <!-- Stats Card -->
-        <div class="bg-primary-50 flex flex-col gap-3 rounded-sm p-3">
-          <div v-for="stat in stats" :key="stat.id" class="flex flex-col gap-1">
-            <span class="body-caption-medium text-slate-800">{{ stat.label }}</span>
-            <div class="flex items-center gap-1.5">
-              <component :is="stat.icon" class="text-primary-600 size-4 shrink-0" />
-              <span class="body-m-medium text-slate-950">{{ stat.value }}</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <RewardProgramInfo :program-info="programInfo" :stats="stats" />
 
       <!-- Terms & Conditions Section -->
-      <section class="flex flex-col gap-4">
-        <AccordionList :items="termsItems" type="single" collapsible />
-      </section>
+      <RewardTermsSection :items="termsItems" />
     </main>
 
     <!-- Footer with Button -->

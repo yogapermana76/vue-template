@@ -15,3 +15,6 @@ export { default as RewardsListCouponsSection } from './list/RewardsListCouponsS
 
 // Detail page sections
 export { default as RewardsRedemptionDetailsSection } from './detail/RewardsRedemptionDetailsSection.vue'
+export { default as RewardHeroBanner } from './RewardHeroBanner.vue'
+export { default as RewardProgramInfo } from './RewardProgramInfo.vue'
+export { default as RewardTermsSection } from './RewardTermsSection.vue'
