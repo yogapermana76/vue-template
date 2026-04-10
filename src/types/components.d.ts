@@ -167,6 +167,7 @@ declare module 'vue' {
     TooltipContent: typeof import('./../components/ui/tooltip/TooltipContent.vue')['default']
     TooltipProvider: typeof import('./../components/ui/tooltip/TooltipProvider.vue')['default']
     TooltipTrigger: typeof import('./../components/ui/tooltip/TooltipTrigger.vue')['default']
+    TransactionCard: typeof import('./../components/eco-journey-points/transaction-card/TransactionCard.vue')['default']
     TransactionHistorySection: typeof import('./../components/rewards/sections/history/TransactionHistorySection.vue')['default']
     WinnerCard: typeof import('./../components/rewards/winner-card/WinnerCard.vue')['default']
     WinnerCardList: typeof import('./../components/rewards/winner-card/WinnerCardList.vue')['default']

@@ -33,6 +33,7 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       Record<never, never>,
       | '/(default)/'
+      | '/(default)/eco-journey-points/history'
       | '/(default)/rewards/[id]'
       | '/(default)/rewards/complete-address'
       | '/(default)/rewards/history'
@@ -44,6 +45,13 @@ declare module 'vue-router/auto-routes' {
     '/(default)/': RouteRecordInfo<
       '/(default)/',
       '/',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(default)/eco-journey-points/history': RouteRecordInfo<
+      '/(default)/eco-journey-points/history',
+      '/eco-journey-points/history',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -187,6 +195,7 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/(default)'
         | '/(default)/'
+        | '/(default)/eco-journey-points/history'
         | '/(default)/rewards/[id]'
         | '/(default)/rewards/complete-address'
         | '/(default)/rewards/history'
@@ -200,6 +209,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(default)/index.vue': {
       routes:
         | '/(default)/'
+      views:
+        | never
+    }
+    'src/pages/(default)/eco-journey-points/history.vue': {
+      routes:
+        | '/(default)/eco-journey-points/history'
       views:
         | never
     }
