@@ -50,7 +50,7 @@
       <!-- CTA Buttons -->
       <div class="flex flex-col gap-3 pt-4">
         <Button variant="primary" size="lg" as-child class="min-w-40">
-          <RouterLink to="/products">
+          <RouterLink to="/demo/products">
             Get Started
             <ArrowRight class="ml-2 size-4" />
           </RouterLink>

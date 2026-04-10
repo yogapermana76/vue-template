@@ -77,9 +77,9 @@ declare module 'vue-router/auto-routes' {
       '/',
       Record<never, never>,
       Record<never, never>,
-      | '/(secondary)/example-scrollable-page'
-      | '/(secondary)/products/[id]'
-      | '/(secondary)/products/search-products'
+      | '/(secondary)/demo/example-scrollable-page'
+      | '/(secondary)/demo/products/[id]'
+      | '/(secondary)/demo/products/search-products'
       | '/(secondary)/rewards/'
       | '/(secondary)/rewards/[id]'
       | '/(secondary)/rewards/complete-address'
@@ -89,23 +89,23 @@ declare module 'vue-router/auto-routes' {
       | '/(secondary)/rewards/redemption/[id]'
       | '/(secondary)/rewards/winners'
     >,
-    '/(secondary)/example-scrollable-page': RouteRecordInfo<
-      '/(secondary)/example-scrollable-page',
-      '/example-scrollable-page',
+    '/(secondary)/demo/example-scrollable-page': RouteRecordInfo<
+      '/(secondary)/demo/example-scrollable-page',
+      '/demo/example-scrollable-page',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/(secondary)/products/[id]': RouteRecordInfo<
-      '/(secondary)/products/[id]',
-      '/products/:id',
+    '/(secondary)/demo/products/[id]': RouteRecordInfo<
+      '/(secondary)/demo/products/[id]',
+      '/demo/products/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
       | never
     >,
-    '/(secondary)/products/search-products': RouteRecordInfo<
-      '/(secondary)/products/search-products',
-      '/products/search-products',
+    '/(secondary)/demo/products/search-products': RouteRecordInfo<
+      '/(secondary)/demo/products/search-products',
+      '/demo/products/search-products',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -229,9 +229,9 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(secondary).vue': {
       routes:
         | '/(secondary)'
-        | '/(secondary)/example-scrollable-page'
-        | '/(secondary)/products/[id]'
-        | '/(secondary)/products/search-products'
+        | '/(secondary)/demo/example-scrollable-page'
+        | '/(secondary)/demo/products/[id]'
+        | '/(secondary)/demo/products/search-products'
         | '/(secondary)/rewards/'
         | '/(secondary)/rewards/[id]'
         | '/(secondary)/rewards/complete-address'
@@ -243,21 +243,21 @@ declare module 'vue-router/auto-routes' {
       views:
         | 'default'
     }
-    'src/pages/(secondary)/example-scrollable-page.vue': {
+    'src/pages/(secondary)/demo/example-scrollable-page.vue': {
       routes:
-        | '/(secondary)/example-scrollable-page'
+        | '/(secondary)/demo/example-scrollable-page'
       views:
         | never
     }
-    'src/pages/(secondary)/products/[id].vue': {
+    'src/pages/(secondary)/demo/products/[id].vue': {
       routes:
-        | '/(secondary)/products/[id]'
+        | '/(secondary)/demo/products/[id]'
       views:
         | never
     }
-    'src/pages/(secondary)/products/search-products.vue': {
+    'src/pages/(secondary)/demo/products/search-products.vue': {
       routes:
-        | '/(secondary)/products/search-products'
+        | '/(secondary)/demo/products/search-products'
       views:
         | never
     }
