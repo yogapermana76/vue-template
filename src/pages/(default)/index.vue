@@ -2,6 +2,7 @@
   import { ref, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { Header } from '@/components/layout'
+  import { RoundedOverlap } from '@/components/ui'
   import {
     FaqSection,
     RewardsInfoSection,
@@ -68,7 +69,7 @@
       <RewardsInfoSection />
 
       <!-- Rounded Overlap Shape -->
-      <div class="absolute bottom-0 left-0 h-4 w-full rounded-t-md bg-white" />
+      <RoundedOverlap />
     </div>
 
     <!-- Main Content -->

@@ -3,6 +3,7 @@
   import { useRouter } from 'vue-router'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
+  import { RoundedOverlap } from '@/components/ui'
   import { RewardsRedemptionDetailsSection } from '@/components/rewards'
   import CheckIcon from '@/assets/illustrations/check.svg?component'
 
@@ -75,7 +76,7 @@
       </div>
 
       <!-- Rounded Overlap Shape -->
-      <div class="absolute bottom-0 left-0 h-4 w-full rounded-t-md bg-white" />
+      <RoundedOverlap />
     </div>
 
     <!-- Main Content -->

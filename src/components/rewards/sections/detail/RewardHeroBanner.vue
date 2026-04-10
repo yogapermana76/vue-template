@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { RoundedOverlap } from '@/components/ui'
 
   interface Props {
     src?: string
@@ -26,6 +27,6 @@
       @error="imageLoading = false"
     />
     <!-- Rounded Overlap Shape -->
-    <div class="absolute bottom-0 left-0 h-4 w-full rounded-t-md bg-white" />
+    <RoundedOverlap />
   </div>
 </template>

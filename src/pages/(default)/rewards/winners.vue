@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
   import { Header } from '@/components/layout'
+  import { RoundedOverlap } from '@/components/ui'
   import { WinnerCard, type WinnerData } from '@/components/rewards'
 
   definePage({
@@ -142,7 +143,7 @@
       </div>
 
       <!-- Rounded Overlap Shape -->
-      <div class="absolute bottom-0 left-0 h-4 w-full rounded-t-md bg-white" />
+      <RoundedOverlap />
     </div>
 
     <!-- Other Winners (Rank 4+) -->
