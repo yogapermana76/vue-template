@@ -5,12 +5,12 @@
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
-  import { CouponListBottomSheet } from '@/components/rewards'
   import {
     EcoJourneyHeroBanner,
     EcoJourneyProgramInfo,
     EcoJourneyTermsSection,
   } from '@/components/eco-journey-points/sections'
+  import { ExchangeSummaryBottomSheet } from '@/components/eco-journey-points/bottom-sheets'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
@@ -22,7 +22,7 @@
 
   const router = useRouter()
   const showConfirmationSheet = ref(false)
-  const showCouponListSheet = ref(false)
+  const showExchangeSummarySheet = ref(false)
 
   // User points state
   const userPoints = ref(50)
@@ -95,10 +95,10 @@
     if (insufficientPoints.value) {
       return
     }
-    // Randomly choose between showing coupon list or confirmation sheet
-    const isRandomCoupon = Math.random() > 0.5
-    if (isRandomCoupon) {
-      showCouponListSheet.value = true
+    // Show random bottom sheet
+    const random = Math.random()
+    if (random < 0.5) {
+      showExchangeSummarySheet.value = true
     } else {
       showConfirmationSheet.value = true
     }
@@ -111,6 +111,15 @@
 
   const handleCancelExchange = () => {
     showConfirmationSheet.value = false
+  }
+
+  const handleExchangeSummaryConfirm = () => {
+    showExchangeSummarySheet.value = false
+    showConfirmationSheet.value = true
+  }
+
+  const handleExchangeSummaryCancel = () => {
+    showExchangeSummarySheet.value = false
   }
 
   // Computed button label based on reward type
@@ -191,7 +200,13 @@
       ]"
     />
 
-    <!-- Coupon List Bottom Sheet -->
-    <CouponListBottomSheet v-model:open="showCouponListSheet" />
+    <!-- Exchange Summary Bottom Sheet -->
+    <ExchangeSummaryBottomSheet
+      v-model:open="showExchangeSummarySheet"
+      :user-points="userPoints"
+      :exchange-points="requiredPoints"
+      @confirm="handleExchangeSummaryConfirm"
+      @cancel="handleExchangeSummaryCancel"
+    />
   </div>
 </template>

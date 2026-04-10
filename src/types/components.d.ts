@@ -77,6 +77,7 @@ declare module 'vue' {
     EditRecipientInfoBottomSheet: typeof import('./../components/shared/edit-recipient-info-bottom-sheet/EditRecipientInfoBottomSheet.vue')['default']
     EmptyState: typeof import('./../components/ui/empty-state/EmptyState.vue')['default']
     ErrorState: typeof import('./../components/shared/error-state/ErrorState.vue')['default']
+    ExchangeSummaryBottomSheet: typeof import('./../components/eco-journey-points/bottom-sheets/ExchangeSummaryBottomSheet.vue')['default']
     ExpandableItem: typeof import('./../components/ui/accordion/composite/ExpandableItem.vue')['default']
     FAQDetailedAnswer: typeof import('./../components/demo/home/FAQDetailedAnswer.vue')['default']
     FaqItem: typeof import('./../components/rewards/faq/FaqItem.vue')['default']
