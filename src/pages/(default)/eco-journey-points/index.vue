@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, onMounted, onUnmounted } from 'vue'
+  import { useRouter } from 'vue-router'
   import { Header } from '@/components/layout'
   import { RoundedOverlap } from '@/components/ui'
   import { FloatingScanButton } from '@/components/ui/button'
@@ -15,6 +16,7 @@
     },
   })
 
+  const router = useRouter()
   const isScrolled = ref(false)
 
   const handleScroll = () => {
@@ -32,7 +34,8 @@
   })
 
   const handleScan = () => {
-    // TODO: Implement QR code scanning
+    // TODO: Implement QR code scanning (temporary: navigate to check-in page)
+    router.push('/eco-journey-points/check-in')
   }
 </script>
 
