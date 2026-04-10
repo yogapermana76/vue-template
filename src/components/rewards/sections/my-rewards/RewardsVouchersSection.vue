@@ -2,6 +2,8 @@
   import { ref } from 'vue'
   import { PillTab } from '@/components/ui/pill-tab'
   import { RewardCouponCard } from '@/components/rewards'
+  import { EmptyState } from '@/components/ui/empty-state'
+  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   // Voucher item data
   interface VoucherItem {
@@ -65,11 +67,13 @@
 <template>
   <div class="flex flex-col gap-4">
     <!-- Filter Pills -->
-    <div class="flex gap-2 overflow-x-auto px-4 pt-4">
+    <div
+      class="sticky top-0 z-10 flex gap-2 overflow-x-auto bg-white px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
       <PillTab
         v-for="filter in voucherFilters"
         :key="filter.key"
-        :state="activeVoucherFilter === filter.key ? 'filter-active' : 'default'"
+        :state="activeVoucherFilter === filter.key ? 'active' : 'default'"
         @click="activeVoucherFilter = filter.key"
       >
         {{ filter.label }}
@@ -89,9 +93,12 @@
         />
       </div>
 
-      <div v-if="filteredVoucher().length === 0" class="flex items-center justify-center py-8">
-        <p class="body-m text-slate-600">No vouchers available</p>
-      </div>
+      <EmptyState
+        v-if="filteredVoucher().length === 0"
+        :image="RiwayatIllustration"
+        title="Voucher belum tersedia"
+        description="Mohon maaf voucher sedang tidak tersedia untuk saat ini."
+      />
     </div>
   </div>
 </template>
