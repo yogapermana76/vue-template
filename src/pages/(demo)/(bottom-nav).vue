@@ -5,7 +5,7 @@
   import { config } from '@/config'
 
   const navigation = [
-    { name: 'Home', to: '/', icon: Home },
+    { name: 'Home', to: '/home', icon: Home },
     { name: 'Products', to: '/products', icon: Package },
     { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
     { name: 'Tabs', to: '/tabs', icon: Layers },

@@ -103,8 +103,8 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       Record<never, never>,
       | '/(demo)/(bottom-nav)'
-      | '/(demo)/(bottom-nav)/'
       | '/(demo)/(bottom-nav)/dashboard'
+      | '/(demo)/(bottom-nav)/home'
       | '/(demo)/(bottom-nav)/products'
       | '/(demo)/(bottom-nav)/tabs'
       | '/(demo)/demo/example-scrollable-page'
@@ -117,21 +117,21 @@ declare module 'vue-router/auto-routes' {
       '/',
       Record<never, never>,
       Record<never, never>,
-      | '/(demo)/(bottom-nav)/'
       | '/(demo)/(bottom-nav)/dashboard'
+      | '/(demo)/(bottom-nav)/home'
       | '/(demo)/(bottom-nav)/products'
       | '/(demo)/(bottom-nav)/tabs'
-    >,
-    '/(demo)/(bottom-nav)/': RouteRecordInfo<
-      '/(demo)/(bottom-nav)/',
-      '/',
-      Record<never, never>,
-      Record<never, never>,
-      | never
     >,
     '/(demo)/(bottom-nav)/dashboard': RouteRecordInfo<
       '/(demo)/(bottom-nav)/dashboard',
       '/dashboard',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(demo)/(bottom-nav)/home': RouteRecordInfo<
+      '/(demo)/(bottom-nav)/home',
+      '/home',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -264,8 +264,8 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/(demo)'
         | '/(demo)/(bottom-nav)'
-        | '/(demo)/(bottom-nav)/'
         | '/(demo)/(bottom-nav)/dashboard'
+        | '/(demo)/(bottom-nav)/home'
         | '/(demo)/(bottom-nav)/products'
         | '/(demo)/(bottom-nav)/tabs'
         | '/(demo)/demo/example-scrollable-page'
@@ -278,22 +278,22 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(demo)/(bottom-nav).vue': {
       routes:
         | '/(demo)/(bottom-nav)'
-        | '/(demo)/(bottom-nav)/'
         | '/(demo)/(bottom-nav)/dashboard'
+        | '/(demo)/(bottom-nav)/home'
         | '/(demo)/(bottom-nav)/products'
         | '/(demo)/(bottom-nav)/tabs'
       views:
         | 'default'
     }
-    'src/pages/(demo)/(bottom-nav)/index.vue': {
-      routes:
-        | '/(demo)/(bottom-nav)/'
-      views:
-        | never
-    }
     'src/pages/(demo)/(bottom-nav)/dashboard.vue': {
       routes:
         | '/(demo)/(bottom-nav)/dashboard'
+      views:
+        | never
+    }
+    'src/pages/(demo)/(bottom-nav)/home.vue': {
+      routes:
+        | '/(demo)/(bottom-nav)/home'
       views:
         | never
     }
