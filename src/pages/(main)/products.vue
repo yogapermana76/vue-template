@@ -6,7 +6,9 @@
   import { usePullToRefresh } from '@/composables/ui'
   import { Button } from '@/components/ui/button'
   import { Header } from '@/components/layout'
-  import { EmptyState, ErrorState, PullToRefresh } from '@/components/shared'
+  import { PullToRefresh } from '@/components/shared'
+  import { EmptyState } from '@/components/ui/empty-state'
+  import { AlertCircle } from 'lucide-vue-next'
   import {
     ProductCard,
     ProductCardSkeleton,
@@ -96,12 +98,16 @@
     </ProductGrid>
 
     <!-- Error State -->
-    <ErrorState
+    <EmptyState
       v-else-if="error"
       title="Error loading products"
-      :message="error.message"
-      @retry="refetch"
-    />
+      :description="error.message"
+      :image="AlertCircle"
+    >
+      <template #actions>
+        <Button @click="() => refetch()">Try Again</Button>
+      </template>
+    </EmptyState>
 
     <!-- Products Grid with Infinite Scroll -->
     <template v-else-if="products.length">

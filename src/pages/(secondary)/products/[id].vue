@@ -6,9 +6,11 @@
   import { usePullToRefresh, useToast } from '@/composables/ui'
   import { useCartStore } from '@/stores/cart'
   import { Header, CartActionItem } from '@/components/layout'
-  import { IconButton } from '@/components/ui/button'
+  import { IconButton, Button } from '@/components/ui/button'
   import { Skeleton } from '@/components/ui/skeleton'
-  import { ErrorState, PullToRefresh } from '@/components/shared'
+  import { PullToRefresh } from '@/components/shared'
+  import { EmptyState } from '@/components/ui/empty-state'
+  import { AlertCircle } from 'lucide-vue-next'
   import {
     ProductImage,
     ProductInfo,
@@ -143,12 +145,16 @@
     </template>
 
     <!-- Error State -->
-    <ErrorState
+    <EmptyState
       v-else-if="error"
       title="Error loading product"
-      :message="error.message"
-      @retry="refetch"
-    />
+      :description="error.message"
+      :image="AlertCircle"
+    >
+      <template #actions>
+        <Button @click="() => refetch()">Try Again</Button>
+      </template>
+    </EmptyState>
 
     <!-- Product Detail -->
     <template v-else-if="product">
