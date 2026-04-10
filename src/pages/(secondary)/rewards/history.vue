@@ -175,7 +175,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header title="Riwayat" show-back hide-theme-toggle positioning="sticky" />
+    <Header title="Riwayat" positioning="sticky" />
 
     <!-- Content -->
     <main class="flex flex-1 flex-col gap-6 px-4 py-4">

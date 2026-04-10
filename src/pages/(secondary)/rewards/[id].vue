@@ -109,7 +109,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header title="Detail Promo" show-back hide-theme-toggle positioning="sticky" />
+    <Header title="Detail Promo" positioning="sticky" />
 
     <!-- Hero Background Image -->
     <div class="bg-primary-400 relative h-46.75 w-full">

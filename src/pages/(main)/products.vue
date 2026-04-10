@@ -79,7 +79,6 @@
     :subtitle="`Browse our collection of ${total} products`"
     :show-back="false"
     positioning="normal"
-    :hide-theme-toggle="true"
   />
 
   <!-- Content (with padding) -->

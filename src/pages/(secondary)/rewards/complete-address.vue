@@ -57,7 +57,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header title="Tukar Poin" show-back hide-theme-toggle />
+    <Header title="Tukar Poin" />
 
     <!-- Content with Fixed Header Gap and Footer Padding -->
     <div class="pt-14 pb-36">

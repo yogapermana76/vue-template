@@ -34,13 +34,7 @@
 <template>
   <div>
     <!-- Fixed Header with Transparent-to-Solid Effect -->
-    <Header
-      :show-back="true"
-      :hide-theme-toggle="true"
-      title="Scrollable Page"
-      positioning="fixed"
-      :class="headerClass"
-    >
+    <Header title="Scrollable Page" positioning="fixed" :class="headerClass">
       <template #actions>
         <IconButton variant="tertiary" size="md" title="Share" @click="handleShare">
           <Share2 class="h-5 w-5" />

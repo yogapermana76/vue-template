@@ -26,7 +26,6 @@
     :subtitle="`Welcome, ${userName}`"
     :show-back="false"
     :positioning="positioning"
-    :hide-theme-toggle="true"
   >
     <template #actions>
       <IconButton variant="secondary" size="md" title="Logout" @click="emit('logout')">

@@ -84,7 +84,7 @@
   <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
 
   <!-- Header with Search Bar in Center -->
-  <Header :show-back="true" :hide-theme-toggle="true" :on-back="handleBack">
+  <Header :on-back="handleBack">
     <template #center>
       <div class="min-w-0 flex-1">
         <SearchInput
