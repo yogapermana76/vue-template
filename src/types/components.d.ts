@@ -113,6 +113,7 @@ declare module 'vue' {
     RecipientInfoBottomSheet: typeof import('./../components/rewards/bottom-sheets/recipient-info-bottom-sheet/RecipientInfoBottomSheet.vue')['default']
     RecipientInfoItem: typeof import('./../components/rewards/recipient-info-item/RecipientInfoItem.vue')['default']
     RecommendedProductsCarousel: typeof import('./../components/demo/home/RecommendedProductsCarousel.vue')['default']
+    RedemptionDetailsSection: typeof import('./../components/eco-journey-points/sections/redemption/RedemptionDetailsSection.vue')['default']
     RewardBannerCard: typeof import('./../components/rewards/reward-banner-card/RewardBannerCard.vue')['default']
     RewardCouponCard: typeof import('./../components/rewards/reward-coupon-card/RewardCouponCard.vue')['default']
     RewardHeroBanner: typeof import('./../components/rewards/sections/RewardHeroBanner.vue')['default']

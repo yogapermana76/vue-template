@@ -6,4 +6,5 @@ export {
   RewardHeroBanner,
   RewardProgramInfo,
   RewardTermsSection,
+  RedemptionDetailsSection,
 } from './sections'

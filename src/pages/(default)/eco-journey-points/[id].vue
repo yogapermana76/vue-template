@@ -16,7 +16,7 @@
 
   definePage({
     meta: {
-      title: 'Detail Promo',
+      title: 'Detail Voucher',
     },
   })
 
@@ -113,7 +113,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header title="Detail Promo" positioning="sticky" />
+    <Header title="Detail Voucher" positioning="sticky" />
 
     <!-- Hero Banner Section -->
     <RewardHeroBanner />
