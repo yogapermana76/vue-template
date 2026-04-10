@@ -81,8 +81,12 @@ declare module 'vue-router/auto-routes' {
       | '/(secondary)/products/[id]'
       | '/(secondary)/products/search-products'
       | '/(secondary)/rewards/'
+      | '/(secondary)/rewards/[id]'
+      | '/(secondary)/rewards/complete-address'
       | '/(secondary)/rewards/history'
+      | '/(secondary)/rewards/list'
       | '/(secondary)/rewards/my-rewards'
+      | '/(secondary)/rewards/redemption/[id]'
       | '/(secondary)/rewards/winners'
     >,
     '/(secondary)/example-scrollable-page': RouteRecordInfo<
@@ -113,9 +117,30 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/(secondary)/rewards/[id]': RouteRecordInfo<
+      '/(secondary)/rewards/[id]',
+      '/rewards/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/(secondary)/rewards/complete-address': RouteRecordInfo<
+      '/(secondary)/rewards/complete-address',
+      '/rewards/complete-address',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/(secondary)/rewards/history': RouteRecordInfo<
       '/(secondary)/rewards/history',
       '/rewards/history',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(secondary)/rewards/list': RouteRecordInfo<
+      '/(secondary)/rewards/list',
+      '/rewards/list',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -125,6 +150,13 @@ declare module 'vue-router/auto-routes' {
       '/rewards/my-rewards',
       Record<never, never>,
       Record<never, never>,
+      | never
+    >,
+    '/(secondary)/rewards/redemption/[id]': RouteRecordInfo<
+      '/(secondary)/rewards/redemption/[id]',
+      '/rewards/redemption/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
       | never
     >,
     '/(secondary)/rewards/winners': RouteRecordInfo<
@@ -201,8 +233,12 @@ declare module 'vue-router/auto-routes' {
         | '/(secondary)/products/[id]'
         | '/(secondary)/products/search-products'
         | '/(secondary)/rewards/'
+        | '/(secondary)/rewards/[id]'
+        | '/(secondary)/rewards/complete-address'
         | '/(secondary)/rewards/history'
+        | '/(secondary)/rewards/list'
         | '/(secondary)/rewards/my-rewards'
+        | '/(secondary)/rewards/redemption/[id]'
         | '/(secondary)/rewards/winners'
       views:
         | 'default'
@@ -231,15 +267,39 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/(secondary)/rewards/[id].vue': {
+      routes:
+        | '/(secondary)/rewards/[id]'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/rewards/complete-address.vue': {
+      routes:
+        | '/(secondary)/rewards/complete-address'
+      views:
+        | never
+    }
     'src/pages/(secondary)/rewards/history.vue': {
       routes:
         | '/(secondary)/rewards/history'
       views:
         | never
     }
+    'src/pages/(secondary)/rewards/list.vue': {
+      routes:
+        | '/(secondary)/rewards/list'
+      views:
+        | never
+    }
     'src/pages/(secondary)/rewards/my-rewards.vue': {
       routes:
         | '/(secondary)/rewards/my-rewards'
+      views:
+        | never
+    }
+    'src/pages/(secondary)/rewards/redemption/[id].vue': {
+      routes:
+        | '/(secondary)/rewards/redemption/[id]'
       views:
         | never
     }

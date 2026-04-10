@@ -31,6 +31,8 @@ export interface HeaderProps {
   hideThemeToggle?: boolean
   /** Positioning mode: 'fixed' (always visible), 'sticky' (stick to top), 'normal' (scroll with content) */
   positioning?: 'fixed' | 'sticky' | 'normal'
+  /** Custom class for back button icon */
+  backButtonClass?: string
 }
 
 /** Default props */

@@ -30,6 +30,10 @@
     statusText?: string
     /** Status icon (from lucide-vue-next) */
     statusIcon?: Component | null
+    /** Ellipse cutout color (hex or tailwind class) */
+    ellipseColor?: string
+    /** Whether the voucher is sold out / disabled */
+    disabled?: boolean
     /** Additional CSS classes */
     class?: HTMLAttributes['class']
   }
@@ -39,11 +43,15 @@
     buttonLabel: 'Tukar',
     flagVariant: 'success',
     flagIcon: 'ticket',
+    ellipseColor: '#ffffff',
+    disabled: false,
   })
 
   const emit = defineEmits<{
     /** Emitted when the action button is clicked */
     buttonClick: []
+    /** Emitted when the card is clicked */
+    cardClick: []
   }>()
 
   // Compute display text for points
@@ -51,8 +59,15 @@
     return `${props.points.toLocaleString('id-ID')} poin`
   })
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (event: Event) => {
+    event.stopPropagation()
     emit('buttonClick')
+  }
+
+  const handleCardClick = () => {
+    if (!props.disabled) {
+      emit('cardClick')
+    }
   }
 </script>
 
@@ -61,21 +76,27 @@
     data-slot="reward-coupon-card"
     :class="
       cn(
-        'relative flex h-auto w-full flex-col rounded-lg border border-slate-200 bg-white',
+        'relative flex h-auto w-full flex-col rounded-sm border border-slate-200 bg-white',
+        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         props.class,
       )
     "
+    @click="handleCardClick"
   >
     <!-- Flag Badge (Top-right corner) -->
-    <div v-if="flagText" class="absolute -top-3 -right-3 z-10">
+    <div v-if="flagText" class="absolute -top-3 -right-3.25 z-10">
       <Flag :variant="flagVariant" :icon="flagIcon" pointer size="sm">
         {{ flagText }}
       </Flag>
     </div>
 
     <!-- Image Container -->
-    <div class="h-42.75 w-full overflow-hidden rounded-t-lg">
-      <img :src="imageUrl" :alt="imageAlt" class="h-full w-full object-cover" />
+    <div class="h-42.75 w-full overflow-hidden rounded-t-sm rounded-b-sm border-b border-slate-200">
+      <img
+        :src="imageUrl"
+        :alt="imageAlt"
+        :class="cn('h-full w-full object-cover', disabled && 'grayscale')"
+      />
     </div>
 
     <!-- Content Container -->
@@ -94,7 +115,7 @@
       <!-- Divider with Circle Cutouts -->
       <div class="relative h-5">
         <!-- Left Circle -->
-        <div class="absolute top-1/2 -left-px -translate-y-1/2" aria-hidden="true">
+        <div class="ellipse-cutout absolute top-1/2 -left-px -translate-y-1/2" aria-hidden="true">
           <EllipseSvg />
         </div>
 
@@ -104,7 +125,10 @@
         </div>
 
         <!-- Right Circle -->
-        <div class="absolute top-1/2 -right-px -translate-y-1/2 -scale-x-100" aria-hidden="true">
+        <div
+          class="ellipse-cutout absolute top-1/2 -right-px -translate-y-1/2 -scale-x-100"
+          aria-hidden="true"
+        >
           <EllipseSvg />
         </div>
       </div>
@@ -118,10 +142,16 @@
         </div>
 
         <!-- Action Button -->
-        <Button variant="secondary" size="xs" @click="handleButtonClick">
+        <Button variant="secondary" size="xs" :disabled="disabled" @click="handleButtonClick">
           {{ buttonLabel }}
         </Button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+  .ellipse-cutout :deep(svg circle) {
+    fill: v-bind(ellipseColor) !important;
+  }
+</style>

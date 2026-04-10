@@ -36,6 +36,8 @@
   const emit = defineEmits<{
     /** Emitted when the action button is clicked */
     buttonClick: []
+    /** Emitted when the card is clicked */
+    cardClick: []
   }>()
 
   const pointsDisplay = computed(() => {
@@ -43,8 +45,13 @@
     return `${props.points.toLocaleString('id-ID')} poin`
   })
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (event: Event) => {
+    event.stopPropagation()
     emit('buttonClick')
+  }
+
+  const handleCardClick = () => {
+    emit('cardClick')
   }
 </script>
 
@@ -53,17 +60,18 @@
     data-slot="reward-banner-card"
     :class="
       cn(
-        'bg-primary-500 relative h-66 w-full overflow-visible rounded-lg border border-slate-200',
+        'bg-primary-500 relative h-66 w-full cursor-pointer overflow-visible rounded-sm border border-slate-200',
         props.class,
       )
     "
+    @click="handleCardClick"
   >
     <!-- Banner Image -->
-    <img :src="imageUrl" :alt="imageAlt" class="h-32 w-full rounded-t-lg object-cover" />
+    <img :src="imageUrl" :alt="imageAlt" class="h-32 w-full rounded-t-sm object-cover" />
 
     <!-- Overlay Card (positioned at bottom) -->
     <div
-      class="absolute bottom-3 left-1/2 flex w-[calc(100%-16px)] -translate-x-1/2 flex-col items-center gap-0.5 rounded-lg bg-white py-3"
+      class="absolute bottom-3 left-1/2 flex w-[calc(100%-16px)] -translate-x-1/2 flex-col items-center gap-0.5 rounded-sm bg-white py-3"
     >
       <!-- Content -->
       <div class="flex w-full flex-col gap-1 px-4">

@@ -52,7 +52,7 @@
     </div>
 
     <!-- Points and Icon Container -->
-    <div class="flex flex-col items-end gap-2">
+    <div class="flex flex-row items-center gap-2">
       <!-- Points -->
       <p :class="cn('body-caption', pointsColorClass)">{{ pointsText }}</p>
 

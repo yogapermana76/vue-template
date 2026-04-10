@@ -13,6 +13,7 @@
     showBack: defaultHeaderProps.showBack,
     hideThemeToggle: defaultHeaderProps.hideThemeToggle,
     positioning: defaultHeaderProps.positioning,
+    backButtonClass: 'text-neutral-950',
     rightActions: () => defaultHeaderProps.rightActions || [],
   })
 
@@ -49,7 +50,7 @@
         v-if="showBack"
         variant="tertiary"
         size="md"
-        class="-ml-2 text-neutral-950"
+        :class="['-ml-2', backButtonClass]"
         @click="handleBack"
       >
         <ArrowLeft />

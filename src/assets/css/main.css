@@ -48,14 +48,14 @@
   --text-2xl: 1.5rem; /* 24px */
 
   /* Line heights */
-  --leading-xxxs: 0.75;
-  --leading-xxs: 1;
-  --leading-xs: 1.125;
-  --leading-sm: 1.25;
-  --leading-md: 1.5;
-  --leading-lg: 1.75;
-  --leading-xl: 2;
-  --leading-xxl: 2.25;
+  --leading-xxxs: 0.75rem;
+  --leading-xxs: 1rem;
+  --leading-xs: 1.125rem;
+  --leading-sm: 1.25rem;
+  --leading-md: 1.5rem;
+  --leading-lg: 1.75rem;
+  --leading-xl: 2rem;
+  --leading-xxl: 2.25rem;
 
   /* Colors */
 
@@ -605,5 +605,25 @@
   }
   .safe-right {
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Reward Section Gradients */
+  .bg-gradient-navy {
+    background: linear-gradient(to bottom, #051d41 0%, #093552 83.05%, #0b283b 100%);
+  }
+
+  .bg-gradient-teal {
+    background: linear-gradient(
+      to bottom,
+      var(--color-teal-400) 0%,
+      var(--color-teal-500) 50%,
+      var(--color-teal-600) 100%
+    );
+  }
+  .bg-gradient-cyan {
+    background: linear-gradient(to bottom, #0e6aa7 0%, #0f79af 10%, #15c0d8 70%);
+  }
+  .bg-gradient-blue-cyan {
+    background: linear-gradient(to bottom, #04619f 0%, #177bad 30%, #12cbe4 70%);
   }
 }
