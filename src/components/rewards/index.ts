@@ -7,8 +7,6 @@ export {
   type WinnerData,
 } from './winner-card'
 
-export { FaqSection, type FaqSectionProps } from './faq'
-
 export { RewardsTransactionCard, type RewardsTransactionCardProps } from './transaction-card'
 
 export { RewardCouponCard, type RewardCouponCardProps } from './reward-coupon-card'
@@ -18,6 +16,8 @@ export { RewardBannerCard, type RewardBannerCardProps } from './reward-banner-ca
 export { RewardPrizeCard, type RewardPrizeCardProps } from './reward-prize-card'
 
 export { RecipientInfoItem, type RecipientInfoItemProps } from './recipient-info-item'
+
+export { RewardsFaqSection, type RewardsFaqSectionProps } from './sections'
 
 export { WinnerInfoCard, type WinnerInfoCardProps } from './winner-info-card'
 

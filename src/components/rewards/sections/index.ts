@@ -3,6 +3,8 @@ export { default as RewardsInfoSection } from './home/RewardsInfoSection.vue'
 export { default as RewardsOurCouponsSection } from './home/RewardsOurCouponsSection.vue'
 export { default as RewardsAlertSection } from './home/RewardsAlertSection.vue'
 export { default as RewardsFollowDrawSection } from './home/RewardsFollowDrawSection.vue'
+export { default as RewardsFaqSection } from './home/RewardsFaqSection.vue'
+export type { Props as RewardsFaqSectionProps } from './home/RewardsFaqSection.vue'
 
 // My Rewards page sections
 export { default as RewardsVouchersSection } from './my-rewards/RewardsVouchersSection.vue'

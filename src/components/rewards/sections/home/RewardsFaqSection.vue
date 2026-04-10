@@ -8,7 +8,7 @@
     answer: string
   }
 
-  interface Props {
+  export interface Props {
     title?: string
     showViewAll?: boolean
   }

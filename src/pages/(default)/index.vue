@@ -4,7 +4,7 @@
   import { Header } from '@/components/layout'
   import { RoundedOverlap } from '@/components/ui'
   import {
-    FaqSection,
+    RewardsFaqSection,
     RewardsInfoSection,
     RewardsOurCouponsSection,
     RewardsAlertSection,
@@ -84,7 +84,7 @@
       <RewardsOurCouponsSection />
 
       <!-- FAQ Section -->
-      <FaqSection />
+      <RewardsFaqSection />
     </main>
   </div>
 </template>
