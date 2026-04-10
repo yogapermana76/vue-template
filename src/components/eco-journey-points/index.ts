@@ -9,4 +9,5 @@ export {
   EcoJourneyRedemptionDetailsSection,
   EcoJourneyInfoSection,
   EcoJourneyRedemptionSection,
+  EcoJourneyMoreSection,
 } from './sections'

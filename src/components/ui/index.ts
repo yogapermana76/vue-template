@@ -1,6 +1,9 @@
 // Accordion
 export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion'
 
+// ActionItem
+export { ActionItem } from './action-item'
+
 // Alert
 export { Alert, AlertBox, AlertDescription, AlertTitle } from './alert'
 

@@ -5,6 +5,7 @@
   import {
     EcoJourneyInfoSection,
     EcoJourneyRedemptionSection,
+    EcoJourneyMoreSection,
   } from '@/components/eco-journey-points'
 
   definePage({
@@ -65,6 +66,9 @@
 
       <!-- Redemption Section -->
       <EcoJourneyRedemptionSection />
+
+      <!-- More Section -->
+      <EcoJourneyMoreSection />
     </main>
   </div>
 </template>
