@@ -101,8 +101,8 @@
             </DrawerDescription>
           </div>
           <DrawerClose v-if="showClose" as-child>
-            <button class="shrink-0 rounded-lg p-1 hover:bg-neutral-100">
-              <X class="size-5 text-neutral-500" />
+            <button class="-mr-1.5 shrink-0 rounded-full p-1 hover:bg-neutral-100">
+              <X class="size-4 text-neutral-500" />
             </button>
           </DrawerClose>
         </DrawerHeader>
