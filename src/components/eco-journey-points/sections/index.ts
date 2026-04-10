@@ -1,3 +1,6 @@
+// Home page sections
+export { EcoJourneyInfoSection, EcoJourneyRedemptionSection } from './home'
+
 export {
   EcoJourneyTransactionHistorySection,
   type EcoJourneyTransactionHistorySectionProps,

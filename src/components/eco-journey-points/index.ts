@@ -7,4 +7,6 @@ export {
   EcoJourneyProgramInfo,
   EcoJourneyTermsSection,
   EcoJourneyRedemptionDetailsSection,
+  EcoJourneyInfoSection,
+  EcoJourneyRedemptionSection,
 } from './sections'
