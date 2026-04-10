@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
   import { Users } from 'lucide-vue-next'
-  import { ActivityItem } from '@/components/dashboard'
+  import { ActivityItem } from '@/components/demo/dashboard'
 
   interface Activity {
     title: string

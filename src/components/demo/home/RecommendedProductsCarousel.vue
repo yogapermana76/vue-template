@@ -8,7 +8,7 @@
     CarouselNext,
     CarouselIndicators,
   } from '@/components/ui/carousel'
-  import { ProductCard } from '@/components/products'
+  import { ProductCard } from '@/components/demo/products'
   import type { Product } from '@/services/product'
 
   interface Props {

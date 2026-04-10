@@ -6,7 +6,7 @@
 <template>
   <Card>
     <CardHeader class="p-0">
-      <Skeleton class="aspect-square w-full rounded-t-xl rounded-b-none" />
+      <Skeleton class="aspect-square w-full rounded-t-sm rounded-b-none" />
     </CardHeader>
     <CardContent class="space-y-1.5 p-2">
       <Skeleton class="h-3 w-full" />

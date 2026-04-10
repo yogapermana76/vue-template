@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { Component } from 'vue'
-  import { StatsCard } from '@/components/dashboard'
+  import { StatsCard } from '@/components/demo/dashboard'
 
   interface Stat {
     title: string

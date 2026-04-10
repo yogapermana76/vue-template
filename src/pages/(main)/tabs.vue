@@ -8,9 +8,9 @@
     type TabItem,
   } from '@/components/ui/swipeable-tabs'
   import { Badge } from '@/components/ui/badge'
-  import TabHomeContent from '@/components/tabs/TabHomeContent.vue'
-  import TabProductContent from '@/components/tabs/TabProductContent.vue'
-  import TabDashboardContent from '@/components/tabs/TabDashboardContent.vue'
+  import TabHomeContent from '@/components/demo/tabs/TabHomeContent.vue'
+  import TabProductContent from '@/components/demo/tabs/TabProductContent.vue'
+  import TabDashboardContent from '@/components/demo/tabs/TabDashboardContent.vue'
 
   definePage({
     meta: {

@@ -14,7 +14,7 @@
     ProductCardSkeleton,
     ProductGrid,
     ProductFilters,
-  } from '@/components/products'
+  } from '@/components/demo/products'
   import type { ProductFilters as ProductFiltersType } from '@/services/product'
 
   definePage({
@@ -70,75 +70,77 @@
 </script>
 
 <template>
-  <!-- Pull to Refresh Indicator -->
-  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+  <div class="flex min-h-screen flex-col bg-white">
+    <!-- Pull to Refresh Indicator -->
+    <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
 
-  <!-- Header (outside padded container for proper sticky positioning) -->
-  <Header
-    title="Products"
-    :subtitle="`Browse our collection of ${total} products`"
-    :show-back="false"
-    positioning="normal"
-  />
-
-  <!-- Content (with padding) -->
-  <div class="space-y-4 px-4 pt-4">
-    <!-- Filters -->
-    <ProductFilters
-      v-model:search="filters.search"
-      v-model:category="filters.category"
-      v-model:sort="filters.sort"
-      :categories="categories ?? []"
+    <!-- Header (outside padded container for proper sticky positioning) -->
+    <Header
+      title="Products"
+      :subtitle="`Browse our collection of ${total} products`"
+      :show-back="false"
+      positioning="normal"
     />
 
-    <!-- Loading State (initial) -->
-    <ProductGrid v-if="isLoading">
-      <ProductCardSkeleton v-for="i in 6" :key="i" />
-    </ProductGrid>
+    <!-- Content (with padding) -->
+    <div class="space-y-4 px-4 pt-4">
+      <!-- Filters -->
+      <ProductFilters
+        v-model:search="filters.search"
+        v-model:category="filters.category"
+        v-model:sort="filters.sort"
+        :categories="categories ?? []"
+      />
 
-    <!-- Error State -->
-    <EmptyState
-      v-else-if="error"
-      title="Error loading products"
-      :description="error.message"
-      :image="AlertCircle"
-    >
-      <template #actions>
-        <Button @click="() => refetch()">Try Again</Button>
-      </template>
-    </EmptyState>
-
-    <!-- Products Grid with Infinite Scroll -->
-    <template v-else-if="products.length">
-      <ProductGrid>
-        <ProductCard v-for="product in products" :key="product.id" :product="product" />
+      <!-- Loading State (initial) -->
+      <ProductGrid v-if="isLoading">
+        <ProductCardSkeleton v-for="i in 6" :key="i" />
       </ProductGrid>
 
-      <!-- Load More Trigger -->
-      <div ref="loadMoreRef" class="flex justify-center py-4">
-        <div v-if="isFetchingNextPage" class="flex items-center gap-2">
-          <Loader2 class="text-primary-500 size-5 animate-spin" />
-          <span class="body-m text-neutral-500">Loading more...</span>
-        </div>
-        <p v-else-if="!hasNextPage" class="body-m text-neutral-500">You've reached the end</p>
-      </div>
-    </template>
+      <!-- Error State -->
+      <EmptyState
+        v-else-if="error"
+        title="Error loading products"
+        :description="error.message"
+        :image="AlertCircle"
+      >
+        <template #actions>
+          <Button @click="() => refetch()">Try Again</Button>
+        </template>
+      </EmptyState>
 
-    <!-- Empty State -->
-    <EmptyState
-      v-else
-      :icon="Filter"
-      title="No products found"
-      description="Try adjusting your search or filter criteria"
-    >
-      <template #action>
-        <Button
-          variant="secondary"
-          class="border-primary-300 text-primary-600 hover:bg-primary-50"
-          @click="handleReset"
-          >Clear Filters</Button
-        >
+      <!-- Products Grid with Infinite Scroll -->
+      <template v-else-if="products.length">
+        <ProductGrid>
+          <ProductCard v-for="product in products" :key="product.id" :product="product" />
+        </ProductGrid>
+
+        <!-- Load More Trigger -->
+        <div ref="loadMoreRef" class="flex justify-center py-4">
+          <div v-if="isFetchingNextPage" class="flex items-center gap-2">
+            <Loader2 class="text-primary-500 size-5 animate-spin" />
+            <span class="body-m text-neutral-500">Loading more...</span>
+          </div>
+          <p v-else-if="!hasNextPage" class="body-m text-neutral-500">You've reached the end</p>
+        </div>
       </template>
-    </EmptyState>
+
+      <!-- Empty State -->
+      <EmptyState
+        v-else
+        :icon="Filter"
+        title="No products found"
+        description="Try adjusting your search or filter criteria"
+      >
+        <template #action>
+          <Button
+            variant="secondary"
+            class="border-primary-300 text-primary-600 hover:bg-primary-50"
+            @click="handleReset"
+            >Clear Filters</Button
+          >
+        </template>
+      </EmptyState>
+    </div>
   </div>
 </template>

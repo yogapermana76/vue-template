@@ -16,7 +16,7 @@
     ProductInfo,
     ProductDescription,
     ProductActions,
-  } from '@/components/products'
+  } from '@/components/demo/products'
 
   const router = useRouter()
 

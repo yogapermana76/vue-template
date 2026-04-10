@@ -2,9 +2,9 @@
   import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { SearchInput } from '@/components/shared'
-  import ProductCard from '@/components/products/ProductCard.vue'
-  import ProductCardSkeleton from '@/components/products/ProductCardSkeleton.vue'
-  import ProductGrid from '@/components/products/ProductGrid.vue'
+  import ProductCard from '@/components/demo/products/ProductCard.vue'
+  import ProductCardSkeleton from '@/components/demo/products/ProductCardSkeleton.vue'
+  import ProductGrid from '@/components/demo/products/ProductGrid.vue'
   import { productService, type Product } from '@/services/product'
 
   const router = useRouter()

@@ -11,8 +11,11 @@
   import { PullToRefresh } from '@/components/shared'
   import { EmptyState } from '@/components/ui/empty-state'
   import { AlertCircle } from 'lucide-vue-next'
-  import { ProductCard, ProductCardSkeleton, ProductGrid } from '@/components/products'
-  import { CategoryFilterBottomSheet, SortFilterBottomSheet } from '@/components/products/filters'
+  import { ProductCard, ProductCardSkeleton, ProductGrid } from '@/components/demo/products'
+  import {
+    CategoryFilterBottomSheet,
+    SortFilterBottomSheet,
+  } from '@/components/demo/products/filters'
   import type { ProductFilters as ProductFiltersType } from '@/services/product'
 
   definePage({

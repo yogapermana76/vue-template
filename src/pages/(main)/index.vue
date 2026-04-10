@@ -12,7 +12,7 @@
     PreferencesSection,
     WinnersSection,
     FaqListSection,
-  } from '@/components/home'
+  } from '@/components/demo/home'
 
   definePage({
     meta: {
