@@ -5,9 +5,6 @@
     serviceType: string
     invoice: string
     transactionDate: string
-    recipientName: string
-    recipientPhone: string
-    address: string
     pointsRedeemed: number
     totalPoints: number
   }
@@ -16,9 +13,6 @@
     serviceType: 'Event',
     invoice: 'IVR/20200202/XX/II/332177702',
     transactionDate: '09 Januari 2026, 19:55 WIB',
-    recipientName: 'Gita Diaz',
-    recipientPhone: '0812-1712-1255',
-    address: 'Jalan Dhamarwangsa III no 27, Mampang Prapatan, Jakarta Selatan, 11245',
     pointsRedeemed: 50,
     totalPoints: 50,
   }

@@ -28,12 +28,12 @@
     window.removeEventListener('scroll', handleScroll)
   })
 
-  const handleDownloadInvoice = () => {
-    // TODO: Implement download invoice
-    console.log('Download invoice')
+  const handleViewReward = () => {
+    // TODO: Implement view reward
+    console.log('View reward')
   }
 
-  const handleBackToRewards = () => {
+  const handleBackToHome = () => {
     router.push('/eco-journey-points')
   }
 </script>
@@ -86,16 +86,16 @@
 
     <!-- Footer with Buttons -->
     <Footer position="fixed">
-      <Button variant="primary" size="md" class="w-full" @click="handleDownloadInvoice">
-        Unduh Invoice
+      <Button variant="primary" size="md" class="w-full" @click="handleViewReward">
+        Lihat Reward
       </Button>
       <Button
         variant="secondary"
         size="md"
         class="border-primary-600/50 text-primary-700 w-full"
-        @click="handleBackToRewards"
+        @click="handleBackToHome"
       >
-        Kembali ke Eco Journey Points
+        Kembali ke Beranda
       </Button>
     </Footer>
   </div>
