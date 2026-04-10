@@ -56,7 +56,13 @@ export { EmptyState } from './empty-state'
 export { Flag } from './flag'
 
 // FormField
-export { FormField } from './form-field'
+export {
+  TextField,
+  TextAreaField,
+  FormField,
+  type TextFieldProps,
+  type TextAreaFieldProps,
+} from './form'
 
 // Input
 export { Input, InputGroup } from './input'

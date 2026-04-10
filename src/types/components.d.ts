@@ -89,7 +89,7 @@ declare module 'vue' {
     FilterFooter: typeof import('./../components/demo/products/filters/FilterFooter.vue')['default']
     Flag: typeof import('./../components/ui/flag/Flag.vue')['default']
     Footer: typeof import('./../components/layout/Footer.vue')['default']
-    FormField: typeof import('./../components/ui/form-field/FormField.vue')['default']
+    FormField: typeof import('./../components/ui/form/FormField.vue')['default']
     Header: typeof import('./../components/layout/Header.vue')['default']
     HeaderActionItem: typeof import('./../components/layout/HeaderActionItem.vue')['default']
     HeroSection: typeof import('./../components/demo/home/HeroSection.vue')['default']

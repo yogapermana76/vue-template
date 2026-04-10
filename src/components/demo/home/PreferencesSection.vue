@@ -12,7 +12,7 @@
   import { EmptyState } from '@/components/ui/empty-state'
   import { Divider } from '@/components/ui/divider'
   import { Input, InputGroup } from '@/components/ui/input'
-  import { FormField } from '@/components/ui/form-field'
+  import { FormField } from '@/components/ui/form'
   import { CountryCodeSelector } from '@/components/ui/country-code-selector'
   import { CircleCheck, Copy } from 'lucide-vue-next'
   import MakeSureIllustration from '@/assets/illustrations/make-sure.svg'

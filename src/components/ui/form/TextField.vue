@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes, Component, InputHTMLAttributes } from 'vue'
   import { computed } from 'vue'
-  import { FormField } from '@/components/ui/form-field'
+  import { FormField } from '.'
   import { Input } from '@/components/ui/input'
   import { InputGroup } from '@/components/ui/input'
 

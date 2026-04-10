@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { computed } from 'vue'
-  import { FormField } from '@/components/ui/form-field'
+  import { FormField } from '.'
   import { Textarea } from '@/components/ui/textarea'
 
   export interface TextAreaFieldProps {
