@@ -73,7 +73,7 @@
         variant="tertiary"
         size="md"
         :is-dark-bg="isDarkBg"
-        class="-ml-2"
+        :class="['-ml-2', !isDarkBg && 'text-neutral-950']"
         @click="handleBack"
       >
         <ArrowLeft />
@@ -96,7 +96,7 @@
         <HeaderActionItem v-for="action in rightActions" :key="action.id" :action="action" />
 
         <!-- Slot for custom components -->
-        <slot name="actions" :is-dark-bg="isDarkBg" />
+        <slot name="actions" :is-dark-bg="isDarkBg" :icon-class="!isDarkBg && 'text-neutral-950'" />
 
         <!-- Theme Toggle -->
         <IconButton
@@ -104,6 +104,7 @@
           variant="tertiary"
           size="md"
           :is-dark-bg="isDarkBg"
+          :class="!isDarkBg && 'text-neutral-950'"
           title="Toggle theme"
           @click="themeStore.toggleDark()"
         >
