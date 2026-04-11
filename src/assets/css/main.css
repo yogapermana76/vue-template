@@ -336,6 +336,39 @@
   --radius-md: calc(var(--radius) + 0.5rem); /* 16px */
   --radius-xl: calc(var(--radius) * 6); /* 48px */
   --radius-full: calc(var(--radius) * 12); /* 96px */
+
+  /* Custom animations */
+  --animation-bounce-up: bounceUp 0.5s ease-out;
+  --animation-bounce-down: bounceDown 0.5s ease-in;
+}
+
+@keyframes bounceUp {
+  0% {
+    transform: translateY(100px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceDown {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100px);
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animate-bounce-up {
+    animation: bounceUp 0.5s ease-out;
+  }
+
+  .animate-bounce-down {
+    animation: bounceDown 0.5s ease-in;
+  }
 }
 
 /* Light theme */

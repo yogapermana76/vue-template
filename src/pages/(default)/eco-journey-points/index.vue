@@ -18,9 +18,24 @@
 
   const router = useRouter()
   const isScrolled = ref(false)
+  const showButton = ref(true)
+  let scrollTimeout: ReturnType<typeof setTimeout> | null = null
 
   const handleScroll = () => {
     isScrolled.value = window.scrollY > 50
+
+    // Hide button when scrolling, show when scroll stops
+    showButton.value = false
+
+    // Clear previous timeout
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout)
+    }
+
+    // Show button again after scroll stops (600ms without scroll event)
+    scrollTimeout = setTimeout(() => {
+      showButton.value = true
+    }, 800)
   }
 
   const backButtonClass = computed(() => (isScrolled.value ? 'text-neutral-950' : 'text-white'))
@@ -80,6 +95,8 @@
     </main>
 
     <!-- Floating Scan Button -->
-    <FloatingScanButton label="Scan QR" @click="handleScan" />
+    <Transition enter-active-class="animate-bounce-up" leave-active-class="animate-bounce-down">
+      <FloatingScanButton v-if="showButton" label="Scan QR" @click="handleScan" />
+    </Transition>
   </div>
 </template>
