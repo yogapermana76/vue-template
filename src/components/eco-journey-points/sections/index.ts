@@ -1,5 +1,10 @@
 // Home page sections
-export { EcoJourneyInfoSection, EcoJourneyRedemptionSection, EcoJourneyMoreSection } from './home'
+export {
+  EcoJourneyInfoSection,
+  EcoJourneyRedemptionSection,
+  EcoJourneyMoreSection,
+  EcoJourneyDescriptionSection,
+} from './home'
 
 export {
   EcoJourneyTransactionHistorySection,

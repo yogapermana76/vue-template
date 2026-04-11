@@ -10,4 +10,5 @@ export {
   EcoJourneyInfoSection,
   EcoJourneyRedemptionSection,
   EcoJourneyMoreSection,
+  EcoJourneyDescriptionSection,
 } from './sections'

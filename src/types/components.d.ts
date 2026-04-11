@@ -63,6 +63,7 @@ declare module 'vue' {
     DrawerOverlay: typeof import('./../components/ui/drawer/DrawerOverlay.vue')['default']
     DrawerTitle: typeof import('./../components/ui/drawer/DrawerTitle.vue')['default']
     DrawerTrigger: typeof import('./../components/ui/drawer/DrawerTrigger.vue')['default']
+    EcoJourneyDescriptionSection: typeof import('./../components/eco-journey-points/sections/home/EcoJourneyDescriptionSection.vue')['default']
     EcoJourneyFaqItem: typeof import('./../components/eco-journey-points/sections/home/EcoJourneyFaqItem.vue')['default']
     EcoJourneyFaqSection: typeof import('./../components/eco-journey-points/sections/home/EcoJourneyFaqSection.vue')['default']
     EcoJourneyHeroBanner: typeof import('./../components/eco-journey-points/sections/detail/EcoJourneyHeroBanner.vue')['default']
