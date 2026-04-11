@@ -33,12 +33,40 @@
     }
   }
 
-  /** Computed classes for transparent mode */
-  const transparentHeaderClass = computed(() => {
+  /** Whether header uses fixed/sticky positioning */
+  const isFixedOrSticky = computed(() => {
+    return props.positioning === 'fixed' || props.positioning === 'sticky'
+  })
+
+  /** Positioning class based on prop */
+  const positioningClass = computed(() => {
+    if (props.positioning === 'fixed') return 'fixed'
+    if (props.positioning === 'sticky') return 'sticky'
+    return ''
+  })
+
+  /** Background class for transparent mode */
+  const backgroundClass = computed(() => {
     if (!props.transparent) return ''
     return isScrolled.value ? 'bg-white!' : 'bg-transparent!'
   })
 
+  /** Combined header classes */
+  const headerClass = computed(() => [
+    'top-0 z-50 w-full bg-white',
+    positioningClass.value,
+    isFixedOrSticky.value && 'right-0 left-0 mx-auto',
+    props.transparent && 'transition-all duration-300',
+    backgroundClass.value,
+  ])
+
+  /** Header max-width style for fixed/sticky positioning */
+  const headerStyle = computed(() => {
+    if (!isFixedOrSticky.value) return undefined
+    return { maxWidth: `${config.ui.maxWidth}px` }
+  })
+
+  /** Title text color class */
   const titleClass = computed(() => {
     if (!props.transparent) return 'text-neutral-950'
     return isScrolled.value ? 'text-neutral-950' : 'text-white!'
@@ -51,21 +79,7 @@
 </script>
 
 <template>
-  <header
-    :class="[
-      'top-0 z-50 w-full bg-white',
-      positioning === 'fixed' ? 'fixed' : positioning === 'sticky' ? 'sticky' : '',
-      (positioning === 'fixed' || positioning === 'sticky') && 'right-0 left-0 mx-auto',
-      transparent && 'transition-all duration-300',
-      transparentHeaderClass,
-      $attrs.class,
-    ]"
-    :style="
-      positioning === 'fixed' || positioning === 'sticky'
-        ? { maxWidth: `${config.ui.maxWidth}px` }
-        : undefined
-    "
-  >
+  <header :class="[headerClass, $attrs.class]" :style="headerStyle">
     <div class="flex h-full items-center gap-2 px-4">
       <!-- Left: Back Button -->
       <IconButton
