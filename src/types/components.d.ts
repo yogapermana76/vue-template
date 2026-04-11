@@ -150,7 +150,7 @@ declare module 'vue' {
     RewardsListKuponSection: typeof import('./../components/rewards/sections/RewardsListKuponSection.vue')['default']
     RewardsLotteryCouponsSection: typeof import('./../components/rewards/sections/my-rewards/RewardsLotteryCouponsSection.vue')['default']
     RewardsOurCouponsSection: typeof import('./../components/rewards/sections/home/RewardsOurCouponsSection.vue')['default']
-    RewardsRedemptionDetailsSection: typeof import('./../components/rewards/sections/detail/RewardsRedemptionDetailsSection.vue')['default']
+    RewardsRedemptionDetailsSection: typeof import('./../components/rewards/sections/redemption/RewardsRedemptionDetailsSection.vue')['default']
     RewardsRiwayatSection: typeof import('./../components/rewards/sections/my-rewards/RewardsRiwayatSection.vue')['default']
     RewardsTransactionCard: typeof import('./../components/rewards/cards/transaction-card/RewardsTransactionCard.vue')['default']
     RewardsVoucherSection: typeof import('./../components/rewards/sections/my-rewards/RewardsVoucherSection.vue')['default']
