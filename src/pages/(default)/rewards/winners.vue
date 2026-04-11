@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
-  import { Header } from '@/components/layout'
-  import { RoundedOverlap } from '@/components/ui'
+  import { Header, GradientSection } from '@/components/layout'
   import { WinnerCard, type WinnerData } from '@/components/rewards'
 
   definePage({
@@ -118,7 +117,7 @@
     />
 
     <!-- Hero Section with Featured Winners -->
-    <div class="bg-gradient-teal relative flex w-full flex-col overflow-hidden pt-14 pb-5">
+    <GradientSection gradient="teal" class="pt-14">
       <!-- Period Badge -->
       <div class="z-10 flex justify-center px-4 pb-3">
         <div
@@ -141,10 +140,7 @@
           :prize-image="item.prizeImage"
         />
       </div>
-
-      <!-- Rounded Overlap Shape -->
-      <RoundedOverlap />
-    </div>
+    </GradientSection>
 
     <!-- Other Winners (Rank 4+) -->
     <main class="flex flex-1 flex-col gap-2 px-4 pb-6">

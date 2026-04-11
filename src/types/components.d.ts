@@ -93,6 +93,8 @@ declare module 'vue' {
     FloatingScanButton: typeof import('./../components/ui/button/FloatingScanButton.vue')['default']
     Footer: typeof import('./../components/layout/Footer.vue')['default']
     FormField: typeof import('./../components/ui/form/FormField.vue')['default']
+    GradientHeroSection: typeof import('./../components/layout/GradientHeroSection.vue')['default']
+    GradientSection: typeof import('./../components/layout/GradientSection.vue')['default']
     Header: typeof import('./../components/layout/Header.vue')['default']
     HeaderActionItem: typeof import('./../components/layout/HeaderActionItem.vue')['default']
     HeroSection: typeof import('./../components/demo/home/HeroSection.vue')['default']

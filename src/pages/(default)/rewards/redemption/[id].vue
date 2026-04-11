@@ -1,9 +1,8 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
-  import { Header, Footer } from '@/components/layout'
+  import { Header, Footer, GradientSection } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { RoundedOverlap } from '@/components/ui'
   import { RewardsRedemptionDetailsSection } from '@/components/rewards'
   import CheckIcon from '@/assets/illustrations/check.svg?component'
 
@@ -53,9 +52,7 @@
     />
 
     <!-- Hero Section -->
-    <div
-      class="bg-gradient-cyan relative flex w-full flex-col items-center overflow-hidden pt-16 pb-12"
-    >
+    <GradientSection gradient="cyan" class="items-center pb-12">
       <!-- Success Content Container -->
       <div class="flex flex-col items-center gap-4 px-4">
         <!-- Check Icon -->
@@ -74,10 +71,7 @@
           </p>
         </div>
       </div>
-
-      <!-- Rounded Overlap Shape -->
-      <RoundedOverlap />
-    </div>
+    </GradientSection>
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col gap-5 pt-5 pb-6">

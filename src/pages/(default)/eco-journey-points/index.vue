@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import { ref, computed, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
-  import { Header } from '@/components/layout'
-  import { RoundedOverlap } from '@/components/ui'
+  import { Header, GradientSection } from '@/components/layout'
   import { FloatingScanButton } from '@/components/ui/button'
   import {
     EcoJourneyInfoSection,
@@ -64,13 +63,9 @@
     />
 
     <!-- Hero Section -->
-    <div class="bg-gradient-navy relative flex w-full flex-col overflow-hidden pt-16 pb-5">
-      <!-- Info Section -->
+    <GradientSection gradient="navy">
       <EcoJourneyInfoSection />
-
-      <!-- Rounded Overlap Shape -->
-      <RoundedOverlap />
-    </div>
+    </GradientSection>
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col gap-6">

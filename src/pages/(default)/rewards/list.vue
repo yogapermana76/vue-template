@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
-  import { Header } from '@/components/layout'
-  import { RoundedOverlap } from '@/components/ui'
+  import { Header, GradientSection } from '@/components/layout'
   import { RewardsListFeaturedSection, RewardsListCouponsSection } from '@/components/rewards'
 
   definePage({
@@ -40,13 +39,9 @@
     />
 
     <!-- Hero Section with Featured Coupon -->
-    <div class="bg-gradient-blue-cyan relative flex w-full flex-col overflow-hidden pt-16 pb-5">
-      <!-- Featured Section -->
+    <GradientSection gradient="blue-cyan">
       <RewardsListFeaturedSection />
-
-      <!-- Rounded Overlap Shape -->
-      <RoundedOverlap />
-    </div>
+    </GradientSection>
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col pb-6">
