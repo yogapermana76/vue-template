@@ -27,10 +27,10 @@
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
     <Header title="Rewards" :show-back="false" positioning="fixed" transparent>
-      <template #actions="{ isDarkBg }">
+      <template #actions="{ isDarkBg, iconClass }">
         <IconButton
           variant="tertiary"
-          class="-mr-2"
+          :class="['-mr-2', iconClass]"
           :is-dark-bg="isDarkBg"
           @click="handleNavigateToHistory"
         >

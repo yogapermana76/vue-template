@@ -4,17 +4,12 @@
   import { Header } from '@/components/layout'
   import { Card } from '@/components/ui/card'
   import { IconButton } from '@/components/ui/button'
-  import { useScrollableHeader } from '@/composables/ui'
 
   definePage({
     meta: {
       title: 'Scrollable Page Example',
     },
   })
-
-  // Scrollable header with transparent-to-solid effect
-  // @ts-expect-error - ref binding used in template via ref="scrollableRef"
-  const { scrollableRef, headerClass, handleScroll } = useScrollableHeader()
 
   // Sample data for scrollable content
   const items = Array.from({ length: 20 }, (_, i) => ({
@@ -32,9 +27,9 @@
 </script>
 
 <template>
-  <div>
-    <!-- Fixed Header with Transparent-to-Solid Effect -->
-    <Header title="Scrollable Page" positioning="fixed" :class="headerClass">
+  <div class="min-h-screen">
+    <!-- Fixed Header -->
+    <Header title="Scrollable Page" positioning="fixed">
       <template #actions>
         <IconButton variant="tertiary" size="md" title="Share" @click="handleShare">
           <Share2 class="h-5 w-5" />
@@ -51,11 +46,7 @@
     </Header>
 
     <!-- Scrollable Content Container with Gradient Background -->
-    <div
-      ref="scrollableRef"
-      class="from-primary-50 via-secondary-50 to-background flex-1 overflow-y-auto bg-linear-to-b pt-14"
-      @scroll="handleScroll"
-    >
+    <div class="from-primary-50 via-secondary-50 to-background flex-1 bg-linear-to-b pt-14">
       <!-- Initial Content (Visible Behind fixed Header) -->
       <div class="relative p-6">
         <div class="bg-background/80 rounded-lg p-4 shadow-sm backdrop-blur">
