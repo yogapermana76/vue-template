@@ -33,6 +33,13 @@ export interface HeaderProps {
   positioning?: 'fixed' | 'sticky' | 'normal'
   /** Custom class for back button icon */
   backButtonClass?: string
+  /**
+   * Enable transparent mode with scroll transition.
+   * When enabled, header starts transparent and transitions to solid white on scroll.
+   * Also handles text/icon color transitions automatically.
+   * @default false
+   */
+  transparent?: boolean
 }
 
 /** Default props */

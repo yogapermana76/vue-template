@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue'
   import { Header, GradientSection } from '@/components/layout'
   import { WinnerCard, type WinnerData } from '@/components/rewards'
 
@@ -7,20 +6,6 @@
     meta: {
       title: 'Pemenang',
     },
-  })
-
-  const isScrolled = ref(false)
-
-  const handleScroll = () => {
-    isScrolled.value = window.scrollY > 50
-  }
-
-  onMounted(() => {
-    window.addEventListener('scroll', handleScroll)
-  })
-
-  onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
   })
 
   // Data
@@ -105,16 +90,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header
-      title="Pemenang"
-      positioning="fixed"
-      :class="[
-        'transition-all duration-300',
-        isScrolled ? 'bg-white!' : 'bg-transparent!',
-        isScrolled ? '[&_h1]:text-neutral-950' : '[&_h1]:text-white!',
-        isScrolled ? '' : '[&_button_svg]:text-white',
-      ]"
-    />
+    <Header title="Pemenang" positioning="fixed" transparent />
 
     <!-- Hero Section with Featured Winners -->
     <GradientSection gradient="teal" class="pt-14">

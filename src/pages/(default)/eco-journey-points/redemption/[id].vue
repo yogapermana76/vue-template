@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { Header, Footer, GradientSection } from '@/components/layout'
   import { Button } from '@/components/ui/button'
@@ -13,19 +12,6 @@
   })
 
   const router = useRouter()
-  const isScrolled = ref(false)
-
-  const handleScroll = () => {
-    isScrolled.value = window.scrollY > 50
-  }
-
-  onMounted(() => {
-    window.addEventListener('scroll', handleScroll)
-  })
-
-  onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
-  })
 
   const handleViewReward = () => {
     // TODO: Implement view reward
@@ -40,16 +26,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white pb-36">
     <!-- Header -->
-    <Header
-      title="Detail Penukaran"
-      positioning="fixed"
-      :back-button-class="isScrolled ? 'text-neutral-950' : 'text-white'"
-      :class="[
-        'transition-all duration-300',
-        isScrolled ? 'bg-white!' : 'bg-transparent!',
-        isScrolled ? '[&_h1]:text-neutral-950' : '[&_h1]:text-white!',
-      ]"
-    />
+    <Header title="Detail Penukaran" positioning="fixed" transparent />
 
     <!-- Hero Section -->
     <GradientSection gradient="cyan" class="items-center pb-12">

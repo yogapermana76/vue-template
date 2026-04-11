@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onUnmounted } from 'vue'
+  import { ref, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { Header, GradientSection } from '@/components/layout'
   import { FloatingScanButton } from '@/components/ui/button'
@@ -17,13 +17,10 @@
   })
 
   const router = useRouter()
-  const isScrolled = ref(false)
   const showButton = ref(true)
   let scrollTimeout: ReturnType<typeof setTimeout> | null = null
 
   const handleScroll = () => {
-    isScrolled.value = window.scrollY > 50
-
     // Hide button when scrolling, show when scroll stops
     showButton.value = false
 
@@ -32,13 +29,11 @@
       clearTimeout(scrollTimeout)
     }
 
-    // Show button again after scroll stops (600ms without scroll event)
+    // Show button again after scroll stops (800ms without scroll event)
     scrollTimeout = setTimeout(() => {
       showButton.value = true
     }, 800)
   }
-
-  const backButtonClass = computed(() => (isScrolled.value ? 'text-neutral-950' : 'text-white'))
 
   onMounted(() => {
     window.addEventListener('scroll', handleScroll)
@@ -57,11 +52,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <!-- Header -->
-    <Header
-      positioning="fixed"
-      :back-button-class="backButtonClass"
-      :class="['transition-all duration-300', isScrolled ? 'bg-white!' : 'bg-transparent!']"
-    />
+    <Header positioning="fixed" transparent />
 
     <!-- Hero Section -->
     <GradientSection gradient="navy">
