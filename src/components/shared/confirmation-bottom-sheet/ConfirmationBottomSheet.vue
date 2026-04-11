@@ -20,6 +20,8 @@
     open?: boolean
     /** Illustration image (SVG component or URL) */
     image?: Component | string
+    /** Custom CSS class for image size (e.g., 'size-40') */
+    imageClass?: HTMLAttributes['class']
     /** Title text */
     title: string
     /** Description text */
@@ -37,6 +39,7 @@
   const props = withDefaults(defineProps<ConfirmationBottomSheetProps>(), {
     open: false,
     image: undefined,
+    imageClass: 'size-56',
     description: undefined,
     buttons: () => [],
     buttonLayout: 'row',
@@ -55,19 +58,20 @@
     :show-close="false"
     has-footer
     footer-position="sticky"
+    content-slot-class="!px-0 !pb-0"
     :class="cn('', props.class)"
     @update:open="emit('update:open', $event)"
   >
     <!-- Content: Image, Title, Description -->
-    <div class="flex flex-col items-center gap-3 px-4 pt-0.5 pb-4">
-      <!-- Image -->
-      <div v-if="image" class="h-56 w-56 shrink-0">
-        <component :is="image" v-if="typeof image !== 'string'" class="h-full w-full" />
-        <img v-else :src="image" alt="" class="h-full w-full object-contain" />
+    <div class="flex flex-col items-center gap-3 pt-0.5 pb-4">
+      <!-- Image/Illustration -->
+      <div v-if="image" :class="cn('flex shrink-0 items-center justify-center', imageClass)">
+        <component :is="image" v-if="typeof image !== 'string'" />
+        <img v-else :src="image" alt="" class="size-full object-contain" />
       </div>
 
       <!-- Text -->
-      <div class="flex w-full flex-col items-center gap-2 text-center">
+      <div class="flex w-full flex-col items-center justify-center gap-2 px-4 text-center">
         <h3 class="heading-s w-full text-slate-950">{{ title }}</h3>
         <p v-if="description" class="body-m w-full text-slate-800">
           {{ description }}

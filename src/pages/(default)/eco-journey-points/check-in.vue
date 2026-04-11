@@ -68,7 +68,6 @@
     <ConfirmationBottomSheet
       v-model:open="showConfirmationSheet"
       :image="MascotIllustration"
-      image-height="h-64"
       title="Check in berhasil?"
       description="Apakah anda yakin untuk melakukan check in?"
       button-layout="row"

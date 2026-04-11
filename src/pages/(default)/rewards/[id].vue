@@ -138,7 +138,6 @@
     <ConfirmationBottomSheet
       v-model:open="showConfirmationSheet"
       :image="MascotIllustration"
-      image-height="h-64"
       title="Menukarkan hadiah?"
       description="Apakah anda ingin menukarkan 50 poin untuk mendapatkan hadiah ini?"
       button-layout="row"
