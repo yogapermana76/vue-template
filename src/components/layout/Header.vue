@@ -18,11 +18,14 @@
     backButtonClass: 'text-neutral-950',
     rightActions: () => defaultHeaderProps.rightActions || [],
     transparent: false,
+    scrollThreshold: 50,
   })
 
   const router = useRouter()
   const themeStore = useThemeStore()
-  const { isScrolled } = useWindowScroll()
+  const { isScrolled } = useWindowScroll({
+    threshold: () => props.scrollThreshold,
+  })
 
   /** Use custom onBack if provided, otherwise default to router.back() */
   const handleBack = () => {

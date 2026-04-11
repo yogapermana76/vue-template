@@ -40,6 +40,15 @@ export interface HeaderProps {
    * @default false
    */
   transparent?: boolean
+  /**
+   * Scroll threshold to trigger header background transition.
+   * Only used when `transparent` is true.
+   * - Number: pixels (e.g., 100)
+   * - String with 'px': pixels (e.g., '100px')
+   * - String with '%': percentage of viewport height (e.g., '50%')
+   * @default 50
+   */
+  scrollThreshold?: number | string
 }
 
 /** Default props */
