@@ -29,8 +29,8 @@ export interface HeaderProps {
   rightActions?: HeaderAction[]
   /** Hide theme toggle (default: true) */
   hideThemeToggle?: boolean
-  /** Positioning mode: 'fixed' (always visible), 'sticky' (stick to top), 'normal' (scroll with content) */
-  positioning?: 'fixed' | 'sticky' | 'normal'
+  /** Positioning mode: 'fixed' (always visible), 'sticky' (stick to top), 'static' (scroll with content) */
+  positioning?: 'fixed' | 'sticky' | 'static'
   /** Custom class for back button icon */
   backButtonClass?: string
   /**

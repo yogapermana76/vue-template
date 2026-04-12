@@ -78,7 +78,7 @@
     title="Products"
     :subtitle="`Browse our collection of ${total} products`"
     :show-back="false"
-    positioning="normal"
+    positioning="static"
   />
 
   <!-- Content (with padding) -->

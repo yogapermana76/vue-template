@@ -6,13 +6,13 @@
   interface Props {
     title?: string
     userName?: string
-    positioning?: 'fixed' | 'sticky' | 'normal'
+    positioning?: 'fixed' | 'sticky' | 'static'
   }
 
   withDefaults(defineProps<Props>(), {
     title: 'Dashboard',
     userName: 'User',
-    positioning: 'normal',
+    positioning: 'static',
   })
 
   const emit = defineEmits<{

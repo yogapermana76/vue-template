@@ -36,6 +36,13 @@
     }
   }
 
+  // Positioning class map
+  const POSITIONING_CLASSES: Record<string, string> = {
+    fixed: 'fixed',
+    sticky: 'sticky',
+    static: '',
+  }
+
   /** Whether header uses fixed/sticky positioning */
   const isFixedOrSticky = computed(() => {
     return props.positioning === 'fixed' || props.positioning === 'sticky'
@@ -43,9 +50,7 @@
 
   /** Positioning class based on prop */
   const positioningClass = computed(() => {
-    if (props.positioning === 'fixed') return 'fixed'
-    if (props.positioning === 'sticky') return 'sticky'
-    return ''
+    return POSITIONING_CLASSES[props.positioning] || ''
   })
 
   /** Background class for transparent mode */
@@ -79,6 +84,11 @@
   const isDarkBg = computed(() => {
     return props.transparent && !isScrolled.value
   })
+
+  /** Button icon color class */
+  const iconColorClass = computed(() => {
+    return !isDarkBg.value ? 'text-neutral-950' : ''
+  })
 </script>
 
 <template>
@@ -90,7 +100,7 @@
         variant="tertiary"
         size="md"
         :is-dark-bg="isDarkBg"
-        :class="['-ml-2', !isDarkBg && 'text-neutral-950']"
+        :class="['-ml-2', iconColorClass]"
         @click="handleBack"
       >
         <ArrowLeft />
@@ -113,7 +123,7 @@
         <HeaderActionItem v-for="action in rightActions" :key="action.id" :action="action" />
 
         <!-- Slot for custom components -->
-        <slot name="actions" :is-dark-bg="isDarkBg" :icon-class="!isDarkBg && 'text-neutral-950'" />
+        <slot name="actions" :is-dark-bg="isDarkBg" :icon-class="iconColorClass" />
 
         <!-- Theme Toggle -->
         <IconButton
@@ -121,7 +131,7 @@
           variant="tertiary"
           size="md"
           :is-dark-bg="isDarkBg"
-          :class="!isDarkBg && 'text-neutral-950'"
+          :class="iconColorClass"
           title="Toggle theme"
           @click="themeStore.toggleDark()"
         >
