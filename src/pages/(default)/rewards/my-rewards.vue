@@ -34,50 +34,48 @@
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
-    <!-- Header -->
-    <Header title="Rewards Saya" positioning="sticky" />
+  <!-- Header -->
+  <Header title="Rewards Saya" positioning="sticky" />
 
-    <!-- Swipeable Tabs -->
-    <SwipeableTabs v-model="activeTab" :tabs="mainTabs" class="flex-1">
-      <SwipeableTabBar v-slot="{ tab }">
-        {{ tab.label }}
-        <span
-          v-if="tab.key === 'voucher'"
-          class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
-        >
-          {{ voucherBadgeCount }}
-        </span>
-        <span
-          v-if="tab.key === 'lottery-coupons'"
-          class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
-        >
-          {{ lotteryCouponsBadgeCount }}
-        </span>
-        <span
-          v-if="tab.key === 'items'"
-          class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
-        >
-          {{ itemsBadgeCount }}
-        </span>
-      </SwipeableTabBar>
+  <!-- Swipeable Tabs -->
+  <SwipeableTabs v-model="activeTab" :tabs="mainTabs" height-offset="3rem">
+    <SwipeableTabBar v-slot="{ tab }">
+      {{ tab.label }}
+      <span
+        v-if="tab.key === 'voucher'"
+        class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+      >
+        {{ voucherBadgeCount }}
+      </span>
+      <span
+        v-if="tab.key === 'lottery-coupons'"
+        class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+      >
+        {{ lotteryCouponsBadgeCount }}
+      </span>
+      <span
+        v-if="tab.key === 'items'"
+        class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+      >
+        {{ itemsBadgeCount }}
+      </span>
+    </SwipeableTabBar>
 
-      <SwipeableTabPanels>
-        <!-- Voucher Tab -->
-        <SwipeableTabPanel value="voucher" no-padding>
-          <RewardsVouchersSection />
-        </SwipeableTabPanel>
+    <SwipeableTabPanels>
+      <!-- Voucher Tab -->
+      <SwipeableTabPanel value="voucher" no-padding>
+        <RewardsVouchersSection />
+      </SwipeableTabPanel>
 
-        <!-- Lottery Coupons Tab -->
-        <SwipeableTabPanel value="lottery-coupons" no-padding>
-          <RewardsLotteryCouponsSection />
-        </SwipeableTabPanel>
+      <!-- Lottery Coupons Tab -->
+      <SwipeableTabPanel value="lottery-coupons" no-padding>
+        <RewardsLotteryCouponsSection />
+      </SwipeableTabPanel>
 
-        <!-- Items Tab -->
-        <SwipeableTabPanel value="items" no-padding>
-          <RewardsItemsSection />
-        </SwipeableTabPanel>
-      </SwipeableTabPanels>
-    </SwipeableTabs>
-  </div>
+      <!-- Items Tab -->
+      <SwipeableTabPanel value="items" no-padding>
+        <RewardsItemsSection />
+      </SwipeableTabPanel>
+    </SwipeableTabPanels>
+  </SwipeableTabs>
 </template>

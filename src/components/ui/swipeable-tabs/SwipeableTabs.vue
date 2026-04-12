@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import type { HTMLAttributes } from 'vue'
-  import { provide } from 'vue'
+  import type { HTMLAttributes, CSSProperties } from 'vue'
+  import { provide, computed } from 'vue'
   import { useSwipeableTabs } from '@/composables/ui'
   import { cn } from '@/utils/cn'
   import {
@@ -16,8 +16,7 @@
   const props = withDefaults(defineProps<Props>(), {
     swipeThreshold: 50,
     swipeVelocityThreshold: 0.3,
-    fullHeight: true,
-    fullHeightOffset: '0px',
+    heightOffset: '0px',
   })
 
   const emit = defineEmits<{
@@ -25,6 +24,7 @@
     change: [value: string]
   }>()
 
+  // Composable
   const swipeableTabs = useSwipeableTabs({
     tabs: props.tabs,
     defaultTab: props.modelValue || props.defaultTab,
@@ -32,36 +32,30 @@
     swipeVelocityThreshold: props.swipeVelocityThreshold,
   })
 
-  // Wrap setActiveTab to sync with v-model
+  // Computed
+  const containerStyle = computed<CSSProperties>(() => ({
+    height: `calc(100dvh - ${props.heightOffset})`,
+  }))
+
+  // Methods
   const setActiveTab = (key: string) => {
     swipeableTabs.setActiveTab(key)
     emit('update:modelValue', key)
     emit('change', key)
   }
 
-  // Wrap setActiveIndex to sync with v-model
   const setActiveIndex = (index: number) => {
     swipeableTabs.setActiveIndex(index)
     emit('update:modelValue', swipeableTabs.activeTab.value)
     emit('change', swipeableTabs.activeTab.value)
   }
 
+  // Context
   const context: SwipeableTabsContext = {
     tabs: props.tabs,
-    activeTab: swipeableTabs.activeTab,
-    activeIndex: swipeableTabs.activeIndex,
-    translateX: swipeableTabs.translateX,
-    isDragging: swipeableTabs.isDragging,
-    indicatorStyle: swipeableTabs.indicatorStyle,
+    ...swipeableTabs,
     setActiveTab,
     setActiveIndex,
-    onDragStart: swipeableTabs.onDragStart,
-    onDrag: swipeableTabs.onDrag,
-    onDragEnd: swipeableTabs.onDragEnd,
-    getTabWidth: swipeableTabs.getTabWidth,
-    setContainerWidth: swipeableTabs.setContainerWidth,
-    setTabWidths: swipeableTabs.setTabWidths,
-    setTabOffsets: swipeableTabs.setTabOffsets,
   }
 
   provide(SWIPEABLE_TABS_INJECTION_KEY, context)
@@ -75,7 +69,11 @@
 </script>
 
 <template>
-  <div :class="cn('swipeable-tabs flex h-full flex-col', props.class)" data-slot="swipeable-tabs">
+  <div
+    :class="cn('swipeable-tabs flex flex-col', props.class)"
+    :style="containerStyle"
+    data-slot="swipeable-tabs"
+  >
     <slot />
   </div>
 </template>

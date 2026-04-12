@@ -7,10 +7,8 @@ export interface SwipeableTabsProps {
   modelValue?: string
   swipeThreshold?: number
   swipeVelocityThreshold?: number
-  /** Makes tabs fill the remaining viewport height with fixed tab bar */
-  fullHeight?: boolean
-  /** Offset value for fullHeight calculation (e.g., '7.5rem', '120px'). Defaults to '7.5rem' */
-  fullHeightOffset?: string
+  /** Offset from viewport height (e.g., '3.5rem' for header, '5rem' for bottom nav). Default: '0px' */
+  heightOffset?: string
 }
 
 export interface SwipeableTabsContext {

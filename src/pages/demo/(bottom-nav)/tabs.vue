@@ -32,28 +32,26 @@
 </script>
 
 <template>
-  <div class="flex h-[calc(100vh-5rem)] flex-col">
-    <SwipeableTabs v-model="activeTab" :tabs="tabs" class="flex-1">
-      <SwipeableTabBar v-slot="{ tab }">
-        {{ tab.label }}
-        <Badge v-if="tab.key === 'product'" variant="destructive" class="ml-1">
-          {{ productBadgeCount }}
-        </Badge>
-      </SwipeableTabBar>
+  <SwipeableTabs v-model="activeTab" :tabs="tabs" height-offset="4rem">
+    <SwipeableTabBar v-slot="{ tab }">
+      {{ tab.label }}
+      <Badge v-if="tab.key === 'product'" variant="destructive" class="ml-1">
+        {{ productBadgeCount }}
+      </Badge>
+    </SwipeableTabBar>
 
-      <SwipeableTabPanels>
-        <SwipeableTabPanel value="home">
-          <TabHomeContent />
-        </SwipeableTabPanel>
+    <SwipeableTabPanels>
+      <SwipeableTabPanel value="home">
+        <TabHomeContent />
+      </SwipeableTabPanel>
 
-        <SwipeableTabPanel value="product">
-          <TabProductContent />
-        </SwipeableTabPanel>
+      <SwipeableTabPanel value="product">
+        <TabProductContent />
+      </SwipeableTabPanel>
 
-        <SwipeableTabPanel value="dashboard">
-          <TabDashboardContent />
-        </SwipeableTabPanel>
-      </SwipeableTabPanels>
-    </SwipeableTabs>
-  </div>
+      <SwipeableTabPanel value="dashboard">
+        <TabDashboardContent />
+      </SwipeableTabPanel>
+    </SwipeableTabPanels>
+  </SwipeableTabs>
 </template>
