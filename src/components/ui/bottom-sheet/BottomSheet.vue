@@ -14,7 +14,7 @@
   // Type Definitions & Constants
   // ============================================================================
 
-  type FooterPosition = 'sticky' | 'normal'
+  type FooterPosition = 'sticky' | 'static'
 
   // ============================================================================
   // Props Interface

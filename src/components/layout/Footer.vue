@@ -2,10 +2,10 @@
   import { computed } from 'vue'
   import { config } from '@/config'
 
-  type PositionType = 'fixed' | 'sticky' | 'normal'
+  type PositionType = 'fixed' | 'sticky' | 'static'
 
   interface Props {
-    /** Footer position: fixed at bottom, sticky (stays visible on scroll), or normal flow */
+    /** Footer position: fixed at bottom, sticky (stays visible on scroll), or static flow */
     position?: PositionType
     /** Custom CSS classes */
     class?: string
@@ -22,7 +22,7 @@
     const classMap: Record<PositionType, string> = {
       fixed: 'fixed inset-x-0 bottom-0 z-40 mx-auto',
       sticky: 'sticky inset-x-0 bottom-0 z-40 mx-auto',
-      normal: '',
+      static: '',
     }
     return classMap[position]
   })
