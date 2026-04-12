@@ -32,7 +32,7 @@
 </script>
 
 <template>
-  <div class="flex h-full flex-col">
+  <div class="flex h-[calc(100vh-5rem)] flex-col">
     <SwipeableTabs v-model="activeTab" :tabs="tabs" class="flex-1">
       <SwipeableTabBar v-slot="{ tab }">
         {{ tab.label }}
