@@ -140,72 +140,70 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Detail Voucher" positioning="sticky" />
+  <!-- Header -->
+  <Header title="Detail Voucher" positioning="sticky" />
 
-    <!-- Hero Banner Section -->
-    <EcoJourneyHeroBanner />
+  <!-- Hero Banner Section -->
+  <EcoJourneyHeroBanner />
 
-    <!-- Content -->
-    <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
-      <!-- Program Info Section -->
-      <EcoJourneyProgramInfo :program-info="programInfo" :stats="stats" />
+  <!-- Content -->
+  <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
+    <!-- Program Info Section -->
+    <EcoJourneyProgramInfo :program-info="programInfo" :stats="stats" />
 
-      <!-- Terms & Conditions Section -->
-      <EcoJourneyTermsSection :items="termsItems" />
-    </main>
+    <!-- Terms & Conditions Section -->
+    <EcoJourneyTermsSection :items="termsItems" />
+  </main>
 
-    <!-- Footer with Button -->
-    <Footer position="fixed">
-      <!-- Point Information -->
-      <div class="flex w-full items-center justify-between">
-        <span class="body-m-regular text-slate-950">{{ pointLabel }}</span>
-        <span :class="['body-l-semibold', pointValueColor]">
-          {{ insufficientPoints ? `${pointsDifference} poin` : `${requiredPoints} poin` }}
-        </span>
-      </div>
+  <!-- Footer with Button -->
+  <Footer position="fixed">
+    <!-- Point Information -->
+    <div class="flex w-full items-center justify-between">
+      <span class="body-m-regular text-slate-950">{{ pointLabel }}</span>
+      <span :class="['body-l-semibold', pointValueColor]">
+        {{ insufficientPoints ? `${pointsDifference} poin` : `${requiredPoints} poin` }}
+      </span>
+    </div>
 
-      <!-- Exchange Button -->
-      <Button
-        variant="primary"
-        size="sm"
-        class="w-full"
-        :disabled="insufficientPoints"
-        @click="handleExchangeClick"
-      >
-        {{ buttonLabel }}
-      </Button>
-    </Footer>
+    <!-- Exchange Button -->
+    <Button
+      variant="primary"
+      size="sm"
+      class="w-full"
+      :disabled="insufficientPoints"
+      @click="handleExchangeClick"
+    >
+      {{ buttonLabel }}
+    </Button>
+  </Footer>
 
-    <!-- Confirmation Bottom Sheet -->
-    <ConfirmationBottomSheet
-      v-model:open="showConfirmationSheet"
-      :image="MascotIllustration"
-      title="Menukarkan hadiah?"
-      description="Apakah anda ingin menukarkan 50 poin untuk mendapatkan hadiah ini?"
-      button-layout="row"
-      :buttons="[
-        {
-          label: 'Kembali',
-          variant: 'secondary',
-          onClick: handleCancelExchange,
-        },
-        {
-          label: 'Tukar Poin',
-          variant: 'primary',
-          onClick: handleConfirmExchange,
-        },
-      ]"
-    />
+  <!-- Confirmation Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showConfirmationSheet"
+    :image="MascotIllustration"
+    title="Menukarkan hadiah?"
+    description="Apakah anda ingin menukarkan 50 poin untuk mendapatkan hadiah ini?"
+    button-layout="row"
+    :buttons="[
+      {
+        label: 'Kembali',
+        variant: 'secondary',
+        onClick: handleCancelExchange,
+      },
+      {
+        label: 'Tukar Poin',
+        variant: 'primary',
+        onClick: handleConfirmExchange,
+      },
+    ]"
+  />
 
-    <!-- Exchange Summary Bottom Sheet -->
-    <ExchangeSummaryBottomSheet
-      v-model:open="showExchangeSummarySheet"
-      :user-points="userPoints"
-      :exchange-points="requiredPoints"
-      @confirm="handleExchangeSummaryConfirm"
-      @cancel="handleExchangeSummaryCancel"
-    />
-  </div>
+  <!-- Exchange Summary Bottom Sheet -->
+  <ExchangeSummaryBottomSheet
+    v-model:open="showExchangeSummarySheet"
+    :user-points="userPoints"
+    :exchange-points="requiredPoints"
+    @confirm="handleExchangeSummaryConfirm"
+    @cancel="handleExchangeSummaryCancel"
+  />
 </template>

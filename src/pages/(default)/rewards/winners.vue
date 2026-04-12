@@ -88,46 +88,44 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Pemenang" positioning="fixed" transparent />
+  <!-- Header -->
+  <Header title="Pemenang" positioning="fixed" transparent />
 
-    <!-- Hero Section with Featured Winners -->
-    <GradientSection gradient="teal" class="pt-14">
-      <!-- Period Badge -->
-      <div class="z-10 flex justify-center px-4 pb-3">
-        <div
-          class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
-        >
-          <span class="body-caption-semibold flex-1 text-center text-white">
-            {{ periodLabel }}
-          </span>
-        </div>
+  <!-- Hero Section with Featured Winners -->
+  <GradientSection gradient="teal" class="pt-14">
+    <!-- Period Badge -->
+    <div class="z-10 flex justify-center px-4 pb-3">
+      <div
+        class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
+      >
+        <span class="body-caption-semibold flex-1 text-center text-white">
+          {{ periodLabel }}
+        </span>
       </div>
+    </div>
 
-      <!-- Featured Winners (Rank 1-3) -->
-      <div class="z-10 flex flex-col gap-2 px-4 pb-8">
-        <WinnerCard
-          v-for="item in featuredWinners"
-          :key="item.rank"
-          :rank="item.rank"
-          :prize="item.prize"
-          :winner="item.winner"
-          :prize-image="item.prizeImage"
-        />
-      </div>
-    </GradientSection>
-
-    <!-- Other Winners (Rank 4+) -->
-    <main class="flex flex-1 flex-col gap-2 px-4 pb-6">
+    <!-- Featured Winners (Rank 1-3) -->
+    <div class="z-10 flex flex-col gap-2 px-4 pb-8">
       <WinnerCard
-        v-for="item in otherWinners"
+        v-for="item in featuredWinners"
         :key="item.rank"
         :rank="item.rank"
         :prize="item.prize"
         :winner="item.winner"
         :prize-image="item.prizeImage"
       />
-    </main>
-  </div>
+    </div>
+  </GradientSection>
+
+  <!-- Other Winners (Rank 4+) -->
+  <main class="flex flex-1 flex-col gap-2 px-4 pb-6">
+    <WinnerCard
+      v-for="item in otherWinners"
+      :key="item.rank"
+      :rank="item.rank"
+      :prize="item.prize"
+      :winner="item.winner"
+      :prize-image="item.prizeImage"
+    />
+  </main>
 </template>

@@ -87,30 +87,28 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Riwayat" positioning="sticky" />
+  <!-- Header -->
+  <Header title="Riwayat" positioning="sticky" />
 
-    <!-- Content -->
-    <main class="flex flex-1 flex-col gap-6 px-4 py-4">
-      <!-- Empty State -->
-      <div
-        v-if="transactionHistory.length === 0"
-        class="flex flex-1 flex-col items-center justify-center"
+  <!-- Content -->
+  <main class="flex flex-1 flex-col gap-6 px-4 py-4">
+    <!-- Empty State -->
+    <div
+      v-if="transactionHistory.length === 0"
+      class="flex flex-1 flex-col items-center justify-center"
+    >
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Mulai Kumpulkan Poin!"
+        description="Riwayat anda masih kosong. Segera scan QR untuk mendapatkan poin"
       >
-        <EmptyState
-          :image="RiwayatIllustration"
-          title="Mulai Kumpulkan Poin!"
-          description="Riwayat anda masih kosong. Segera scan QR untuk mendapatkan poin"
-        >
-          <template #actions>
-            <Button class="w-full">Scan QR</Button>
-          </template>
-        </EmptyState>
-      </div>
+        <template #actions>
+          <Button class="w-full">Scan QR</Button>
+        </template>
+      </EmptyState>
+    </div>
 
-      <!-- Content when has data -->
-      <EcoJourneyTransactionHistorySection v-else :transaction-history="transactionHistory" />
-    </main>
-  </div>
+    <!-- Content when has data -->
+    <EcoJourneyTransactionHistorySection v-else :transaction-history="transactionHistory" />
+  </main>
 </template>

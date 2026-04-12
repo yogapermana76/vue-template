@@ -50,30 +50,28 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header positioning="fixed" transparent />
+  <!-- Header -->
+  <Header positioning="fixed" transparent />
 
-    <!-- Hero Section -->
-    <GradientSection gradient="navy">
-      <EcoJourneyInfoSection />
-    </GradientSection>
+  <!-- Hero Section -->
+  <GradientSection gradient="navy">
+    <EcoJourneyInfoSection />
+  </GradientSection>
 
-    <!-- Main Content -->
-    <main class="flex flex-1 flex-col gap-6">
-      <!-- Event Description Section -->
-      <EcoJourneyDescriptionSection />
+  <!-- Main Content -->
+  <main class="flex flex-1 flex-col gap-6">
+    <!-- Event Description Section -->
+    <EcoJourneyDescriptionSection />
 
-      <!-- Redemption Section -->
-      <EcoJourneyRedemptionSection />
+    <!-- Redemption Section -->
+    <EcoJourneyRedemptionSection />
 
-      <!-- More Section -->
-      <EcoJourneyMoreSection />
-    </main>
+    <!-- More Section -->
+    <EcoJourneyMoreSection />
+  </main>
 
-    <!-- Floating Scan Button -->
-    <Transition enter-active-class="animate-bounce-up" leave-active-class="animate-bounce-down">
-      <FloatingScanButton v-if="showButton" label="Scan QR" @click="handleScan" />
-    </Transition>
-  </div>
+  <!-- Floating Scan Button -->
+  <Transition enter-active-class="animate-bounce-up" leave-active-class="animate-bounce-down">
+    <FloatingScanButton v-if="showButton" label="Scan QR" @click="handleScan" />
+  </Transition>
 </template>

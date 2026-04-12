@@ -111,51 +111,49 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Detail Promo" positioning="sticky" />
+  <!-- Header -->
+  <Header title="Detail Promo" positioning="sticky" />
 
-    <!-- Hero Banner Section -->
-    <RewardHeroBanner />
+  <!-- Hero Banner Section -->
+  <RewardHeroBanner />
 
-    <!-- Content -->
-    <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
-      <!-- Program Info Section -->
-      <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+  <!-- Content -->
+  <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
+    <!-- Program Info Section -->
+    <RewardProgramInfo :program-info="programInfo" :stats="stats" />
 
-      <!-- Terms & Conditions Section -->
-      <RewardTermsSection :items="termsItems" />
-    </main>
+    <!-- Terms & Conditions Section -->
+    <RewardTermsSection :items="termsItems" />
+  </main>
 
-    <!-- Footer with Button -->
-    <Footer position="fixed">
-      <Button variant="primary" size="sm" class="w-full" @click="handleExchangeClick">
-        {{ buttonLabel }}
-      </Button>
-    </Footer>
+  <!-- Footer with Button -->
+  <Footer position="fixed">
+    <Button variant="primary" size="sm" class="w-full" @click="handleExchangeClick">
+      {{ buttonLabel }}
+    </Button>
+  </Footer>
 
-    <!-- Confirmation Bottom Sheet -->
-    <ConfirmationBottomSheet
-      v-model:open="showConfirmationSheet"
-      :image="MascotIllustration"
-      title="Menukarkan hadiah?"
-      description="Apakah anda ingin menukarkan 50 poin untuk mendapatkan hadiah ini?"
-      button-layout="row"
-      :buttons="[
-        {
-          label: 'Kembali',
-          variant: 'secondary',
-          onClick: handleCancelExchange,
-        },
-        {
-          label: 'Tukar Poin',
-          variant: 'primary',
-          onClick: handleConfirmExchange,
-        },
-      ]"
-    />
+  <!-- Confirmation Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showConfirmationSheet"
+    :image="MascotIllustration"
+    title="Menukarkan hadiah?"
+    description="Apakah anda ingin menukarkan 50 poin untuk mendapatkan hadiah ini?"
+    button-layout="row"
+    :buttons="[
+      {
+        label: 'Kembali',
+        variant: 'secondary',
+        onClick: handleCancelExchange,
+      },
+      {
+        label: 'Tukar Poin',
+        variant: 'primary',
+        onClick: handleConfirmExchange,
+      },
+    ]"
+  />
 
-    <!-- Coupon List Bottom Sheet -->
-    <CouponListBottomSheet v-model:open="showCouponListSheet" />
-  </div>
+  <!-- Coupon List Bottom Sheet -->
+  <CouponListBottomSheet v-model:open="showCouponListSheet" />
 </template>

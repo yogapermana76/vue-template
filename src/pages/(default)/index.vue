@@ -24,39 +24,37 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Rewards" :show-back="false" positioning="fixed" transparent>
-      <template #actions="{ isDarkBg, iconClass }">
-        <IconButton
-          variant="tertiary"
-          :class="['-mr-2', iconClass]"
-          :is-dark-bg="isDarkBg"
-          @click="handleNavigateToHistory"
-        >
-          <History />
-        </IconButton>
-      </template>
-    </Header>
+  <!-- Header -->
+  <Header title="Rewards" :show-back="false" positioning="fixed" transparent>
+    <template #actions="{ isDarkBg, iconClass }">
+      <IconButton
+        variant="tertiary"
+        :class="['-mr-2', iconClass]"
+        :is-dark-bg="isDarkBg"
+        @click="handleNavigateToHistory"
+      >
+        <History />
+      </IconButton>
+    </template>
+  </Header>
 
-    <!-- Hero Section -->
-    <GradientSection gradient="navy">
-      <RewardsInfoSection />
-    </GradientSection>
+  <!-- Hero Section -->
+  <GradientSection gradient="navy">
+    <RewardsInfoSection />
+  </GradientSection>
 
-    <!-- Main Content -->
-    <main class="flex flex-1 flex-col gap-6">
-      <!-- Alert Section -->
-      <RewardsAlertSection />
+  <!-- Main Content -->
+  <main class="flex flex-1 flex-col gap-6">
+    <!-- Alert Section -->
+    <RewardsAlertSection />
 
-      <!-- Follow Draw Section -->
-      <RewardsFollowDrawSection />
+    <!-- Follow Draw Section -->
+    <RewardsFollowDrawSection />
 
-      <!-- Our Coupons Section -->
-      <RewardsOurCouponsSection />
+    <!-- Our Coupons Section -->
+    <RewardsOurCouponsSection />
 
-      <!-- FAQ Section -->
-      <RewardsFaqSection />
-    </main>
-  </div>
+    <!-- FAQ Section -->
+    <RewardsFaqSection />
+  </main>
 </template>

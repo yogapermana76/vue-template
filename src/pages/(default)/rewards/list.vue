@@ -10,19 +10,17 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Voucher Rewards" positioning="fixed" transparent />
+  <!-- Header -->
+  <Header title="Voucher Rewards" positioning="fixed" transparent />
 
-    <!-- Hero Section with Featured Coupon -->
-    <GradientSection gradient="blue-cyan">
-      <RewardsListFeaturedSection />
-    </GradientSection>
+  <!-- Hero Section with Featured Coupon -->
+  <GradientSection gradient="blue-cyan">
+    <RewardsListFeaturedSection />
+  </GradientSection>
 
-    <!-- Main Content -->
-    <main class="flex flex-1 flex-col pb-6">
-      <!-- Our Point Coupons Section -->
-      <RewardsListCouponsSection />
-    </main>
-  </div>
+  <!-- Main Content -->
+  <main class="flex flex-1 flex-col pb-6">
+    <!-- Our Point Coupons Section -->
+    <RewardsListCouponsSection />
+  </main>
 </template>

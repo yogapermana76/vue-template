@@ -173,32 +173,30 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Riwayat" positioning="sticky" />
+  <!-- Header -->
+  <Header title="Riwayat" positioning="sticky" />
 
-    <!-- Content -->
-    <main class="flex flex-1 flex-col gap-6 px-4 py-4">
-      <!-- Empty State -->
-      <div
-        v-if="transactionHistory.length === 0"
-        class="flex flex-1 flex-col items-center justify-center"
-      >
-        <EmptyState
-          :image="RiwayatIllustration"
-          title="Belum ada riwayat"
-          description="Anda belum memiliki riwayat penukaran point. Mulai tukar poin anda sekarang!"
-        />
-      </div>
+  <!-- Content -->
+  <main class="flex flex-1 flex-col gap-6 px-4 py-4">
+    <!-- Empty State -->
+    <div
+      v-if="transactionHistory.length === 0"
+      class="flex flex-1 flex-col items-center justify-center"
+    >
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Belum ada riwayat"
+        description="Anda belum memiliki riwayat penukaran point. Mulai tukar poin anda sekarang!"
+      />
+    </div>
 
-      <!-- Content when has data -->
-      <template v-else>
-        <!-- Points Info Section -->
-        <PointsInfoSection :points="points" :active-until="activeUntil" />
+    <!-- Content when has data -->
+    <template v-else>
+      <!-- Points Info Section -->
+      <PointsInfoSection :points="points" :active-until="activeUntil" />
 
-        <!-- Transaction History Section -->
-        <TransactionHistorySection :transaction-history="transactionHistory" />
-      </template>
-    </main>
-  </div>
+      <!-- Transaction History Section -->
+      <TransactionHistorySection :transaction-history="transactionHistory" />
+    </template>
+  </main>
 </template>

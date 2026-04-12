@@ -54,96 +54,90 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="Tukar Poin" />
+  <!-- Header -->
+  <Header title="Tukar Poin" />
 
-    <!-- Content with Fixed Header Gap and Footer Padding -->
-    <div class="pt-14 pb-36">
-      <!-- Main Content -->
-      <main class="flex flex-1 flex-col gap-5 pt-4 pb-6">
-        <!-- Prize Card -->
-        <div class="px-4">
-          <RewardPrizeCard
-            :image="prizeData.image"
-            :title="prizeData.title"
-            :date="prizeData.date"
+  <!-- Content with Fixed Header Gap and Footer Padding -->
+  <div class="pt-14 pb-36">
+    <!-- Main Content -->
+    <main class="flex flex-1 flex-col gap-5 pt-4 pb-6">
+      <!-- Prize Card -->
+      <div class="px-4">
+        <RewardPrizeCard :image="prizeData.image" :title="prizeData.title" :date="prizeData.date" />
+      </div>
+
+      <!-- Divider with background -->
+      <Divider thick class="w-full bg-neutral-50" />
+
+      <!-- Informasi Penerima Section -->
+      <div class="flex w-full flex-col gap-3 px-4">
+        <h2 class="body-l-semibold text-slate-950">Informasi Penerima</h2>
+
+        <RecipientInfoItem
+          :name="recipientData.name"
+          :email="recipientData.email"
+          :phone="recipientData.phone"
+          @click="handleRecipientClick"
+        />
+      </div>
+
+      <!-- Divider with background -->
+      <Divider thick class="w-full bg-neutral-50" />
+
+      <!-- Alamat Pengiriman Section -->
+      <div class="flex w-full flex-col gap-3 px-4">
+        <h2 class="body-l-semibold text-slate-950">Alamat Pengiriman</h2>
+
+        <p class="body-caption text-slate-700">
+          Hadiah akan dikirimkan ke alamat yang dimasukkan. Barang yang gagal kirim karena alamat
+          tidak lengkap menjadi tanggungjawab pelanggan/
+        </p>
+
+        <!-- Form Fields -->
+        <div class="flex flex-col gap-4">
+          <!-- Full Address -->
+          <TextAreaField
+            v-model="fullAddress"
+            label="Alamat Lengkap"
+            placeholder="Jl. Kh Ahmad"
+            required
+            :rows="4"
+            resize="none"
+          />
+
+          <!-- City/District - Using TextField temporarily until Select component is available -->
+          <TextField
+            v-model="city"
+            label="Kota/kecamatan"
+            placeholder="DKI Jakarta, Mampang"
+            required
+          />
+
+          <!-- Postal Code -->
+          <TextField
+            v-model="postalCode"
+            label="Kode Pos"
+            placeholder="10114"
+            type="text"
+            required
           />
         </div>
-
-        <!-- Divider with background -->
-        <Divider thick class="w-full bg-neutral-50" />
-
-        <!-- Informasi Penerima Section -->
-        <div class="flex w-full flex-col gap-3 px-4">
-          <h2 class="body-l-semibold text-slate-950">Informasi Penerima</h2>
-
-          <RecipientInfoItem
-            :name="recipientData.name"
-            :email="recipientData.email"
-            :phone="recipientData.phone"
-            @click="handleRecipientClick"
-          />
-        </div>
-
-        <!-- Divider with background -->
-        <Divider thick class="w-full bg-neutral-50" />
-
-        <!-- Alamat Pengiriman Section -->
-        <div class="flex w-full flex-col gap-3 px-4">
-          <h2 class="body-l-semibold text-slate-950">Alamat Pengiriman</h2>
-
-          <p class="body-caption text-slate-700">
-            Hadiah akan dikirimkan ke alamat yang dimasukkan. Barang yang gagal kirim karena alamat
-            tidak lengkap menjadi tanggungjawab pelanggan/
-          </p>
-
-          <!-- Form Fields -->
-          <div class="flex flex-col gap-4">
-            <!-- Full Address -->
-            <TextAreaField
-              v-model="fullAddress"
-              label="Alamat Lengkap"
-              placeholder="Jl. Kh Ahmad"
-              required
-              :rows="4"
-              resize="none"
-            />
-
-            <!-- City/District - Using TextField temporarily until Select component is available -->
-            <TextField
-              v-model="city"
-              label="Kota/kecamatan"
-              placeholder="DKI Jakarta, Mampang"
-              required
-            />
-
-            <!-- Postal Code -->
-            <TextField
-              v-model="postalCode"
-              label="Kode Pos"
-              placeholder="10114"
-              type="text"
-              required
-            />
-          </div>
-        </div>
-      </main>
-    </div>
-
-    <!-- Footer with Button -->
-    <Footer position="fixed">
-      <Button variant="primary" size="md" class="w-full" @click="handleExchangePoints">
-        Tukar Poin
-      </Button>
-    </Footer>
-
-    <!-- Recipient Info Bottom Sheet -->
-    <RecipientInfoBottomSheet
-      v-model:open="showEditRecipientSheet"
-      :email="recipientData.email"
-      :phone="recipientData.phone"
-      @save="handleSaveRecipientInfo"
-    />
+      </div>
+    </main>
   </div>
+
+  <!-- Footer with Button -->
+  <Footer position="fixed">
+    <Button variant="primary" size="md" class="w-full" @click="handleExchangePoints">
+      Tukar Poin
+    </Button>
+  </Footer>
+
+  <!-- Recipient Info Bottom Sheet -->
+  <RecipientInfoBottomSheet
+    v-model:open="showEditRecipientSheet"
+    :email="recipientData.email"
+    :phone="recipientData.phone"
+    @save="handleSaveRecipientInfo"
+  />
 </template>

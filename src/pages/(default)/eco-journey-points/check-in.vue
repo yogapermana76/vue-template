@@ -31,58 +31,56 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header positioning="sticky" />
+  <!-- Header -->
+  <Header positioning="sticky" />
 
-    <!-- Hero Banner Section -->
-    <EcoJourneyHeroBanner />
+  <!-- Hero Banner Section -->
+  <EcoJourneyHeroBanner />
 
-    <!-- Content -->
-    <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
-      <!-- Title & Description Section -->
-      <section class="flex flex-col gap-3">
-        <div class="flex flex-col gap-1">
-          <h1 class="heading-s text-slate-950">Judul Event</h1>
-          <p class="body-caption text-slate-600">
-            Lorem ipsum dolor sit amet consectetur. Diam aliquet purus sed viverra gravida etiam. Ut
-            vitae sagittis risus a in. Integer odio tellus sed aliquam viverra tempus sit volutpat.
-            Enim cursus feugiat enim faucibus. Diam netus amet vitae etiam nisl. Sed ullamcorper
-            proin purus vitae eget mi. Vitae non luctus laoreet integer dictumst nulla sed. Eget
-            ullamcorper auctor est eleifend neque interdum donec sit magnis. Etiam purus purus purus
-            tristique semper nam.
-          </p>
-        </div>
-      </section>
-    </main>
+  <!-- Content -->
+  <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
+    <!-- Title & Description Section -->
+    <section class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1">
+        <h1 class="heading-s text-slate-950">Judul Event</h1>
+        <p class="body-caption text-slate-600">
+          Lorem ipsum dolor sit amet consectetur. Diam aliquet purus sed viverra gravida etiam. Ut
+          vitae sagittis risus a in. Integer odio tellus sed aliquam viverra tempus sit volutpat.
+          Enim cursus feugiat enim faucibus. Diam netus amet vitae etiam nisl. Sed ullamcorper proin
+          purus vitae eget mi. Vitae non luctus laoreet integer dictumst nulla sed. Eget ullamcorper
+          auctor est eleifend neque interdum donec sit magnis. Etiam purus purus purus tristique
+          semper nam.
+        </p>
+      </div>
+    </section>
+  </main>
 
-    <!-- Footer with Button -->
-    <Footer position="fixed">
-      <!-- Check In Button -->
-      <Button variant="primary" size="sm" class="w-full" @click="handleCheckInClick">
-        Check In
-      </Button>
-    </Footer>
+  <!-- Footer with Button -->
+  <Footer position="fixed">
+    <!-- Check In Button -->
+    <Button variant="primary" size="sm" class="w-full" @click="handleCheckInClick">
+      Check In
+    </Button>
+  </Footer>
 
-    <!-- Confirmation Bottom Sheet -->
-    <ConfirmationBottomSheet
-      v-model:open="showConfirmationSheet"
-      :image="MascotIllustration"
-      title="Check in berhasil?"
-      description="Apakah anda yakin untuk melakukan check in?"
-      button-layout="row"
-      :buttons="[
-        {
-          label: 'Kembali',
-          variant: 'secondary',
-          onClick: handleCancelCheckIn,
-        },
-        {
-          label: 'Check In',
-          variant: 'primary',
-          onClick: handleConfirmCheckIn,
-        },
-      ]"
-    />
-  </div>
+  <!-- Confirmation Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showConfirmationSheet"
+    :image="MascotIllustration"
+    title="Check in berhasil?"
+    description="Apakah anda yakin untuk melakukan check in?"
+    button-layout="row"
+    :buttons="[
+      {
+        label: 'Kembali',
+        variant: 'secondary',
+        onClick: handleCancelCheckIn,
+      },
+      {
+        label: 'Check In',
+        variant: 'primary',
+        onClick: handleConfirmCheckIn,
+      },
+    ]"
+  />
 </template>

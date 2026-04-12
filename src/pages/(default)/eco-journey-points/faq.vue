@@ -68,25 +68,23 @@
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-white">
-    <!-- Header -->
-    <Header title="FAQ" positioning="sticky" />
+  <!-- Header -->
+  <Header title="FAQ" positioning="sticky" />
 
-    <!-- Content -->
-    <main class="flex flex-1 flex-col gap-3 px-4 py-4">
-      <!-- Title Section -->
-      <h2 class="body-l-semibold text-slate-950">FAQ untuk Eco Journey Points</h2>
+  <!-- Content -->
+  <main class="flex flex-1 flex-col gap-3 px-4 py-4">
+    <!-- Title Section -->
+    <h2 class="body-l-semibold text-slate-950">FAQ untuk Eco Journey Points</h2>
 
-      <!-- FAQ Items -->
-      <div class="flex w-full flex-col gap-2">
-        <ExpandableItem
-          v-for="item in faqItems"
-          :key="item.id"
-          :question="item.question"
-          :answer="item.answer"
-          :value="`faq-${item.id}`"
-        />
-      </div>
-    </main>
-  </div>
+    <!-- FAQ Items -->
+    <div class="flex w-full flex-col gap-2">
+      <ExpandableItem
+        v-for="item in faqItems"
+        :key="item.id"
+        :question="item.question"
+        :answer="item.answer"
+        :value="`faq-${item.id}`"
+      />
+    </div>
+  </main>
 </template>
