@@ -34,7 +34,7 @@
 </script>
 
 <template>
-  <div class="flex h-full flex-col">
+  <div class="flex h-screen flex-col">
     <!-- Header -->
     <Header title="Rewards Saya" positioning="sticky" />
 
