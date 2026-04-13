@@ -8,6 +8,7 @@
     SwipeableTabPanel,
     type TabItem,
   } from '@/components/ui/swipeable-tabs'
+  import { Badge } from '@/components/ui/badge'
   import {
     RewardsVouchersSection,
     RewardsLotteryCouponsSection,
@@ -41,24 +42,27 @@
   <SwipeableTabs v-model="activeTab" :tabs="mainTabs" height-offset="3rem">
     <SwipeableTabBar v-slot="{ tab }">
       {{ tab.label }}
-      <span
+      <Badge
         v-if="tab.key === 'voucher'"
-        class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+        variant="destructive"
+        class="body-small-semibold size-3.5 p-0 text-white"
       >
         {{ voucherBadgeCount }}
-      </span>
-      <span
+      </Badge>
+      <Badge
         v-if="tab.key === 'lottery-coupons'"
-        class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+        variant="destructive"
+        class="body-small-semibold size-3.5 p-0 text-white"
       >
         {{ lotteryCouponsBadgeCount }}
-      </span>
-      <span
+      </Badge>
+      <Badge
         v-if="tab.key === 'items'"
-        class="body-small-semibold flex size-3.5 items-center justify-center rounded-full bg-red-500 text-white"
+        variant="destructive"
+        class="body-small-semibold size-3.5 p-0 text-white"
       >
         {{ itemsBadgeCount }}
-      </span>
+      </Badge>
     </SwipeableTabBar>
 
     <SwipeableTabPanels>
