@@ -163,6 +163,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollableContent: typeof import('./../components/layout/ScrollableContent.vue')['default']
+    ScrollablePillTabs: typeof import('./../components/ui/pill-tab/ScrollablePillTabs.vue')['default']
     SearchInput: typeof import('./../components/shared/search-input/SearchInput.vue')['default']
     Separator: typeof import('./../components/ui/separator/Separator.vue')['default']
     Skeleton: typeof import('./../components/ui/skeleton/Skeleton.vue')['default']

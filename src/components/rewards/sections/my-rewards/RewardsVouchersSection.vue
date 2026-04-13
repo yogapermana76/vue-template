@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { PillTab } from '@/components/ui/pill-tab'
+  import { ScrollablePillTabs, type PillTabItem } from '@/components/ui/pill-tab'
   import { RewardCouponCard } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
@@ -38,7 +38,7 @@
   ])
 
   // Voucher filter options
-  const voucherFilters = [
+  const voucherFilters: PillTabItem[] = [
     { key: 'all', label: 'All' },
     { key: 'electricity-voucher', label: 'Electricity Voucher' },
     { key: 'ev-voucher', label: 'EV Voucher' },
@@ -67,18 +67,11 @@
 <template>
   <div class="flex flex-col gap-4">
     <!-- Filter Pills -->
-    <div
-      class="sticky top-0 z-10 flex gap-2 overflow-x-auto bg-white px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    >
-      <PillTab
-        v-for="filter in voucherFilters"
-        :key="filter.key"
-        :state="activeVoucherFilter === filter.key ? 'active' : 'default'"
-        @click="activeVoucherFilter = filter.key"
-      >
-        {{ filter.label }}
-      </PillTab>
-    </div>
+    <ScrollablePillTabs
+      v-model="activeVoucherFilter"
+      :items="voucherFilters"
+      class="sticky top-0 z-10 bg-white px-4 py-4"
+    />
 
     <!-- Content -->
     <div class="flex flex-col gap-4 px-4 pb-4">
