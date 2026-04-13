@@ -23,6 +23,8 @@ export interface HeaderProps {
   subtitle?: string
   /** Show back button (default: true) */
   showBack?: boolean
+  /** Back button icon: 'arrow-left' or 'x' (default: 'arrow-left') */
+  backIcon?: 'arrow-left' | 'x'
   /** Custom back handler (e.g., deeplink to mobile app). If not provided, uses router.back() */
   onBack?: () => void
   /** Right-side action buttons */
@@ -55,6 +57,7 @@ export interface HeaderProps {
 export const defaultHeaderProps: HeaderProps = {
   title: '',
   showBack: true,
+  backIcon: 'arrow-left',
   hideThemeToggle: true,
   positioning: 'fixed',
   rightActions: [],

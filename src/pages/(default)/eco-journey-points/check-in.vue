@@ -3,6 +3,7 @@
   import { useRouter } from 'vue-router'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
+  import { QrScanner } from '@/components/ui/qr-scanner'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
   import { EcoJourneyHeroBanner } from '@/components/eco-journey-points/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
@@ -14,19 +15,61 @@
   })
 
   const router = useRouter()
-  const showConfirmationSheet = ref(false)
+  const showQrScanner = ref(false)
+  const showBottomSheet = ref(false)
+  const sheetState = ref<'confirm' | 'success' | 'error'>('confirm')
 
+  // Sheet content configuration for each state
+  const SHEET_CONFIG = {
+    confirm: {
+      title: 'Check In Sekarang',
+      description:
+        'Lakukan checkin sekarang dan dapatkan 5 poin langsung untuk dapat menukarkan hadiah menarik',
+      buttonLayout: 'row' as const,
+    },
+    success: {
+      title: 'Selamat anda mendapatkan 5 poin',
+      description: 'Kumpulkan sebanyak-banyaknya dan tukar dengan hadiah yang menarik.',
+      buttonLayout: 'column' as const,
+    },
+    error: {
+      title: 'Terdapat Kesalahan',
+      description:
+        'Sepertinya terdapat kesalahan saat anda memindai. Pastikan kamera dan kode QR anda telah benar ya',
+      buttonLayout: 'column' as const,
+    },
+  }
+
+  // Open confirmation sheet when check in button clicked
   const handleCheckInClick = () => {
-    showConfirmationSheet.value = true
+    sheetState.value = 'confirm'
+    showBottomSheet.value = true
   }
 
-  const handleConfirmCheckIn = () => {
-    showConfirmationSheet.value = false
-    router.push('/eco-journey-points')
+  // Handle primary button action based on current state
+  const handleSheetAction = () => {
+    showBottomSheet.value = false
+    if (sheetState.value === 'confirm' || sheetState.value === 'error') {
+      // Open QR scanner for confirm and error states
+      showQrScanner.value = true
+    } else {
+      // Navigate back after success
+      router.push('/eco-journey-points')
+    }
   }
 
-  const handleCancelCheckIn = () => {
-    showConfirmationSheet.value = false
+  // Handle successful QR scan
+  const handleQrDetect = () => {
+    showQrScanner.value = false
+    sheetState.value = 'success'
+    showBottomSheet.value = true
+  }
+
+  // Handle QR scan error
+  const handleQrError = () => {
+    showQrScanner.value = false
+    sheetState.value = 'error'
+    showBottomSheet.value = true
   }
 </script>
 
@@ -57,30 +100,39 @@
 
   <!-- Footer with Button -->
   <Footer position="fixed">
-    <!-- Check In Button -->
     <Button variant="primary" size="sm" class="w-full" @click="handleCheckInClick">
       Check In
     </Button>
   </Footer>
 
-  <!-- Confirmation Bottom Sheet -->
+  <!-- QR Scanner -->
+  <QrScanner
+    v-model:open="showQrScanner"
+    instruction-text="Pindai kode QR yang sudah disediakan"
+    @detect="handleQrDetect"
+    @error="handleQrError"
+  />
+
+  <!-- Dynamic Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet
-    v-model:open="showConfirmationSheet"
+    v-model:open="showBottomSheet"
     :image="MascotIllustration"
-    title="Check in berhasil?"
-    description="Apakah anda yakin untuk melakukan check in?"
-    button-layout="row"
-    :buttons="[
-      {
-        label: 'Kembali',
-        variant: 'secondary',
-        onClick: handleCancelCheckIn,
-      },
-      {
-        label: 'Check In',
-        variant: 'primary',
-        onClick: handleConfirmCheckIn,
-      },
-    ]"
+    :title="SHEET_CONFIG[sheetState].title"
+    :description="SHEET_CONFIG[sheetState].description"
+    :button-layout="SHEET_CONFIG[sheetState].buttonLayout"
+    :buttons="
+      sheetState === 'confirm'
+        ? [
+            { label: 'Kembali', variant: 'secondary', onClick: () => (showBottomSheet = false) },
+            { label: 'Check In', variant: 'primary', onClick: handleSheetAction },
+          ]
+        : [
+            {
+              label: sheetState === 'success' ? 'Kembali' : 'Scan Kembali',
+              variant: 'primary',
+              onClick: handleSheetAction,
+            },
+          ]
+    "
   />
 </template>

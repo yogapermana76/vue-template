@@ -126,6 +126,7 @@ declare module 'vue' {
     ProductImage: typeof import('./../components/demo/products/product-detail/ProductImage.vue')['default']
     ProductInfo: typeof import('./../components/demo/products/product-detail/ProductInfo.vue')['default']
     PullToRefresh: typeof import('./../components/shared/pull-to-refresh/PullToRefresh.vue')['default']
+    QrScanner: typeof import('./../components/ui/qr-scanner/QrScanner.vue')['default']
     QuickActionsSection: typeof import('./../components/demo/home/QuickActionsSection.vue')['default']
     RadioGroup: typeof import('./../components/ui/radio-group/RadioGroup.vue')['default']
     RadioGroupItem: typeof import('./../components/ui/radio-group/RadioGroupItem.vue')['default']

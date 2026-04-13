@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { ArrowLeft, Sun, Moon } from 'lucide-vue-next'
+  import { ArrowLeft, X, Sun, Moon } from 'lucide-vue-next'
   import { useRouter } from 'vue-router'
   import { useThemeStore } from '@/stores/theme'
   import { useWindowScroll } from '@/composables'
@@ -13,6 +13,7 @@
   const props = withDefaults(defineProps<HeaderProps>(), {
     title: defaultHeaderProps.title,
     showBack: defaultHeaderProps.showBack,
+    backIcon: defaultHeaderProps.backIcon,
     hideThemeToggle: defaultHeaderProps.hideThemeToggle,
     positioning: defaultHeaderProps.positioning,
     backButtonClass: 'text-neutral-950',
@@ -103,7 +104,8 @@
         :class="['-ml-2', iconColorClass]"
         @click="handleBack"
       >
-        <ArrowLeft />
+        <X v-if="backIcon === 'x'" />
+        <ArrowLeft v-else />
       </IconButton>
 
       <!-- Center: Custom slot or default title section -->
