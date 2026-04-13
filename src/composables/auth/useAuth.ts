@@ -1,6 +1,6 @@
 import { computed, ref, readonly } from 'vue'
 import { useStorage } from '@vueuse/core'
-import { config } from '@/config'
+import { config, isDev } from '@/config'
 import { getErrorMessage, STORAGE_KEYS } from '@/utils'
 
 // ============================================
@@ -88,7 +88,7 @@ async function login(credentials: LoginCredentials) {
   error.value = null
 
   try {
-    const result = config.features.demoMode
+    const result = isDev
       ? await mockLogin(credentials)
       : await Promise.reject(new Error('Production auth not implemented'))
 

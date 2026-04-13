@@ -5,6 +5,7 @@
   import { z } from 'zod'
   import { Loader2 } from 'lucide-vue-next'
   import { useAuth } from '@/composables/auth'
+  import { isDev } from '@/config'
   import { Button } from '@/components/ui/button'
   import { Input } from '@/components/ui/input'
   import { Label } from '@/components/ui/label'
@@ -16,8 +17,6 @@
     CardHeader,
     CardTitle,
   } from '@/components/ui/card'
-  import { config } from '@/config'
-
   definePage({
     meta: {
       title: 'Login',
@@ -39,8 +38,8 @@
   const { handleSubmit } = useForm({
     validationSchema: loginSchema,
     initialValues: {
-      email: config.features.demoMode ? 'demo@example.com' : '',
-      password: config.features.demoMode ? 'password' : '',
+      email: isDev ? 'demo@example.com' : '',
+      password: isDev ? 'password' : '',
     },
   })
 
@@ -115,7 +114,7 @@
             </Button>
           </form>
         </CardContent>
-        <CardFooter v-if="config.features.demoMode" class="flex-col space-y-4">
+        <CardFooter v-if="isDev" class="flex-col space-y-4">
           <div class="text-muted-foreground body-m text-center">
             <p>Demo credentials:</p>
             <p>Email: demo@example.com</p>

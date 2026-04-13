@@ -103,15 +103,8 @@ export default defineConfig({
 
   // Server configuration
   server: {
-    port: 3000,
     host: true,
     open: true,
-  },
-
-  // Preview configuration
-  preview: {
-    port: 4173,
-    host: true,
   },
 
   // Optimize dependencies

@@ -1,39 +1,16 @@
-import { z } from 'zod'
+type Environment = 'development' | 'staging' | 'production'
 
-// ============================================
-// Environment Schema Validation
-// ============================================
+export const env = (import.meta.env.VITE_ENV || 'development') as Environment
 
-const envSchema = z.object({
-  VITE_APP_NAME: z.string().optional(),
-  VITE_APP_URL: z.string().optional(),
-  VITE_API_BASE_URL: z.string().optional(),
-  VITE_API_AUTH_URL: z.string().optional(),
-  VITE_API_USER_URL: z.string().optional(),
-  VITE_API_PAYMENT_URL: z.string().optional(),
-  DEV: z.boolean(),
-  PROD: z.boolean(),
-})
-
-function validateEnv(): void {
-  const result = envSchema.safeParse(import.meta.env)
-  if (!result.success && import.meta.env.DEV) {
-    console.warn('[Config] Environment validation warnings:', result.error.issues)
-  }
-}
-
-if (import.meta.env.DEV) {
-  validateEnv()
-}
-
-// ============================================
-// Configuration
-// ============================================
+export const isDev = env === 'development'
+export const isStaging = env === 'staging'
+export const isProd = env === 'production'
 
 export const config = {
+  env,
   app: {
     name: import.meta.env.VITE_APP_NAME || 'PLN Mobile Web',
-    url: import.meta.env.VITE_APP_URL || 'http://localhost:3000',
+    url: import.meta.env.VITE_APP_URL || 'http://localhost:5173',
   },
 
   api: {
@@ -63,12 +40,6 @@ export const config = {
     defaultStaleTime: 5 * 60 * 1000, // 5 minutes
     longStaleTime: 30 * 60 * 1000, // 30 minutes
     defaultGcTime: 10 * 60 * 1000, // 10 minutes
-  },
-
-  features: {
-    debugMode: import.meta.env.DEV,
-    /** Demo mode allows mock authentication */
-    demoMode: import.meta.env.DEV || import.meta.env.VITE_DEMO_MODE === 'true',
   },
 
   ui: {
