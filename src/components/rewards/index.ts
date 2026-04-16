@@ -9,12 +9,15 @@ export {
   type RewardsTransactionCardProps,
   RewardCouponCard,
   type RewardCouponCardProps,
+  RewardCouponCardCompact,
+  type RewardCouponCardCompactProps,
   RewardBannerCard,
   type RewardBannerCardProps,
   RewardPrizeCard,
   type RewardPrizeCardProps,
   WinnerInfoCard,
   type WinnerInfoCardProps,
+  InfoCard,
 } from './cards'
 
 export { RecipientInfoItem, type RecipientInfoItemProps } from './recipient-info-item'
@@ -37,6 +40,7 @@ export {
   RewardsRedemptionDetailsSection,
   RewardsAlertSection,
   RewardsFollowDrawSection,
+  RewardsHowToSection,
   RewardsListFeaturedSection,
   RewardsListCouponsSection,
 } from './sections'
