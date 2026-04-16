@@ -1,18 +1,13 @@
 /**
  * Router Configuration
- *
- * File-based routing dengan Vue Router 5.
- * Routes auto-generated dari src/pages/
+ * File-based routing with auto-generated routes from src/pages/
  */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { config } from '@/config'
-import { useAuthState } from '@/composables/auth'
-
-// ============================================
-// Router Instance
-// ============================================
+import { useAuthService } from '@/composables/services'
+import { saveAuthQueryParams } from '@/utils/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,39 +19,34 @@ const router = createRouter({
   },
 })
 
-// ============================================
-// Navigation Guards
-// ============================================
+let authInitialized = false
 
-router.beforeEach(to => {
+const initializeAuth = async (route: RouteLocationNormalized) => {
+  if (authInitialized) return
+  authInitialized = true
+
+  // Save query params for token refresh
+  saveAuthQueryParams(route.query)
+
+  const { checkAuth } = useAuthService()
+  const token = route.query?.token as string | undefined
+  await checkAuth(token)
+}
+
+router.beforeEach(async to => {
   // Update document title
   const title = to.meta.title as string | undefined
   document.title = title ? `${title} | ${config.app.name}` : config.app.name
 
-  // Check auth
-  const { isAuthenticated } = useAuthState()
-
-  // Protected route - redirect to login
-  if (to.meta.requiresAuth && !isAuthenticated.value) {
-    return { path: '/demo/examples/login', query: { redirect: to.fullPath } }
-  }
-
-  // Guest route - redirect to home if authenticated
-  if (to.meta.guest && isAuthenticated.value) {
-    return '/'
-  }
+  // Initialize auth on first navigation
+  await initializeAuth(to)
 })
 
 export default router
-
-// ============================================
-// Type Augmentation
-// ============================================
 
 declare module 'vue-router' {
   interface RouteMeta {
     title?: string
     requiresAuth?: boolean
-    guest?: boolean
   }
 }
