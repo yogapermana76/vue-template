@@ -2,15 +2,11 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { Ticket, Calendar } from 'lucide-vue-next'
-  import { Header, Footer } from '@/components/layout'
+  import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
   import { CouponListBottomSheet } from '@/components/rewards'
-  import {
-    RewardHeroBanner,
-    RewardProgramInfo,
-    RewardTermsSection,
-  } from '@/components/rewards/sections'
+  import { RewardProgramInfo, RewardTermsSection } from '@/components/rewards/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
@@ -115,7 +111,7 @@
   <Header title="Detail Promo" positioning="sticky" />
 
   <!-- Hero Banner Section -->
-  <RewardHeroBanner />
+  <HeroBanner />
 
   <!-- Content -->
   <main class="flex flex-1 flex-col gap-6 px-4 pb-24">

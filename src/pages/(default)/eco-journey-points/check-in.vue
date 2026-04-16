@@ -1,11 +1,10 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import { Header, Footer } from '@/components/layout'
+  import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { QrScanner } from '@/components/ui/qr-scanner'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
-  import { EcoJourneyHeroBanner } from '@/components/eco-journey-points/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 
   definePage({
@@ -78,7 +77,7 @@
   <Header positioning="sticky" />
 
   <!-- Hero Banner Section -->
-  <EcoJourneyHeroBanner />
+  <HeroBanner />
 
   <!-- Content -->
   <main class="flex flex-1 flex-col gap-6 px-4 pb-24">

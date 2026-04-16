@@ -2,11 +2,10 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { Ticket, Calendar } from 'lucide-vue-next'
-  import { Header, Footer } from '@/components/layout'
+  import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
   import {
-    EcoJourneyHeroBanner,
     EcoJourneyProgramInfo,
     EcoJourneyTermsSection,
   } from '@/components/eco-journey-points/sections'
@@ -144,7 +143,7 @@
   <Header title="Detail Voucher" positioning="sticky" />
 
   <!-- Hero Banner Section -->
-  <EcoJourneyHeroBanner />
+  <HeroBanner />
 
   <!-- Content -->
   <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
