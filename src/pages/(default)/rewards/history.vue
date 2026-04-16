@@ -196,8 +196,16 @@
   <!-- Header -->
   <Header title="Riwayat" positioning="sticky" />
 
+  <!-- Points Info Section (Sticky) -->
+  <PointsInfoSection
+    v-if="transactionHistory.length > 0"
+    :points="points"
+    :active-until="activeUntil"
+    class="sticky top-12 z-10 bg-white px-4 py-4"
+  />
+
   <!-- Content -->
-  <main class="flex flex-1 flex-col gap-6 px-4 py-4">
+  <main class="gap-6-amber-400 flex flex-1 flex-col px-4 py-4">
     <!-- Empty State -->
     <div
       v-if="transactionHistory.length === 0"
@@ -212,9 +220,6 @@
 
     <!-- Content when has data -->
     <template v-else>
-      <!-- Points Info Section -->
-      <PointsInfoSection :points="points" :active-until="activeUntil" />
-
       <!-- Transaction History Section -->
       <TransactionHistorySection :transaction-history="transactionHistory" />
     </template>
