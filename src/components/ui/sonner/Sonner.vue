@@ -4,8 +4,8 @@
     CircleCheckIcon,
     InfoIcon,
     Loader2Icon,
-    OctagonXIcon,
     TriangleAlertIcon,
+    XCircleIcon,
     XIcon,
   } from 'lucide-vue-next'
   import { Toaster as Sonner } from 'vue-sonner'
@@ -51,7 +51,7 @@
       <TriangleAlertIcon class="text-warning-100 size-5" />
     </template>
     <template #error-icon>
-      <OctagonXIcon class="text-error-100 size-5" />
+      <XCircleIcon class="text-error-100 size-5" />
     </template>
     <template #loading-icon>
       <Loader2Icon class="size-5 animate-spin text-white" />
