@@ -2,6 +2,7 @@
   import { computed, type Component, type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
   import CoinIcon from '@/assets/icons/coin.svg?component'
+  import HistoryIcon from '@/assets/icons/history.svg?component'
 
   export interface RewardsTransactionCardProps {
     /** Transaction title (e.g., "Marketplace", "SPKLU", "Voucher 100.000") */
@@ -10,14 +11,17 @@
     date: string
     /** Points amount (positive or negative) */
     points: number
-    /** Optional custom icon component (defaults to coin icon) */
+    /** Optional custom icon component (defaults to history icon) */
     icon?: Component
+    /** Optional points icon component (defaults to coin icon) */
+    pointsIcon?: Component
     /** Additional CSS classes */
     class?: HTMLAttributes['class']
   }
 
   const props = withDefaults(defineProps<RewardsTransactionCardProps>(), {
-    icon: () => CoinIcon,
+    icon: () => HistoryIcon,
+    pointsIcon: () => CoinIcon,
   })
 
   // Compute display text for points
@@ -42,8 +46,13 @@
       )
     "
   >
+    <!-- Left Icon Section -->
+    <div class="flex size-8 shrink-0 items-center justify-center self-center">
+      <component :is="props.icon" class="size-8 shrink-0" aria-label="Transaction icon" />
+    </div>
+
     <!-- Information Section -->
-    <div class="flex flex-1 flex-col gap-1">
+    <div class="flex flex-1 flex-col items-start gap-1">
       <!-- Title -->
       <p class="body-m-semibold text-slate-950">{{ title }}</p>
 
@@ -52,12 +61,12 @@
     </div>
 
     <!-- Points and Icon Container -->
-    <div class="flex flex-row items-center gap-2">
+    <div class="flex flex-row items-start gap-2">
       <!-- Points -->
       <p :class="cn('body-caption', pointsColorClass)">{{ pointsText }}</p>
 
-      <!-- Icon -->
-      <component :is="props.icon" class="size-4 shrink-0" aria-label="Points icon" />
+      <!-- Points Icon -->
+      <component :is="props.pointsIcon" class="size-4 shrink-0" aria-label="Points icon" />
     </div>
   </div>
 </template>
