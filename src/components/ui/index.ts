@@ -6,6 +6,7 @@ export {
   AccordionTrigger,
   AccordionList,
   ExpandableItem,
+  ExpandableItemSkeleton,
   type AccordionListType,
   type ExpandableItemProps,
 } from './accordion'
@@ -91,7 +92,13 @@ export {
 export { Label } from './label'
 
 // PillTab
-export { PillTab, pillTabVariants } from './pill-tab'
+export {
+  PillTab,
+  PillTabSkeleton,
+  ScrollablePillTabs,
+  ScrollablePillTabsSkeleton,
+  pillTabVariants,
+} from './pill-tab'
 
 // RoundedOverlap
 export { RoundedOverlap } from './rounded-overlap'

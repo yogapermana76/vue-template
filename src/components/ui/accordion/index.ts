@@ -10,4 +10,5 @@ export {
   type AccordionListType,
   ExpandableItem,
   type ExpandableItemProps,
+  ExpandableItemSkeleton,
 } from './composite'
