@@ -20,6 +20,8 @@ import type {
   UseRewardGiftInstantlyDetailParams,
   UseUserGiftInstantlyParams,
   UseUserGiftInstantlyDetailParams,
+  UseExchangePointDetailParams,
+  UseVerifyInfoParams,
 } from '@/types'
 
 // ============================================
@@ -40,6 +42,9 @@ export const rewardKeys = {
     [...rewardKeys.all, 'user-gift-instantly-detail', id] as const,
   lastAddress: () => [...rewardKeys.all, 'last-address'] as const,
   categories: () => [...rewardKeys.all, 'categories'] as const,
+  exchangePointDetail: (tUserPointId?: string | number) =>
+    [...rewardKeys.all, 'exchange-point-detail', tUserPointId] as const,
+  verifyInfo: () => [...rewardKeys.all, 'verify-info'] as const,
 }
 
 // ============================================
@@ -245,5 +250,53 @@ export function useRewardCategories() {
     queryFn: () => rewardService.categories(),
     staleTime: config.cache.defaultStaleTime,
     enabled: computed(() => authStore.isAuthenticated),
+  })
+}
+
+/**
+ * Get exchange point detail
+ */
+export function useExchangePointDetail(params: UseExchangePointDetailParams = {}) {
+  const { params: pathParams = {}, options = {} } = params
+  const { tUserPointId } = pathParams
+
+  const authStore = useAuthStore()
+  const resolvedTUserPointId = computed(() => unref(tUserPointId))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedTUserPointId.value)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() => rewardKeys.exchangePointDetail(resolvedTUserPointId.value)),
+    queryFn: () => rewardService.exchangePointDetail({ tUserPointId: resolvedTUserPointId.value! }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get verify info
+ */
+export function useVerifyInfo(params: UseVerifyInfoParams = {}) {
+  const { options = {} } = params
+
+  const authStore = useAuthStore()
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useQuery({
+    queryKey: rewardKeys.verifyInfo(),
+    queryFn: () => rewardService.verifyInfo(),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
   })
 }

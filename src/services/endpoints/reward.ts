@@ -11,4 +11,6 @@ export const RewardEndpoint = {
   EXCHANGE: '/v1/reward/exchange',
   LAST_ADDRESS: '/v1/reward/last-address',
   CATEGORY: '/v1/reward/categories',
+  EXCHANGE_POINT_DETAIL: '/v1/user/reward/exchange-point/detail',
+  VERIFY_INFO: '/v1/user/reward/verify/info',
 } as const

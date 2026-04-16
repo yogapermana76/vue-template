@@ -61,6 +61,8 @@ export {
   useUserGiftInstantlyDetail,
   useLastAddress,
   useRewardCategories,
+  useExchangePointDetail,
+  useVerifyInfo,
   rewardKeys,
 } from './useReward'
 

@@ -60,6 +60,37 @@ export interface UserGiftInstantly {
 export interface UserGiftInstantlyDetail extends UserGiftInstantly, FullAddress {}
 
 // ============================================
+// Exchange Point Detail
+// ============================================
+
+export interface ExchangePointAddress {
+  id: number
+  provinceId: string
+  provinceName: string
+  cityId: string
+  cityName: string
+  districtId: string
+  districtName: string
+  address: string
+  postalCode: string
+}
+
+export interface ExchangePointDetail {
+  created: string
+  point: number
+  title: string
+  address: ExchangePointAddress | null
+}
+
+// ============================================
+// Verify Info
+// ============================================
+
+export interface VerifyInfoData {
+  deeplink: string
+}
+
+// ============================================
 // Last Address
 // ============================================
 
@@ -100,6 +131,9 @@ export type UserGiftInstantlyDetailResponse = BaseResponse<UserGiftInstantlyDeta
 
 export type LastAddressResponse = BaseResponse<LastAddress | null>
 
+export type ExchangePointDetailResponse = BaseResponse<ExchangePointDetail>
+export type VerifyInfoResponse = BaseResponse<VerifyInfoData | null>
+
 // ============================================
 // Request Parameters
 // ============================================
@@ -121,6 +155,10 @@ export interface UserGiftInstantlyParams {
 
 export interface UserGiftInstantlyDetailParams {
   id: string
+}
+
+export interface ExchangePointDetailParams {
+  tUserPointId: string | number
 }
 
 // ============================================
@@ -150,3 +188,12 @@ export type UseUserGiftInstantlyDetailParams = BaseComposableParams<
   never,
   { id?: MaybeRef<string> }
 >
+
+/** Parameters for useExchangePointDetail composable */
+export type UseExchangePointDetailParams = BaseComposableParams<
+  never,
+  { tUserPointId?: MaybeRef<string | number> }
+>
+
+/** Parameters for useVerifyInfo composable */
+export type UseVerifyInfoParams = BaseComposableParams

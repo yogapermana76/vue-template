@@ -14,11 +14,14 @@ import type {
   UserGiftInstantlyDetailResponse,
   LastAddressResponse,
   ExchangeResponse,
+  ExchangePointDetailResponse,
+  VerifyInfoResponse,
   RewardPagesParams,
   RewardDetailParams,
   UserGiftInstantlyParams,
   UserGiftInstantlyDetailParams,
   ExchangeRequest,
+  ExchangePointDetailParams,
 } from '@/types'
 
 export const rewardService = {
@@ -104,6 +107,27 @@ export const rewardService = {
    */
   async categories(): Promise<RewardCategoryResponse> {
     const { data } = await http.get<RewardCategoryResponse>(RewardEndpoint.CATEGORY)
+    return data
+  },
+
+  /**
+   * Get exchange point detail
+   */
+  async exchangePointDetail(
+    params: ExchangePointDetailParams,
+  ): Promise<ExchangePointDetailResponse> {
+    const { data } = await http.get<ExchangePointDetailResponse>(
+      RewardEndpoint.EXCHANGE_POINT_DETAIL,
+      { params },
+    )
+    return data
+  },
+
+  /**
+   * Get verify info
+   */
+  async verifyInfo(): Promise<VerifyInfoResponse> {
+    const { data } = await http.get<VerifyInfoResponse>(RewardEndpoint.VERIFY_INFO)
     return data
   },
 }

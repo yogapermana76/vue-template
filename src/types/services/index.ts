@@ -77,6 +77,9 @@ export type {
   ExchangeRequest,
   ExchangeResult,
   ExchangeResponse,
+  ExchangePointAddress,
+  ExchangePointDetail,
+  VerifyInfoData,
   RewardGiftInstantlyResponse,
   RewardRedeemableResponse,
   RewardDetailResponse,
@@ -84,10 +87,13 @@ export type {
   UserGiftInstantlyResponse,
   UserGiftInstantlyDetailResponse,
   LastAddressResponse,
+  ExchangePointDetailResponse,
+  VerifyInfoResponse,
   RewardPagesParams,
   RewardDetailParams,
   UserGiftInstantlyParams,
   UserGiftInstantlyDetailParams,
+  ExchangePointDetailParams,
   // Composable Params
   UseRewardGiftInstantlyParams,
   UseRewardRedeemableParams,
@@ -95,6 +101,8 @@ export type {
   UseRewardGiftInstantlyDetailParams,
   UseUserGiftInstantlyParams,
   UseUserGiftInstantlyDetailParams,
+  UseExchangePointDetailParams,
+  UseVerifyInfoParams,
 } from './reward.types'
 
 // Voucher
