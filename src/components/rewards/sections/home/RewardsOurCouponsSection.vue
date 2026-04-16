@@ -1,11 +1,12 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { useRouter } from 'vue-router'
-  import { PillTab } from '@/components/ui/pill-tab'
+  import { ScrollablePillTabs, type PillTabItem } from '@/components/ui/pill-tab'
   import { Button } from '@/components/ui/button'
   import { EmptyState } from '@/components/ui/empty-state'
-  import { RewardCouponCard } from '@/components/rewards'
+  import { RewardCouponCardCompact } from '@/components/rewards'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
+  import { useRewardCategories, useRewardGiftInstantly } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
 
@@ -13,7 +14,26 @@
 
   const showLocationSheet = ref(false)
 
-  interface KuponItem {
+  // Fetch reward categories
+  const { data: categoriesData } = useRewardCategories()
+
+  // Fetch gift instantly rewards
+  const { data: giftInstantly } = useRewardGiftInstantly({
+    query: { page: 0, size: 10 },
+  })
+
+  // Debug: log data on change
+  watch(categoriesData, val => {
+    // eslint-disable-next-line no-console
+    console.log('Categories Data:', val)
+  })
+
+  watch(giftInstantly, val => {
+    // eslint-disable-next-line no-console
+    console.log('Gift Instantly:', val)
+  })
+
+  interface CouponItem {
     id: string
     title: string
     imageUrl: string
@@ -21,7 +41,7 @@
     remaining?: number
   }
 
-  const kuponData = ref<KuponItem[]>([
+  const couponData = ref<CouponItem[]>([
     {
       id: 'k1',
       title: 'Voucher Listrik Rp20.000',
@@ -44,7 +64,7 @@
     },
   ])
 
-  const kuponFilters = [
+  const couponFilters: PillTabItem[] = [
     { key: 'all', label: 'Kupon Poin Kami' },
     { key: 'electricity', label: 'Voucher Listrik' },
     { key: 'ev', label: 'Voucher EV' },
@@ -53,17 +73,17 @@
 
   const activeFilter = ref('all')
 
-  const filteredKupon = () => {
-    if (activeFilter.value === 'all') return kuponData.value
-    return kuponData.value.filter(k => {
+  const filteredCoupons = () => {
+    if (activeFilter.value === 'all') return couponData.value
+    return couponData.value.filter(c => {
       const filterKey = activeFilter.value
-      if (filterKey === 'electricity') return k.title.includes('Listrik')
-      if (filterKey === 'ev') return k.title.includes('EV')
+      if (filterKey === 'electricity') return c.title.includes('Listrik')
+      if (filterKey === 'ev') return c.title.includes('EV')
       return false
     })
   }
 
-  const handleKuponClick = () => {
+  const handleCouponClick = () => {
     showLocationSheet.value = true
   }
 
@@ -93,34 +113,26 @@
     </div>
 
     <!-- Filter Pills -->
-    <div class="flex overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <PillTab
-        v-for="filter in kuponFilters"
-        :key="filter.key"
-        :state="activeFilter === filter.key ? 'active' : 'default'"
-        class="mr-2 shrink-0 last:mr-0"
-        @click="activeFilter = filter.key"
-      >
-        {{ filter.label }}
-      </PillTab>
-    </div>
+    <ScrollablePillTabs v-model="activeFilter" :items="couponFilters" class="px-4" />
 
-    <!-- Kupon Cards -->
-    <div class="flex flex-col gap-4 px-4">
-      <div v-for="kupon in filteredKupon()" :key="kupon.id" class="w-full">
-        <RewardCouponCard
-          :title="kupon.title"
-          :image-url="kupon.imageUrl"
-          :points="kupon.points"
-          button-label="Tukar"
-          :flag-text="kupon.remaining ? `Sisa: ${kupon.remaining}` : undefined"
-          @button-click="handleKuponClick"
-          @card-click="handleKuponClick"
+    <!-- Coupon Cards Grid -->
+    <div class="px-4">
+      <div v-if="filteredCoupons().length > 0" class="grid grid-cols-2 gap-x-2 gap-y-3">
+        <RewardCouponCardCompact
+          v-for="coupon in filteredCoupons()"
+          :key="coupon.id"
+          :title="coupon.title"
+          :image-url="coupon.imageUrl"
+          :points="coupon.points"
+          button-label="Tukarkan Poin"
+          :flag-text="coupon.remaining ? `Tersisa ${coupon.remaining} Voucher` : undefined"
+          @button-click="handleCouponClick"
+          @card-click="handleCouponClick"
         />
       </div>
 
       <EmptyState
-        v-if="filteredKupon().length === 0"
+        v-else
         :image="RiwayatIllustration"
         title="Voucher belum tersedia"
         description="Mohon maaf voucher sedang tidak tersedia untuk saat ini."

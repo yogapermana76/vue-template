@@ -1,12 +1,22 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { Clock, CheckCircle2 } from 'lucide-vue-next'
   import { RewardBannerCard } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
+  import { useUserLotteryList } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   const router = useRouter()
+
+  // Fetch user lottery list
+  const { data: lotteryListData } = useUserLotteryList(0, 5)
+
+  // Debug: log data on change
+  watch(lotteryListData, val => {
+    // eslint-disable-next-line no-console
+    console.log('User Lottery List Data:', val)
+  })
 
   // Lottery coupon item data
   interface LotteryCouponItem {

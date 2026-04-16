@@ -1,6 +1,17 @@
 <script setup lang="ts">
+  import { watch } from 'vue'
   import { Button } from '@/components/ui/button'
   import { ExpandableItem } from '@/components/ui/accordion'
+  import { useFAQ } from '@/composables/services'
+
+  // Fetch FAQ data
+  const { data: faqData } = useFAQ()
+
+  // Debug: log data on change
+  watch(faqData, val => {
+    // eslint-disable-next-line no-console
+    console.log('FAQ Data:', val)
+  })
 
   export interface FaqData {
     id: number

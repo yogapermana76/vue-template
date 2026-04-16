@@ -1,8 +1,18 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { RewardCouponCard } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
+  import { useUserGiftInstantly } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+
+  // Fetch user gift instantly items
+  const { data: giftInstantlyData } = useUserGiftInstantly(0, 10)
+
+  // Debug: log data on change
+  watch(giftInstantlyData, val => {
+    // eslint-disable-next-line no-console
+    console.log('User Gift Instantly Data:', val)
+  })
 
   // Item data
   interface ItemData {

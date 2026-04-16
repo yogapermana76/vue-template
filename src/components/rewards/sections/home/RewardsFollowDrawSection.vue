@@ -1,12 +1,25 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { Clock } from 'lucide-vue-next'
   import { RewardBannerCard } from '@/components/rewards'
   import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
+  import { useLotteryRedeemablePages } from '@/composables/services'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 
   const router = useRouter()
+
+  // Fetch lottery redeemable pages
+  const { data: lotteryPages } = useLotteryRedeemablePages({
+    query: { page: 0, size: 10 },
+  })
+
+  // Debug: log data on change
+  watch(lotteryPages, val => {
+    // eslint-disable-next-line no-console
+    console.log('Lottery Pages:', val)
+  })
+
   const showConfirmationSheet = ref(false)
   const selectedDrawId = ref<string | null>(null)
   const selectedDrawPoints = ref(0)

@@ -1,14 +1,24 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { ChevronRight, CoinsIcon, Ticket } from 'lucide-vue-next'
   import { WinnerInfoCard } from '@/components/rewards'
   import { Button } from '@/components/ui/button'
+  import { usePointSummary } from '@/composables/services'
+
+  const router = useRouter()
+
+  // Fetch point summary
+  const { data: pointSummary } = usePointSummary()
+
+  // Debug: log data on change
+  watch(pointSummary, val => {
+    // eslint-disable-next-line no-console
+    console.log('Point Summary:', val)
+  })
 
   const points = ref(0)
   const activeUntil = ref('30 Dec 2026')
-
-  const router = useRouter()
 
   const handleViewRewards = () => {
     router.push('/rewards/my-rewards')

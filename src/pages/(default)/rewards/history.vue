@@ -1,17 +1,37 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { Header } from '@/components/layout'
   import { EmptyState } from '@/components/ui/empty-state'
   import {
     PointsInfoSection,
     TransactionHistorySection,
   } from '@/components/rewards/sections/history'
+  import { usePointHistoryInfinite, usePointSummary } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   definePage({
     meta: {
       title: 'Riwayat Penukaran Point',
     },
+  })
+
+  // Fetch point summary
+  const { data: pointSummaryData } = usePointSummary()
+
+  // Fetch point history with infinite scroll
+  const { data: pointHistoryData } = usePointHistoryInfinite({
+    query: { size: 10 },
+  })
+
+  // Debug: log data on change
+  watch(pointSummaryData, val => {
+    // eslint-disable-next-line no-console
+    console.log('Point Summary Data:', val)
+  })
+
+  watch(pointHistoryData, val => {
+    // eslint-disable-next-line no-console
+    console.log('Point History Data:', val)
   })
 
   interface TransactionItem {

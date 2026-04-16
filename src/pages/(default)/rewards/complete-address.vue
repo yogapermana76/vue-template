@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
@@ -7,6 +7,7 @@
   import { TextField, TextAreaField } from '@/components/ui/form'
   import { RewardPrizeCard, RecipientInfoItem } from '@/components/rewards'
   import { RecipientInfoBottomSheet } from '@/components/rewards'
+  import { useLastAddress, useLotteryRedeem } from '@/composables/services'
 
   definePage({
     meta: {
@@ -15,6 +16,18 @@
   })
 
   const router = useRouter()
+
+  // Fetch last used address
+  const { data: lastAddressData } = useLastAddress()
+
+  // Lottery redeem mutation
+  const { mutate: redeemLottery, isPending: isRedeeming } = useLotteryRedeem()
+
+  // Debug: log data on change
+  watch(lastAddressData, val => {
+    // eslint-disable-next-line no-console
+    console.log('Last Address Data:', val)
+  })
 
   // Form state
   const fullAddress = ref('')

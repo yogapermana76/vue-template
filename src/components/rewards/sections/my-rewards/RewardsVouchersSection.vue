@@ -1,9 +1,29 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import { ScrollablePillTabs, type PillTabItem } from '@/components/ui/pill-tab'
   import { RewardCouponCard } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
+  import { useVoucherPages, useVoucherCategories } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+
+  // Fetch user vouchers with pagination
+  const { data: voucherPagesData } = useVoucherPages({
+    query: { page: 0, size: 10 },
+  })
+
+  // Fetch voucher categories
+  const { data: voucherCategoriesData } = useVoucherCategories()
+
+  // Debug: log data on change
+  watch(voucherPagesData, val => {
+    // eslint-disable-next-line no-console
+    console.log('Voucher Pages Data:', val)
+  })
+
+  watch(voucherCategoriesData, val => {
+    // eslint-disable-next-line no-console
+    console.log('Voucher Categories Data:', val)
+  })
 
   // Voucher item data
   interface VoucherItem {
