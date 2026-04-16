@@ -1,7 +1,7 @@
 import { computed, ref, readonly } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { config, isDev } from '@/config'
-import { getErrorMessage, STORAGE_KEYS } from '@/utils'
+import { getErrorMessage, DEMO_STORAGE_KEYS } from '@/utils'
 
 // ============================================
 // Types
@@ -22,7 +22,7 @@ export interface LoginCredentials {
 // State
 // ============================================
 
-const token = useStorage<string | null>(STORAGE_KEYS.AUTH_TOKEN, null)
+const token = useStorage<string | null>(DEMO_STORAGE_KEYS.AUTH_TOKEN, null)
 const user = ref<User | null>(null)
 const isLoading = ref(false)
 const error = ref<string | null>(null)
