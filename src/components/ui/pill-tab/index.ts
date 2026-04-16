@@ -3,6 +3,8 @@ import { cva } from 'class-variance-authority'
 
 export { default as PillTab } from './PillTab.vue'
 export { default as ScrollablePillTabs } from './ScrollablePillTabs.vue'
+export { default as PillTabSkeleton } from './PillTabSkeleton.vue'
+export { default as ScrollablePillTabsSkeleton } from './ScrollablePillTabsSkeleton.vue'
 export type { PillTabItem } from './ScrollablePillTabs.vue'
 
 export const pillTabVariants = cva(
