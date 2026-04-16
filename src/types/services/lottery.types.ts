@@ -1,0 +1,131 @@
+/**
+ * Lottery Types
+ * Types for lottery/promo operations
+ */
+
+import type {
+  BaseResponse,
+  PaginatedData,
+  FullAddress,
+  MaybeRef,
+  BaseComposableParams,
+  PaginationOnly,
+} from '../common/base.types'
+
+// ============================================
+// Lottery Entities
+// ============================================
+
+export interface LotteryTermsCondition {
+  label: string
+  value: string
+}
+
+export interface Lottery {
+  id: string
+  title: string
+  description: string
+  imageUrl: string
+  pricePoint: number
+  termsCondition?: LotteryTermsCondition[]
+  startDate?: string
+  endDate?: string
+  stock?: number
+  status?: 'ACTIVE' | 'ENDED'
+}
+
+export interface LotteryDetail extends Lottery {
+  termsCondition: LotteryTermsCondition[]
+}
+
+// ============================================
+// User Lottery
+// ============================================
+
+export interface UserLottery {
+  id: string
+  lotteryId: string
+  title: string
+  description: string
+  imageUrl: string
+  point: number
+  created: string
+  status: 'PENDING' | 'CONFIRMED' | 'DELIVERED'
+}
+
+export interface UserLotteryDetail extends UserLottery, FullAddress {}
+
+// ============================================
+// Redeem Request/Response
+// ============================================
+
+export interface LotteryRedeemRequest extends FullAddress {
+  lotteryId: number
+}
+
+export interface LotteryRedeemResult {
+  id: string
+  lotteryId: number
+  point: number
+  status: 'SUCCESS' | 'PENDING' | 'FAILED'
+  transactionId?: string
+}
+
+export type LotteryRedeemResponse = BaseResponse<LotteryRedeemResult>
+
+// ============================================
+// Response Types
+// ============================================
+
+export type LotteryRedeemablePagesResponse = BaseResponse<PaginatedData<Lottery>>
+export type LotteryDetailResponse = BaseResponse<LotteryDetail>
+export type LotteryPromoResponse = BaseResponse<PaginatedData<Lottery>>
+
+export type UserLotteryListResponse = BaseResponse<PaginatedData<UserLottery>>
+export type UserLotteryDetailResponse = BaseResponse<UserLotteryDetail>
+
+// ============================================
+// Request Parameters
+// ============================================
+
+export interface LotteryRedeemablePagesParams {
+  page?: number
+  size?: number
+}
+
+export interface LotteryDetailParams {
+  id: string
+}
+
+export interface LotteryPromoParams {
+  page?: number
+  size?: number
+}
+
+export interface UserLotteryListParams {
+  page?: number
+  size?: number
+}
+
+export interface UserLotteryDetailParams {
+  id: string
+}
+
+// ============================================
+// Composable Parameters (reactive-aware)
+// ============================================
+
+/** Parameters for useLotteryRedeemablePages composable (with pagination) */
+export type UseLotteryRedeemablePagesParams = BaseComposableParams<PaginationOnly>
+
+/** Parameters for useLotteryDetail composable */
+export type UseLotteryDetailParams = BaseComposableParams<never, { id?: MaybeRef<string> }>
+
+/** Parameters for useLotteryPromo composable (with pagination) */
+export type UseLotteryPromoParams = BaseComposableParams<PaginationOnly>
+
+/** Parameters for useUserLotteryList composable (with pagination) */
+export type UseUserLotteryListParams = BaseComposableParams<PaginationOnly>
+
+/** Parameters for useUserLotteryDetail composable */
+export type UseUserLotteryDetailParams = BaseComposableParams<never, { id?: MaybeRef<string> }>
