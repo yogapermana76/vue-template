@@ -1,21 +1,21 @@
 import { defineStore } from 'pinia'
 import { computed, watchEffect } from 'vue'
 import { useDark, useMediaQuery, useStorage } from '@vueuse/core'
-import { STORAGE_KEYS } from '@/utils'
+import { UI_STORAGE_KEYS } from '@/utils'
 
 type ThemeMode = 'light' | 'dark' | 'system'
 
 export const useThemeStore = defineStore('theme', () => {
   // VueUse useDark handles storage + DOM automatically
   const isDark = useDark({
-    storageKey: STORAGE_KEYS.THEME_PREFERENCE,
+    storageKey: UI_STORAGE_KEYS.THEME_PREFERENCE,
     attribute: 'class',
     valueDark: 'dark',
     valueLight: 'light',
   })
 
   // Use localStorage for follow system preference
-  const followSystem = useStorage(STORAGE_KEYS.THEME_FOLLOW_SYSTEM, true)
+  const followSystem = useStorage(UI_STORAGE_KEYS.THEME_FOLLOW_SYSTEM, true)
 
   const systemIsDark = useMediaQuery('(prefers-color-scheme: dark)')
 
