@@ -5,7 +5,11 @@
   import { cn } from '@/utils/cn'
   import {
     winnerCardVariants,
+    winnerCardHeaderVariants,
+    winnerCardContentVariants,
     winnerCardHeaderTextVariants,
+    winnerCardWinnerNameVariants,
+    winnerCardDetailVariants,
     type WinnerCardVariants,
   } from './winnerCardVariants'
   import Rank1Icon from '@/assets/icons/rank-1.svg?component'
@@ -28,12 +32,15 @@
     prizeImageAlt?: string
     variant?: WinnerCardVariants['variant']
     showRankIcon?: boolean
+    highlightedContent?: boolean
     customRankIcon?: Component
     class?: HTMLAttributes['class']
+    contentClass?: HTMLAttributes['class']
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    showRankIcon: true,
+    showRankIcon: false,
+    highlightedContent: false,
   })
 
   const isFeatured = computed(() => {
@@ -41,7 +48,13 @@
     return props.rank <= 3
   })
 
-  const computedVariant = computed(() => (isFeatured.value ? 'featured' : 'default'))
+  // Map to variant: featured ranks use 'featured', highlighted current user uses 'highlighted'
+  const computedVariant = computed(() => {
+    if (props.highlightedContent && isFeatured.value) {
+      return 'highlighted'
+    }
+    return isFeatured.value ? 'featured' : 'default'
+  })
 
   const rankIcon = computed(() => {
     if (props.customRankIcon) return props.customRankIcon
@@ -51,6 +64,20 @@
   })
 
   const displayRankLabel = computed(() => props.rankLabel || `Peringkat ${props.rank}`)
+
+  const isFeaturedSize = computed(() => isFeatured.value)
+
+  const iconColorClass = computed(() => {
+    switch (computedVariant.value) {
+      case 'featured':
+        return 'text-white'
+      case 'highlighted':
+        return 'text-white'
+      case 'default':
+      default:
+        return 'text-slate-600'
+    }
+  })
 </script>
 
 <template>
@@ -59,50 +86,45 @@
     :class="cn(winnerCardVariants({ variant: computedVariant }), props.class)"
   >
     <!-- Header -->
-    <div class="flex w-full flex-row items-center justify-between px-3 pt-2 pb-1">
-      <!-- Rank Title -->
+    <div :class="winnerCardHeaderVariants({ variant: computedVariant })">
+      <!-- Rank Title - Left side -->
       <div class="flex flex-row items-center gap-1">
         <component
           v-if="rankIcon"
           :is="rankIcon"
-          :class="isFeatured ? 'size-4 shrink-0' : 'size-3 shrink-0'"
+          :class="cn(isFeaturedSize ? 'size-4 shrink-0' : 'size-3 shrink-0', iconColorClass)"
         />
         <span :class="winnerCardHeaderTextVariants({ variant: computedVariant })">
           {{ displayRankLabel }}
         </span>
       </div>
 
-      <!-- Prize Title -->
-      <div
-        :class="
-          cn(
-            'flex flex-row items-center gap-1',
-            winnerCardHeaderTextVariants({ variant: computedVariant }),
-          )
-        "
-      >
-        <Gift class="shrink-0" :size="isFeatured ? 14 : 12" />
-        <span class="truncate">{{ prize }}</span>
+      <!-- Prize Title - Right side -->
+      <div class="flex flex-row items-center justify-end gap-1">
+        <Gift :class="cn('shrink-0', iconColorClass)" :size="isFeaturedSize ? 14 : 12" />
+        <span :class="cn('truncate', winnerCardHeaderTextVariants({ variant: computedVariant }))">{{
+          prize
+        }}</span>
       </div>
     </div>
 
     <!-- Content Container -->
-    <div class="flex w-full flex-row items-center justify-between rounded-sm bg-white p-3">
+    <div :class="cn(winnerCardContentVariants({ variant: computedVariant }), props.contentClass)">
       <!-- Winner Info -->
       <div class="flex min-w-0 flex-1 flex-col items-start gap-0.5">
-        <span class="body-m-semibold w-full truncate text-slate-950">
+        <span :class="winnerCardWinnerNameVariants({ variant: computedVariant })">
           {{ winner.name }}
         </span>
-        <span v-if="winner.email" class="body-caption w-full truncate text-slate-500">
+        <span v-if="winner.email" :class="winnerCardDetailVariants({ variant: computedVariant })">
           {{ winner.email }}
         </span>
-        <span v-if="winner.phone" class="body-caption w-full truncate text-slate-500">
+        <span v-if="winner.phone" :class="winnerCardDetailVariants({ variant: computedVariant })">
           {{ winner.phone }}
         </span>
         <span
           v-for="(field, index) in winner.customFields"
           :key="index"
-          class="body-caption w-full truncate text-slate-500"
+          :class="winnerCardDetailVariants({ variant: computedVariant })"
         >
           <template v-if="field.label">{{ field.label }}: </template>{{ field.value }}
         </span>

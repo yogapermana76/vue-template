@@ -3,6 +3,7 @@ export { default as RewardsInfoSection } from './home/RewardsInfoSection.vue'
 export { default as RewardsOurCouponsSection } from './home/RewardsOurCouponsSection.vue'
 export { default as RewardsAlertSection } from './home/RewardsAlertSection.vue'
 export { default as RewardsFollowDrawSection } from './home/RewardsFollowDrawSection.vue'
+export { default as RewardsHowToSection } from './home/RewardsHowToSection.vue'
 export { default as RewardsFaqSection } from './home/RewardsFaqSection.vue'
 export type { Props as RewardsFaqSectionProps } from './home/RewardsFaqSection.vue'
 
@@ -16,7 +17,7 @@ export { default as RewardsListFeaturedSection } from './list/RewardsListFeature
 export { default as RewardsListCouponsSection } from './list/RewardsListCouponsSection.vue'
 
 // Detail page sections
-export { RewardHeroBanner, RewardProgramInfo, RewardTermsSection } from './detail'
+export { RewardProgramInfo, RewardTermsSection } from './detail'
 
 // Redemption page sections
 export { default as RewardsRedemptionDetailsSection } from './redemption/RewardsRedemptionDetailsSection.vue'
