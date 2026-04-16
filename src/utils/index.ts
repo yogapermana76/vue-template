@@ -9,4 +9,14 @@ export {
 } from './currency'
 export { formatDate, formatRelativeDate, formatDateTime, formatTime, isValidDate } from './date'
 export { toAppError, getErrorMessage, type AppError } from './error'
-export { storage, STORAGE_KEYS } from './storage'
+export {
+  // Storage modules
+  authStorage,
+  demoStorage,
+  uiStorage,
+  // Storage keys
+  STORAGE_KEYS,
+  AUTH_STORAGE_KEYS,
+  DEMO_STORAGE_KEYS,
+  UI_STORAGE_KEYS,
+} from './storage'
