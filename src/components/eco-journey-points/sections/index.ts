@@ -11,6 +11,6 @@ export {
   type EcoJourneyTransactionHistorySectionProps,
 } from './history'
 
-export { EcoJourneyHeroBanner, EcoJourneyProgramInfo, EcoJourneyTermsSection } from './detail'
+export { EcoJourneyProgramInfo, EcoJourneyTermsSection } from './detail'
 
 export { EcoJourneyRedemptionDetailsSection } from './redemption'

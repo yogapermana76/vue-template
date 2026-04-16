@@ -2,14 +2,16 @@
   import { ref } from 'vue'
   import { RoundedOverlap } from '@/components/ui'
 
-  interface Props {
+  interface HeroBannerProps {
     src?: string
     alt?: string
+    showRoundedOverlap?: boolean
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<HeroBannerProps>(), {
     src: 'https://picsum.photos/375/187',
-    alt: 'Promo Banner',
+    alt: 'Banner',
+    showRoundedOverlap: true,
   })
 
   const imageLoading = ref(true)
@@ -27,6 +29,6 @@
       @error="imageLoading = false"
     />
     <!-- Rounded Overlap Shape -->
-    <RoundedOverlap />
+    <RoundedOverlap v-if="showRoundedOverlap" />
   </div>
 </template>

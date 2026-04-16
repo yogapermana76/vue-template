@@ -3,7 +3,6 @@ export { EcoJourneyTransactionCard, type EcoJourneyTransactionCardProps } from '
 export {
   EcoJourneyTransactionHistorySection,
   type EcoJourneyTransactionHistorySectionProps,
-  EcoJourneyHeroBanner,
   EcoJourneyProgramInfo,
   EcoJourneyTermsSection,
   EcoJourneyRedemptionDetailsSection,
