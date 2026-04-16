@@ -2,7 +2,7 @@
   import { computed, type Component } from 'vue'
   import * as icons from 'lucide-vue-next'
   import { IconButton } from '@/components/ui/button'
-  import type { HeaderAction } from '@/types/header'
+  import type { HeaderAction } from '@/types'
 
   const props = defineProps<{
     action: HeaderAction

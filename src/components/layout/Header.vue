@@ -7,8 +7,8 @@
   import { config } from '@/config'
   import { IconButton } from '@/components/ui/button'
   import { HeaderActionItem } from '@/components/layout'
-  import type { HeaderProps } from '@/types/header'
-  import { defaultHeaderProps } from '@/types/header'
+  import type { HeaderProps } from '@/types'
+  import { defaultHeaderProps } from '@/types'
 
   const props = withDefaults(defineProps<HeaderProps>(), {
     title: defaultHeaderProps.title,
