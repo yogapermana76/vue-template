@@ -4,7 +4,7 @@
   import { Ticket, Calendar } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
+  import { ConfirmationBottomSheet } from '@/components/shared'
   import { CouponListBottomSheet } from '@/components/rewards'
   import { RewardProgramInfo, RewardTermsSection } from '@/components/rewards/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'

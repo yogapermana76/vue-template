@@ -5,7 +5,7 @@
   import { Button } from '@/components/ui/button'
   import { EmptyState } from '@/components/ui/empty-state'
   import { RewardCouponCardCompact } from '@/components/rewards'
-  import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
+  import { ConfirmationBottomSheet } from '@/components/shared'
   import { useRewardCategories, useRewardGiftInstantly } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'

@@ -9,8 +9,6 @@ export {
   ConfirmationBottomSheet,
   type ConfirmationBottomSheetProps,
   type ButtonConfig,
-} from './confirmation-bottom-sheet'
-export {
   InformationBottomSheet,
   type InformationBottomSheetProps,
-} from './information-bottom-sheet'
+} from './bottom-sheets'

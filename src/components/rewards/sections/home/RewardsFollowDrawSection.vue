@@ -3,7 +3,7 @@
   import { useRouter } from 'vue-router'
   import { Clock } from 'lucide-vue-next'
   import { RewardBannerCard } from '@/components/rewards'
-  import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
+  import { ConfirmationBottomSheet } from '@/components/shared'
   import { useLotteryRedeemablePages } from '@/composables/services'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 

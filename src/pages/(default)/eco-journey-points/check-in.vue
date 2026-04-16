@@ -4,7 +4,7 @@
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { QrScanner } from '@/components/ui/qr-scanner'
-  import { ConfirmationBottomSheet } from '@/components/shared/confirmation-bottom-sheet'
+  import { ConfirmationBottomSheet } from '@/components/shared'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 
   definePage({
