@@ -22,3 +22,6 @@ export const badgeVariants = cva(
   },
 )
 export type BadgeVariants = VariantProps<typeof badgeVariants>
+
+export { default as StockBadge } from './StockBadge.vue'
+export type { StockBadgeVariant, StockBadgeIcon } from './StockBadge.vue'
