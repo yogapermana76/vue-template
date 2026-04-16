@@ -4,17 +4,26 @@
   import { ChevronRight, CoinsIcon, Ticket } from 'lucide-vue-next'
   import { WinnerInfoCard } from '@/components/rewards'
   import { Button } from '@/components/ui/button'
-  import { usePointSummary } from '@/composables/services'
+  import { usePointSummary, useWinnersCategory } from '@/composables/services'
 
   const router = useRouter()
 
   // Fetch point summary
   const { data: pointSummary } = usePointSummary()
 
+  // Fetch winners category
+  const { data: winnersCategory } = useWinnersCategory()
+
   // Debug: log data on change
   watch(pointSummary, val => {
     // eslint-disable-next-line no-console
     console.log('Point Summary:', val)
+  })
+
+  // Debug: log data on change
+  watch(winnersCategory, val => {
+    // eslint-disable-next-line no-console
+    console.log('Winners Category:', val)
   })
 
   const points = ref(0)
