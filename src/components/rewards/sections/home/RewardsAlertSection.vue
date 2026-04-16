@@ -1,6 +1,17 @@
 <script setup lang="ts">
+  import { watch } from 'vue'
   import { AlertBox } from '@/components/ui/alert'
   import { Button } from '@/components/ui/button'
+  import { useVerifyInfo } from '@/composables/services'
+
+  // Fetch verify info
+  const { data: verifyInfo } = useVerifyInfo()
+
+  // Debug: log data on change
+  watch(verifyInfo, val => {
+    // eslint-disable-next-line no-console
+    console.log('Verify Info:', val)
+  })
 
   const handleVerifyClick = () => {
     // TODO: Navigate to verification page

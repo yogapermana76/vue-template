@@ -1,8 +1,10 @@
 <script setup lang="ts">
+  import { watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { Header, Footer, GradientSection } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { RewardsRedemptionDetailsSection } from '@/components/rewards'
+  import { useExchangePointDetail } from '@/composables/services'
   import CheckIcon from '@/assets/illustrations/check.svg?component'
 
   definePage({
@@ -12,6 +14,17 @@
   })
 
   const router = useRouter()
+
+  // Fetch exchange point detail
+  const { data: exchangePointDetail } = useExchangePointDetail({
+    params: { tUserPointId: '3190794' as string },
+  })
+
+  // Debug: log data on change
+  watch(exchangePointDetail, val => {
+    // eslint-disable-next-line no-console
+    console.log('Exchange Point Detail:', val)
+  })
 
   const handleDownloadInvoice = () => {
     // TODO: Implement download invoice
