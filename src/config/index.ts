@@ -15,20 +15,11 @@ export const config = {
 
   api: {
     timeout: 30000,
-    services: {
-      main: import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com',
-      auth:
-        import.meta.env.VITE_API_AUTH_URL ||
-        import.meta.env.VITE_API_BASE_URL ||
-        'https://dummyjson.com',
-      user:
-        import.meta.env.VITE_API_USER_URL ||
-        import.meta.env.VITE_API_BASE_URL ||
-        'https://dummyjson.com',
-      payment:
-        import.meta.env.VITE_API_PAYMENT_URL ||
-        import.meta.env.VITE_API_BASE_URL ||
-        'https://dummyjson.com',
+    url: {
+      base: import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com',
+      // Add more API endpoints here as needed
+      // Example:
+      // payment: import.meta.env.VITE_API_PAYMENT_URL || 'https://payment-api.example.com',
     },
   },
 
