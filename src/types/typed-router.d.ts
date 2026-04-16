@@ -43,6 +43,7 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/rewards/[id]'
       | '/(default)/rewards/complete-address'
       | '/(default)/rewards/history'
+      | '/(default)/rewards/how-to-detail'
       | '/(default)/rewards/list'
       | '/(default)/rewards/my-rewards'
       | '/(default)/rewards/redemption/[id]'
@@ -121,6 +122,13 @@ declare module 'vue-router/auto-routes' {
     '/(default)/rewards/history': RouteRecordInfo<
       '/(default)/rewards/history',
       '/rewards/history',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(default)/rewards/how-to-detail': RouteRecordInfo<
+      '/(default)/rewards/how-to-detail',
+      '/rewards/how-to-detail',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -253,6 +261,7 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/rewards/[id]'
         | '/(default)/rewards/complete-address'
         | '/(default)/rewards/history'
+        | '/(default)/rewards/how-to-detail'
         | '/(default)/rewards/list'
         | '/(default)/rewards/my-rewards'
         | '/(default)/rewards/redemption/[id]'
@@ -323,6 +332,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(default)/rewards/history.vue': {
       routes:
         | '/(default)/rewards/history'
+      views:
+        | never
+    }
+    'src/pages/(default)/rewards/how-to-detail.vue': {
+      routes:
+        | '/(default)/rewards/how-to-detail'
       views:
         | never
     }

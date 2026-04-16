@@ -7,7 +7,9 @@
     RewardsOurCouponsSection,
     RewardsAlertSection,
     RewardsFollowDrawSection,
+    RewardsHowToSection,
   } from '@/components/rewards'
+  import { IconButton } from '@/components/ui/button'
   import { History } from 'lucide-vue-next'
 
   definePage({
@@ -53,6 +55,9 @@
 
     <!-- Our Coupons Section -->
     <RewardsOurCouponsSection />
+
+    <!-- How To Section -->
+    <RewardsHowToSection />
 
     <!-- FAQ Section -->
     <RewardsFaqSection />
