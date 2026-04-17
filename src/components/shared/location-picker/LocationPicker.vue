@@ -7,7 +7,7 @@
   import { SearchInput } from '@/components/shared/search-input'
   import LocationListGroup from './LocationListGroup.vue'
   import LocationSelectedFields from './LocationSelectedFields.vue'
-  import { useLocationPicker } from '@/composables/ui/useLocationPicker'
+  import { useLocationPicker } from '@/composables/ui'
   import { EMPTY_STATE_MESSAGES } from './constants'
   import type { LocationPickerProps, LocationPickerEmits } from './types'
 
