@@ -9,21 +9,38 @@ import type { BaseResponse, MaybeRef, BaseComposableParams } from '../common/bas
 // Region Entities
 // ============================================
 
+/**
+ * Province entity
+ * @property {string} id - Province ID (always string for consistency)
+ * @property {string} name - Province name
+ */
 export interface Province {
-  id: number
+  id: string
   name: string
 }
 
+/**
+ * City entity
+ * @property {string} id - City ID (always string for consistency)
+ * @property {string} name - City name
+ * @property {string} provinceId - Parent province ID
+ */
 export interface City {
-  id: number
+  id: string
   name: string
-  provinceId: number
+  provinceId: string
 }
 
+/**
+ * District entity
+ * @property {string} id - District ID (always string for consistency)
+ * @property {string} name - District name
+ * @property {string} cityId - Parent city ID
+ */
 export interface District {
-  id: number
+  id: string
   name: string
-  cityId: number
+  cityId: string
 }
 
 // ============================================
@@ -39,11 +56,11 @@ export type DistrictListResponse = BaseResponse<District[]>
 // ============================================
 
 export interface CityParams {
-  provinceId: number
+  provinceId: string
 }
 
 export interface DistrictParams {
-  cityId: number
+  cityId: string
 }
 
 // ============================================
@@ -55,10 +72,10 @@ export type UseProvincesParams = BaseComposableParams
 
 /** Parameters for useCities composable */
 export type UseCitiesParams = BaseComposableParams<{
-  provinceId?: MaybeRef<number | undefined>
+  provinceId?: MaybeRef<string | undefined>
 }>
 
 /** Parameters for useDistricts composable */
 export type UseDistrictsParams = BaseComposableParams<{
-  cityId?: MaybeRef<number | undefined>
+  cityId?: MaybeRef<string | undefined>
 }>

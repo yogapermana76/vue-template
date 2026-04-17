@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, watch, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
@@ -7,7 +7,14 @@
   import { TextField, TextAreaField } from '@/components/ui/form'
   import { RewardPrizeCard, RecipientInfoItem } from '@/components/rewards'
   import { RecipientInfoBottomSheet } from '@/components/rewards'
-  import { useLastAddress, useLotteryRedeem } from '@/composables/services'
+  import { LocationField, type SelectedLocation } from '@/components/shared/location-picker'
+  import {
+    useLastAddress,
+    useLotteryRedeem,
+    useProvinces,
+    useCities,
+    useDistricts,
+  } from '@/composables/services'
 
   definePage({
     meta: {
@@ -31,8 +38,48 @@
 
   // Form state
   const fullAddress = ref('')
-  const city = ref('')
+  const selectedLocation = ref<SelectedLocation>()
   const postalCode = ref('')
+
+  // Fetch regions data for display names
+  const { data: provincesData } = useProvinces()
+  const { data: citiesData } = useCities({
+    query: { provinceId: computed(() => selectedLocation.value?.provinceId) },
+  })
+  const { data: districtsData } = useDistricts({
+    query: { cityId: computed(() => selectedLocation.value?.cityId) },
+  })
+
+  // Create name maps for LocationField display
+  const provinceNames = computed(() => {
+    const map: Record<number, string> = {}
+    provincesData.value?.data?.forEach(p => {
+      map[p.id] = p.name
+    })
+    return map
+  })
+
+  const cityNames = computed(() => {
+    const map: Record<number, string> = {}
+    citiesData.value?.data?.forEach(c => {
+      map[c.id] = c.name
+    })
+    return map
+  })
+
+  const districtNames = computed(() => {
+    const map: Record<number, string> = {}
+    districtsData.value?.data?.forEach(d => {
+      map[d.id] = d.name
+    })
+    return map
+  })
+
+  const handleLocationChange = (location: SelectedLocation | undefined) => {
+    selectedLocation.value = location
+    // eslint-disable-next-line no-console
+    console.log('Location changed:', location)
+  }
 
   // Bottom sheet state
   const showEditRecipientSheet = ref(false)
@@ -118,12 +165,17 @@
             resize="none"
           />
 
-          <!-- City/District - Using TextField temporarily until Select component is available -->
-          <TextField
-            v-model="city"
+          <!-- City/District - Using LocationField -->
+          <LocationField
+            v-model="selectedLocation"
             label="Kota/kecamatan"
-            placeholder="DKI Jakarta, Mampang"
+            placeholder="Pilih Kota/Kecamatan"
+            picker-title="Kota, Kecamatan"
+            :province-names="provinceNames"
+            :city-names="cityNames"
+            :district-names="districtNames"
             required
+            @change="handleLocationChange"
           />
 
           <!-- Postal Code -->

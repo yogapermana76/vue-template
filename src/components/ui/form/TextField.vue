@@ -24,6 +24,8 @@
     required?: boolean
     /** Disabled state */
     disabled?: boolean
+    /** Readonly state */
+    readonly?: boolean
     /** Helper/description text */
     helper?: string
     /** Error message (overrides helper when present) */
@@ -62,6 +64,14 @@
   const hasInputGroup = computed(
     () => props.prefix || props.suffix || props.prefixIcon || props.suffixIcon,
   )
+
+  const computedInputClass = computed(() => {
+    const classes = [props.inputClass]
+    if (props.readonly) {
+      classes.push('pointer-events-none bg-white text-neutral-900')
+    }
+    return classes.filter(Boolean).join(' ')
+  })
 </script>
 
 <template>
@@ -97,8 +107,9 @@
         :model-value="modelValue"
         :placeholder="placeholder"
         :disabled="disabled"
+        :readonly="readonly"
         :aria-invalid="hasError || undefined"
-        :class="inputClass"
+        :class="computedInputClass"
         @update:model-value="emit('update:modelValue', $event)"
       />
     </InputGroup>
@@ -111,8 +122,9 @@
       :model-value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
+      :readonly="readonly"
       :aria-invalid="hasError || undefined"
-      :class="inputClass"
+      :class="computedInputClass"
       @update:model-value="emit('update:modelValue', $event)"
     />
 

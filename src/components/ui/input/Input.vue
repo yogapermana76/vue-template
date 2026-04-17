@@ -9,6 +9,8 @@
     modelValue?: string | number
     class?: HTMLAttributes['class']
     unstyled?: boolean
+    readonly?: boolean
+    disabled?: boolean
   }>()
 
   const emits = defineEmits<{
@@ -28,6 +30,9 @@
   <input
     v-model="modelValue"
     data-slot="input"
+    :readonly="readonly"
+    :disabled="disabled"
+    :tabindex="readonly ? -1 : undefined"
     :class="
       cn(
         // Base styles (always applied)
@@ -43,6 +48,11 @@
             'disabled:bg-neutral-100',
             'aria-invalid:border-error-500 aria-invalid:border-2 aria-invalid:px-2.75 aria-invalid:py-2.25',
           ],
+        // Readonly styles - prevent focus styles and interaction
+        readonly && [
+          'cursor-default focus:border focus:border-neutral-200 focus:px-3 focus:py-2.5 focus:outline-none',
+          !isInsideGroup && 'hover:border-neutral-200',
+        ],
         'file:border-0 file:bg-transparent file:text-sm file:font-medium',
         props.class,
       )
