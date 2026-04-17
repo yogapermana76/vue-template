@@ -15,3 +15,6 @@ export { createHttpClient } from './client'
 
 // Export utilities
 export { refreshTokenWithQueue } from './token-refresh'
+
+// Export types
+export type { HttpConfig } from './interceptors'

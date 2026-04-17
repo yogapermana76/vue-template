@@ -3,7 +3,7 @@
  * Handles lottery-related API calls (requires auth)
  */
 
-import { http } from './http'
+import { http, type HttpConfig } from './http'
 import { LotteryEndpoint } from './endpoints'
 import type {
   LotteryRedeemablePagesResponse,
@@ -71,8 +71,14 @@ export const lotteryService = {
   /**
    * Redeem lottery (exchange points for lottery entry)
    */
-  async redeem(request: LotteryRedeemRequest): Promise<LotteryRedeemResponse> {
-    const { data } = await http.post<LotteryRedeemResponse>(LotteryEndpoint.REDEEM, request)
+  async redeem(
+    request: LotteryRedeemRequest,
+    options?: Pick<HttpConfig, 'showErrorToast'>,
+  ): Promise<LotteryRedeemResponse> {
+    const config: HttpConfig = {
+      showErrorToast: options?.showErrorToast ?? true,
+    }
+    const { data } = await http.post<LotteryRedeemResponse>(LotteryEndpoint.REDEEM, request, config)
     return data
   },
 }

@@ -9,7 +9,7 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation } from '@tanstack/vue-query'
 import { rewardService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
@@ -22,6 +22,7 @@ import type {
   UseUserGiftInstantlyDetailParams,
   UseExchangePointDetailParams,
   UseVerifyInfoParams,
+  ExchangeRequest,
 } from '@/types'
 
 // ============================================
@@ -298,5 +299,30 @@ export function useVerifyInfo(params: UseVerifyInfoParams = {}) {
     queryFn: () => rewardService.verifyInfo(),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
+  })
+}
+
+// ============================================
+// Mutations
+// ============================================
+
+/**
+ * Exchange points for reward
+ *
+ * @example Default usage (with error toast)
+ * ```ts
+ * const { mutateAsync: exchange } = useRewardExchange()
+ * await exchange({ rewardId: '123', quantity: 1 })
+ * ```
+ *
+ * @example Silent mode (without error toast)
+ * ```ts
+ * const { mutateAsync: exchange } = useRewardExchange({ showErrorToast: false })
+ * await exchange({ rewardId: '123', quantity: 1 })
+ * ```
+ */
+export function useRewardExchange(options?: { showErrorToast?: boolean }) {
+  return useMutation({
+    mutationFn: (request: ExchangeRequest) => rewardService.exchange(request, options),
   })
 }

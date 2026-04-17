@@ -3,7 +3,7 @@
  * Handles reward-related API calls (requires auth)
  */
 
-import { http } from './http'
+import { http, type HttpConfig } from './http'
 import { RewardEndpoint } from './endpoints'
 import type {
   RewardGiftInstantlyResponse,
@@ -89,8 +89,14 @@ export const rewardService = {
   /**
    * Exchange points for reward
    */
-  async exchange(request: ExchangeRequest): Promise<ExchangeResponse> {
-    const { data } = await http.post<ExchangeResponse>(RewardEndpoint.EXCHANGE, request)
+  async exchange(
+    request: ExchangeRequest,
+    options?: Pick<HttpConfig, 'showErrorToast'>,
+  ): Promise<ExchangeResponse> {
+    const config: HttpConfig = {
+      showErrorToast: options?.showErrorToast ?? true,
+    }
+    const { data } = await http.post<ExchangeResponse>(RewardEndpoint.EXCHANGE, request, config)
     return data
   },
 

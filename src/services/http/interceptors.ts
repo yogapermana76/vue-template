@@ -3,12 +3,27 @@
  * Request and response interceptors for Axios
  */
 
-import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios'
+import type {
+  AxiosInstance,
+  AxiosError,
+  InternalAxiosRequestConfig,
+  AxiosRequestConfig,
+} from 'axios'
 import { toast } from 'vue-sonner'
 import { authStorage } from '@/utils'
 import { refreshTokenWithQueue } from './token-refresh'
 
-type RequestConfig = InternalAxiosRequestConfig & { _retry?: boolean }
+type RequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean
+  showErrorToast?: boolean
+}
+
+/**
+ * Extended Axios config with showErrorToast option
+ */
+export type HttpConfig = AxiosRequestConfig & {
+  showErrorToast?: boolean
+}
 
 const SUCCESS_CODE = '2000'
 const DEFAULT_ERROR_MESSAGE = 'Something went wrong'
@@ -97,7 +112,12 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
       if (response.data && isBusinessError(response.data)) {
         const errorMessage = response.data.message || 'Request failed'
 
-        showErrorToast(errorMessage)
+        // Show toast only if not explicitly disabled
+        const config = response.config as RequestConfig
+        const shouldShowToast = config.showErrorToast !== false
+        if (shouldShowToast) {
+          showErrorToast(errorMessage)
+        }
 
         // Reject as error so it can be caught in try-catch
         return Promise.reject({
@@ -111,6 +131,7 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
     },
     async (error: AxiosError) => {
       const status = error.response?.status
+      const config = error.config as RequestConfig
 
       // Handle 401 with token refresh for authenticated clients
       if (status === 401 && withAuth) {
@@ -122,8 +143,9 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
         authStorage.clearSession()
       }
 
-      // Show toast for non-401 errors
-      if (status !== 401) {
+      // Show toast for non-401 errors only if not explicitly disabled
+      const shouldShowToast = config?.showErrorToast !== false
+      if (status !== 401 && shouldShowToast) {
         showErrorToast(getErrorMessage(error))
       }
 

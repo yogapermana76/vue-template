@@ -201,9 +201,21 @@ export function useUserLotteryDetail(params: UseUserLotteryDetailParams = {}) {
 
 /**
  * Redeem lottery (exchange points for lottery entry)
+ *
+ * @example Default usage (with error toast)
+ * ```ts
+ * const { mutateAsync: redeem } = useLotteryRedeem()
+ * await redeem({ lotteryId: '123', quantity: 1 })
+ * ```
+ *
+ * @example Silent mode (without error toast)
+ * ```ts
+ * const { mutateAsync: redeem } = useLotteryRedeem({ showErrorToast: false })
+ * await redeem({ lotteryId: '123', quantity: 1 })
+ * ```
  */
-export function useLotteryRedeem() {
+export function useLotteryRedeem(options?: { showErrorToast?: boolean }) {
   return useMutation({
-    mutationFn: (request: LotteryRedeemRequest) => lotteryService.redeem(request),
+    mutationFn: (request: LotteryRedeemRequest) => lotteryService.redeem(request, options),
   })
 }
