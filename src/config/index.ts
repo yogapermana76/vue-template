@@ -38,6 +38,8 @@ export const config = {
     // 'desktop' = website style (top nav, responsive)
     mode: 'webview' as 'webview' | 'desktop',
     maxWidth: 425,
+    // Set to true to disable dark mode and force light mode
+    disableDarkMode: true,
   },
 } as const
 
