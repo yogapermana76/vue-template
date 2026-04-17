@@ -12,7 +12,13 @@
 import { ref, computed } from 'vue'
 import { useProvinces, useCities, useDistricts } from '@/composables/services/useRegion'
 import type { Province, City, District } from '@/types'
-import type { LocationLevel, LocationItem, LocationGroup, SelectedLocation } from './types'
+import type {
+  LocationLevel,
+  LocationItem,
+  LocationGroup,
+  SelectedLocation,
+} from '@/components/shared/location-picker/types'
+import { SEARCH_PLACEHOLDERS, SECTION_TITLES } from '@/components/shared/location-picker/constants'
 
 export interface UseLocationPickerParams {
   /** Initial selected location (all IDs must be strings) */
@@ -213,27 +219,13 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
   // Computed - Search Placeholder
   // ============================================
 
-  const searchPlaceholder = computed(() => {
-    const placeholders = {
-      province: 'Cari Provinsi',
-      city: 'Cari Kota',
-      district: 'Cari Kecamatan',
-    }
-    return placeholders[currentLevel.value]
-  })
+  const searchPlaceholder = computed(() => SEARCH_PLACEHOLDERS[currentLevel.value])
 
   // ============================================
   // Computed - Section Title
   // ============================================
 
-  const sectionTitle = computed(() => {
-    const titles = {
-      province: 'Daftar Provinsi',
-      city: 'Daftar Kota',
-      district: 'Daftar Kecamatan',
-    }
-    return titles[currentLevel.value]
-  })
+  const sectionTitle = computed(() => SECTION_TITLES[currentLevel.value])
 
   // ============================================
   // Methods - Selection

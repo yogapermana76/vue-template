@@ -52,7 +52,7 @@
 
   // Create name maps for LocationField display
   const provinceNames = computed(() => {
-    const map: Record<number, string> = {}
+    const map: Record<string, string> = {}
     provincesData.value?.data?.forEach(p => {
       map[p.id] = p.name
     })
@@ -60,7 +60,7 @@
   })
 
   const cityNames = computed(() => {
-    const map: Record<number, string> = {}
+    const map: Record<string, string> = {}
     citiesData.value?.data?.forEach(c => {
       map[c.id] = c.name
     })
@@ -68,7 +68,7 @@
   })
 
   const districtNames = computed(() => {
-    const map: Record<number, string> = {}
+    const map: Record<string, string> = {}
     districtsData.value?.data?.forEach(d => {
       map[d.id] = d.name
     })

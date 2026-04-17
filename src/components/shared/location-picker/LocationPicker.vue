@@ -7,7 +7,8 @@
   import { SearchInput } from '@/components/shared/search-input'
   import LocationListGroup from './LocationListGroup.vue'
   import LocationSelectedFields from './LocationSelectedFields.vue'
-  import { useLocationPicker } from './useLocationPicker'
+  import { useLocationPicker } from '@/composables/ui/useLocationPicker'
+  import { EMPTY_STATE_MESSAGES } from './constants'
   import type { LocationPickerProps, LocationPickerEmits } from './types'
 
   const props = withDefaults(defineProps<LocationPickerProps>(), {
@@ -77,9 +78,9 @@
   // ============================================
 
   const emptyStateMessage = computed(() => {
-    if (isError.value) return 'Gagal memuat data'
-    if (searchQuery.value) return 'Tidak ada hasil ditemukan'
-    return 'Belum ada data tersedia'
+    if (isError.value) return EMPTY_STATE_MESSAGES.error
+    if (searchQuery.value) return EMPTY_STATE_MESSAGES.noResults
+    return EMPTY_STATE_MESSAGES.noData
   })
 </script>
 
@@ -147,7 +148,7 @@
             <Divider class="shrink-0" thick />
 
             <!-- Location List Section -->
-            <div class="flex-1 px-4 py-4 pb-20">
+            <div class="flex-1 px-4 pt-4 pb-20">
               <h2 class="body-l-semibold mb-3 text-neutral-950">
                 {{ sectionTitle }}
               </h2>

@@ -2,6 +2,7 @@
   import { CheckCircle2 } from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
   import { TextField } from '@/components/ui/form'
+  import { FIELD_LABELS } from './constants'
   import type { LocationLevel } from './types'
 
   interface Props {
@@ -40,14 +41,7 @@
     emit('editDistrict')
   }
 
-  const getFieldLabel = (level: LocationLevel): string => {
-    const labels = {
-      province: 'Pilih Provinsi',
-      city: 'Pilih Kota',
-      district: 'Pilih Kecamatan',
-    }
-    return labels[level]
-  }
+  const getFieldLabel = (level: LocationLevel): string => FIELD_LABELS[level]
 </script>
 
 <template>
