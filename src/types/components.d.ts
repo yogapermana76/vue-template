@@ -18,6 +18,7 @@ declare module 'vue' {
     AccordionTrigger: typeof import('./../components/ui/accordion/AccordionTrigger.vue')['default']
     ActionItem: typeof import('./../components/ui/item/composite/ActionItem.vue')['default']
     ActiveFiltersDisplay: typeof import('./../components/demo/products/filters/ActiveFiltersDisplay.vue')['default']
+    ActiveUntilBadge: typeof import('./../components/rewards/sections/home/info-section/ActiveUntilBadge.vue')['default']
     ActivityItem: typeof import('./../components/demo/dashboard/ActivityItem.vue')['default']
     ActivitySection: typeof import('./../components/demo/dashboard/ActivitySection.vue')['default']
     Alert: typeof import('./../components/ui/alert/Alert.vue')['default']
@@ -126,6 +127,7 @@ declare module 'vue' {
     OverviewCard: typeof import('./../components/demo/dashboard/OverviewCard.vue')['default']
     PillTab: typeof import('./../components/ui/pill-tab/PillTab.vue')['default']
     PillTabSkeleton: typeof import('./../components/ui/pill-tab/PillTabSkeleton.vue')['default']
+    PointsInfo: typeof import('./../components/rewards/sections/home/info-section/PointsInfo.vue')['default']
     PointsInfoSection: typeof import('./../components/rewards/sections/history/PointsInfoSection.vue')['default']
     PreferencesSection: typeof import('./../components/demo/home/PreferencesSection.vue')['default']
     ProductActions: typeof import('./../components/demo/products/product-detail/ProductActions.vue')['default']
@@ -198,6 +200,7 @@ declare module 'vue' {
     SwipeableTabPanel: typeof import('./../components/ui/swipeable-tabs/SwipeableTabPanel.vue')['default']
     SwipeableTabPanels: typeof import('./../components/ui/swipeable-tabs/SwipeableTabPanels.vue')['default']
     SwipeableTabs: typeof import('./../components/ui/swipeable-tabs/SwipeableTabs.vue')['default']
+    SwiperPagination: typeof import('./../components/ui/swiper/SwiperPagination.vue')['default']
     Switch: typeof import('./../components/ui/switch/Switch.vue')['default']
     TabDashboardContent: typeof import('./../components/demo/tabs/TabDashboardContent.vue')['default']
     TabHomeContent: typeof import('./../components/demo/tabs/TabHomeContent.vue')['default']
@@ -219,6 +222,7 @@ declare module 'vue' {
     WinnerCardSkeleton: typeof import('./../components/rewards/cards/winner-card/WinnerCardSkeleton.vue')['default']
     WinnerInfoCard: typeof import('./../components/rewards/cards/winner-info-card/WinnerInfoCard.vue')['default']
     WinnerInfoCardSkeleton: typeof import('./../components/rewards/cards/winner-info-card/WinnerInfoCardSkeleton.vue')['default']
+    WinnerInfoSwiper: typeof import('./../components/rewards/sections/home/info-section/WinnerInfoSwiper.vue')['default']
     WinnersSection: typeof import('./../components/demo/home/WinnersSection.vue')['default']
   }
 }

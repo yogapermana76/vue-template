@@ -9,6 +9,11 @@ import { vueQueryOptions, setupViewport } from './plugins'
 import './assets/css/main.css'
 import 'vue-sonner/style.css'
 
+// Swiper styles
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/autoplay'
+
 setupViewport()
 
 const app = createApp(App)

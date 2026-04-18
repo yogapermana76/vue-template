@@ -31,7 +31,7 @@
   <button
     :class="
       cn(
-        'relative flex h-16 items-center gap-3 overflow-hidden rounded-sm bg-[linear-gradient(135deg,#1AB6BE_0%,#0E6AA7_100%)] px-4',
+        'relative flex h-16 w-full items-center gap-3 overflow-hidden rounded-sm bg-[linear-gradient(135deg,#1AB6BE_0%,#0E6AA7_100%)] px-4',
         props.class,
       )
     "

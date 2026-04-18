@@ -1,18 +1,22 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue'
   import { useRouter } from 'vue-router'
-  import { ChevronRight, CoinsIcon, Ticket } from 'lucide-vue-next'
-  import { WinnerInfoCard } from '@/components/rewards'
-  import { Button } from '@/components/ui/button'
+  import { PointsInfo, ActiveUntilBadge, WinnerInfoSwiper } from './info-section'
   import { usePointSummary, useWinnersCategory } from '@/composables/services'
+
+  interface WinnerItem {
+    id: string | number
+    title: string
+    description: string
+  }
 
   const router = useRouter()
 
   // Fetch point summary
-  const { data: pointSummary } = usePointSummary()
+  const { data: pointSummary, isLoading: isLoadingPoints } = usePointSummary()
 
   // Fetch winners category
-  const { data: winnersCategory } = useWinnersCategory()
+  const { data: winnersCategory, isLoading: isLoadingWinners } = useWinnersCategory()
 
   // Debug: log data on change
   watch(pointSummary, val => {
@@ -29,51 +33,54 @@
   const points = ref(0)
   const activeUntil = ref('30 Dec 2026')
 
+  // TODO: Replace mock data with actual API data from winnersCategory
+  // Example integration:
+  // const winnerItems = computed<WinnerItem[]>(() => {
+  //   if (!winnersCategory.value?.data) return []
+  //   return winnersCategory.value.data.map((item: any) => ({
+  //     id: item.id,
+  //     title: item.categoryName || 'Informasi Pemenang',
+  //     description: item.period || `Undian periode ${item.startDate} - ${item.endDate}`,
+  //   }))
+  // })
+  const winnerItems = ref<WinnerItem[]>([
+    {
+      id: 1,
+      title: 'Informasi Pemenang',
+      description: 'Undian periode Januari - Maret',
+    },
+    {
+      id: 2,
+      title: 'Informasi Pemenang',
+      description: 'Undian periode April - Juni',
+    },
+  ])
+
   const handleViewRewards = () => {
     router.push('/rewards/my-rewards')
   }
 
-  const handleViewWinners = () => {
-    router.push('/rewards/winners')
+  const handleViewWinners = (itemId: string | number) => {
+    router.push({
+      path: '/rewards/winners',
+      query: { id: itemId },
+    })
   }
 </script>
 
 <template>
-  <div class="flex flex-col gap-5 px-4 pb-5">
+  <div class="flex flex-col gap-5 pb-5">
     <!-- Points Info -->
-    <div class="flex flex-col items-start gap-1 self-stretch">
-      <!-- Points Label -->
-      <p class="body-caption-medium self-stretch text-white">Poin Kamu</p>
+    <PointsInfo :points="points" :is-loading="isLoadingPoints" @view-rewards="handleViewRewards" />
 
-      <!-- Points Value and Link -->
-      <div class="flex flex-row items-center gap-2 self-stretch">
-        <CoinsIcon class="size-4 shrink-0 text-white" />
-        <span class="heading-l flex-1 leading-none text-white">{{ points }}</span>
+    <!-- Active Until Badge -->
+    <ActiveUntilBadge :active-until="activeUntil" :is-loading="isLoadingPoints" />
 
-        <Button
-          variant="tertiary"
-          size="xs"
-          layout="iconLeft"
-          is-dark-bg
-          class="text-primary-300 h-auto w-auto p-0"
-          @click="handleViewRewards"
-        >
-          <Ticket />
-          Rewards saya
-          <ChevronRight />
-        </Button>
-      </div>
-    </div>
-
-    <!-- Active Until -->
-    <div
-      class="body-caption-semibold flex flex-row items-center justify-between gap-1 self-stretch rounded-full bg-[#061D2B] px-4 py-2 text-white backdrop-blur-md"
-    >
-      <span>Aktif sampai</span>
-      <span>{{ activeUntil }}</span>
-    </div>
-
-    <!-- Winner Info Card -->
-    <WinnerInfoCard @click="handleViewWinners" />
+    <!-- Winner Info Cards -->
+    <WinnerInfoSwiper
+      :items="winnerItems"
+      :is-loading="isLoadingWinners"
+      @click="handleViewWinners"
+    />
   </div>
 </template>

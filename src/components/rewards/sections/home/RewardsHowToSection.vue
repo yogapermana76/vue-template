@@ -1,15 +1,12 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue'
   import { useRouter } from 'vue-router'
-  import { useCarouselState } from '@/composables/carousel'
+  import { Swiper, SwiperSlide } from 'swiper/vue'
+  import { Pagination } from 'swiper/modules'
+
   import { GradientSection } from '@/components/layout'
   import { InfoCard } from '@/components/rewards'
-  import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselIndicators,
-  } from '@/components/ui/carousel'
+  import { SwiperPagination } from '@/components/ui/swiper'
   import FyiImg1 from '@/assets/images/fyi-img-1.png'
   import FyiImg2 from '@/assets/images/fyi-img-2.png'
   import FyiImg3 from '@/assets/images/fyi-img-3.png'
@@ -51,9 +48,6 @@
     console.log('FYI Data:', val)
   })
 
-  // Use carousel composable (includes handleDotClick)
-  const { carouselRef, currentIndex, handleDotClick } = useCarouselState()
-
   // Handle info card click
   const handleInfoCardClick = (itemId: number) => {
     router.push({
@@ -61,6 +55,8 @@
       query: { id: itemId },
     })
   }
+
+  const modules = [Pagination]
 </script>
 
 <template>
@@ -68,24 +64,22 @@
     <!-- Section Title -->
     <h2 class="body-l-semibold mb-4 px-4 text-white">Cara Menggunakan Rewards</h2>
 
-    <!-- Carousel -->
-    <Carousel ref="carouselRef">
-      <CarouselContent gap="gap-3">
-        <CarouselItem v-for="item in items" :key="item.id" basis="1/3" class="min-w-36">
+    <!-- Swiper Carousel -->
+    <div>
+      <swiper
+        :modules="modules"
+        :slides-per-view="2.6"
+        :slides-offset-before="16"
+        :slides-offset-after="8"
+        :pagination="{ clickable: true, el: '#swiper-pagination-custom' }"
+      >
+        <swiper-slide v-for="item in items" :key="item.id">
           <InfoCard :title="item.title" :image="item.image" @click="handleInfoCardClick(item.id)" />
-        </CarouselItem>
-      </CarouselContent>
+        </swiper-slide>
+      </swiper>
 
-      <!-- Indicators - using outside slot for positioning below carousel -->
-      <template #outside>
-        <CarouselIndicators
-          :total="items.length"
-          :selected="currentIndex"
-          position-class="relative mt-2 justify-start px-4"
-          indicator-class="bg-white"
-          @dot-click="handleDotClick"
-        />
-      </template>
-    </Carousel>
+      <!-- Custom pagination container -->
+      <SwiperPagination id="swiper-pagination-custom" variant="small" class="mt-2 px-4" />
+    </div>
   </GradientSection>
 </template>
