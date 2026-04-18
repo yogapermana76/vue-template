@@ -1,10 +1,13 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue'
+  import { useRouter } from 'vue-router'
   import { ScrollablePillTabs, type PillTabItem } from '@/components/ui/pill-tab'
   import { RewardCouponCard } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { useVoucherPages, useVoucherCategories } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+
+  const router = useRouter()
 
   // Fetch user vouchers with pagination
   const { data: voucherPagesData } = useVoucherPages({
@@ -80,7 +83,10 @@
 
   // Event handler
   const handleVoucherClick = (id: string) => {
-    console.log('Redeem voucher:', id)
+    router.push({
+      path: `/rewards/my-rewards/${id}`,
+      query: { type: 'voucher' },
+    })
   }
 </script>
 

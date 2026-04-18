@@ -8,11 +8,12 @@
   import { ConfirmationBottomSheet } from '@/components/shared'
   import { useRewardCategories, useRewardGiftInstantly } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 
   const router = useRouter()
-
-  const showLocationSheet = ref(false)
+  const showConfirmationSheet = ref(false)
+  const selectedCouponId = ref<string | null>(null)
+  const selectedCouponPoints = ref(0)
 
   // Fetch reward categories
   const { data: categoriesData } = useRewardCategories()
@@ -83,13 +84,30 @@
     })
   }
 
-  const handleCouponClick = () => {
-    showLocationSheet.value = true
+  const handleCardClick = (id: string) => {
+    router.push({
+      path: `/rewards/catalog/${id}`,
+      query: { type: 'voucher' },
+    })
   }
 
-  const handleCompleteAddress = () => {
-    showLocationSheet.value = false
-    router.push('/rewards/complete-address')
+  const handleButtonClick = (id: string, points: number) => {
+    selectedCouponId.value = id
+    selectedCouponPoints.value = points
+    showConfirmationSheet.value = true
+  }
+
+  const handleConfirmExchange = () => {
+    showConfirmationSheet.value = false
+    if (selectedCouponId.value) {
+      router.push(`/rewards/redemption/${selectedCouponId.value}`)
+    }
+  }
+
+  const handleCancelExchange = () => {
+    showConfirmationSheet.value = false
+    selectedCouponId.value = null
+    selectedCouponPoints.value = 0
   }
 
   const handleViewAllClick = () => {
@@ -126,8 +144,8 @@
           :points="coupon.points"
           button-label="Tukarkan Poin"
           :flag-text="coupon.remaining ? `Tersisa ${coupon.remaining} Voucher` : undefined"
-          @button-click="handleCouponClick"
-          @card-click="handleCouponClick"
+          @button-click="handleButtonClick(coupon.id, coupon.points)"
+          @card-click="handleCardClick(coupon.id)"
         />
       </div>
 
@@ -139,18 +157,23 @@
       />
     </div>
 
-    <!-- Location Confirmation Bottom Sheet -->
+    <!-- Confirmation Bottom Sheet -->
     <ConfirmationBottomSheet
-      v-model:open="showLocationSheet"
-      :image="LocationIllustration"
-      title="Alamat belum lengkap"
-      description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
-      button-layout="column"
+      v-model:open="showConfirmationSheet"
+      :image="MascotIllustration"
+      title="Menukarkan hadiah?"
+      :description="`Apakah anda ingin menukarkan ${selectedCouponPoints} poin untuk mendapatkan voucher ini?`"
+      button-layout="row"
       :buttons="[
         {
-          label: 'Lengkapi alamat',
+          label: 'Kembali',
+          variant: 'secondary',
+          onClick: handleCancelExchange,
+        },
+        {
+          label: 'Tukar Poin',
           variant: 'primary',
-          onClick: handleCompleteAddress,
+          onClick: handleConfirmExchange,
         },
       ]"
     />

@@ -109,7 +109,8 @@
 
   const handleExchangePoints = () => {
     // Navigate to redemption details or success page
-    router.push('/rewards/redemption-details')
+    // TODO: Get actual redemption ID from the redeem API response
+    router.push('/rewards/redemption/1')
   }
 </script>
 

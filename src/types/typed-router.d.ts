@@ -40,12 +40,14 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/eco-journey-points/history'
       | '/(default)/eco-journey-points/redemption/[id]'
       | '/(default)/eco-journey-points/terms-and-conditions'
-      | '/(default)/rewards/[id]'
+      | '/(default)/rewards/catalog/[id]'
       | '/(default)/rewards/complete-address'
       | '/(default)/rewards/history'
       | '/(default)/rewards/how-to-detail'
       | '/(default)/rewards/list'
+      | '/(default)/rewards/lottery/[id]'
       | '/(default)/rewards/my-rewards'
+      | '/(default)/rewards/my-rewards/[id]'
       | '/(default)/rewards/redemption/[id]'
       | '/(default)/rewards/winners'
     >,
@@ -105,9 +107,9 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/(default)/rewards/[id]': RouteRecordInfo<
-      '/(default)/rewards/[id]',
-      '/rewards/:id',
+    '/(default)/rewards/catalog/[id]': RouteRecordInfo<
+      '/(default)/rewards/catalog/[id]',
+      '/rewards/catalog/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
       | never
@@ -140,11 +142,25 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/(default)/rewards/lottery/[id]': RouteRecordInfo<
+      '/(default)/rewards/lottery/[id]',
+      '/rewards/lottery/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     '/(default)/rewards/my-rewards': RouteRecordInfo<
       '/(default)/rewards/my-rewards',
       '/rewards/my-rewards',
       Record<never, never>,
       Record<never, never>,
+      | '/(default)/rewards/my-rewards/[id]'
+    >,
+    '/(default)/rewards/my-rewards/[id]': RouteRecordInfo<
+      '/(default)/rewards/my-rewards/[id]',
+      '/rewards/my-rewards/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
       | never
     >,
     '/(default)/rewards/redemption/[id]': RouteRecordInfo<
@@ -258,12 +274,14 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/eco-journey-points/history'
         | '/(default)/eco-journey-points/redemption/[id]'
         | '/(default)/eco-journey-points/terms-and-conditions'
-        | '/(default)/rewards/[id]'
+        | '/(default)/rewards/catalog/[id]'
         | '/(default)/rewards/complete-address'
         | '/(default)/rewards/history'
         | '/(default)/rewards/how-to-detail'
         | '/(default)/rewards/list'
+        | '/(default)/rewards/lottery/[id]'
         | '/(default)/rewards/my-rewards'
+        | '/(default)/rewards/my-rewards/[id]'
         | '/(default)/rewards/redemption/[id]'
         | '/(default)/rewards/winners'
       views:
@@ -317,9 +335,9 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(default)/rewards/[id].vue': {
+    'src/pages/(default)/rewards/catalog/[id].vue': {
       routes:
-        | '/(default)/rewards/[id]'
+        | '/(default)/rewards/catalog/[id]'
       views:
         | never
     }
@@ -347,9 +365,22 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/(default)/rewards/lottery/[id].vue': {
+      routes:
+        | '/(default)/rewards/lottery/[id]'
+      views:
+        | never
+    }
     'src/pages/(default)/rewards/my-rewards.vue': {
       routes:
         | '/(default)/rewards/my-rewards'
+        | '/(default)/rewards/my-rewards/[id]'
+      views:
+        | 'default'
+    }
+    'src/pages/(default)/rewards/my-rewards/[id].vue': {
+      routes:
+        | '/(default)/rewards/my-rewards/[id]'
       views:
         | never
     }

@@ -1,26 +1,28 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { Ticket, Calendar } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { ConfirmationBottomSheet } from '@/components/shared'
-  import { CouponListBottomSheet } from '@/components/rewards'
   import { RewardProgramInfo, RewardTermsSection } from '@/components/rewards/sections'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
     meta: {
-      title: 'Detail Promo',
+      title: 'Detail Lottery',
     },
   })
 
+  const route = useRoute()
   const router = useRouter()
   const showConfirmationSheet = ref(false)
-  const showCouponListSheet = ref(false)
 
-  // Data
+  // Get ID from route params
+  const drawId = computed(() => route.params.id as string)
+
+  // Data - TODO: Fetch based on drawId
   const programInfo = {
     title: 'Undian Loyalty Program Gelegar SwaCam',
     description:
@@ -37,13 +39,13 @@
     {
       id: 'period',
       label: 'Periode Promo',
-      value: 'Agustus - Oktober 2025',
+      value: 'Mei - November 2026',
       icon: Calendar,
     },
     {
       id: 'points',
       label: 'Koin yang ditukar',
-      value: '3.500 Poin',
+      value: '50 Poin',
       icon: CoinIcon,
     },
   ]
@@ -56,11 +58,11 @@
       content: `
         <ol class="list-decimal pl-5 flex flex-col gap-2">
           <li class="pl-1">Buka aplikasi PLN Mobile dan navigasi ke menu rewards</li>
-          <li class="pl-1">Pilih hadiah yang ingin Anda tukarkan</li>
-          <li class="pl-1">Pastikan Anda memiliki poin yang cukup untuk penukaran</li>
-          <li class="pl-1">Klik tombol "Tukar Poin" untuk memulai proses penukaran</li>
-          <li class="pl-1">Ikuti instruksi yang muncul untuk menyelesaikan penukaran</li>
-          <li class="pl-1">Hadiah akan dikirimkan sesuai dengan data alamat Anda</li>
+          <li class="pl-1">Pilih undian yang ingin Anda ikuti</li>
+          <li class="pl-1">Pastikan Anda memiliki poin yang cukup untuk penukaran kupon undian</li>
+          <li class="pl-1">Klik tombol "Tukarkan Poin" untuk mendapatkan kupon undian</li>
+          <li class="pl-1">Kupon undian akan otomatis masuk ke akun Anda</li>
+          <li class="pl-1">Tunggu pengumuman pemenang sesuai periode yang ditentukan</li>
         </ol>
       `,
     },
@@ -70,8 +72,8 @@
       content: `
         <ol class="list-decimal pl-5 flex flex-col gap-2">
           <li class="pl-1">Program berlaku untuk seluruh pengguna aplikasi PLN Mobile di Indonesia.</li>
-          <li class="pl-1">Periode promo berlangsung dari 20 Januari - 20 Desember 2025.</li>
-          <li class="pl-1">Setiap transaksi pembayaran tagihan atau pembelian token melalui aplikasi akan otomatis tercatat sebagai 1 (satu) kesempatan undian.</li>
+          <li class="pl-1">Periode promo berlangsung dari Mei - November 2026.</li>
+          <li class="pl-1">Setiap penukaran poin akan mendapatkan 1 (satu) kupon undian.</li>
           <li class="pl-1">Hadiah utama meliputi: 4 unit mobil listrik, 12 motor listrik, 24 sepeda listrik, 24 mesin cuci, 24 kulkas, dan 200 voucher menarik.</li>
           <li class="pl-1">Pemenang akan diumumkan secara resmi melalui aplikasi dan kanal media sosial PLN Mobile.</li>
           <li class="pl-1">Keputusan panitia bersifat final dan tidak dapat diganggu gugat.</li>
@@ -81,34 +83,25 @@
     },
   ]
 
+  const pointsRequired = 50
+
   const handleExchangeClick = () => {
-    // Randomly choose between showing coupon list or confirmation sheet
-    const isRandomCoupon = Math.random() > 0.5
-    if (isRandomCoupon) {
-      showCouponListSheet.value = true
-    } else {
-      showConfirmationSheet.value = true
-    }
+    showConfirmationSheet.value = true
   }
 
   const handleConfirmExchange = () => {
     showConfirmationSheet.value = false
-    router.push('/rewards/redemption/1')
+    router.push(`/rewards/redemption/${drawId.value}`)
   }
 
   const handleCancelExchange = () => {
     showConfirmationSheet.value = false
   }
-
-  // Computed button label based on reward type
-  const buttonLabel = computed(() => {
-    return 'Lihat Hadiah'
-  })
 </script>
 
 <template>
   <!-- Header -->
-  <Header title="Detail Promo" positioning="sticky" />
+  <Header title="Detail Lottery" positioning="sticky" />
 
   <!-- Hero Banner Section -->
   <HeroBanner />
@@ -125,7 +118,7 @@
   <!-- Footer with Button -->
   <Footer position="fixed">
     <Button variant="primary" size="sm" class="w-full" @click="handleExchangeClick">
-      {{ buttonLabel }}
+      Tukarkan Poin
     </Button>
   </Footer>
 
@@ -134,7 +127,7 @@
     v-model:open="showConfirmationSheet"
     :image="MascotIllustration"
     title="Menukarkan hadiah?"
-    description="Apakah anda ingin menukarkan 50 poin untuk mendapatkan hadiah ini?"
+    :description="`Apakah anda ingin menukarkan ${pointsRequired} poin untuk mendapatkan kupon undian ini?`"
     button-layout="row"
     :buttons="[
       {
@@ -149,7 +142,4 @@
       },
     ]"
   />
-
-  <!-- Coupon List Bottom Sheet -->
-  <CouponListBottomSheet v-model:open="showCouponListSheet" />
 </template>

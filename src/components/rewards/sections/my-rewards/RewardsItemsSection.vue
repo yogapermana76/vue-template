@@ -1,12 +1,17 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue'
+  import { useRouter } from 'vue-router'
   import { RewardCouponCard } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { useUserGiftInstantly } from '@/composables/services'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
+  const router = useRouter()
+
   // Fetch user gift instantly items
-  const { data: giftInstantlyData } = useUserGiftInstantly(0, 10)
+  const { data: giftInstantlyData } = useUserGiftInstantly({
+    query: { page: 0, size: 10 },
+  })
 
   // Debug: log data on change
   watch(giftInstantlyData, val => {
@@ -51,7 +56,10 @@
 
   // Event handler
   const handleItemClick = (id: string) => {
-    console.log('Claim item:', id)
+    router.push({
+      path: `/rewards/my-rewards/${id}`,
+      query: { type: 'item' },
+    })
   }
 </script>
 

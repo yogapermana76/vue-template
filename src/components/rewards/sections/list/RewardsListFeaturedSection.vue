@@ -18,7 +18,7 @@
   }
 
   const handleFeaturedClick = () => {
-    router.push(`/rewards/${featuredCoupon.id}`)
+    router.push(`/rewards/lottery/${featuredCoupon.id}`)
   }
 </script>
 

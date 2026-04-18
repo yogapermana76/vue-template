@@ -5,9 +5,11 @@
   import { RewardBannerCard } from '@/components/rewards'
   import { ConfirmationBottomSheet } from '@/components/shared'
   import { useLotteryRedeemablePages } from '@/composables/services'
-  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import LocationIllustration from '@/assets/illustrations/location.svg?component'
 
   const router = useRouter()
+  const showLocationSheet = ref(false)
+  const selectedDrawId = ref<string | null>(null)
 
   // Fetch lottery redeemable pages
   const { data: lotteryPages } = useLotteryRedeemablePages({
@@ -19,10 +21,6 @@
     // eslint-disable-next-line no-console
     console.log('Lottery Pages:', val)
   })
-
-  const showConfirmationSheet = ref(false)
-  const selectedDrawId = ref<string | null>(null)
-  const selectedDrawPoints = ref(0)
 
   interface DrawItem {
     id: string
@@ -51,21 +49,20 @@
 
   const isSingleItem = computed(() => drawData.value.length === 1)
 
-  const handleDrawClick = (id: string, points: number) => {
+  const handleCardClick = (id: string) => {
+    router.push(`/rewards/lottery/${id}`)
+  }
+
+  const handleButtonClick = (id: string) => {
     selectedDrawId.value = id
-    selectedDrawPoints.value = points
-    showConfirmationSheet.value = true
+    showLocationSheet.value = true
   }
 
-  const handleConfirmExchange = () => {
-    showConfirmationSheet.value = false
-    router.push('/rewards/redemption-details')
-  }
-
-  const handleCancelExchange = () => {
-    showConfirmationSheet.value = false
-    selectedDrawId.value = null
-    selectedDrawPoints.value = 0
+  const handleCompleteAddress = () => {
+    showLocationSheet.value = false
+    if (selectedDrawId.value) {
+      router.push('/rewards/complete-address')
+    }
   }
 </script>
 
@@ -86,8 +83,8 @@
         :duration-text="drawData[0].durationText"
         :duration-icon="Clock"
         button-label="Tukarkan Poin"
-        @button-click="handleDrawClick(drawData[0].id, drawData[0].points)"
-        @card-click="handleDrawClick(drawData[0].id, drawData[0].points)"
+        @button-click="handleButtonClick(drawData[0].id)"
+        @card-click="handleCardClick(drawData[0].id)"
       />
     </div>
 
@@ -106,30 +103,25 @@
         :duration-icon="Clock"
         button-label="Tukarkan Poin"
         class="w-85.75 shrink-0"
-        @button-click="handleDrawClick(draw.id, draw.points)"
-        @card-click="handleDrawClick(draw.id, draw.points)"
+        @button-click="handleButtonClick(draw.id)"
+        @card-click="handleCardClick(draw.id)"
       />
     </div>
-
-    <!-- Confirmation Bottom Sheet -->
-    <ConfirmationBottomSheet
-      v-model:open="showConfirmationSheet"
-      :image="MascotIllustration"
-      title="Menukarkan hadiah?"
-      :description="`Apakah anda ingin menukarkan ${selectedDrawPoints} poin untuk mendapatkan hadiah ini?`"
-      button-layout="row"
-      :buttons="[
-        {
-          label: 'Kembali',
-          variant: 'secondary',
-          onClick: handleCancelExchange,
-        },
-        {
-          label: 'Tukar Poin',
-          variant: 'primary',
-          onClick: handleConfirmExchange,
-        },
-      ]"
-    />
   </div>
+
+  <!-- Location Confirmation Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showLocationSheet"
+    :image="LocationIllustration"
+    title="Alamat belum lengkap"
+    description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
+    button-layout="column"
+    :buttons="[
+      {
+        label: 'Lengkapi alamat',
+        variant: 'primary',
+        onClick: handleCompleteAddress,
+      },
+    ]"
+  />
 </template>

@@ -104,7 +104,10 @@
   }
 
   const handleCouponClick = (id: string) => {
-    router.push(`/rewards/${id}`)
+    router.push({
+      path: `/rewards/catalog/${id}`,
+      query: { type: 'voucher' },
+    })
   }
 </script>
 

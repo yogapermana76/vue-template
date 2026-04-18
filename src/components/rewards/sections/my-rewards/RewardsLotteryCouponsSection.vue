@@ -10,7 +10,9 @@
   const router = useRouter()
 
   // Fetch user lottery list
-  const { data: lotteryListData } = useUserLotteryList(0, 5)
+  const { data: lotteryListData } = useUserLotteryList({
+    query: { page: 0, size: 5 },
+  })
 
   // Debug: log data on change
   watch(lotteryListData, val => {
@@ -59,7 +61,10 @@
 
   // Event handler
   const handleLotteryCouponClick = (id: string) => {
-    router.push(`/rewards/${id}`)
+    router.push({
+      path: `/rewards/my-rewards/${id}`,
+      query: { type: 'lottery-coupon' },
+    })
   }
 </script>
 
