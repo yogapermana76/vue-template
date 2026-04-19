@@ -1,0 +1,76 @@
+stages:
+  - compile
+  - build
+  - deploy
+
+variables:
+  # CI VARIABLES
+  CI_REGISTRY_USER: bkwh-registry
+  CI_REGISTRY_PASSWORD: 3eYVgSfPu1YH4xp-XbQ2
+  CI_REGISTRY: registry-iconx.air.id
+
+  # IMAGE VARIABLES
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+Compile NPM:
+  stage: compile
+  image: node:18-alpine
+  cache:
+    key: "$CI_BUILD_REF_NAME"
+    paths:
+      - node_modules/
+  before_script:
+    - node --version
+    - npm --version
+    - npm rebuild node-sass
+    - npm install
+  script:
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "development" ]; then
+       npm run development
+      else
+        npm run production
+      fi
+  artifacts:
+    name: "dist-$CI_COMMIT_REF_NAME"
+    paths:
+      - dist/
+    expire_in: 1 hour
+  only:
+    - development
+    - staging
+    - tags
+  tags:
+    - docker
+
+Build Container:
+  stage: build
+  image: docker:20.10.5
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --no-cache -t $DOCKER_IMAGE --build-arg DIST_FOLDER=dist -f deploy/Dockerfile .
+    - docker push $DOCKER_IMAGE
+  only:
+    - development
+    - staging
+    - tags
+  tags:
+    - docker
+
+Deploy DevStaging:
+  stage: deploy
+  script:
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "development" ]; then
+        kubectl set image deployment/microapps-reward-loyalty microapps-reward-loyalty=$DOCKER_IMAGE -n development
+        kubectl rollout restart deployment/microapps-reward-loyalty -n development
+      else
+        kubectl set image deployment/microapps-reward-loyalty microapps-reward-loyalty=$DOCKER_IMAGE -n staging
+        kubectl rollout restart deployment/microapps-reward-loyalty -n staging
+      fi
+  only:
+    - development
+    - staging
+  tags:
+    - bkwh-runner
