@@ -38,11 +38,10 @@
   // Route & User Data
   // ============================================
 
+  // Get lottery/reward ID from query params only
   const lotteryId = computed(() => {
-    const queryId = route.query.lotteryId as string | undefined
-    const paramId = route.params.id as string | undefined
-    const id = queryId || paramId
-    return id ? parseInt(id, 10) : undefined
+    const id = route.query.lotteryId as string | undefined
+    return id || ''
   })
 
   const userProfile = authStorage.getUser<User>()
@@ -91,7 +90,7 @@
   const { handleSubmit, setFieldValue, values, resetForm } = useForm<LotteryRedeemFormValues>({
     validationSchema: toTypedSchema(lotteryRedeemSchema),
     initialValues: {
-      lotteryId: lotteryId.value,
+      lotteryId: parseInt(lotteryId.value, 10) || 0,
       provinceId: 0, // 0 = not selected
       provinceName: '',
       cityId: 0,
@@ -166,7 +165,7 @@
       // Batch update all form fields using resetForm (more efficient than individual setFieldValue)
       resetForm({
         values: {
-          lotteryId: lotteryId.value,
+          lotteryId: parseInt(lotteryId.value, 10) || 0,
           address: address || '',
           postalCode: postalCode || '',
           provinceId: parseLocationId(provinceId),

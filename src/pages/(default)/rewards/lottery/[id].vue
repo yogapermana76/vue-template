@@ -27,7 +27,10 @@
   const showConfirmationSheet = ref(false)
 
   // Get ID from route params
-  const lotteryId = computed(() => route.params.id as string)
+  const lotteryId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
 
   // Fetch lottery detail
   const { data: lotteryDetail, isPending } = useUserLotteryDetail({

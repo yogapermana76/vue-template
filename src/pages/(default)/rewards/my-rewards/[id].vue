@@ -17,7 +17,10 @@
   const router = useRouter()
 
   // Get ID and type from route params and query
-  const rewardId = computed(() => route.params.id as string)
+  const rewardId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
   const rewardType = computed(() => (route.query.type as string) || 'voucher')
 
   // Dynamic page title based on type
