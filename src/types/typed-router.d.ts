@@ -46,7 +46,7 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/rewards/history'
       | '/(default)/rewards/list'
       | '/(default)/rewards/lottery/[id]'
-      | '/(default)/rewards/my-rewards'
+      | '/(default)/rewards/my-rewards/'
       | '/(default)/rewards/my-rewards/[id]'
       | '/(default)/rewards/redemption/[id]'
       | '/(default)/rewards/winners'
@@ -149,12 +149,12 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
-    '/(default)/rewards/my-rewards': RouteRecordInfo<
-      '/(default)/rewards/my-rewards',
+    '/(default)/rewards/my-rewards/': RouteRecordInfo<
+      '/(default)/rewards/my-rewards/',
       '/rewards/my-rewards',
       Record<never, never>,
       Record<never, never>,
-      | '/(default)/rewards/my-rewards/[id]'
+      | never
     >,
     '/(default)/rewards/my-rewards/[id]': RouteRecordInfo<
       '/(default)/rewards/my-rewards/[id]',
@@ -280,7 +280,7 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/rewards/history'
         | '/(default)/rewards/list'
         | '/(default)/rewards/lottery/[id]'
-        | '/(default)/rewards/my-rewards'
+        | '/(default)/rewards/my-rewards/'
         | '/(default)/rewards/my-rewards/[id]'
         | '/(default)/rewards/redemption/[id]'
         | '/(default)/rewards/winners'
@@ -371,12 +371,11 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(default)/rewards/my-rewards.vue': {
+    'src/pages/(default)/rewards/my-rewards/index.vue': {
       routes:
-        | '/(default)/rewards/my-rewards'
-        | '/(default)/rewards/my-rewards/[id]'
+        | '/(default)/rewards/my-rewards/'
       views:
-        | 'default'
+        | never
     }
     'src/pages/(default)/rewards/my-rewards/[id].vue': {
       routes:

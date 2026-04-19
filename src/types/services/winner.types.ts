@@ -16,12 +16,21 @@ import type {
 
 export interface Winner {
   id?: string
+  userId?: number
+  lotteryId?: number
+  timingCategory?: 'MONTHLY' | 'ANNUAL'
   fullname: string
   email: string
   phoneNumber: string
   title: string
-  img: string
+  description?: string
+  img: string | null
   index?: number
+  claimUrl?: string | null
+  startDate?: string
+  drawnDate?: string
+  periodTitle?: string
+  userIsWinner?: boolean
 }
 
 export interface WinnerTnc {

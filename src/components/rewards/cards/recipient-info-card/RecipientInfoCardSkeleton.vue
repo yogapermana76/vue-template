@@ -1,8 +1,8 @@
-/** * RecipientInfoItemSkeleton * Skeleton loading state for RecipientInfoItem component * Displays
+/** * RecipientInfoCardSkeleton * Skeleton loading state for RecipientInfoCard component * Displays
 animated placeholder for recipient information * * @component * @example *
-<RecipientInfoItemSkeleton />
+<RecipientInfoCardSkeleton />
 * *
-<RecipientInfoItemSkeleton class="mb-4" />
+<RecipientInfoCardSkeleton class="mb-4" />
 */
 
 <script setup lang="ts">
@@ -12,14 +12,14 @@ animated placeholder for recipient information * * @component * @example *
   import { Skeleton } from '@/components/ui/skeleton'
 
   /**
-   * Props for RecipientInfoItemSkeleton component
+   * Props for RecipientInfoCardSkeleton component
    */
-  interface RecipientInfoItemSkeletonProps {
+  interface RecipientInfoCardSkeletonProps {
     /** Additional CSS classes to apply to the item */
     class?: HTMLAttributes['class']
   }
 
-  const props = withDefaults(defineProps<RecipientInfoItemSkeletonProps>(), {})
+  const props = withDefaults(defineProps<RecipientInfoCardSkeletonProps>(), {})
 </script>
 
 <template>
@@ -27,7 +27,7 @@ animated placeholder for recipient information * * @component * @example *
     as="div"
     variant="outline"
     :class="cn('w-full gap-2 rounded-lg border-neutral-200 bg-white p-3', props.class)"
-    data-testid="recipient-info-item-skeleton"
+    data-testid="recipient-info-card-skeleton"
     aria-busy="true"
     role="presentation"
   >

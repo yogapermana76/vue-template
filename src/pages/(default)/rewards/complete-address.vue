@@ -8,7 +8,7 @@
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
   import { TextField, TextAreaField } from '@/components/ui/form'
-  import { RewardPrizeCard, RecipientInfoItem } from '@/components/rewards'
+  import { RewardPrizeCard, RecipientInfoCard } from '@/components/rewards'
   import { RecipientInfoBottomSheet } from '@/components/rewards'
   import { LocationField, type SelectedLocation } from '@/components/shared/location-picker'
   import { ConfirmationBottomSheet } from '@/components/shared'
@@ -386,7 +386,7 @@
       <div class="flex w-full flex-col gap-3 px-4">
         <h2 class="body-l-semibold text-slate-950">Informasi Penerima</h2>
 
-        <RecipientInfoItem
+        <RecipientInfoCard
           :name="recipientData.fullname"
           :email="recipientData.email"
           :phone="recipientData.noHp"

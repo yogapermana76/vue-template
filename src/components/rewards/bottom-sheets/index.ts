@@ -3,3 +3,4 @@ export {
   RecipientInfoBottomSheet,
   type RecipientInfoBottomSheetProps,
 } from './recipient-info-bottom-sheet'
+export { LotteryCodesBottomSheet } from './lottery-codes-bottom-sheet'

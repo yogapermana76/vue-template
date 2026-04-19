@@ -38,7 +38,7 @@ export interface RewardCategory {
 
 export interface TermCondition {
   label: string
-  value: string
+  value: string | string[]
 }
 
 export interface AddRules {
@@ -86,7 +86,16 @@ export interface UserGiftInstantly {
   title: string
 }
 
-export interface UserGiftInstantlyDetail extends UserGiftInstantly, FullAddress {}
+export interface UserGiftInstantlyDetail extends UserGiftInstantly {
+  description: string
+  termsCondition?: TermCondition[]
+  fullname: string
+  phoneNumber: string
+  provinceName: string
+  cityName: string
+  districtName: string
+  postalCode: string
+}
 
 // ============================================
 // Exchange Point Detail

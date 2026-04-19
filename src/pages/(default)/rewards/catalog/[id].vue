@@ -12,7 +12,7 @@
   } from '@/components/rewards/sections'
   import { useRewardRedeemableDetail, usePointSummary } from '@/composables/services'
   import { formatNumber } from '@/utils'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
@@ -23,7 +23,7 @@
 
   const route = useRoute()
   const router = useRouter()
-  const showLocationSheet = ref(false)
+  const showConfirmationSheet = ref(false)
 
   // Get ID from route params
   const rewardId = computed(() => {
@@ -91,7 +91,7 @@
     // Points
     statsArray.push({
       id: 'points',
-      label: 'Koin yang ditukar',
+      label: 'Poin yang dibutuhkan',
       value: `${formatNumber(reward.value.pricePoint)} Poin`,
       icon: CoinIcon,
     })
@@ -146,11 +146,15 @@
   })
 
   const handleExchangeClick = () => {
-    showLocationSheet.value = true
+    showConfirmationSheet.value = true
   }
 
-  const handleCompleteAddress = () => {
-    showLocationSheet.value = false
+  const handleCancelExchange = () => {
+    showConfirmationSheet.value = false
+  }
+
+  const handleConfirmExchange = () => {
+    showConfirmationSheet.value = false
     router.push({
       path: '/rewards/complete-address',
       query: { rewardId: rewardId.value },
@@ -163,6 +167,12 @@
     if (!hasQuota.value) return 'Kuota Voucher sudah habis'
     if (!hasEnoughPoints.value) return 'Poin anda tidak mencukupi'
     return null
+  })
+
+  // Confirmation description
+  const confirmationDescription = computed(() => {
+    if (!reward.value) return ''
+    return `Apakah anda ingin menukarkan <strong>${formatNumber(reward.value.pricePoint)} poin</strong> untuk mendapatkan hadiah ini?`
   })
 </script>
 
@@ -217,18 +227,23 @@
     </Button>
   </Footer>
 
-  <!-- Location Confirmation Bottom Sheet -->
+  <!-- Exchange Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet
-    v-model:open="showLocationSheet"
-    :image="LocationIllustration"
-    title="Alamat belum lengkap"
-    description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
-    button-layout="column"
+    v-model:open="showConfirmationSheet"
+    :image="MascotIllustration"
+    title="Menukarkan hadiah?"
+    :description="confirmationDescription"
+    button-layout="row"
     :buttons="[
       {
-        label: 'Lengkapi alamat',
+        label: 'Kembali',
+        variant: 'secondary',
+        onClick: handleCancelExchange,
+      },
+      {
+        label: 'Tukar Poin',
         variant: 'primary',
-        onClick: handleCompleteAddress,
+        onClick: handleConfirmExchange,
       },
     ]"
   />

@@ -4,13 +4,16 @@
   import { useIntersectionObserver } from '@vueuse/core'
   import { Header, GradientSection } from '@/components/layout'
   import { WinnerCard, WinnerCardSkeleton, type WinnerData } from '@/components/rewards'
-  import { InformationBottomSheet } from '@/components/shared'
+  import { WinnerInformationBottomSheet } from '@/components/shared/bottom-sheets'
   import { IconButton } from '@/components/ui/button'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
+  import { EmptyState } from '@/components/ui/empty-state'
   import { useWinnerListInfinite, usePublicWinnerTnc } from '@/composables/services'
   import { config } from '@/config'
+  import { formatDate } from '@/utils/date'
   import { AlertCircle } from 'lucide-vue-next'
   import type { Winner } from '@/types'
+  import PemenangIllustration from '@/assets/illustrations/riwayat.svg'
 
   definePage({
     meta: {
@@ -68,7 +71,26 @@
     return items
   })
 
-  const periodLabel = 'Pemenang Undian Periode Januari - Maret 2025'
+  // Dynamic period label from API response (Single Source of Truth)
+  const periodLabel = computed(() => {
+    // Priority 1: Generate from first winner's dates
+    const firstWinner = allWinners.value[0]
+    if (firstWinner?.startDate && firstWinner?.drawnDate) {
+      const startFormatted = formatDate(firstWinner.startDate, 'MMMM yyyy')
+      const endFormatted = formatDate(firstWinner.drawnDate, 'MMMM yyyy')
+      return `Pemenang Undian Periode ${startFormatted} - ${endFormatted}`
+    }
+
+    // Priority 2: Generate from detailUserWinner dates
+    if (currentUser.value?.startDate && currentUser.value?.drawnDate) {
+      const startFormatted = formatDate(currentUser.value.startDate, 'MMMM yyyy')
+      const endFormatted = formatDate(currentUser.value.drawnDate, 'MMMM yyyy')
+      return `Pemenang Undian Periode ${startFormatted} - ${endFormatted}`
+    }
+
+    // Default fallback
+    return 'Pemenang Undian'
+  })
 
   interface WinnerItem {
     rank: number
@@ -122,7 +144,7 @@
       winner: {
         name: currentUser.value.fullname || 'Anda',
         email: currentUser.value.email || '',
-        phone: '',
+        phone: currentUser.value.phoneNumber || '',
       },
       prizeImage: currentUser.value.img || 'https://via.placeholder.com/56',
     }
@@ -165,8 +187,12 @@
       <WinnerCardSkeleton v-for="i in 3" :key="i" :show-rank-icon="true" />
     </div>
 
-    <div v-else-if="isError" class="z-10 flex flex-col gap-2 px-4 pb-8">
-      <p class="body-m text-center text-white">Gagal memuat data pemenang.</p>
+    <div v-else-if="isError" class="z-10 flex flex-col items-center justify-center gap-2 px-4 pb-8">
+      <EmptyState
+        :image="PemenangIllustration"
+        title="Gagal memuat data"
+        description="Terjadi kesalahan saat memuat data pemenang. Silakan coba lagi."
+      />
     </div>
 
     <div v-else class="z-10 flex flex-col gap-2 px-4 pb-8">
@@ -187,8 +213,12 @@
       <WinnerCardSkeleton v-for="i in 5" :key="i" />
     </div>
 
-    <div v-else-if="isError" class="flex flex-col items-center justify-center py-8">
-      <p class="body-m text-slate-500">Gagal memuat data pemenang.</p>
+    <div v-else-if="isError" class="flex flex-1 flex-col items-center justify-center py-8">
+      <EmptyState
+        :image="PemenangIllustration"
+        title="Gagal memuat data"
+        description="Terjadi kesalahan saat memuat data pemenang. Silakan coba lagi."
+      />
     </div>
 
     <template v-else>
@@ -225,23 +255,9 @@
     />
   </div>
 
-  <InformationBottomSheet v-model:open="isInfoOpen" title="Informasi">
-    <div class="flex flex-col">
-      <!-- Loading State -->
-      <div v-if="isTncLoading" class="flex flex-col gap-3">
-        <div class="h-4 w-3/4 animate-pulse rounded bg-slate-200" />
-        <div class="h-4 w-full animate-pulse rounded bg-slate-200" />
-        <div class="h-4 w-5/6 animate-pulse rounded bg-slate-200" />
-      </div>
-
-      <!-- Terms and Conditions Items -->
-      <div v-else class="flex flex-col gap-4">
-        <div v-for="item in tncItems" :key="item.order" class="flex flex-col gap-2">
-          <h3 class="body-m-semibold text-neutral-90">{{ item.title }}</h3>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="body-caption text-neutral-80" v-html="item.value" />
-        </div>
-      </div>
-    </div>
-  </InformationBottomSheet>
+  <WinnerInformationBottomSheet
+    v-model:open="isInfoOpen"
+    :is-tnc-loading="isTncLoading"
+    :tnc-items="tncItems"
+  />
 </template>

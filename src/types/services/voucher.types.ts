@@ -38,7 +38,21 @@ export interface VoucherCategory {
   sort: number
 }
 
-export type VoucherDetail = Voucher
+export interface VoucherCodeInfo {
+  type: 'LINK' | 'CODE'
+  value: string
+}
+
+export interface VoucherDetail {
+  id: number
+  title: string
+  description: string
+  imageUrl: string
+  expiredDate: string
+  termsCondition?: string[]
+  howToUse?: string[]
+  voucherCode: VoucherCodeInfo
+}
 
 // ============================================
 // Response Types

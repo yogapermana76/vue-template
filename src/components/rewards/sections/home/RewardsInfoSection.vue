@@ -56,7 +56,7 @@
   const handleViewWinners = (itemId: string | number) => {
     router.push({
       path: '/rewards/winners',
-      query: { lotteryId: itemId },
+      query: { lotteryId: itemId }, // ✅ Clean & simple
     })
   }
 </script>

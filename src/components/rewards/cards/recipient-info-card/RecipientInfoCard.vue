@@ -4,7 +4,7 @@
   import { ChevronRight } from 'lucide-vue-next'
   import { cn } from '@/utils/cn'
 
-  export interface RecipientInfoItemProps {
+  export interface RecipientInfoCardProps {
     /** Recipient name */
     name: string
     /** Recipient email */
@@ -15,7 +15,7 @@
     class?: HTMLAttributes['class']
   }
 
-  const props = defineProps<RecipientInfoItemProps>()
+  const props = defineProps<RecipientInfoCardProps>()
   const emit = defineEmits<{
     click: []
   }>()

@@ -78,7 +78,8 @@
           :image-url="item.imageUrl || 'https://via.placeholder.com/343x171?text=No+Image'"
           :points="0"
           button-label="Lihat Detail"
-          :on-button-click="() => handleItemClick(item.tUserPointId)"
+          @button-click="handleItemClick(item.tUserPointId)"
+          @card-click="handleItemClick(item.tUserPointId)"
         />
       </div>
 

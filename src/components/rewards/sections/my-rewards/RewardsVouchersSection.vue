@@ -155,7 +155,8 @@
             :flag-text="
               voucher.availableQuota > 0 ? `Tersisa ${voucher.availableQuota}` : undefined
             "
-            :on-button-click="() => handleVoucherClick(voucher.voucherId.toString())"
+            @button-click="handleVoucherClick(voucher.voucherId.toString())"
+            @card-click="handleVoucherClick(voucher.voucherId.toString())"
           />
         </div>
 
