@@ -26,7 +26,10 @@
   const showLocationSheet = ref(false)
 
   // Get ID from route params
-  const rewardId = computed(() => route.params.id as string)
+  const rewardId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
 
   // Fetch reward detail
   const { data: rewardDetail, isPending } = useRewardRedeemableDetail({
@@ -148,7 +151,10 @@
 
   const handleCompleteAddress = () => {
     showLocationSheet.value = false
-    router.push('/rewards/complete-address')
+    router.push({
+      path: '/rewards/complete-address',
+      query: { rewardId: rewardId.value },
+    })
   }
 
   // Footer message for disabled state

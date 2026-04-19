@@ -10,7 +10,7 @@
   } from '@/components/ui/item'
   import type { Component } from 'vue'
 
-  interface ActionItemProps {
+  export interface ActionItemProps {
     icon: Component
     title: string
     subtitle: string

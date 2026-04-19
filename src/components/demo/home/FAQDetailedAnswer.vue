@@ -42,7 +42,7 @@
       </Button>
     </div>
 
-    <Alert variant="default" class="border-primary-200 bg-primary-50 mt-4">
+    <Alert variant="info" class="border-primary-200 bg-primary-50 mt-4">
       <AlertTitle class="text-primary-800">💡 Tips:</AlertTitle>
       <AlertDescription class="text-primary-700">
         Proses registrasi hanya membutuhkan waktu kurang dari 2 menit. Kami akan memandu Anda di
