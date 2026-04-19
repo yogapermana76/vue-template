@@ -117,15 +117,13 @@ Sync App & Refresh App:
   stage: refresh
   script:
     - printf "y\n" | argocd login $ARGOCD_SERVER --username $ARGOCD_USERNAME --password $ARGOCD_PASSWORD --insecure
-    - argocd app sync reward-loyalty-v2
-    - argocd app get reward-loyalty-v2 --refresh
+    - argocd app sync events-reward-v2
+    - argocd app get events-reward-v2 --refresh
     - argocd logout $ARGOCD_SERVER
   rules:
     - if: "$CI_COMMIT_TAG"
   tags:
     - bkwh-runner
-
-
 
 Deploy DevStaging:
   stage: deploy
