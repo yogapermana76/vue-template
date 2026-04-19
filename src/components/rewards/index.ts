@@ -38,6 +38,7 @@ export {
   type CouponListBottomSheetProps,
   RecipientInfoBottomSheet,
   type RecipientInfoBottomSheetProps,
+  WinnerInformationBottomSheet,
 } from './bottom-sheets'
 
 export {

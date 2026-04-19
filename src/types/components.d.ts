@@ -201,7 +201,7 @@ declare module 'vue' {
     WinnerCardSkeleton: typeof import('./../components/rewards/cards/winner-card/WinnerCardSkeleton.vue')['default']
     WinnerInfoCard: typeof import('./../components/rewards/cards/winner-info-card/WinnerInfoCard.vue')['default']
     WinnerInfoCardSkeleton: typeof import('./../components/rewards/cards/winner-info-card/WinnerInfoCardSkeleton.vue')['default']
-    WinnerInformationBottomSheet: typeof import('./../components/shared/bottom-sheets/winner-information-bottom-sheet/WinnerInformationBottomSheet.vue')['default']
+    WinnerInformationBottomSheet: typeof import('./../components/rewards/bottom-sheets/winner-information-bottom-sheet/WinnerInformationBottomSheet.vue')['default']
     WinnerInfoSwiper: typeof import('./../components/rewards/sections/home/info-section/WinnerInfoSwiper.vue')['default']
     WinnersSection: typeof import('./../components/demo/home/WinnersSection.vue')['default']
   }

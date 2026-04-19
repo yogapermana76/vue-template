@@ -3,8 +3,12 @@
   import { useRoute } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
   import { Header, GradientSection } from '@/components/layout'
-  import { WinnerCard, WinnerCardSkeleton, type WinnerData } from '@/components/rewards'
-  import { WinnerInformationBottomSheet } from '@/components/shared/bottom-sheets'
+  import {
+    WinnerCard,
+    WinnerCardSkeleton,
+    type WinnerData,
+    WinnerInformationBottomSheet,
+  } from '@/components/rewards'
   import { IconButton } from '@/components/ui/button'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { EmptyState } from '@/components/ui/empty-state'
