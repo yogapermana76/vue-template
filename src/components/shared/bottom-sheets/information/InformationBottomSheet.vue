@@ -7,8 +7,8 @@
     open?: boolean
     /** Title text */
     title: string
-    /** Description text */
-    description: string
+    /** Description text (plain text) - optional, will use slot if not provided */
+    description?: string
     /** Allow dismissing by backdrop click or escape key */
     dismissible?: boolean
   }
@@ -30,6 +30,9 @@
 
 <template>
   <BottomSheet v-model:open="isOpen" :dismissible="dismissible" :show-close="false" :title="title">
-    <p class="body-caption text-neutral-80">{{ description }}</p>
+    <!-- Slot takes priority, fallback to description prop -->
+    <slot>
+      <p v-if="description" class="body-caption text-neutral-80">{{ description }}</p>
+    </slot>
   </BottomSheet>
 </template>

@@ -42,18 +42,29 @@ export interface LotteryDetail extends Lottery {
 // User Lottery
 // ============================================
 
-export interface UserLottery {
-  id: string
-  lotteryId: string
-  title: string
-  description: string
-  imageUrl: string
-  point: number
-  created: string
-  status: 'PENDING' | 'CONFIRMED' | 'DELIVERED'
+export interface LotteryCode {
+  lotteryCode: string
 }
 
-export interface UserLotteryDetail extends UserLottery, FullAddress {}
+export interface UserLottery {
+  redeemCount: number
+  id: number
+  imageUrl: string
+  title: string
+  startDate: string
+  endDate: string
+  timingCategory: 'MONTHLY' | 'ANNUAL'
+  specification: string | null
+}
+
+export interface UserLotteryDetail extends Omit<UserLottery, 'id'> {
+  description: string
+  expiredDate: string
+  announceDate: string
+  lotteryCodes: LotteryCode[]
+  pricePoint?: number
+  termsCondition?: LotteryTermsCondition[]
+}
 
 // ============================================
 // Redeem Request/Response

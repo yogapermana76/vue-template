@@ -43,6 +43,7 @@ export {
   useLotteryDetail,
   useLotteryPromo,
   useUserLotteryList,
+  useUserLotteryListInfinite,
   useUserLotteryDetail,
   useLotteryRedeem,
   lotteryKeys,
@@ -54,10 +55,12 @@ export {
 
 export {
   useRewardGiftInstantly,
+  useRewardGiftInstantlyInfinite,
   useRewardRedeemable,
   useRewardRedeemableDetail,
   useRewardGiftInstantlyDetail,
   useUserGiftInstantly,
+  useUserGiftInstantlyInfinite,
   useUserGiftInstantlyDetail,
   useLastAddress,
   useRewardCategories,
@@ -70,7 +73,13 @@ export {
 // Voucher
 // ============================================
 
-export { useVoucherPages, useVoucherDetail, useVoucherCategories, voucherKeys } from './useVoucher'
+export {
+  useVoucherPages,
+  useVoucherPagesInfinite,
+  useVoucherDetail,
+  useVoucherCategories,
+  voucherKeys,
+} from './useVoucher'
 
 // ============================================
 // Region (CRITICAL for address forms)

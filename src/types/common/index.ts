@@ -9,6 +9,7 @@ export type {
   PaginationParams,
   PaginatedData,
   PaginatedResponse,
+  BusinessError,
   ReceivedInfo,
   AddressInfo,
   FullAddress,

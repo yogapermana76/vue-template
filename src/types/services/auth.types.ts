@@ -11,11 +11,12 @@ import type { BaseResponse, LegacyResponse } from '../common/base.types'
 
 export interface User {
   id: number | string
-  name: string
+  fullname: string
   email: string
-  phone?: string
-  userId?: number
+  phoneNumber?: string
   accountUpgraded?: boolean
+  created?: string
+  updated?: string
 }
 
 export interface UserProfile {

@@ -30,13 +30,43 @@ export interface Reward {
 
 export interface RewardCategory {
   id: number
-  name: string
+  category: string
+  label: string
+  orderBy: number
   description?: string
 }
 
+export interface TermCondition {
+  label: string
+  value: string
+}
+
+export interface AddRules {
+  reward_max?: {
+    qty: number
+    type: string
+  }
+}
+
 export interface RewardDetail extends Reward {
-  terms?: string[]
-  howToRedeem?: string[]
+  active: boolean
+  type: 'ITEM' | 'VOUCHER'
+  termsCondition?: TermCondition[]
+  howToUse?: string[]
+  addRules?: AddRules
+  quotaUsage?: number
+  startDate?: string
+  endDate?: string
+  created?: string
+  updated?: string
+  createdBy?: string | null
+  updatedBy?: string | null
+  activityId?: number | null
+  lotteryId?: number | null
+  canExchanged?: boolean
+  voucherId?: number | null
+  rewardCategoryId?: number
+  remainingQuota?: number
 }
 
 // ============================================
@@ -45,16 +75,15 @@ export interface RewardDetail extends Reward {
 
 export interface GiftInstantly extends Reward {
   claimedAt?: string
+  quota?: number
+  quotaUsage?: number
 }
 
 export interface UserGiftInstantly {
-  id: string
+  rewardId: number
+  tUserPointId: number
+  imageUrl: string | null
   title: string
-  description: string
-  imageUrl: string
-  point: number
-  created: string
-  status: 'CLAIMED' | 'USED'
 }
 
 export interface UserGiftInstantlyDetail extends UserGiftInstantly, FullAddress {}
@@ -141,7 +170,8 @@ export type VerifyInfoResponse = BaseResponse<VerifyInfoData | null>
 export interface RewardPagesParams {
   page?: number
   size?: number
-  categoryId?: number
+  type?: string
+  rewardCategoryId?: number | string
 }
 
 export interface RewardDetailParams {
@@ -165,8 +195,13 @@ export interface ExchangePointDetailParams {
 // Composable Parameters (reactive-aware)
 // ============================================
 
-/** Parameters for useRewardGiftInstantly composable (with pagination) */
-export type UseRewardGiftInstantlyParams = BaseComposableParams<PaginationOnly>
+/** Parameters for useRewardGiftInstantly composable (with pagination and optional filters) */
+export type UseRewardGiftInstantlyParams = BaseComposableParams<
+  PaginationOnly & {
+    type?: MaybeRef<string | undefined>
+    rewardCategoryId?: MaybeRef<string | number | undefined>
+  }
+>
 
 /** Parameters for useRewardRedeemable composable (with pagination) */
 export type UseRewardRedeemableParams = BaseComposableParams<PaginationOnly>

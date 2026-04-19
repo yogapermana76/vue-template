@@ -1,17 +1,23 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import { Package, Calendar, Truck } from 'lucide-vue-next'
+  import { Package, Ticket } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { ConfirmationBottomSheet } from '@/components/shared'
-  import { RewardProgramInfo, RewardTermsSection } from '@/components/rewards/sections'
+  import {
+    RewardProgramInfo,
+    RewardTermsSection,
+    RewardDetailSkeleton,
+  } from '@/components/rewards/sections'
+  import { useRewardRedeemableDetail, usePointSummary } from '@/composables/services'
+  import { formatNumber } from '@/utils'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
     meta: {
-      title: 'Detail Reward',
+      title: 'Detail',
     },
   })
 
@@ -19,161 +25,121 @@
   const router = useRouter()
   const showLocationSheet = ref(false)
 
-  // Get ID and type from route params and query
+  // Get ID from route params
   const rewardId = computed(() => route.params.id as string)
-  const rewardType = computed(() => (route.query.type as string) || 'voucher')
 
-  // Dynamic page title based on type
-  const pageTitle = computed(() => {
-    return rewardType.value === 'item' ? 'Detail Item' : 'Detail Voucher'
+  // Fetch reward detail
+  const { data: rewardDetail, isPending } = useRewardRedeemableDetail({
+    params: { id: rewardId },
   })
 
-  // Dynamic data based on type - TODO: Fetch based on rewardId and rewardType
+  // Fetch user points
+  const { data: userPointsData } = usePointSummary()
+
+  const reward = computed(() => rewardDetail.value?.data)
+  const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
+
+  // Check if user has enough points
+  const hasEnoughPoints = computed(() => {
+    if (!reward.value) return false
+    return userPoints.value >= reward.value.pricePoint
+  })
+
+  // Check if quota is available
+  const hasQuota = computed(() => {
+    if (!reward.value) return true
+    if (reward.value.remainingQuota === undefined) return true
+    return reward.value.remainingQuota > 0
+  })
+
+  // Check if user can exchange
+  const canExchange = computed(() => {
+    if (!reward.value) return false
+    return reward.value.canExchanged === true && hasEnoughPoints.value && hasQuota.value
+  })
+
+  // Program info
   const programInfo = computed(() => {
-    if (rewardType.value === 'item') {
-      return {
-        title: 'Blender Philips HR2106',
-        description:
-          'Dapatkan blender berkualitas tinggi dari Philips dengan menukarkan poin Anda. Blender ini dilengkapi dengan motor 400W yang kuat dan kapasitas 1.5 liter. Cocok untuk membuat jus, smoothie, dan berbagai minuman sehat lainnya. Barang akan dikirimkan ke alamat Anda dalam waktu 7-14 hari kerja.',
-      }
-    }
+    if (!reward.value) return { title: '', description: '' }
     return {
-      title: 'Voucher Listrik Rp20.000',
-      description:
-        'Dapatkan voucher listrik senilai Rp20.000 untuk memenuhi kebutuhan listrik rumah Anda. Voucher ini dapat langsung digunakan untuk pembelian token listrik melalui aplikasi PLN Mobile. Nikmati kemudahan berbelanja token listrik dengan harga lebih hemat!',
+      title: reward.value.title,
+      description: reward.value.description,
     }
   })
 
+  // Stats
   const stats = computed(() => {
-    if (rewardType.value === 'item') {
-      return [
-        {
-          id: 'stock',
-          label: 'Stok Tersisa',
-          value: '12 Unit',
-          icon: Package,
-        },
-        {
-          id: 'shipping',
-          label: 'Estimasi Pengiriman',
-          value: '7-14 Hari Kerja',
-          icon: Truck,
-        },
-        {
-          id: 'period',
-          label: 'Periode Promo',
-          value: 'Hingga 31 Desember 2026',
-          icon: Calendar,
-        },
-        {
-          id: 'points',
-          label: 'Koin yang ditukar',
-          value: '15.000 Poin',
-          icon: CoinIcon,
-        },
-      ]
+    if (!reward.value) return []
+
+    const statsArray = []
+    const isItem = reward.value.type === 'ITEM'
+    const unit = isItem ? 'Unit' : 'Voucher'
+
+    // Stock/Quota
+    if (reward.value.remainingQuota !== undefined) {
+      statsArray.push({
+        id: 'stock',
+        label: isItem ? 'Stok Tersisa' : 'Sisa Voucher',
+        value: `${reward.value.remainingQuota} ${unit}`,
+        icon: isItem ? Package : Ticket,
+      })
     }
-    return [
-      {
-        id: 'remaining',
-        label: 'Voucher Tersisa',
-        value: '5 Voucher',
+
+    // Points
+    statsArray.push({
+      id: 'points',
+      label: 'Koin yang ditukar',
+      value: `${formatNumber(reward.value.pricePoint)} Poin`,
+      icon: CoinIcon,
+    })
+
+    // Max per person
+    if (reward.value.addRules?.reward_max) {
+      statsArray.push({
+        id: 'max',
+        label: `Maksimal per ${reward.value.addRules.reward_max.type}`,
+        value: `${reward.value.addRules.reward_max.qty} ${unit}`,
         icon: Package,
-      },
-      {
-        id: 'period',
-        label: 'Periode Promo',
-        value: 'Hingga 31 Desember 2026',
-        icon: Calendar,
-      },
-      {
-        id: 'points',
-        label: 'Koin yang ditukar',
-        value: '3.500 Poin',
-        icon: CoinIcon,
-      },
-    ]
+      })
+    }
+
+    return statsArray
   })
 
+  // Terms items - includes both "Cara Penggunaan" and "Syarat dan Ketentuan"
   const termsItems = computed(() => {
-    if (rewardType.value === 'item') {
-      return [
-        {
-          id: 'usage',
-          title: 'Cara Penukaran',
-          content: `
-            <ol class="list-decimal pl-5 flex flex-col gap-2">
-              <li class="pl-1">Buka aplikasi PLN Mobile dan navigasi ke menu rewards</li>
-              <li class="pl-1">Pilih barang yang ingin Anda tukarkan</li>
-              <li class="pl-1">Pastikan Anda memiliki poin yang cukup untuk penukaran</li>
-              <li class="pl-1">Lengkapi alamat pengiriman dengan benar dan lengkap</li>
-              <li class="pl-1">Klik tombol "Tukarkan Poin" untuk memulai proses penukaran</li>
-              <li class="pl-1">Barang akan dikirimkan ke alamat yang terdaftar dalam 7-14 hari kerja</li>
-            </ol>
-          `,
-        },
-        {
-          id: 'specs',
-          title: 'Spesifikasi Produk',
-          content: `
-            <ul class="list-disc pl-5 flex flex-col gap-2">
-              <li class="pl-1">Merk: Philips</li>
-              <li class="pl-1">Tipe: HR2106</li>
-              <li class="pl-1">Kapasitas: 1.5 Liter</li>
-              <li class="pl-1">Daya: 400 Watt</li>
-              <li class="pl-1">Garansi Resmi: 1 Tahun</li>
-              <li class="pl-1">Warna: Putih</li>
-            </ul>
-          `,
-        },
-        {
-          id: 'terms',
-          title: 'Syarat & Ketentuan',
-          content: `
-            <ol class="list-decimal pl-5 flex flex-col gap-2">
-              <li class="pl-1">Barang berlaku untuk seluruh pengguna aplikasi PLN Mobile di Indonesia.</li>
-              <li class="pl-1">Periode promo berlangsung hingga 31 Desember 2026 atau selama persediaan masih ada.</li>
-              <li class="pl-1">Barang tidak dapat diuangkan atau dikembalikan setelah dikirim.</li>
-              <li class="pl-1">Setiap pengguna dapat menukar maksimal 2 barang per bulan.</li>
-              <li class="pl-1">Pastikan alamat pengiriman sudah lengkap dan benar.</li>
-              <li class="pl-1">Kerusakan akibat pengiriman menjadi tanggung jawab ekspedisi.</li>
-              <li class="pl-1">PLN berhak membatalkan transaksi jika ditemukan kecurangan.</li>
-            </ol>
-          `,
-        },
-      ]
-    }
-    return [
-      {
-        id: 'usage',
+    if (!reward.value) return []
+
+    const items = []
+
+    // Add "Cara Penggunaan" if howToUse exists
+    if (reward.value.howToUse && reward.value.howToUse.length > 0) {
+      const howToUseSteps = reward.value.howToUse.map(step => `<li>${step}</li>`).join('')
+
+      items.push({
+        id: 'how-to-use',
         title: 'Cara Penggunaan',
-        content: `
-          <ol class="list-decimal pl-5 flex flex-col gap-2">
-            <li class="pl-1">Buka aplikasi PLN Mobile dan navigasi ke menu rewards</li>
-            <li class="pl-1">Pilih voucher yang ingin Anda tukarkan</li>
-            <li class="pl-1">Pastikan Anda memiliki poin yang cukup untuk penukaran</li>
-            <li class="pl-1">Lengkapi alamat pengiriman jika diperlukan</li>
-            <li class="pl-1">Klik tombol "Tukarkan Poin" untuk memulai proses penukaran</li>
-            <li class="pl-1">Voucher akan dikirimkan ke alamat yang terdaftar</li>
-          </ol>
-        `,
-      },
-      {
-        id: 'terms',
-        title: 'Syarat & Ketentuan',
-        content: `
-          <ol class="list-decimal pl-5 flex flex-col gap-2">
-            <li class="pl-1">Voucher berlaku untuk seluruh pengguna aplikasi PLN Mobile di Indonesia.</li>
-            <li class="pl-1">Periode promo berlangsung hingga 31 Desember 2026 atau selama persediaan masih ada.</li>
-            <li class="pl-1">Voucher dapat digunakan untuk pembelian token listrik melalui aplikasi PLN Mobile.</li>
-            <li class="pl-1">Setiap pengguna dapat menukar maksimal 3 voucher per bulan.</li>
-            <li class="pl-1">Voucher tidak dapat diuangkan atau dikembalikan.</li>
-            <li class="pl-1">Pastikan alamat pengiriman sudah lengkap dan benar.</li>
-            <li class="pl-1">PLN berhak membatalkan transaksi jika ditemukan kecurangan.</li>
-          </ol>
-        `,
-      },
-    ]
+        content: `<ol style="list-style-type: decimal; padding-left: 1.25rem;">${howToUseSteps}</ol>`,
+      })
+    }
+
+    // Add "Syarat dan Ketentuan" from termsCondition
+    if (reward.value.termsCondition && reward.value.termsCondition.length > 0) {
+      // Combine all terms into single content
+      const allTermsContent = reward.value.termsCondition
+        .map(term => {
+          return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
+        })
+        .join('<div class="mt-4"></div>') // Add spacing between multiple terms
+
+      items.push({
+        id: 'terms-and-conditions',
+        title: 'Syarat dan Ketentuan',
+        content: allTermsContent,
+      })
+    }
+
+    return items
   })
 
   const handleExchangeClick = () => {
@@ -184,28 +150,64 @@
     showLocationSheet.value = false
     router.push('/rewards/complete-address')
   }
+
+  // Footer message for disabled state
+  const disabledMessage = computed(() => {
+    if (!reward.value) return null
+    if (!hasQuota.value) return 'Kuota Voucher sudah habis'
+    if (!hasEnoughPoints.value) return 'Poin anda tidak mencukupi'
+    return null
+  })
 </script>
 
 <template>
   <!-- Header -->
-  <Header :title="pageTitle" positioning="sticky" />
+  <Header title="Detail" positioning="sticky" />
 
-  <!-- Hero Banner Section -->
-  <HeroBanner />
+  <!-- Loading State -->
+  <template v-if="isPending">
+    <RewardDetailSkeleton />
+  </template>
 
-  <!-- Content -->
-  <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
-    <!-- Program Info Section -->
-    <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+  <!-- Loaded State -->
+  <template v-else>
+    <!-- Hero Banner Section -->
+    <HeroBanner v-if="reward" :src="reward.imageUrl" />
 
-    <!-- Terms & Conditions Section -->
-    <RewardTermsSection :items="termsItems" />
-  </main>
+    <!-- Content -->
+    <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
+      <!-- Program Info Section -->
+      <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+
+      <!-- Terms & Conditions Section -->
+      <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
+    </main>
+  </template>
 
   <!-- Footer with Button -->
   <Footer position="fixed">
-    <Button variant="primary" size="sm" class="w-full" @click="handleExchangeClick">
-      Tukarkan Poin
+    <!-- Disabled state message -->
+    <div v-if="disabledMessage" class="mb-2">
+      <p class="body-m text-slate-950">{{ disabledMessage }}</p>
+    </div>
+
+    <!-- Enabled state with points display -->
+    <div v-if="canExchange && reward" class="mb-2 flex w-full items-center justify-between gap-2">
+      <p class="body-m flex-1 text-slate-950">Tukar dengan</p>
+      <p class="body-l-semibold text-primary-700 flex-1 text-right">
+        {{ formatNumber(reward.pricePoint) }} poin
+      </p>
+    </div>
+
+    <!-- Button -->
+    <Button
+      :variant="canExchange ? 'primary' : 'secondary'"
+      size="sm"
+      class="w-full"
+      :disabled="!canExchange"
+      @click="handleExchangeClick"
+    >
+      Tukar Poin
     </Button>
   </Footer>
 

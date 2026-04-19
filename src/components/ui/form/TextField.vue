@@ -54,6 +54,7 @@
 
   const emit = defineEmits<{
     'update:modelValue': [value: string | number]
+    blur: [event: FocusEvent]
   }>()
 
   const hasError = computed(() => {
@@ -111,6 +112,7 @@
         :aria-invalid="hasError || undefined"
         :class="computedInputClass"
         @update:model-value="emit('update:modelValue', $event)"
+        @blur="emit('blur', $event)"
       />
     </InputGroup>
 
@@ -126,6 +128,7 @@
       :aria-invalid="hasError || undefined"
       :class="computedInputClass"
       @update:model-value="emit('update:modelValue', $event)"
+      @blur="emit('blur', $event)"
     />
 
     <!-- Helper Slot -->

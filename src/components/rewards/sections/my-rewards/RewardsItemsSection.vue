@@ -1,63 +1,55 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
-  import { RewardCouponCard } from '@/components/rewards'
+  import { useIntersectionObserver } from '@vueuse/core'
+  import { RewardCouponCard, RewardCouponCardSkeleton } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
-  import { useUserGiftInstantly } from '@/composables/services'
+  import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
+  import { useUserGiftInstantlyInfinite } from '@/composables/services'
+  import type { UserGiftInstantly } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   const router = useRouter()
+  const loadMoreRef = ref<HTMLElement | null>(null)
 
-  // Fetch user gift instantly items
-  const { data: giftInstantlyData } = useUserGiftInstantly({
-    query: { page: 0, size: 10 },
+  // Fetch user gift instantly items with infinite scroll
+  const {
+    data: giftInstantlyData,
+    isPending,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useUserGiftInstantlyInfinite({
+    query: {
+      size: 10,
+    },
   })
 
-  // Debug: log data on change
-  watch(giftInstantlyData, val => {
-    // eslint-disable-next-line no-console
-    console.log('User Gift Instantly Data:', val)
+  // Intersection observer for infinite scroll
+  useIntersectionObserver(
+    loadMoreRef,
+    ([{ isIntersecting }]) => {
+      if (isIntersecting && hasNextPage.value && !isFetchingNextPage.value) {
+        fetchNextPage()
+      }
+    },
+    { threshold: 0.1 },
+  )
+
+  // Transform paginated data to flat array
+  const itemsList = computed<UserGiftInstantly[]>(() => {
+    if (!giftInstantlyData.value?.pages) return []
+    return giftInstantlyData.value.pages.flatMap(page => page.data ?? [])
   })
 
-  // Item data
-  interface ItemData {
-    id: string
-    title: string
-    imageUrl: string
-    points: number
-  }
-
-  const itemsData = ref<ItemData[]>([
-    {
-      id: 'b1',
-      title: 'Powerbank 20.000mAh',
-      imageUrl: 'https://picsum.photos/343/171?random=7',
-      points: 15000,
-    },
-    {
-      id: 'b2',
-      title: 'Kaos Premium Limited',
-      imageUrl: 'https://picsum.photos/343/171?random=8',
-      points: 5000,
-    },
-    {
-      id: 'b3',
-      title: 'Tas Ransel Branded',
-      imageUrl: 'https://picsum.photos/343/171?random=9',
-      points: 12000,
-    },
-    {
-      id: 'b4',
-      title: 'Headphone Wireless',
-      imageUrl: 'https://picsum.photos/343/171?random=10',
-      points: 20000,
-    },
-  ])
+  // Get current page count for infinite scroll trigger
+  const currentPageCount = computed(() => giftInstantlyData.value?.pages?.length ?? 0)
 
   // Event handler
-  const handleItemClick = (id: string) => {
+  const handleItemClick = (tUserPointId: number) => {
     router.push({
-      path: `/rewards/my-rewards/${id}`,
+      path: `/rewards/my-rewards/${tUserPointId}`,
       query: { type: 'item' },
     })
   }
@@ -65,18 +57,44 @@
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div v-for="item in itemsData" :key="item.id" class="w-full">
-      <RewardCouponCard
-        :title="item.title"
-        :image-url="item.imageUrl"
-        :points="item.points"
-        button-label="Claim Item"
-        :on-button-click="() => handleItemClick(item.id)"
-      />
-    </div>
+    <!-- Loading Skeleton -->
+    <template v-if="isPending">
+      <RewardCouponCardSkeleton v-for="i in 3" :key="`skeleton-${i}`" />
+    </template>
 
+    <!-- Error State -->
     <EmptyState
-      v-if="itemsData.length === 0"
+      v-else-if="isError"
+      :image="RiwayatIllustration"
+      title="Gagal memuat barang"
+      description="Terjadi kesalahan saat memuat barang. Silakan coba lagi."
+    />
+
+    <!-- Content -->
+    <template v-else-if="itemsList.length > 0">
+      <div v-for="item in itemsList" :key="item.tUserPointId" class="w-full">
+        <RewardCouponCard
+          :title="item.title"
+          :image-url="item.imageUrl || 'https://via.placeholder.com/343x171?text=No+Image'"
+          :points="0"
+          button-label="Lihat Detail"
+          :on-button-click="() => handleItemClick(item.tUserPointId)"
+        />
+      </div>
+
+      <!-- Infinite Scroll Trigger -->
+      <div ref="loadMoreRef">
+        <InfiniteScrollTrigger
+          :is-fetching="isFetchingNextPage"
+          :has-more="hasNextPage"
+          :current-page="currentPageCount"
+        />
+      </div>
+    </template>
+
+    <!-- Empty State -->
+    <EmptyState
+      v-else
       :image="RiwayatIllustration"
       title="Barang belum tersedia"
       description="Mohon maaf barang sedang tidak tersedia untuk saat ini."

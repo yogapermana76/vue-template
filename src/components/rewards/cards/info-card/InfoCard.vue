@@ -68,8 +68,8 @@
     </h3>
 
     <!-- Image Container - positioned at bottom left -->
-    <div class="absolute bottom-3 left-3 z-10">
-      <img :src="image" :alt="title" class="size-17.5 object-contain drop-shadow-sm" />
+    <div class="absolute bottom-0 left-0 z-10 h-24 w-24">
+      <img :src="image" :alt="title" class="h-full w-full object-contain" />
     </div>
   </div>
 </template>

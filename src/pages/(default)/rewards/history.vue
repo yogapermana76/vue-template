@@ -1,12 +1,17 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, computed } from 'vue'
+  import { useIntersectionObserver } from '@vueuse/core'
   import { Header } from '@/components/layout'
   import { EmptyState } from '@/components/ui/empty-state'
+  import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import {
     PointsInfoSection,
     TransactionHistorySection,
   } from '@/components/rewards/sections/history'
+  import { RewardsTransactionCardSkeleton } from '@/components/rewards'
   import { usePointHistoryInfinite, usePointSummary } from '@/composables/services'
+  import { formatDate } from '@/utils/date'
+  import type { PointHistoryItem } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   definePage({
@@ -15,27 +20,8 @@
     },
   })
 
-  // Fetch point summary
-  const { data: pointSummaryData } = usePointSummary()
-
-  // Fetch point history with infinite scroll
-  const { data: pointHistoryData } = usePointHistoryInfinite({
-    query: { size: 10 },
-  })
-
-  // Debug: log data on change
-  watch(pointSummaryData, val => {
-    // eslint-disable-next-line no-console
-    console.log('Point Summary Data:', val)
-  })
-
-  watch(pointHistoryData, val => {
-    // eslint-disable-next-line no-console
-    console.log('Point History Data:', val)
-  })
-
   interface TransactionItem {
-    id: string
+    id: number
     title: string
     date: string
     points: number
@@ -46,171 +32,111 @@
     transactions: TransactionItem[]
   }
 
-  // Points and active until state
-  const points = ref(0)
-  const activeUntil = ref('30 Dec 2026')
+  const loadMoreRef = ref<HTMLElement | null>(null)
 
-  // Mock data - grouped by date
-  const transactionHistory = ref<TransactionGroup[]>([
-    {
-      label: 'Hari Ini',
-      transactions: [
-        {
-          id: '1',
-          title: 'Marketplace',
-          date: 'Hari ini, 07:00WIB',
-          points: 5,
-        },
-        {
-          id: '2',
-          title: 'SPKLU',
-          date: 'Hari ini, 18:00WIB',
-          points: 5,
-        },
-        {
-          id: '3',
-          title: 'Voucher 100.000',
-          date: 'Hari ini, 18:00WIB',
-          points: -50,
-        },
-      ],
+  const { data: pointSummaryData, isPending: isSummaryPending } = usePointSummary()
+
+  const {
+    data: pointHistoryData,
+    isPending: isHistoryPending,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = usePointHistoryInfinite({
+    query: { size: 10 },
+  })
+
+  // Intersection observer for infinite scroll
+  useIntersectionObserver(
+    loadMoreRef,
+    ([{ isIntersecting }]) => {
+      if (isIntersecting && hasNextPage.value && !isFetchingNextPage.value) {
+        fetchNextPage()
+      }
     },
-    {
-      label: 'Kemarin',
-      transactions: [
-        {
-          id: '4',
-          title: 'Pembelian Token',
-          date: 'Kemarin, 17:00WIB',
-          points: 5,
-        },
-        {
-          id: '5',
-          title: 'Pembelian Token',
-          date: 'Kemarin, 06:00WIB',
-          points: 5,
-        },
-        {
-          id: '8',
-          title: 'Belanja Marketplace',
-          date: 'Kemarin, 14:30WIB',
-          points: 10,
-        },
-      ],
-    },
-    {
-      label: '8 April 2026',
-      transactions: [
-        {
-          id: '9',
-          title: 'Pembelian Token',
-          date: '08 April 2026, 19:00WIB',
-          points: 5,
-        },
-        {
-          id: '10',
-          title: 'Top Up SPKLU',
-          date: '08 April 2026, 11:00WIB',
-          points: 8,
-        },
-        {
-          id: '11',
-          title: 'Voucher Belanja',
-          date: '08 April 2026, 09:00WIB',
-          points: -25,
-        },
-      ],
-    },
-    {
-      label: '7 April 2026',
-      transactions: [
-        {
-          id: '6',
-          title: 'Pembelian Token',
-          date: '07 April 2026, 17:00WIB',
-          points: 5,
-        },
-        {
-          id: '7',
-          title: 'Pembelian Token',
-          date: '07 April 2026, 06:00WIB',
-          points: 5,
-        },
-        {
-          id: '12',
-          title: 'Cashback Marketplace',
-          date: '07 April 2026, 20:00WIB',
-          points: 15,
-        },
-      ],
-    },
-    {
-      label: '6 April 2026',
-      transactions: [
-        {
-          id: '13',
-          title: 'Pembelian Token',
-          date: '06 April 2026, 18:00WIB',
-          points: 5,
-        },
-        {
-          id: '14',
-          title: 'Voucher Gratis',
-          date: '06 April 2026, 10:00WIB',
-          points: -30,
-        },
-      ],
-    },
-    {
-      label: '5 April 2026',
-      transactions: [
-        {
-          id: '15',
-          title: 'Top Up Energi',
-          date: '05 April 2026, 16:00WIB',
-          points: 20,
-        },
-        {
-          id: '16',
-          title: 'Pembelian Token',
-          date: '05 April 2026, 08:00WIB',
-          points: 5,
-        },
-      ],
-    },
-    {
-      label: '4 April 2026',
-      transactions: [
-        {
-          id: '17',
-          title: 'Voucher 50.000',
-          date: '04 April 2026, 15:00WIB',
-          points: -40,
-        },
-      ],
-    },
-  ])
+    { threshold: 0.1 },
+  )
+
+  const points = computed(() => pointSummaryData.value?.data?.balance ?? 0)
+  const activeUntil = computed(() => {
+    const endDate = pointSummaryData.value?.data?.endDate
+    return endDate ? formatDate(endDate, 'dd MMM yyyy') : ''
+  })
+
+  const isPending = computed(() => isSummaryPending.value || isHistoryPending.value)
+
+  const transactionHistory = computed<TransactionGroup[]>(() => {
+    if (!pointHistoryData.value?.pages) return []
+
+    const allItems: PointHistoryItem[] = pointHistoryData.value.pages.flatMap(
+      page => page.data ?? [],
+    )
+
+    const grouped = new Map<string, TransactionItem[]>()
+
+    allItems.forEach(item => {
+      const label = formatDate(item.created, 'dd MMMM yyyy')
+
+      if (!grouped.has(label)) {
+        grouped.set(label, [])
+      }
+
+      grouped.get(label)!.push({
+        id: item.id,
+        title: item.activity,
+        date: formatDate(item.created, 'dd MMM yyyy, HH:mm') + ' WIB',
+        points: item.point,
+      })
+    })
+
+    return Array.from(grouped.entries()).map(([label, transactions]) => ({
+      label,
+      transactions,
+    }))
+  })
+
+  // Get current page count for infinite scroll trigger
+  const currentPageCount = computed(() => pointHistoryData.value?.pages?.length ?? 0)
+
+  const hasData = computed(() => transactionHistory.value.length > 0)
 </script>
 
 <template>
-  <!-- Header -->
   <Header title="Riwayat" positioning="sticky" />
 
-  <!-- Points Info Section (Sticky) -->
   <PointsInfoSection
-    v-if="transactionHistory.length > 0"
+    v-if="hasData"
     :points="points"
     :active-until="activeUntil"
     class="sticky top-12 z-10 bg-white px-4 py-4"
   />
 
-  <!-- Content -->
-  <main class="gap-6-amber-400 flex flex-1 flex-col px-4 py-4">
-    <!-- Empty State -->
-    <div
-      v-if="transactionHistory.length === 0"
-      class="flex flex-1 flex-col items-center justify-center"
-    >
+  <main class="flex flex-1 flex-col px-4 py-4">
+    <!-- Skeleton Loading State -->
+    <div v-if="isPending" class="flex flex-col gap-6">
+      <!-- First Group -->
+      <div class="flex flex-col gap-3">
+        <div class="h-5 w-32 animate-pulse rounded-sm bg-slate-200" />
+        <div class="flex flex-col gap-2">
+          <RewardsTransactionCardSkeleton v-for="i in 3" :key="`group1-${i}`" />
+        </div>
+      </div>
+
+      <!-- Second Group -->
+      <div class="flex flex-col gap-3">
+        <div class="h-5 w-32 animate-pulse rounded-sm bg-slate-200" />
+        <div class="flex flex-col gap-2">
+          <RewardsTransactionCardSkeleton v-for="i in 2" :key="`group2-${i}`" />
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="isError" class="flex flex-1 flex-col items-center justify-center">
+      <p class="body-m text-slate-500">Gagal memuat data. Silakan coba lagi.</p>
+    </div>
+
+    <div v-else-if="!hasData" class="flex flex-1 flex-col items-center justify-center">
       <EmptyState
         :image="RiwayatIllustration"
         title="Belum ada riwayat"
@@ -218,10 +144,17 @@
       />
     </div>
 
-    <!-- Content when has data -->
     <template v-else>
-      <!-- Transaction History Section -->
       <TransactionHistorySection :transaction-history="transactionHistory" />
+
+      <!-- Infinite Scroll Trigger -->
+      <div ref="loadMoreRef">
+        <InfiniteScrollTrigger
+          :is-fetching="isFetchingNextPage"
+          :has-more="hasNextPage"
+          :current-page="currentPageCount"
+        />
+      </div>
     </template>
   </main>
 </template>

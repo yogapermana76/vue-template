@@ -9,7 +9,7 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery, useMutation } from '@tanstack/vue-query'
+import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
 import { rewardService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
@@ -23,6 +23,9 @@ import type {
   UseExchangePointDetailParams,
   UseVerifyInfoParams,
   ExchangeRequest,
+  RewardPagesParams,
+  UserGiftInstantly,
+  GiftInstantly,
 } from '@/types'
 
 // ============================================
@@ -31,7 +34,7 @@ import type {
 
 export const rewardKeys = {
   all: ['reward'] as const,
-  giftInstantly: (query?: { page?: number; size?: number }) =>
+  giftInstantly: (query?: RewardPagesParams) =>
     [...rewardKeys.all, 'gift-instantly', query] as const,
   redeemable: (query?: { page?: number; size?: number }) =>
     [...rewardKeys.all, 'redeemable', query] as const,
@@ -57,12 +60,16 @@ export const rewardKeys = {
  */
 export function useRewardGiftInstantly(params: UseRewardGiftInstantlyParams = {}) {
   const { query = {}, options = {} } = params
-  const { page = 0, size = 10 } = query
+  const { page = 0, size = 10, type, rewardCategoryId } = query
 
   const authStore = useAuthStore()
 
   const resolvedPage = computed(() => unref(page))
   const resolvedSize = computed(() => unref(size))
+  const resolvedType = computed(() => (type ? unref(type) : undefined))
+  const resolvedRewardCategoryId = computed(() =>
+    rewardCategoryId ? unref(rewardCategoryId) : undefined,
+  )
 
   const defaultEnabled = computed(() => authStore.isAuthenticated)
   const resolvedEnabled = computed(() =>
@@ -73,13 +80,85 @@ export function useRewardGiftInstantly(params: UseRewardGiftInstantlyParams = {}
 
   return useQuery({
     queryKey: computed(() =>
-      rewardKeys.giftInstantly({ page: resolvedPage.value, size: resolvedSize.value }),
+      rewardKeys.giftInstantly({
+        page: resolvedPage.value,
+        size: resolvedSize.value,
+        type: resolvedType.value,
+        rewardCategoryId: resolvedRewardCategoryId.value,
+      }),
     ),
     queryFn: () =>
       rewardService.giftInstantly({
         page: resolvedPage.value,
         size: resolvedSize.value,
+        type: resolvedType.value,
+        rewardCategoryId: resolvedRewardCategoryId.value,
       }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get available gift instantly rewards with infinite scroll pagination
+ *
+ * @example
+ * // Basic usage with defaults
+ * const { data } = useRewardGiftInstantlyInfinite()
+ *
+ * @example
+ * // With category filter
+ * const categoryId = ref<number | undefined>(1)
+ * const { data } = useRewardGiftInstantlyInfinite({
+ *   query: { size: 20, rewardCategoryId: categoryId }
+ * })
+ */
+export function useRewardGiftInstantlyInfinite(params: UseRewardGiftInstantlyParams = {}) {
+  const { query = {}, options = {} } = params
+  const { size = 10, type, rewardCategoryId } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedSize = computed(() => unref(size))
+  const resolvedType = computed(() => (type ? unref(type) : undefined))
+  const resolvedRewardCategoryId = computed(() =>
+    rewardCategoryId ? unref(rewardCategoryId) : undefined,
+  )
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useInfiniteQuery({
+    queryKey: computed(() =>
+      rewardKeys.giftInstantly({
+        size: resolvedSize.value,
+        type: resolvedType.value,
+        rewardCategoryId: resolvedRewardCategoryId.value,
+      }),
+    ),
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await rewardService.giftInstantly({
+        page: pageParam,
+        size: resolvedSize.value,
+        type: resolvedType.value,
+        rewardCategoryId: resolvedRewardCategoryId.value,
+      })
+
+      const items: GiftInstantly[] = response.data?.data ?? []
+      const total = response.data?.total ?? 0
+
+      return {
+        data: items,
+        page: pageParam,
+        hasMore: (pageParam + 1) * resolvedSize.value < total,
+      }
+    },
+    initialPageParam: 0,
+    getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
@@ -221,6 +300,62 @@ export function useUserGiftInstantlyDetail(params: UseUserGiftInstantlyDetailPar
   return useQuery({
     queryKey: computed(() => rewardKeys.userGiftInstantlyDetail(resolvedId.value)),
     queryFn: () => rewardService.userGiftInstantlyDetail({ id: resolvedId.value! }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get user's gift instantly items with infinite scroll pagination
+ *
+ * @example
+ * // Basic usage with defaults
+ * const { data } = useUserGiftInstantlyInfinite()
+ *
+ * @example
+ * // With custom size
+ * const { data } = useUserGiftInstantlyInfinite({
+ *   query: { size: 20 }
+ * })
+ */
+export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams = {}) {
+  const { query = {}, options = {} } = params
+  const { size = 10 } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedSize = computed(() => unref(size))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useInfiniteQuery({
+    queryKey: computed(() =>
+      rewardKeys.userGiftInstantly({
+        size: resolvedSize.value,
+      }),
+    ),
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await rewardService.userGiftInstantly({
+        page: pageParam,
+        size: resolvedSize.value,
+      })
+
+      const items: UserGiftInstantly[] = response.data?.data ?? []
+      const total = response.data?.total ?? 0
+
+      return {
+        data: items,
+        page: pageParam,
+        hasMore: (pageParam + 1) * resolvedSize.value < total,
+      }
+    },
+    initialPageParam: 0,
+    getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })

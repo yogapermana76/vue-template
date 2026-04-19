@@ -4,7 +4,7 @@
   import { RewardsTransactionCard } from '@/components/rewards'
 
   interface TransactionItem {
-    id: string
+    id: number
     title: string
     date: string
     points: number

@@ -42,8 +42,8 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/eco-journey-points/terms-and-conditions'
       | '/(default)/rewards/catalog/[id]'
       | '/(default)/rewards/complete-address'
+      | '/(default)/rewards/fyi/[id]'
       | '/(default)/rewards/history'
-      | '/(default)/rewards/how-to-detail'
       | '/(default)/rewards/list'
       | '/(default)/rewards/lottery/[id]'
       | '/(default)/rewards/my-rewards'
@@ -121,16 +121,16 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/(default)/rewards/fyi/[id]': RouteRecordInfo<
+      '/(default)/rewards/fyi/[id]',
+      '/rewards/fyi/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     '/(default)/rewards/history': RouteRecordInfo<
       '/(default)/rewards/history',
       '/rewards/history',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/(default)/rewards/how-to-detail': RouteRecordInfo<
-      '/(default)/rewards/how-to-detail',
-      '/rewards/how-to-detail',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -276,8 +276,8 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/eco-journey-points/terms-and-conditions'
         | '/(default)/rewards/catalog/[id]'
         | '/(default)/rewards/complete-address'
+        | '/(default)/rewards/fyi/[id]'
         | '/(default)/rewards/history'
-        | '/(default)/rewards/how-to-detail'
         | '/(default)/rewards/list'
         | '/(default)/rewards/lottery/[id]'
         | '/(default)/rewards/my-rewards'
@@ -347,15 +347,15 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(default)/rewards/history.vue': {
+    'src/pages/(default)/rewards/fyi/[id].vue': {
       routes:
-        | '/(default)/rewards/history'
+        | '/(default)/rewards/fyi/[id]'
       views:
         | never
     }
-    'src/pages/(default)/rewards/how-to-detail.vue': {
+    'src/pages/(default)/rewards/history.vue': {
       routes:
-        | '/(default)/rewards/how-to-detail'
+        | '/(default)/rewards/history'
       views:
         | never
     }

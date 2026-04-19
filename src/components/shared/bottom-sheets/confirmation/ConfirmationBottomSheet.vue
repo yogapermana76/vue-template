@@ -73,9 +73,8 @@
       <!-- Text -->
       <div class="flex w-full flex-col items-center justify-center gap-2 px-4 text-center">
         <h3 class="heading-s w-full text-slate-950">{{ title }}</h3>
-        <p v-if="description" class="body-m w-full text-slate-800">
-          {{ description }}
-        </p>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <p v-if="description" class="body-m w-full text-slate-800" v-html="description" />
       </div>
     </div>
 

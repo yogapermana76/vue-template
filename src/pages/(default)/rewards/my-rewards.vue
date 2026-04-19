@@ -67,17 +67,17 @@
 
     <SwipeableTabPanels>
       <!-- Voucher Tab -->
-      <SwipeableTabPanel value="voucher" no-padding>
+      <SwipeableTabPanel value="voucher" no-padding lazy>
         <RewardsVouchersSection />
       </SwipeableTabPanel>
 
       <!-- Lottery Coupons Tab -->
-      <SwipeableTabPanel value="lottery-coupons" no-padding>
+      <SwipeableTabPanel value="lottery-coupons" no-padding lazy>
         <RewardsLotteryCouponsSection />
       </SwipeableTabPanel>
 
       <!-- Items Tab -->
-      <SwipeableTabPanel value="items" no-padding>
+      <SwipeableTabPanel value="items" no-padding lazy>
         <RewardsItemsSection />
       </SwipeableTabPanel>
     </SwipeableTabPanels>

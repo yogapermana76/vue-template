@@ -5,13 +5,20 @@
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { ConfirmationBottomSheet } from '@/components/shared'
-  import { RewardProgramInfo, RewardTermsSection } from '@/components/rewards/sections'
-  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import {
+    RewardProgramInfo,
+    RewardTermsSection,
+    RewardDetailSkeleton,
+  } from '@/components/rewards/sections'
+  import { useUserLotteryDetail, usePointSummary } from '@/composables/services'
+  import { formatDate } from '@/utils/date'
+  import { formatNumber } from '@/utils'
+  import LocationIllustration from '@/assets/illustrations/location.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
     meta: {
-      title: 'Detail Lottery',
+      title: 'Detail',
     },
   })
 
@@ -20,70 +27,107 @@
   const showConfirmationSheet = ref(false)
 
   // Get ID from route params
-  const drawId = computed(() => route.params.id as string)
+  const lotteryId = computed(() => route.params.id as string)
 
-  // Data - TODO: Fetch based on drawId
-  const programInfo = {
-    title: 'Undian Loyalty Program Gelegar SwaCam',
-    description:
-      'Rasakan keseruan transaksi di PLN Mobile lewat program GELEGAR PLN Mobile 2025! Setiap transaksi bisa bawa kamu makin dekat dengan berbagai hadiah menarik, mulai dari mobil listrik, motor listrik, sepeda listrik, hingga peralatan rumah tangga keren. Semakin sering transaksi, semakin besar kesempatan menangnya!',
-  }
+  // Fetch lottery detail
+  const { data: lotteryDetail, isPending } = useUserLotteryDetail({
+    params: { id: lotteryId },
+  })
 
-  const stats = [
-    {
-      id: 'coupon',
-      label: 'Sisa Kupon',
-      value: '340 Kupon',
-      icon: Ticket,
-    },
-    {
-      id: 'period',
-      label: 'Periode Promo',
-      value: 'Mei - November 2026',
-      icon: Calendar,
-    },
-    {
-      id: 'points',
-      label: 'Koin yang ditukar',
-      value: '50 Poin',
-      icon: CoinIcon,
-    },
-  ]
+  // Fetch user points
+  const { data: userPointsData } = usePointSummary()
 
-  // Accordion items untuk cara penggunaan dan syarat & ketentuan
-  const termsItems = [
-    {
-      id: 'usage',
-      title: 'Cara Penggunaan',
-      content: `
-        <ol class="list-decimal pl-5 flex flex-col gap-2">
-          <li class="pl-1">Buka aplikasi PLN Mobile dan navigasi ke menu rewards</li>
-          <li class="pl-1">Pilih undian yang ingin Anda ikuti</li>
-          <li class="pl-1">Pastikan Anda memiliki poin yang cukup untuk penukaran kupon undian</li>
-          <li class="pl-1">Klik tombol "Tukarkan Poin" untuk mendapatkan kupon undian</li>
-          <li class="pl-1">Kupon undian akan otomatis masuk ke akun Anda</li>
-          <li class="pl-1">Tunggu pengumuman pemenang sesuai periode yang ditentukan</li>
-        </ol>
-      `,
-    },
-    {
-      id: 'terms',
-      title: 'Syarat & Ketentuan',
-      content: `
-        <ol class="list-decimal pl-5 flex flex-col gap-2">
-          <li class="pl-1">Program berlaku untuk seluruh pengguna aplikasi PLN Mobile di Indonesia.</li>
-          <li class="pl-1">Periode promo berlangsung dari Mei - November 2026.</li>
-          <li class="pl-1">Setiap penukaran poin akan mendapatkan 1 (satu) kupon undian.</li>
-          <li class="pl-1">Hadiah utama meliputi: 4 unit mobil listrik, 12 motor listrik, 24 sepeda listrik, 24 mesin cuci, 24 kulkas, dan 200 voucher menarik.</li>
-          <li class="pl-1">Pemenang akan diumumkan secara resmi melalui aplikasi dan kanal media sosial PLN Mobile.</li>
-          <li class="pl-1">Keputusan panitia bersifat final dan tidak dapat diganggu gugat.</li>
-          <li class="pl-1">Pajak hadiah ditanggung oleh PLN.</li>
-        </ol>
-      `,
-    },
-  ]
+  const lottery = computed(() => lotteryDetail.value?.data)
+  const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
 
-  const pointsRequired = 50
+  // Program info
+  const programInfo = computed(() => {
+    if (!lottery.value) return { title: '', description: '' }
+    return {
+      title: lottery.value.title,
+      description: lottery.value.description,
+    }
+  })
+
+  // Stats
+  const stats = computed(() => {
+    if (!lottery.value) return []
+
+    const statsArray = []
+
+    // Coupon count
+    if (lottery.value.redeemCount !== undefined) {
+      statsArray.push({
+        id: 'coupon',
+        label: 'Sisa Kupon',
+        value: `${lottery.value.redeemCount} Kupon`,
+        icon: Ticket,
+      })
+    }
+
+    // Period
+    if (lottery.value.startDate && lottery.value.endDate) {
+      const startMonth = formatDate(lottery.value.startDate, 'MMMM')
+      const endMonth = formatDate(lottery.value.endDate, 'MMMM yyyy')
+      statsArray.push({
+        id: 'period',
+        label: 'Periode Promo',
+        value: `${startMonth} - ${endMonth}`,
+        icon: Calendar,
+      })
+    }
+
+    // Points
+    if (lottery.value.pricePoint !== undefined) {
+      statsArray.push({
+        id: 'points',
+        label: 'Poin yang ditukar',
+        value: `${formatNumber(lottery.value.pricePoint)} Poin`,
+        icon: CoinIcon,
+      })
+    }
+
+    return statsArray
+  })
+
+  // Terms items - Single "Syarat dan Ketentuan" accordion containing all terms
+  const termsItems = computed(() => {
+    if (!lottery.value?.termsCondition || lottery.value.termsCondition.length === 0) return []
+
+    // Combine all terms into single content
+    const allTermsContent = lottery.value.termsCondition
+      .map(term => {
+        return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
+      })
+      .join('<div class="mt-4"></div>') // Add spacing between multiple terms
+
+    return [
+      {
+        id: 'terms-and-conditions',
+        title: 'Syarat dan Ketentuan',
+        content: allTermsContent,
+      },
+    ]
+  })
+
+  // Check if user has enough points
+  const hasEnoughPoints = computed(() => {
+    if (!lottery.value?.pricePoint) return true
+    return userPoints.value >= lottery.value.pricePoint
+  })
+
+  // Check if user can exchange
+  const canExchange = computed(() => {
+    if (!lottery.value) return false
+    return hasEnoughPoints.value
+  })
+
+  // Disabled message for footer
+  const disabledMessage = computed(() => {
+    if (!lottery.value) return null
+    if (!hasEnoughPoints.value) return 'Poin anda tidak mencukupi'
+    return null
+  })
 
   const handleExchangeClick = () => {
     showConfirmationSheet.value = true
@@ -91,52 +135,74 @@
 
   const handleConfirmExchange = () => {
     showConfirmationSheet.value = false
-    router.push(`/rewards/redemption/${drawId.value}`)
-  }
-
-  const handleCancelExchange = () => {
-    showConfirmationSheet.value = false
+    router.push({
+      path: '/rewards/complete-address',
+      query: { lotteryId: lotteryId.value },
+    })
   }
 </script>
 
 <template>
   <!-- Header -->
-  <Header title="Detail Lottery" positioning="sticky" />
+  <Header title="Detail" positioning="sticky" />
 
-  <!-- Hero Banner Section -->
-  <HeroBanner />
+  <!-- Loading State -->
+  <template v-if="isPending">
+    <RewardDetailSkeleton />
+  </template>
 
-  <!-- Content -->
-  <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
-    <!-- Program Info Section -->
-    <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+  <!-- Loaded State -->
+  <template v-else>
+    <!-- Hero Banner Section -->
+    <HeroBanner v-if="lottery" :src="lottery.imageUrl" />
 
-    <!-- Terms & Conditions Section -->
-    <RewardTermsSection :items="termsItems" />
-  </main>
+    <!-- Content -->
+    <main class="flex flex-1 flex-col gap-6 px-4 pb-24">
+      <!-- Program Info Section -->
+      <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+
+      <!-- Terms & Conditions Section -->
+      <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
+    </main>
+  </template>
 
   <!-- Footer with Button -->
   <Footer position="fixed">
-    <Button variant="primary" size="sm" class="w-full" @click="handleExchangeClick">
-      Tukarkan Poin
+    <!-- Disabled state message -->
+    <div v-if="disabledMessage" class="mb-2">
+      <p class="body-m text-slate-950">{{ disabledMessage }}</p>
+    </div>
+
+    <!-- Enabled state with points display -->
+    <div v-if="canExchange && lottery" class="mb-2 flex w-full items-center justify-between gap-2">
+      <p class="body-m text-slate-950">Tukar dengan</p>
+      <p class="body-l-semibold text-primary-700">
+        {{ formatNumber(lottery.pricePoint ?? 0) }} poin
+      </p>
+    </div>
+
+    <!-- Button -->
+    <Button
+      :variant="canExchange ? 'primary' : 'secondary'"
+      size="sm"
+      class="w-full"
+      :disabled="!canExchange"
+      @click="handleExchangeClick"
+    >
+      Tukar Poin
     </Button>
   </Footer>
 
-  <!-- Confirmation Bottom Sheet -->
+  <!-- Location Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet
     v-model:open="showConfirmationSheet"
-    :image="MascotIllustration"
-    title="Menukarkan hadiah?"
-    :description="`Apakah anda ingin menukarkan ${pointsRequired} poin untuk mendapatkan kupon undian ini?`"
-    button-layout="row"
+    :image="LocationIllustration"
+    title="Alamat belum lengkap"
+    description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
+    button-layout="column"
     :buttons="[
       {
-        label: 'Kembali',
-        variant: 'secondary',
-        onClick: handleCancelExchange,
-      },
-      {
-        label: 'Tukar Poin',
+        label: 'Lengkapi alamat',
         variant: 'primary',
         onClick: handleConfirmExchange,
       },

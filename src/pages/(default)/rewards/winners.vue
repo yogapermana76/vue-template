@@ -1,11 +1,16 @@
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
+  import { ref, computed } from 'vue'
+  import { useRoute } from 'vue-router'
+  import { useIntersectionObserver } from '@vueuse/core'
   import { Header, GradientSection } from '@/components/layout'
-  import { WinnerCard, type WinnerData } from '@/components/rewards'
+  import { WinnerCard, WinnerCardSkeleton, type WinnerData } from '@/components/rewards'
   import { InformationBottomSheet } from '@/components/shared'
-  import { useWinnerListInfinite } from '@/composables/services'
+  import { IconButton } from '@/components/ui/button'
+  import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
+  import { useWinnerListInfinite, usePublicWinnerTnc } from '@/composables/services'
   import { config } from '@/config'
   import { AlertCircle } from 'lucide-vue-next'
+  import type { Winner } from '@/types'
 
   definePage({
     meta: {
@@ -13,25 +18,56 @@
     },
   })
 
-  // State
+  const route = useRoute()
   const isInfoOpen = ref(false)
+  const loadMoreRef = ref<HTMLElement | null>(null)
 
-  // Fetch winners data with infinite scroll
-  const { data: winnersData } = useWinnerListInfinite({
+  // Get lotteryId from query params
+  const lotteryId = computed(() => {
+    const queryId = route.query.lotteryId
+    if (typeof queryId === 'string') {
+      const parsed = parseInt(queryId)
+      return isNaN(parsed) ? undefined : parsed
+    }
+    return undefined
+  })
+
+  const {
+    data: winnersData,
+    isPending,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useWinnerListInfinite({
     query: {
       size: 10,
       timingCategory: 'MONTHLY',
-      lotteryId: 52,
+      lotteryId: lotteryId,
     },
   })
 
-  // Debug: log data on change
-  watch(winnersData, val => {
-    // eslint-disable-next-line no-console
-    console.log('Winners Data:', val)
+  // Intersection observer for infinite scroll
+  useIntersectionObserver(
+    loadMoreRef,
+    ([{ isIntersecting }]) => {
+      if (isIntersecting && hasNextPage.value && !isFetchingNextPage.value) {
+        fetchNextPage()
+      }
+    },
+    { threshold: 0.1 },
+  )
+
+  // Fetch Winner Terms & Conditions
+  const { data: winnerTncData, isPending: isTncLoading } = usePublicWinnerTnc()
+
+  // Extract TnC items from API
+  const tncItems = computed(() => {
+    const items = winnerTncData.value?.data
+    if (!items || !Array.isArray(items)) return []
+    return items
   })
 
-  // Data
   const periodLabel = 'Pemenang Undian Periode Januari - Maret 2025'
 
   interface WinnerItem {
@@ -41,94 +77,66 @@
     prizeImage: string
   }
 
-  // Featured winners (rank 1-3)
-  const featuredWinners: WinnerItem[] = [
-    {
-      rank: 1,
-      prize: 'Mobil Listrik',
-      winner: {
-        name: 'Subeni',
-        email: 'lisxxxxx@gmail.com',
-        phone: '628533333xxxx',
-      },
-      prizeImage: 'https://picsum.photos/56/56?random=1',
-    },
-    {
-      rank: 2,
-      prize: 'Mobil Listrik',
-      winner: {
-        name: 'Busra',
-        email: 'busxxxxx@gmail.com',
-        phone: '628533333xxxx',
-      },
-      prizeImage: 'https://picsum.photos/56/56?random=2',
-    },
-    {
-      rank: 3,
-      prize: 'Mobil Listrik',
-      winner: {
-        name: 'Elthon J Huwae',
-        email: 'eltxxxxx@gmail.com',
-        phone: '628533333xxxx',
-      },
-      prizeImage: 'https://picsum.photos/56/56?random=3',
-    },
-  ]
+  const allWinners = computed(() => {
+    if (!winnersData.value?.pages) return []
+    const allData: Winner[] = winnersData.value.pages.flatMap(page => page.data ?? [])
+    return allData
+  })
 
-  // Other winners (rank 4+)
-  const otherWinners: WinnerItem[] = [
-    {
-      rank: 4,
-      prize: 'Mobil Listrik',
-      winner: {
-        name: 'Lisa Apryani',
-        email: 'lisxxxxx@gmail.com',
-        phone: '628533333xxxx',
-      },
-      prizeImage: 'https://picsum.photos/56/56?random=4',
-    },
-    {
-      rank: 5,
-      prize: 'Mobil Listrik',
-      winner: {
-        name: 'Faidil Bujang',
-        email: 'fasxxxxx@gmail.com',
-        phone: '628533333xxxx',
-      },
-      prizeImage: 'https://picsum.photos/56/56?random=5',
-    },
-    {
-      rank: 6,
-      prize: 'Mobil Listrik',
-      winner: {
-        name: 'Elthon J Huwae',
-        email: 'eltxxxxx@gmail.com',
-        phone: '628533333xxxx',
-      },
-      prizeImage: 'https://picsum.photos/56/56?random=6',
-    },
-  ]
+  // Get current page count for infinite scroll trigger
+  const currentPageCount = computed(() => winnersData.value?.pages?.length ?? 0)
 
-  // Current user card (fixed at bottom)
-  const currentUserCard: WinnerItem = {
-    rank: 100,
-    prize: 'Mobil Listrik',
-    winner: {
-      name: 'Anda',
-      email: 'eltxxxx@gmail.com',
-      phone: '628533333xxxx',
-    },
-    prizeImage: 'https://picsum.photos/56/56?random=user',
-  }
+  const currentUser = computed(() => winnersData.value?.pages?.[0]?.detailUserWinner)
 
-  // Fixed card style with container width constraint
+  const featuredWinners = computed<WinnerItem[]>(() => {
+    return allWinners.value.slice(0, 3).map((winner, index) => ({
+      rank: winner.index ?? index + 1,
+      prize: winner.title,
+      winner: {
+        name: winner.fullname,
+        email: winner.email,
+        phone: winner.phoneNumber,
+      },
+      prizeImage: winner.img || 'https://via.placeholder.com/56',
+    }))
+  })
+
+  const otherWinners = computed<WinnerItem[]>(() => {
+    return allWinners.value.slice(3).map((winner, index) => ({
+      rank: winner.index ?? index + 4,
+      prize: winner.title,
+      winner: {
+        name: winner.fullname,
+        email: winner.email,
+        phone: winner.phoneNumber,
+      },
+      prizeImage: winner.img || 'https://via.placeholder.com/56',
+    }))
+  })
+
+  const currentUserCard = computed<WinnerItem | null>(() => {
+    if (!currentUser.value) return null
+    return {
+      rank: currentUser.value.index ?? 0,
+      prize: currentUser.value.title || '',
+      winner: {
+        name: currentUser.value.fullname || 'Anda',
+        email: currentUser.value.email || '',
+        phone: '',
+      },
+      prizeImage: currentUser.value.img || 'https://via.placeholder.com/56',
+    }
+  })
+
   const fixedCardStyle = computed(() => ({
     maxWidth: `${config.ui.maxWidth}px`,
   }))
+
+  // Dynamic padding bottom based on currentUserCard
+  const mainPaddingClass = computed(() => (currentUserCard.value ? 'pb-32' : 'pb-4'))
 </script>
 
 <template>
-  <!-- Header -->
   <Header title="Pemenang" positioning="fixed" transparent>
     <template #actions="{ isDarkBg, iconClass }">
       <IconButton
@@ -142,9 +150,7 @@
     </template>
   </Header>
 
-  <!-- Hero Section with Featured Winners -->
   <GradientSection gradient="teal" class="pt-14">
-    <!-- Period Badge -->
     <div class="z-10 flex justify-center px-4 pb-3">
       <div
         class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
@@ -155,8 +161,15 @@
       </div>
     </div>
 
-    <!-- Featured Winners (Rank 1-3) -->
-    <div class="z-10 flex flex-col gap-2 px-4 pb-8">
+    <div v-if="isPending" class="z-10 flex flex-col gap-2 px-4 pb-8">
+      <WinnerCardSkeleton v-for="i in 3" :key="i" :show-rank-icon="true" />
+    </div>
+
+    <div v-else-if="isError" class="z-10 flex flex-col gap-2 px-4 pb-8">
+      <p class="body-m text-center text-white">Gagal memuat data pemenang.</p>
+    </div>
+
+    <div v-else class="z-10 flex flex-col gap-2 px-4 pb-8">
       <WinnerCard
         v-for="item in featuredWinners"
         :key="item.rank"
@@ -169,20 +182,37 @@
     </div>
   </GradientSection>
 
-  <!-- Other Winners (Rank 4+) -->
-  <main class="flex flex-1 flex-col gap-2 px-4 pb-32">
-    <WinnerCard
-      v-for="item in otherWinners"
-      :key="item.rank"
-      :rank="item.rank"
-      :prize="item.prize"
-      :winner="item.winner"
-      :prize-image="item.prizeImage"
-    />
+  <main :class="['flex flex-1 flex-col gap-2 px-4', mainPaddingClass]">
+    <div v-if="isPending" class="flex flex-col gap-2">
+      <WinnerCardSkeleton v-for="i in 5" :key="i" />
+    </div>
+
+    <div v-else-if="isError" class="flex flex-col items-center justify-center py-8">
+      <p class="body-m text-slate-500">Gagal memuat data pemenang.</p>
+    </div>
+
+    <template v-else>
+      <WinnerCard
+        v-for="item in otherWinners"
+        :key="item.rank"
+        :rank="item.rank"
+        :prize="item.prize"
+        :winner="item.winner"
+        :prize-image="item.prizeImage"
+      />
+
+      <!-- Infinite Scroll Trigger -->
+      <div ref="loadMoreRef">
+        <InfiniteScrollTrigger
+          :is-fetching="isFetchingNextPage"
+          :has-more="hasNextPage"
+          :current-page="currentPageCount"
+        />
+      </div>
+    </template>
   </main>
 
-  <!-- Fixed Current User Card at Bottom -->
-  <div class="fixed inset-x-0 bottom-0 z-40 mx-auto" :style="fixedCardStyle">
+  <div v-if="currentUserCard" class="fixed inset-x-0 bottom-0 z-40 mx-auto" :style="fixedCardStyle">
     <WinnerCard
       :rank="currentUserCard.rank"
       :prize="currentUserCard.prize"
@@ -195,10 +225,23 @@
     />
   </div>
 
-  <!-- Information BottomSheet -->
-  <InformationBottomSheet
-    v-model:open="isInfoOpen"
-    title="Informasi"
-    description="Daftar pemenang undian Anda dapat dilihat di halaman ini. Setiap periode undian memiliki pemenang berbeda berdasarkan hasil pengundian yang fair dan transparan."
-  />
+  <InformationBottomSheet v-model:open="isInfoOpen" title="Informasi">
+    <div class="flex flex-col">
+      <!-- Loading State -->
+      <div v-if="isTncLoading" class="flex flex-col gap-3">
+        <div class="h-4 w-3/4 animate-pulse rounded bg-slate-200" />
+        <div class="h-4 w-full animate-pulse rounded bg-slate-200" />
+        <div class="h-4 w-5/6 animate-pulse rounded bg-slate-200" />
+      </div>
+
+      <!-- Terms and Conditions Items -->
+      <div v-else class="flex flex-col gap-4">
+        <div v-for="item in tncItems" :key="item.order" class="flex flex-col gap-2">
+          <h3 class="body-m-semibold text-neutral-90">{{ item.title }}</h3>
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div class="body-caption text-neutral-80" v-html="item.value" />
+        </div>
+      </div>
+    </div>
+  </InformationBottomSheet>
 </template>

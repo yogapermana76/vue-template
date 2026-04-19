@@ -3,6 +3,7 @@ import { cva } from 'class-variance-authority'
 
 export { default as Alert } from './Alert.vue'
 export { default as AlertBox } from './AlertBox.vue'
+export { default as AlertBoxSkeleton } from './AlertBoxSkeleton.vue'
 export { default as AlertDescription } from './AlertDescription.vue'
 export { default as AlertTitle } from './AlertTitle.vue'
 

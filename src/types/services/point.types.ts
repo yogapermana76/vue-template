@@ -29,11 +29,17 @@ export type PointSummaryResponse = BaseResponse<PointSummary>
 // ============================================
 
 export interface PointHistoryItem {
-  id: string
+  id: number
+  userId?: number
   activity: string
+  activityId?: number
+  activityType?: string
+  description?: string
+  qty?: number
+  refId?: string
   created: string
   point: number
-  activityType?: string
+  detailRequest?: unknown
 }
 
 export type PointHistoryData = PaginatedData<PointHistoryItem>

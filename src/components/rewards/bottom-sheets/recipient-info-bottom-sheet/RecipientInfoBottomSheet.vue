@@ -1,5 +1,8 @@
 <script setup lang="ts">
-  import { ref, computed, watch, type HTMLAttributes } from 'vue'
+  import { watch, type HTMLAttributes } from 'vue'
+  import { useForm, Field } from 'vee-validate'
+  import { toTypedSchema } from '@vee-validate/zod'
+  import { z } from 'zod'
   import { BottomSheet } from '@/components/ui/bottom-sheet'
   import { Button } from '@/components/ui/button'
   import { TextField } from '@/components/ui/form'
@@ -33,41 +36,74 @@
     save: [email: string, phone: string]
   }>()
 
-  // Local form state
-  const localEmail = ref(props.email)
-  const localPhone = ref(props.phone)
+  // ============================================
+  // Form Schema & Validation
+  // ============================================
 
-  // Watch props for external updates
-  watch(
-    () => props.email,
-    newEmail => {
-      localEmail.value = newEmail || ''
-    },
-  )
-
-  watch(
-    () => props.phone,
-    newPhone => {
-      localPhone.value = newPhone || ''
-    },
-  )
-
-  // Check if form is valid
-  const isFormValid = computed(() => {
-    return localEmail.value.trim() !== '' && localPhone.value.trim() !== ''
+  /**
+   * Zod validation schema for recipient info
+   * Email: Required and must be valid email format
+   * noHp: Required and must be numeric
+   */
+  const recipientInfoSchema = z.object({
+    email: z.string().min(1, 'Email diperlukan').email('Format email tidak valid'),
+    noHp: z.string().min(1, 'Nomor HP diperlukan').regex(/^\d+$/, 'Nomor HP harus berupa angka'),
   })
 
-  const handleSave = () => {
-    if (isFormValid.value) {
-      emit('save', localEmail.value, localPhone.value)
-      emit('update:open', false)
-    }
-  }
+  type RecipientInfoFormValues = z.infer<typeof recipientInfoSchema>
+
+  // ============================================
+  // Form Initialization
+  // ============================================
+
+  const { handleSubmit, resetForm, meta, isSubmitting } = useForm<RecipientInfoFormValues>({
+    validationSchema: toTypedSchema(recipientInfoSchema),
+    initialValues: {
+      email: props.email || '',
+      noHp: props.phone || '',
+    },
+    validateOnMount: false,
+  })
+
+  // ============================================
+  // Sync Props to Form
+  // ============================================
+
+  /**
+   * Watch open state and reset form when bottomsheet opens
+   * This ensures form is always populated with latest props when user opens the sheet
+   */
+  watch(
+    () => props.open,
+    isOpen => {
+      if (isOpen) {
+        resetForm({
+          values: {
+            email: props.email || '',
+            noHp: props.phone || '',
+          },
+        })
+      }
+    },
+  )
+
+  // ============================================
+  // Form Handlers
+  // ============================================
+
+  const onSubmit = handleSubmit(values => {
+    emit('save', values.email, values.noHp)
+    emit('update:open', false)
+  })
 
   const handleCancel = () => {
-    // Reset local state to original values
-    localEmail.value = props.email || ''
-    localPhone.value = props.phone || ''
+    // Reset form to original prop values
+    resetForm({
+      values: {
+        email: props.email || '',
+        noHp: props.phone || '',
+      },
+    })
     emit('update:open', false)
   }
 </script>
@@ -90,22 +126,36 @@
       <!-- Form Fields -->
       <div class="flex flex-col gap-4">
         <!-- Email Field -->
-        <TextField
-          v-model="localEmail"
-          label="Email"
-          placeholder="nama@email.com"
-          type="email"
-          required
-        />
+        <Field name="email" v-slot="{ field, meta: fieldMeta, errorMessage }">
+          <TextField
+            :model-value="field.value"
+            label="Email"
+            placeholder="nama@email.com"
+            type="email"
+            required
+            :error="
+              (fieldMeta.touched || fieldMeta.dirty) && !!errorMessage ? errorMessage : undefined
+            "
+            @update:model-value="field.onChange"
+            @blur="field.onBlur"
+          />
+        </Field>
 
         <!-- Phone Field -->
-        <TextField
-          v-model="localPhone"
-          label="Nomor Handphone"
-          placeholder="08123456789"
-          type="tel"
-          required
-        />
+        <Field name="noHp" v-slot="{ field, meta: fieldMeta, errorMessage }">
+          <TextField
+            :model-value="field.value"
+            label="Nomor Handphone"
+            placeholder="08123456789"
+            type="tel"
+            required
+            :error="
+              (fieldMeta.touched || fieldMeta.dirty) && !!errorMessage ? errorMessage : undefined
+            "
+            @update:model-value="field.onChange"
+            @blur="field.onBlur"
+          />
+        </Field>
       </div>
     </div>
 
@@ -119,8 +169,8 @@
           variant="primary"
           size="md"
           class="flex-1"
-          :disabled="!isFormValid"
-          @click="handleSave"
+          :disabled="(!meta.valid && meta.dirty) || isSubmitting"
+          @click="onSubmit"
         >
           Simpan
         </Button>

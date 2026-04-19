@@ -46,6 +46,22 @@ export interface PaginatedData<T> {
 export type PaginatedResponse<T> = BaseResponse<PaginatedData<T>>
 
 // ============================================
+// Error Types
+// ============================================
+
+/**
+ * Business error type from HTTP interceptor
+ * Used when API returns 200 but with success: false or code !== '2000'
+ */
+export interface BusinessError<T = unknown> {
+  isBusinessError?: boolean
+  message?: string
+  response?: {
+    data: T
+  }
+}
+
+// ============================================
 // Common Field Types
 // ============================================
 

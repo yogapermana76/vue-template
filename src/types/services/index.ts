@@ -118,6 +118,7 @@ export type {
   // Composable Params
   UseVoucherPagesParams,
   UseVoucherDetailParams,
+  UseVoucherCategoriesParams,
 } from './voucher.types'
 
 // Region

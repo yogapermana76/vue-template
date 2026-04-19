@@ -3,19 +3,22 @@
  * Types for public data (no auth required)
  */
 
-import type { BaseResponse, BaseComposableParams, PaginationOnly } from '../common/base.types'
+import type {
+  BaseResponse,
+  BaseComposableParams,
+  PaginationOnly,
+  PaginatedData,
+} from '../common/base.types'
 
 // ============================================
 // FYI (For Your Information)
 // ============================================
 
 export interface FYIItem {
-  id: number
-  title: string
-  description: string
-  imageUrl?: string
-  link?: string
-  order?: number
+  order: number
+  question: string
+  answer: string
+  imageUrl: string
 }
 
 export type FYIResponse = BaseResponse<FYIItem[]>
@@ -39,13 +42,19 @@ export type FAQResponse = BaseResponse<FAQItem[]>
 // ============================================
 
 export interface WinnerCategory {
-  id: number
-  name: string
+  lotteryId: number
+  imageUrl: string
+  startDate: string
+  endDate: string
   timingCategory: 'MONTHLY' | 'ANNUAL'
-  description?: string
+  created: string
+  title: string
+  bgColor: string
 }
 
-export type WinnerCategoryResponse = BaseResponse<WinnerCategory[]>
+export type WinnerCategoryData = PaginatedData<WinnerCategory>
+
+export type WinnerCategoryResponse = BaseResponse<WinnerCategoryData>
 
 // ============================================
 // Winner Terms & Conditions

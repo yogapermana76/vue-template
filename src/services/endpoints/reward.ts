@@ -7,7 +7,7 @@ export const RewardEndpoint = {
   REDEEMABLE_DETAIL: '/v1/reward/redeemable/gift-instantly/detail',
   GIFT_INSTANTLY: '/v1/reward/redeemable/gift-instantly',
   GIFT_INSTANTLY_DETAIL: '/v1/user/reward/gift-instantly/detail',
-  USER_GIFT_INSTANTLY: '/v1/user/reward/gift-instantly',
+  USER_GIFT_INSTANTLY: '/v1/user/reward/gift-instantly/pages',
   EXCHANGE: '/v1/reward/exchange',
   LAST_ADDRESS: '/v1/reward/last-address',
   CATEGORY: '/v1/reward/categories',

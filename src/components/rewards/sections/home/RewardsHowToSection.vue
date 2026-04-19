@@ -1,59 +1,24 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { Swiper, SwiperSlide } from 'swiper/vue'
   import { Pagination } from 'swiper/modules'
-
   import { GradientSection } from '@/components/layout'
-  import { InfoCard } from '@/components/rewards'
+  import { InfoCard, InfoCardSkeleton } from '@/components/rewards'
   import { SwiperPagination } from '@/components/ui/swiper'
-  import FyiImg1 from '@/assets/images/fyi-img-1.png'
-  import FyiImg2 from '@/assets/images/fyi-img-2.png'
-  import FyiImg3 from '@/assets/images/fyi-img-3.png'
-  import { useFYI } from '@/composables'
-
-  interface HowToItem {
-    id: number
-    title: string
-    image: string
-  }
+  import { EmptyState } from '@/components/ui/empty-state'
+  import { useFYI } from '@/composables/services'
+  import type { FYIItem } from '@/types'
+  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   const router = useRouter()
 
-  // Mock data
-  const items = ref<HowToItem[]>([
-    {
-      id: 1,
-      title: 'Bagaimana mendapatkan poin?',
-      image: FyiImg1,
-    },
-    {
-      id: 2,
-      title: 'Bagaimana mengikuti Undian Berhadiah?',
-      image: FyiImg2,
-    },
-    {
-      id: 3,
-      title: 'Periode penukaran kupon',
-      image: FyiImg3,
-    },
-  ])
+  const { data: fyiData, isPending, isError } = useFYI()
 
-  // Public data
-  const { data: fyiData } = useFYI()
+  const fyiItems = computed(() => (fyiData.value?.data ?? []) as FYIItem[])
 
-  // Debug: log data on change
-  watch(fyiData, val => {
-    // eslint-disable-next-line no-console
-    console.log('FYI Data:', val)
-  })
-
-  // Handle info card click
-  const handleInfoCardClick = (itemId: number) => {
-    router.push({
-      path: '/rewards/how-to-detail',
-      query: { id: itemId },
-    })
+  const handleInfoCardClick = (item: FYIItem) => {
+    router.push(`/rewards/fyi/${item.order}`)
   }
 
   const modules = [Pagination]
@@ -61,11 +26,45 @@
 
 <template>
   <GradientSection gradient="navy" :rounded-bottom="false" class="py-4">
-    <!-- Section Title -->
     <h2 class="body-l-semibold mb-4 px-4 text-white">Cara Menggunakan Rewards</h2>
 
-    <!-- Swiper Carousel -->
-    <div>
+    <div v-if="isPending">
+      <swiper
+        :modules="modules"
+        :slides-per-view="2.6"
+        :slides-offset-before="16"
+        :slides-offset-after="8"
+      >
+        <swiper-slide v-for="i in 3" :key="`skeleton-${i}`">
+          <InfoCardSkeleton />
+        </swiper-slide>
+      </swiper>
+    </div>
+
+    <div v-else-if="isError" class="flex flex-col items-center justify-center px-4 py-8">
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Gagal memuat data"
+        description="Terjadi kesalahan saat memuat data. Silakan coba lagi."
+        title-class="text-white"
+        description-class="text-white/80"
+      />
+    </div>
+
+    <div
+      v-else-if="fyiItems.length === 0"
+      class="flex flex-col items-center justify-center px-4 py-8"
+    >
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Belum ada informasi"
+        description="Informasi belum tersedia saat ini."
+        title-class="text-white"
+        description-class="text-white/80"
+      />
+    </div>
+
+    <div v-else>
       <swiper
         :modules="modules"
         :slides-per-view="2.6"
@@ -73,12 +72,15 @@
         :slides-offset-after="8"
         :pagination="{ clickable: true, el: '#swiper-pagination-custom' }"
       >
-        <swiper-slide v-for="item in items" :key="item.id">
-          <InfoCard :title="item.title" :image="item.image" @click="handleInfoCardClick(item.id)" />
+        <swiper-slide v-for="item in fyiItems" :key="item.order">
+          <InfoCard
+            :title="item.question"
+            :image="item.imageUrl"
+            @click="handleInfoCardClick(item)"
+          />
         </swiper-slide>
       </swiper>
 
-      <!-- Custom pagination container -->
       <SwiperPagination id="swiper-pagination-custom" variant="small" class="mt-2 px-4" />
     </div>
   </GradientSection>

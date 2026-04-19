@@ -1,8 +1,10 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { PointsInfo, ActiveUntilBadge, WinnerInfoSwiper } from './info-section'
   import { usePointSummary, useWinnersCategory } from '@/composables/services'
+  import { formatDate } from '@/utils/date'
+  import type { WinnerCategory } from '@/types'
 
   interface WinnerItem {
     id: string | number
@@ -13,48 +15,39 @@
   const router = useRouter()
 
   // Fetch point summary
-  const { data: pointSummary, isLoading: isLoadingPoints } = usePointSummary()
+  const { data: pointSummaryData, isPending: isLoadingPoints } = usePointSummary()
 
   // Fetch winners category
-  const { data: winnersCategory, isLoading: isLoadingWinners } = useWinnersCategory()
-
-  // Debug: log data on change
-  watch(pointSummary, val => {
-    // eslint-disable-next-line no-console
-    console.log('Point Summary:', val)
+  const { data: winnersCategoryData, isPending: isLoadingWinners } = useWinnersCategory({
+    query: {
+      page: 0,
+      size: 10,
+    },
   })
 
-  // Debug: log data on change
-  watch(winnersCategory, val => {
-    // eslint-disable-next-line no-console
-    console.log('Winners Category:', val)
+  // Extract points from API
+  const points = computed(() => pointSummaryData.value?.data?.balance ?? 0)
+
+  // Extract active until date from API
+  const activeUntil = computed(() => {
+    const endDate = pointSummaryData.value?.data?.endDate
+    return endDate ? formatDate(endDate, 'dd MMM yyyy') : ''
   })
 
-  const points = ref(0)
-  const activeUntil = ref('30 Dec 2026')
+  // Transform winners category data
+  const winnerItems = computed<WinnerItem[]>(() => {
+    // Type assertion for response data
+    const response = winnersCategoryData.value as { data?: { data?: WinnerCategory[] } } | undefined
+    const categories = response?.data?.data
 
-  // TODO: Replace mock data with actual API data from winnersCategory
-  // Example integration:
-  // const winnerItems = computed<WinnerItem[]>(() => {
-  //   if (!winnersCategory.value?.data) return []
-  //   return winnersCategory.value.data.map((item: any) => ({
-  //     id: item.id,
-  //     title: item.categoryName || 'Informasi Pemenang',
-  //     description: item.period || `Undian periode ${item.startDate} - ${item.endDate}`,
-  //   }))
-  // })
-  const winnerItems = ref<WinnerItem[]>([
-    {
-      id: 1,
-      title: 'Informasi Pemenang',
-      description: 'Undian periode Januari - Maret',
-    },
-    {
-      id: 2,
-      title: 'Informasi Pemenang',
-      description: 'Undian periode April - Juni',
-    },
-  ])
+    if (!categories || !Array.isArray(categories)) return []
+
+    return categories.map(item => ({
+      id: item.lotteryId,
+      title: item.title,
+      description: `Undian periode ${formatDate(item.startDate, 'dd MMM yyyy')} - ${formatDate(item.endDate, 'dd MMM yyyy')}`,
+    }))
+  })
 
   const handleViewRewards = () => {
     router.push('/rewards/my-rewards')
@@ -63,7 +56,7 @@
   const handleViewWinners = (itemId: string | number) => {
     router.push({
       path: '/rewards/winners',
-      query: { id: itemId },
+      query: { lotteryId: itemId },
     })
   }
 </script>
@@ -71,10 +64,10 @@
 <template>
   <div class="flex flex-col gap-5 pb-5">
     <!-- Points Info -->
-    <PointsInfo :points="points" :is-loading="isLoadingPoints" @view-rewards="handleViewRewards" />
+    <PointsInfo :points="points" @view-rewards="handleViewRewards" />
 
     <!-- Active Until Badge -->
-    <ActiveUntilBadge :active-until="activeUntil" :is-loading="isLoadingPoints" />
+    <ActiveUntilBadge :active-until="activeUntil" />
 
     <!-- Winner Info Cards -->
     <WinnerInfoSwiper

@@ -15,26 +15,30 @@ import type {
 // ============================================
 
 export interface Voucher {
-  id: string
-  code: string
-  name: string
-  description?: string
-  validUntil: string
-  status: 'ACTIVE' | 'USED' | 'EXPIRED'
-  categoryId?: number
-  categoryName?: string
+  codename: string
+  id: number
+  title: string
+  description: string
+  availableQuota: number
+  expiredDate: string
+  imageUrl: string
+  voucherId: number
+  voucherCode: string | null
+  createdDate: string
 }
 
 export interface VoucherCategory {
   id: number
-  name: string
-  description?: string
+  title: string
+  activeColorCode: string
+  inactiveColorCode: string
+  created: string | null
+  updated: string | null
+  enable: boolean
+  sort: number
 }
 
-export interface VoucherDetail extends Voucher {
-  terms?: string[]
-  howToUse?: string[]
-}
+export type VoucherDetail = Voucher
 
 // ============================================
 // Response Types
@@ -69,3 +73,6 @@ export type UseVoucherPagesParams = BaseComposableParams<{
 
 /** Parameters for useVoucherDetail composable */
 export type UseVoucherDetailParams = BaseComposableParams<never, { id?: MaybeRef<string> }>
+
+/** Parameters for useVoucherCategories composable */
+export type UseVoucherCategoriesParams = BaseComposableParams

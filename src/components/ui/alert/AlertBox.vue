@@ -43,8 +43,8 @@
       class="size-5 shrink-0"
     />
     <div class="flex flex-1 flex-col items-start gap-0.5">
-      <div v-if="title" class="text-xs leading-4.5 font-semibold">{{ title }}</div>
-      <div v-if="description" class="text-xs leading-4.5 font-normal">{{ description }}</div>
+      <div v-if="title" class="leading-xs text-xs font-semibold">{{ title }}</div>
+      <div v-if="description" class="leading-xs text-xs font-normal">{{ description }}</div>
       <slot />
     </div>
   </div>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { ref, computed, watch, nextTick } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
+  import { useForm, Field } from 'vee-validate'
+  import { toTypedSchema } from '@vee-validate/zod'
+  import { z } from 'zod'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
@@ -8,13 +11,19 @@
   import { RewardPrizeCard, RecipientInfoItem } from '@/components/rewards'
   import { RecipientInfoBottomSheet } from '@/components/rewards'
   import { LocationField, type SelectedLocation } from '@/components/shared/location-picker'
+  import { ConfirmationBottomSheet } from '@/components/shared'
   import {
     useLastAddress,
     useLotteryRedeem,
     useProvinces,
     useCities,
     useDistricts,
+    useUserLotteryDetail,
   } from '@/composables/services'
+  import { authStorage } from '@/utils/storage'
+  import { formatDateRange } from '@/utils/date'
+  import type { User } from '@/types/services/auth.types'
+  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 
   definePage({
     meta: {
@@ -23,25 +32,200 @@
   })
 
   const router = useRouter()
+  const route = useRoute()
 
-  // Fetch last used address
-  const { data: lastAddressData } = useLastAddress()
+  // ============================================
+  // Route & User Data
+  // ============================================
 
-  // Lottery redeem mutation
-  const { mutate: redeemLottery, isPending: isRedeeming } = useLotteryRedeem()
-
-  // Debug: log data on change
-  watch(lastAddressData, val => {
-    // eslint-disable-next-line no-console
-    console.log('Last Address Data:', val)
+  const lotteryId = computed(() => {
+    const queryId = route.query.lotteryId as string | undefined
+    const paramId = route.params.id as string | undefined
+    const id = queryId || paramId
+    return id ? parseInt(id, 10) : undefined
   })
 
-  // Form state
-  const fullAddress = ref('')
-  const selectedLocation = ref<SelectedLocation>()
-  const postalCode = ref('')
+  const userProfile = authStorage.getUser<User>()
 
-  // Fetch regions data for display names
+  // ============================================
+  // API Queries & Mutations
+  // ============================================
+
+  const { data: lastAddressData } = useLastAddress()
+  const { data: lotteryDetailData } = useUserLotteryDetail({
+    params: { id: lotteryId },
+  })
+  const { mutate: redeemLottery, isPending: isRedeeming } = useLotteryRedeem()
+
+  // ============================================
+  // Form Schema & Validation
+  // ============================================
+
+  /**
+   * Zod validation schema matching backend request body structure
+   * All location fields (provinceId, cityId, districtId) use number type
+   */
+  const lotteryRedeemSchema = z.object({
+    lotteryId: z.number({ required_error: 'Lottery ID diperlukan' }),
+    provinceId: z.number().refine(val => val > 0, 'Provinsi harus dipilih'),
+    provinceName: z.string().min(1, 'Nama provinsi diperlukan'),
+    cityId: z.number().refine(val => val > 0, 'Kota harus dipilih'),
+    cityName: z.string().min(1, 'Nama kota diperlukan'),
+    districtId: z.number().refine(val => val > 0, 'Kecamatan harus dipilih'),
+    districtName: z.string().min(1, 'Nama kecamatan diperlukan'),
+    address: z.string().min(10, 'Alamat lengkap minimal 10 karakter'),
+    postalCode: z.string().regex(/^\d{5,6}$/, 'Kode pos harus 5-6 digit angka'),
+    receivedInfo: z.object({
+      fullname: z.string().min(1, 'Nama lengkap diperlukan'),
+      email: z.string().email('Format email tidak valid'),
+      noHp: z.string().regex(/^\d+$/, 'Nomor HP harus berupa angka'),
+    }),
+  })
+
+  type LotteryRedeemFormValues = z.infer<typeof lotteryRedeemSchema>
+
+  // ============================================
+  // Form Initialization
+  // ============================================
+
+  const { handleSubmit, setFieldValue, values, resetForm } = useForm<LotteryRedeemFormValues>({
+    validationSchema: toTypedSchema(lotteryRedeemSchema),
+    initialValues: {
+      lotteryId: lotteryId.value,
+      provinceId: 0, // 0 = not selected
+      provinceName: '',
+      cityId: 0,
+      cityName: '',
+      districtId: 0,
+      districtName: '',
+      address: '',
+      postalCode: '',
+      receivedInfo: {
+        fullname: userProfile?.fullname || '',
+        email: userProfile?.email || '',
+        noHp: userProfile?.phoneNumber || '',
+      },
+    },
+  })
+
+  // ============================================
+  // Helpers
+  // ============================================
+
+  /**
+   * Parse location ID to number (API may return string or number)
+   * Returns 0 if invalid (represents "not selected" state)
+   */
+  const parseLocationId = (id: string | number | undefined): number => {
+    if (!id) return 0
+    return typeof id === 'string' ? parseInt(id, 10) : id
+  }
+
+  // ============================================
+  // Location Selection State & Handlers
+  // ============================================
+
+  const selectedLocation = ref<SelectedLocation>()
+
+  // ============================================
+  // Auto-fill from Last Address
+  // ============================================
+
+  /**
+   * Populate form with last used address data
+   * Uses resetForm for declarative batch updates (better than multiple setFieldValue calls)
+   */
+  watch(
+    lastAddressData,
+    async data => {
+      if (!data?.data) return
+
+      const {
+        address,
+        postalCode,
+        provinceId,
+        provinceName,
+        cityId,
+        cityName,
+        districtId,
+        districtName,
+      } = data.data
+
+      // Update selectedLocation first to trigger dependent API queries (cities/districts)
+      if (provinceId && cityId && districtId) {
+        selectedLocation.value = {
+          provinceId: String(provinceId),
+          cityId: String(cityId),
+          districtId: String(districtId),
+        }
+      }
+
+      // Wait for Field components to mount and API queries to trigger
+      await nextTick()
+
+      // Batch update all form fields using resetForm (more efficient than individual setFieldValue)
+      resetForm({
+        values: {
+          lotteryId: lotteryId.value,
+          address: address || '',
+          postalCode: postalCode || '',
+          provinceId: parseLocationId(provinceId),
+          provinceName: provinceName || '',
+          cityId: parseLocationId(cityId),
+          cityName: cityName || '',
+          districtId: parseLocationId(districtId),
+          districtName: districtName || '',
+          receivedInfo: {
+            fullname: userProfile?.fullname || '',
+            email: userProfile?.email || '',
+            noHp: userProfile?.phoneNumber || '',
+          },
+        },
+      })
+    },
+    { immediate: true },
+  )
+
+  /**
+   * Handle location change from LocationPicker
+   * Converts SelectedLocation (string IDs) to form values (number IDs + names)
+   */
+  const handleLocationChange = (location: SelectedLocation | undefined) => {
+    selectedLocation.value = location
+    const { provinceId, cityId, districtId } = location || {}
+
+    // Helper to set both ID and name fields for a location level
+    const setLocationField = (
+      id: string | undefined,
+      idField: keyof LotteryRedeemFormValues,
+      nameField: keyof LotteryRedeemFormValues,
+      nameMap: Record<string, string>,
+    ) => {
+      setFieldValue(idField, id ? parseInt(id, 10) : 0)
+      setFieldValue(nameField, id ? nameMap[id] || '' : '')
+    }
+
+    setLocationField(provinceId, 'provinceId', 'provinceName', provinceNames.value)
+    setLocationField(cityId, 'cityId', 'cityName', cityNames.value)
+    setLocationField(districtId, 'districtId', 'districtName', districtNames.value)
+  }
+
+  /**
+   * Computed error message for LocationField
+   * Shows the most specific missing field (district > city > province)
+   */
+  const locationError = computed(() => {
+    if (!values.provinceId || values.provinceId === 0) return 'Provinsi harus dipilih'
+    if (!values.cityId || values.cityId === 0) return 'Kota harus dipilih'
+    if (!values.districtId || values.districtId === 0) return 'Kecamatan harus dipilih'
+    return undefined
+  })
+
+  // ============================================
+  // Region Data & Name Maps
+  // ============================================
+
+  // Fetch region data for LocationPicker
   const { data: provincesData } = useProvinces()
   const { data: citiesData } = useCities({
     query: { provinceId: computed(() => selectedLocation.value?.provinceId) },
@@ -50,67 +234,136 @@
     query: { cityId: computed(() => selectedLocation.value?.cityId) },
   })
 
-  // Create name maps for LocationField display
-  const provinceNames = computed(() => {
+  /**
+   * Create name maps for LocationField display
+   * Merges API data with lastAddress data for immediate availability on initial load
+   */
+  const createNameMap = (
+    apiData: typeof provincesData | typeof citiesData | typeof districtsData,
+    lastAddressId?: string | number,
+    lastAddressName?: string,
+  ) => {
     const map: Record<string, string> = {}
-    provincesData.value?.data?.forEach(p => {
-      map[p.id] = p.name
-    })
-    return map
-  })
 
-  const cityNames = computed(() => {
-    const map: Record<string, string> = {}
-    citiesData.value?.data?.forEach(c => {
-      map[c.id] = c.name
+    // Add all names from API response
+    apiData.value?.data?.forEach(item => {
+      map[item.id] = item.name
     })
-    return map
-  })
 
-  const districtNames = computed(() => {
-    const map: Record<string, string> = {}
-    districtsData.value?.data?.forEach(d => {
-      map[d.id] = d.name
-    })
-    return map
-  })
+    // Add name from lastAddress as fallback (ensures name available before API loads)
+    if (lastAddressId && lastAddressName) {
+      map[String(lastAddressId)] = lastAddressName
+    }
 
-  const handleLocationChange = (location: SelectedLocation | undefined) => {
-    selectedLocation.value = location
-    // eslint-disable-next-line no-console
-    console.log('Location changed:', location)
+    return map
   }
 
-  // Bottom sheet state
+  const provinceNames = computed(() =>
+    createNameMap(
+      provincesData,
+      lastAddressData.value?.data?.provinceId,
+      lastAddressData.value?.data?.provinceName,
+    ),
+  )
+
+  const cityNames = computed(() =>
+    createNameMap(
+      citiesData,
+      lastAddressData.value?.data?.cityId,
+      lastAddressData.value?.data?.cityName,
+    ),
+  )
+
+  const districtNames = computed(() =>
+    createNameMap(
+      districtsData,
+      lastAddressData.value?.data?.districtId,
+      lastAddressData.value?.data?.districtName,
+    ),
+  )
+
+  // ============================================
+  // Recipient Info Section
+  // ============================================
+
   const showEditRecipientSheet = ref(false)
+  const showConfirmationSheet = ref(false)
 
-  // Mock data - replace with actual data from route params or store
-  const prizeData = {
-    image: 'https://placehold.co/80x80', // Replace with actual prize image
-    title: 'Tumbler Crokcicle',
-    date: 'Kamis, 23 Mei 2026',
-  }
-
-  const recipientData = ref({
-    name: 'Gita Diaz',
-    email: 'gitadiaz@gmail.com',
-    phone: '082123456789',
-  })
+  const recipientData = computed(() => values.receivedInfo)
 
   const handleRecipientClick = () => {
     showEditRecipientSheet.value = true
   }
 
   const handleSaveRecipientInfo = (email: string, phone: string) => {
-    recipientData.value.email = email
-    recipientData.value.phone = phone
+    setFieldValue('receivedInfo.email', email)
+    setFieldValue('receivedInfo.noHp', phone)
     showEditRecipientSheet.value = false
   }
 
-  const handleExchangePoints = () => {
-    // Navigate to redemption details or success page
-    // TODO: Get actual redemption ID from the redeem API response
-    router.push('/rewards/redemption/1')
+  // ============================================
+  // Prize Data from Lottery Detail
+  // ============================================
+
+  const prizeData = computed(() => {
+    const lottery = lotteryDetailData.value?.data
+    if (!lottery) {
+      return {
+        image: 'https://placehold.co/80x80',
+        title: '',
+        date: '',
+      }
+    }
+
+    return {
+      image: lottery.imageUrl || 'https://placehold.co/80x80',
+      title: lottery.title || '',
+      date:
+        lottery.startDate && lottery.endDate
+          ? formatDateRange(lottery.startDate, lottery.endDate)
+          : '',
+    }
+  })
+
+  // ============================================
+  // Confirmation Bottom Sheet
+  // ============================================
+
+  const confirmationDescription = computed(() => {
+    const lottery = lotteryDetailData.value?.data
+    if (!lottery) return ''
+    return `Apakah anda ingin menukarkan <strong>${lottery.pricePoint ?? 0} poin</strong> untuk mendapatkan kupon undian ini?`
+  })
+
+  const handleShowConfirmation = () => {
+    showConfirmationSheet.value = true
+  }
+
+  const handleCancelExchange = () => {
+    showConfirmationSheet.value = false
+  }
+
+  const handleConfirmExchange = handleSubmit(formValues => {
+    showConfirmationSheet.value = false
+    redeemLottery(formValues, {
+      onSuccess: () => {
+        // TODO: Navigate to actual redemption detail page with ID from response
+        router.push('/rewards/redemption/1')
+      },
+    })
+  })
+
+  // ============================================
+  // Form Submission
+  // ============================================
+
+  const onSubmit = handleSubmit(() => {
+    handleShowConfirmation()
+  })
+
+  const handleButtonClick = async () => {
+    // Trigger validation by attempting to submit
+    await onSubmit()
   }
 </script>
 
@@ -135,9 +388,9 @@
         <h2 class="body-l-semibold text-slate-950">Informasi Penerima</h2>
 
         <RecipientInfoItem
-          :name="recipientData.name"
+          :name="recipientData.fullname"
           :email="recipientData.email"
-          :phone="recipientData.phone"
+          :phone="recipientData.noHp"
           @click="handleRecipientClick"
         />
       </div>
@@ -157,36 +410,49 @@
         <!-- Form Fields -->
         <div class="flex flex-col gap-4">
           <!-- Full Address -->
-          <TextAreaField
-            v-model="fullAddress"
-            label="Alamat Lengkap"
-            placeholder="Jl. Kh Ahmad"
-            required
-            :rows="4"
-            resize="none"
-          />
+          <Field name="address" v-slot="{ field, meta: fieldMeta, errorMessage }">
+            <TextAreaField
+              :model-value="field.value"
+              label="Alamat Lengkap"
+              placeholder="Jl. Kh Ahmad"
+              required
+              :rows="4"
+              resize="none"
+              :error="fieldMeta.touched && !!errorMessage ? errorMessage : undefined"
+              @update:model-value="field.onChange"
+              @blur="field.onBlur"
+            />
+          </Field>
 
           <!-- City/District - Using LocationField -->
-          <LocationField
-            v-model="selectedLocation"
-            label="Kota/kecamatan"
-            placeholder="Pilih Kota/Kecamatan"
-            picker-title="Kota, Kecamatan"
-            :province-names="provinceNames"
-            :city-names="cityNames"
-            :district-names="districtNames"
-            required
-            @change="handleLocationChange"
-          />
+          <Field name="districtId" v-slot="{ meta: fieldMeta }" :validate-on-model-update="false">
+            <LocationField
+              v-model="selectedLocation"
+              label="Kota/kecamatan"
+              placeholder="Pilih Kota/Kecamatan"
+              picker-title="Kota, Kecamatan"
+              :province-names="provinceNames"
+              :city-names="cityNames"
+              :district-names="districtNames"
+              required
+              :error="fieldMeta.touched && locationError ? locationError : undefined"
+              @change="handleLocationChange"
+            />
+          </Field>
 
           <!-- Postal Code -->
-          <TextField
-            v-model="postalCode"
-            label="Kode Pos"
-            placeholder="10114"
-            type="text"
-            required
-          />
+          <Field name="postalCode" v-slot="{ field, meta: fieldMeta, errorMessage }">
+            <TextField
+              :model-value="field.value"
+              label="Kode Pos"
+              placeholder="10114"
+              type="text"
+              required
+              :error="fieldMeta.touched && !!errorMessage ? errorMessage : undefined"
+              @update:model-value="field.onChange"
+              @blur="field.onBlur"
+            />
+          </Field>
         </div>
       </div>
     </main>
@@ -194,8 +460,14 @@
 
   <!-- Footer with Button -->
   <Footer position="fixed">
-    <Button variant="primary" size="md" class="w-full" @click="handleExchangePoints">
-      Tukar Poin
+    <Button
+      variant="primary"
+      size="md"
+      class="w-full"
+      :disabled="isRedeeming"
+      @click="handleButtonClick"
+    >
+      {{ isRedeeming ? 'Memproses...' : 'Tukar Poin' }}
     </Button>
   </Footer>
 
@@ -203,7 +475,28 @@
   <RecipientInfoBottomSheet
     v-model:open="showEditRecipientSheet"
     :email="recipientData.email"
-    :phone="recipientData.phone"
+    :phone="recipientData.noHp"
     @save="handleSaveRecipientInfo"
+  />
+
+  <!-- Confirmation Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showConfirmationSheet"
+    :image="MascotIllustration"
+    title="Menukarkan hadiah?"
+    :description="confirmationDescription"
+    button-layout="row"
+    :buttons="[
+      {
+        label: 'Kembali',
+        variant: 'secondary',
+        onClick: handleCancelExchange,
+      },
+      {
+        label: 'Tukar Poin',
+        variant: 'primary',
+        onClick: handleConfirmExchange,
+      },
+    ]"
   />
 </template>

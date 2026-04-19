@@ -1,23 +1,10 @@
 <script setup lang="ts">
-  import { watch } from 'vue'
+  import { ref, computed } from 'vue'
   import { Button } from '@/components/ui/button'
-  import { ExpandableItem } from '@/components/ui/accordion'
+  import { ExpandableItem, ExpandableItemSkeleton } from '@/components/ui/accordion'
+  import { EmptyState } from '@/components/ui/empty-state'
   import { useFAQ } from '@/composables/services'
-
-  // Fetch FAQ data
-  const { data: faqData } = useFAQ()
-
-  // Debug: log data on change
-  watch(faqData, val => {
-    // eslint-disable-next-line no-console
-    console.log('FAQ Data:', val)
-  })
-
-  export interface FaqData {
-    id: number
-    question: string
-    answer: string
-  }
+  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   export interface Props {
     title?: string
@@ -29,40 +16,38 @@
     showViewAll: true,
   })
 
-  const faqItems: FaqData[] = [
-    {
-      id: 1,
-      question: 'Apa itu Program Gelegar PLN Mobile 2025?',
-      answer:
-        'Program Gelegar PLN Mobile 2025 adalah program loyalitas yang memberikan reward kepada pengguna aktif aplikasi PLN Mobile.',
-    },
-    {
-      id: 2,
-      question: 'Kapan periode program Gelegar PLN Mobile 2025 berlangsung?',
-      answer: 'Program berlangsung mulai Januari hingga Desember 2025.',
-    },
-    {
-      id: 3,
-      question: 'Siapa saja yang bisa ikut program Gelegar PLN Mobile 2025?',
-      answer: 'Semua pengguna terdaftar PLN Mobile dapat mengikuti program ini.',
-    },
-    {
-      id: 4,
-      question: 'Bagaimana cara mendapatkan poin?',
-      answer:
-        'Anda bisa mendapatkan poin dengan melakukan transaksi pembayaran listrik melalui PLN Mobile.',
-    },
-    {
-      id: 5,
-      question: 'Bagaimana cara menukarkan poin?',
-      answer:
-        'Poin dapat ditukarkan dengan berbagai reward menarik melalui menu rewards di aplikasi.',
-    },
-  ]
+  const showAll = ref(false)
+  const INITIAL_LIMIT = 5
+
+  // Fetch FAQ data
+  const { data: faqData, isPending, isError } = useFAQ()
+
+  // Transform and limit FAQ data
+  const faqItems = computed(() => {
+    if (!faqData.value?.data || !Array.isArray(faqData.value.data)) return []
+
+    const allItems = faqData.value.data.map(faq => ({
+      id: faq.id,
+      question: faq.question,
+      answer: faq.answer,
+    }))
+
+    // Show limited or all items based on state
+    return showAll.value ? allItems : allItems.slice(0, INITIAL_LIMIT)
+  })
+
+  const hasMoreItems = computed(() => {
+    if (!faqData.value?.data || !Array.isArray(faqData.value.data)) return false
+    return faqData.value.data.length > INITIAL_LIMIT
+  })
 
   const handleViewAllClick = () => {
-    // TODO: Navigate to FAQ page or expand all items
+    showAll.value = !showAll.value
   }
+
+  const buttonLabel = computed(() => {
+    return showAll.value ? 'Lihat Lebih Sedikit' : 'Lihat Semua'
+  })
 </script>
 
 <template>
@@ -72,26 +57,57 @@
       <h2 class="body-l-semibold flex-1 text-slate-950">{{ props.title }}</h2>
     </div>
 
-    <!-- FAQ Items -->
-    <div class="flex w-full flex-col gap-2">
-      <ExpandableItem
-        v-for="item in faqItems"
-        :key="item.id"
-        :question="item.question"
-        :answer="item.answer"
-        :value="`faq-${item.id}`"
+    <!-- Loading State -->
+    <template v-if="isPending">
+      <div class="flex w-full flex-col gap-2">
+        <ExpandableItemSkeleton v-for="i in INITIAL_LIMIT" :key="i" />
+      </div>
+    </template>
+
+    <!-- Error State -->
+    <div v-else-if="isError" class="flex w-full flex-col items-center justify-center py-8">
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Gagal memuat FAQ"
+        description="Terjadi kesalahan saat memuat FAQ. Silakan coba lagi."
       />
     </div>
 
-    <!-- View All Button -->
-    <Button
-      v-if="props.showViewAll"
-      variant="secondary"
-      size="sm"
-      class="w-full"
-      @click="handleViewAllClick"
+    <!-- Empty State -->
+    <div
+      v-else-if="faqItems.length === 0"
+      class="flex w-full flex-col items-center justify-center py-8"
     >
-      Lihat Semua
-    </Button>
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Belum ada FAQ"
+        description="FAQ belum tersedia saat ini."
+      />
+    </div>
+
+    <!-- Data State -->
+    <template v-else>
+      <!-- FAQ Items -->
+      <div class="flex w-full flex-col gap-2">
+        <ExpandableItem
+          v-for="item in faqItems"
+          :key="item.id"
+          :question="item.question"
+          :answer="item.answer"
+          :value="`faq-${item.id}`"
+        />
+      </div>
+
+      <!-- View All Button -->
+      <Button
+        v-if="props.showViewAll && hasMoreItems"
+        variant="secondary"
+        size="sm"
+        class="w-full"
+        @click="handleViewAllClick"
+      >
+        {{ buttonLabel }}
+      </Button>
+    </template>
   </section>
 </template>

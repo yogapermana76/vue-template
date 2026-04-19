@@ -26,6 +26,9 @@
     currentLevel,
     groupedData,
     selectedId,
+    selectedProvinceId,
+    selectedCityId,
+    selectedDistrictId,
     selectedProvinceName,
     selectedCityName,
     selectedDistrictName,
@@ -44,12 +47,15 @@
     initialSelection: props.selectedLocation,
   })
 
-  // Watch for prop changes to sync state
+  // Watch for prop changes to sync state when picker opens
   watch(
-    () => props.selectedLocation,
-    newValue => {
-      if (newValue && props.open) {
-        // Sync will happen through useLocationPicker initialSelection
+    () => props.open,
+    isOpen => {
+      if (isOpen && props.selectedLocation) {
+        // Sync selected IDs when picker opens with existing selection
+        selectedProvinceId.value = props.selectedLocation.provinceId
+        selectedCityId.value = props.selectedLocation.cityId
+        selectedDistrictId.value = props.selectedLocation.districtId
       }
     },
   )

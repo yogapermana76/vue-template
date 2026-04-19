@@ -133,7 +133,10 @@ export const rewardService = {
    * Get verify info
    */
   async verifyInfo(): Promise<VerifyInfoResponse> {
-    const { data } = await http.get<VerifyInfoResponse>(RewardEndpoint.VERIFY_INFO)
+    const config: HttpConfig = {
+      showErrorToast: false,
+    }
+    const { data } = await http.get<VerifyInfoResponse>(RewardEndpoint.VERIFY_INFO, config)
     return data
   },
 }

@@ -2,7 +2,7 @@
   import { computed } from 'vue'
   import { Swiper, SwiperSlide } from 'swiper/vue'
   import { Pagination } from 'swiper/modules'
-  import { WinnerInfoCard } from '@/components/rewards'
+  import { WinnerInfoCard, WinnerInfoCardSkeleton } from '@/components/rewards'
   import { SwiperPagination } from '@/components/ui/swiper'
 
   interface WinnerItem {
@@ -38,8 +38,20 @@
 
 <template>
   <!-- Loading Skeleton -->
-  <div v-if="isLoading" class="px-4">
-    <div class="h-16 w-full animate-pulse rounded-sm bg-white/10"></div>
+  <div v-if="isLoading" class="flex flex-col gap-2">
+    <div>
+      <swiper
+        :modules="modules"
+        :slides-per-view="1.02"
+        :space-between="12"
+        :slides-offset-before="16"
+        :slides-offset-after="16"
+      >
+        <swiper-slide v-for="i in 2" :key="`skeleton-${i}`">
+          <WinnerInfoCardSkeleton />
+        </swiper-slide>
+      </swiper>
+    </div>
   </div>
 
   <!-- No Items -->

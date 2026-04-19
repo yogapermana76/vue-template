@@ -1,67 +1,52 @@
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { Clock } from 'lucide-vue-next'
-  import { RewardBannerCard } from '@/components/rewards'
+  import { RewardBannerCard, RewardBannerCardSkeleton } from '@/components/rewards'
   import { ConfirmationBottomSheet } from '@/components/shared'
+  import { EmptyState } from '@/components/ui/empty-state'
   import { useLotteryRedeemablePages } from '@/composables/services'
+  import { formatDateRange } from '@/utils/date'
+  import type { Lottery } from '@/types'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
   const router = useRouter()
   const showLocationSheet = ref(false)
-  const selectedDrawId = ref<string | null>(null)
+  const selectedLottery = ref<Lottery | null>(null)
 
-  // Fetch lottery redeemable pages
-  const { data: lotteryPages } = useLotteryRedeemablePages({
+  const {
+    data: lotteryPages,
+    isPending,
+    isError,
+  } = useLotteryRedeemablePages({
     query: { page: 0, size: 10 },
   })
 
-  // Debug: log data on change
-  watch(lotteryPages, val => {
-    // eslint-disable-next-line no-console
-    console.log('Lottery Pages:', val)
-  })
+  const lotteries = computed(() => lotteryPages.value?.data?.data ?? [])
+  const isSingleItem = computed(() => lotteries.value.length === 1)
 
-  interface DrawItem {
-    id: string
-    title: string
-    imageUrl: string
-    points: number
-    durationText: string
+  const getDurationText = (lottery: Lottery) => {
+    if (!lottery.startDate || !lottery.endDate) return 'Segera hadir'
+    return formatDateRange(lottery.startDate, lottery.endDate) || 'Segera hadir'
   }
 
-  const drawData = ref<DrawItem[]>([
-    {
-      id: 'd1',
-      title: 'Undian Loyalty Program Gelegar SwaCam',
-      imageUrl: 'https://picsum.photos/343/264?random=31',
-      points: 50,
-      durationText: 'Mei - November 2026',
-    },
-    {
-      id: 'd2',
-      title: 'Undian Loyalty Program Gelegar SwaCam',
-      imageUrl: 'https://picsum.photos/343/264?random=32',
-      points: 50,
-      durationText: 'Mei - November 2026',
-    },
-  ])
-
-  const isSingleItem = computed(() => drawData.value.length === 1)
-
-  const handleCardClick = (id: string) => {
-    router.push(`/rewards/lottery/${id}`)
+  const handleCardClick = (lottery: Lottery) => {
+    router.push(`/rewards/lottery/${lottery.id}`)
   }
 
-  const handleButtonClick = (id: string) => {
-    selectedDrawId.value = id
+  const handleButtonClick = (lottery: Lottery) => {
+    selectedLottery.value = lottery
     showLocationSheet.value = true
   }
 
   const handleCompleteAddress = () => {
     showLocationSheet.value = false
-    if (selectedDrawId.value) {
-      router.push('/rewards/complete-address')
+    if (selectedLottery.value) {
+      router.push({
+        path: '/rewards/complete-address',
+        query: { lotteryId: selectedLottery.value.id },
+      })
     }
   }
 </script>
@@ -73,38 +58,66 @@
       <h2 class="body-l-semibold text-slate-950">Ikuti Undiannya</h2>
     </div>
 
-    <!-- Cards Container -->
-    <div v-if="isSingleItem" class="px-4">
-      <!-- Single Card - Full Width -->
-      <RewardBannerCard
-        :title="drawData[0].title"
-        :image-url="drawData[0].imageUrl"
-        :points="drawData[0].points"
-        :duration-text="drawData[0].durationText"
-        :duration-icon="Clock"
-        button-label="Tukarkan Poin"
-        @button-click="handleButtonClick(drawData[0].id)"
-        @card-click="handleCardClick(drawData[0].id)"
+    <!-- Loading State -->
+    <div
+      v-if="isPending"
+      class="flex gap-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
+      <RewardBannerCardSkeleton v-for="i in 3" :key="`skeleton-${i}`" class="w-85.75 shrink-0" />
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="isError" class="flex flex-col items-center justify-center px-4 py-8">
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Gagal memuat undian"
+        description="Terjadi kesalahan saat memuat data undian. Silakan coba lagi."
       />
     </div>
 
+    <!-- Empty State -->
+    <div
+      v-else-if="lotteries.length === 0"
+      class="flex flex-col items-center justify-center px-4 py-8"
+    >
+      <EmptyState
+        :image="RiwayatIllustration"
+        title="Belum ada undian"
+        description="Undian belum tersedia saat ini."
+      />
+    </div>
+
+    <!-- Single Card - Full Width -->
+    <div v-else-if="isSingleItem" class="px-4">
+      <RewardBannerCard
+        :title="lotteries[0].title"
+        :image-url="lotteries[0].imageUrl"
+        :points="lotteries[0].pricePoint"
+        :duration-text="getDurationText(lotteries[0])"
+        :duration-icon="Clock"
+        button-label="Tukarkan Poin"
+        @button-click="handleButtonClick(lotteries[0])"
+        @card-click="handleCardClick(lotteries[0])"
+      />
+    </div>
+
+    <!-- Multiple Cards - Horizontal Scroll -->
     <div
       v-else
       class="flex gap-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
-      <!-- Multiple Cards - Horizontal Scroll -->
       <RewardBannerCard
-        v-for="draw in drawData"
-        :key="draw.id"
-        :title="draw.title"
-        :image-url="draw.imageUrl"
-        :points="draw.points"
-        :duration-text="draw.durationText"
+        v-for="lottery in lotteries"
+        :key="lottery.id"
+        :title="lottery.title"
+        :image-url="lottery.imageUrl"
+        :points="lottery.pricePoint"
+        :duration-text="getDurationText(lottery)"
         :duration-icon="Clock"
         button-label="Tukarkan Poin"
         class="w-85.75 shrink-0"
-        @button-click="handleButtonClick(draw.id)"
-        @card-click="handleCardClick(draw.id)"
+        @button-click="handleButtonClick(lottery)"
+        @card-click="handleCardClick(lottery)"
       />
     </div>
   </div>

@@ -10,11 +10,16 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useInfiniteQuery } from '@tanstack/vue-query'
 import { voucherService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
-import type { UseVoucherPagesParams, UseVoucherDetailParams } from '@/types'
+import type {
+  UseVoucherPagesParams,
+  UseVoucherDetailParams,
+  UseVoucherCategoriesParams,
+  Voucher,
+} from '@/types'
 
 // ============================================
 // Query Keys
@@ -133,14 +138,88 @@ export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
  *
  * @example
  * const { data: categories } = useVoucherCategories()
+ *
+ * @example
+ * // With enabled option
+ * const { data: categories } = useVoucherCategories({
+ *   options: { enabled: computed(() => isActive.value) }
+ * })
  */
-export function useVoucherCategories() {
+export function useVoucherCategories(params: UseVoucherCategoriesParams = {}) {
+  const { options = {} } = params
   const authStore = useAuthStore()
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
 
   return useQuery({
     queryKey: voucherKeys.categories(),
     queryFn: () => voucherService.categories(),
-    staleTime: config.cache.defaultStaleTime,
-    enabled: computed(() => authStore.isAuthenticated),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get user vouchers with infinite scroll pagination
+ *
+ * @example
+ * // Basic usage with defaults
+ * const { data } = useVoucherPagesInfinite()
+ *
+ * @example
+ * // With category filter
+ * const categoryId = ref<number | undefined>(1)
+ * const { data } = useVoucherPagesInfinite({
+ *   query: { size: 20, categoryId }
+ * })
+ */
+export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
+  const { query = {}, options = {} } = params
+  const { size = 10, categoryId } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedSize = computed(() => unref(size))
+  const resolvedCategoryId = computed(() => unref(categoryId))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useInfiniteQuery({
+    queryKey: computed(() =>
+      voucherKeys.pages({
+        size: resolvedSize.value,
+        categoryId: resolvedCategoryId.value,
+      }),
+    ),
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await voucherService.pages({
+        page: pageParam,
+        size: resolvedSize.value,
+        categoryId: resolvedCategoryId.value,
+      })
+
+      const items: Voucher[] = response.data?.data ?? []
+      const total = response.data?.total ?? 0
+
+      return {
+        data: items,
+        page: pageParam,
+        hasMore: (pageParam + 1) * resolvedSize.value < total,
+      }
+    },
+    initialPageParam: 0,
+    getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
   })
 }

@@ -9,7 +9,7 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery, useMutation } from '@tanstack/vue-query'
+import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
 import { lotteryService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
@@ -21,6 +21,7 @@ import type {
   UseUserLotteryDetailParams,
   LotteryDetailResponse,
   LotteryRedeemRequest,
+  UserLottery,
 } from '@/types'
 
 // ============================================
@@ -190,6 +191,62 @@ export function useUserLotteryDetail(params: UseUserLotteryDetailParams = {}) {
   return useQuery({
     queryKey: computed(() => lotteryKeys.userDetail(resolvedId.value)),
     queryFn: () => lotteryService.userDetail({ id: resolvedId.value! }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get user lottery list with infinite scroll pagination
+ *
+ * @example
+ * // Basic usage with defaults
+ * const { data } = useUserLotteryListInfinite()
+ *
+ * @example
+ * // With custom size
+ * const { data } = useUserLotteryListInfinite({
+ *   query: { size: 20 }
+ * })
+ */
+export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}) {
+  const { query = {}, options = {} } = params
+  const { size = 10 } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedSize = computed(() => unref(size))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useInfiniteQuery({
+    queryKey: computed(() =>
+      lotteryKeys.userList({
+        size: resolvedSize.value,
+      }),
+    ),
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await lotteryService.userList({
+        page: pageParam,
+        size: resolvedSize.value,
+      })
+
+      const items: UserLottery[] = response.data?.data ?? []
+      const total = response.data?.total ?? 0
+
+      return {
+        data: items,
+        page: pageParam,
+        hasMore: (pageParam + 1) * resolvedSize.value < total,
+      }
+    },
+    initialPageParam: 0,
+    getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })

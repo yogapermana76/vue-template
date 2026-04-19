@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { ref, type HTMLAttributes } from 'vue'
+  import type { HTMLAttributes } from 'vue'
   import { CoinsIcon } from 'lucide-vue-next'
   import { cn } from '@/utils/cn'
+  import { formatNumber } from '@/utils'
 
   export interface PointsInfoSectionProps {
     /** Current points balance */
@@ -28,7 +29,7 @@
       <!-- Points Value -->
       <div class="flex flex-row items-center gap-2 self-stretch">
         <CoinsIcon class="size-4 shrink-0 text-slate-950" />
-        <span class="heading-l flex-1 leading-none text-slate-950">{{ points }}</span>
+        <span class="heading-l flex-1 leading-none text-slate-950">{{ formatNumber(points) }}</span>
       </div>
     </div>
 

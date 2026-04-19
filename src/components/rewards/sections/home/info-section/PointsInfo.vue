@@ -1,17 +1,14 @@
 <script setup lang="ts">
   import { ChevronRight, CoinsIcon, Ticket } from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
+  import { formatNumber } from '@/utils'
 
   interface PointsInfoProps {
     /** Points value to display */
     points: number
-    /** Loading state */
-    isLoading?: boolean
   }
 
-  withDefaults(defineProps<PointsInfoProps>(), {
-    isLoading: false,
-  })
+  defineProps<PointsInfoProps>()
 
   const emit = defineEmits<{
     viewRewards: []
@@ -31,10 +28,8 @@
     <div class="flex flex-row items-center gap-2 self-stretch">
       <CoinsIcon class="size-4 shrink-0 text-white" />
 
-      <!-- Loading Skeleton -->
-      <div v-if="isLoading" class="h-8 w-20 animate-pulse rounded bg-white/10"></div>
       <!-- Points Value -->
-      <span v-else class="heading-l flex-1 leading-none text-white">{{ points }}</span>
+      <span class="heading-l flex-1 leading-none text-white">{{ formatNumber(points ?? 0) }}</span>
 
       <Button
         variant="tertiary"
