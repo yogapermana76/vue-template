@@ -14,7 +14,7 @@ variables:
 
 Compile NPM:
   stage: compile
-  image: node:18-alpine
+  image: node:22-alpine
   cache:
     key: "$CI_BUILD_REF_NAME"
     paths:
@@ -27,9 +27,9 @@ Compile NPM:
   script:
     - >
       if [ "$CI_COMMIT_REF_NAME" == "development" ]; then
-       npm run development
+        npm run build:dev
       else
-        npm run production
+        npm run build:prod
       fi
   artifacts:
     name: "dist-$CI_COMMIT_REF_NAME"
