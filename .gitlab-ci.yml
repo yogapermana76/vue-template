@@ -63,11 +63,11 @@ Deploy DevStaging:
   script:
     - >
       if [ "$CI_COMMIT_REF_NAME" == "development" ]; then
-        kubectl set image deployment/microapps-reward-loyalty microapps-reward-loyalty=$DOCKER_IMAGE -n development
-        kubectl rollout restart deployment/microapps-reward-loyalty -n development
+        kubectl set image deployment/microapps-reward-loyaltyv2 microapps-reward-loyaltyv2=$DOCKER_IMAGE -n development
+        kubectl rollout restart deployment/microapps-reward-loyaltyv2 -n development
       else
-        kubectl set image deployment/microapps-reward-loyalty microapps-reward-loyalty=$DOCKER_IMAGE -n staging
-        kubectl rollout restart deployment/microapps-reward-loyalty -n staging
+        kubectl set image deployment/microapps-reward-loyaltyv2 microapps-reward-loyaltyv2=$DOCKER_IMAGE -n staging
+        kubectl rollout restart deployment/microapps-reward-loyaltyv2 -n staging
       fi
   only:
     - development
