@@ -15,7 +15,7 @@
   const router = useRouter()
 
   // Fetch point summary
-  const { data: pointSummaryData, isPending: isLoadingPoints } = usePointSummary()
+  const { data: pointSummaryData } = usePointSummary()
 
   // Fetch winners category
   const { data: winnersCategoryData, isPending: isLoadingWinners } = useWinnersCategory({

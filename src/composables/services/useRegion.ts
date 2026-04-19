@@ -24,8 +24,8 @@ import type { UseProvincesParams, UseCitiesParams, UseDistrictsParams } from '@/
 export const regionKeys = {
   all: ['region'] as const,
   provinces: () => [...regionKeys.all, 'provinces'] as const,
-  cities: (provinceId?: number) => [...regionKeys.all, 'cities', provinceId] as const,
-  districts: (cityId?: number) => [...regionKeys.all, 'districts', cityId] as const,
+  cities: (provinceId?: string) => [...regionKeys.all, 'cities', provinceId] as const,
+  districts: (cityId?: string) => [...regionKeys.all, 'districts', cityId] as const,
 }
 
 // ============================================
