@@ -167,34 +167,34 @@
       <!-- Terms & Conditions Section -->
       <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
     </main>
+
+    <!-- Footer with Button -->
+    <Footer position="fixed">
+      <!-- Disabled state message -->
+      <div v-if="disabledMessage">
+        <p class="body-m text-slate-950">{{ disabledMessage }}</p>
+      </div>
+
+      <!-- Enabled state with points display -->
+      <div v-if="canExchange && lottery" class="flex w-full items-center justify-between gap-2">
+        <p class="body-m text-slate-950">Tukar dengan</p>
+        <p class="body-l-semibold text-primary-700">
+          {{ formatNumber(lottery.pricePoint ?? 0) }} poin
+        </p>
+      </div>
+
+      <!-- Button -->
+      <Button
+        :variant="canExchange ? 'primary' : 'secondary'"
+        size="sm"
+        class="w-full"
+        :disabled="!canExchange"
+        @click="handleExchangeClick"
+      >
+        Tukar Poin
+      </Button>
+    </Footer>
   </template>
-
-  <!-- Footer with Button -->
-  <Footer position="fixed">
-    <!-- Disabled state message -->
-    <div v-if="disabledMessage">
-      <p class="body-m text-slate-950">{{ disabledMessage }}</p>
-    </div>
-
-    <!-- Enabled state with points display -->
-    <div v-if="canExchange && lottery" class="flex w-full items-center justify-between gap-2">
-      <p class="body-m text-slate-950">Tukar dengan</p>
-      <p class="body-l-semibold text-primary-700">
-        {{ formatNumber(lottery.pricePoint ?? 0) }} poin
-      </p>
-    </div>
-
-    <!-- Button -->
-    <Button
-      :variant="canExchange ? 'primary' : 'secondary'"
-      size="sm"
-      class="w-full"
-      :disabled="!canExchange"
-      @click="handleExchangeClick"
-    >
-      Tukar Poin
-    </Button>
-  </Footer>
 
   <!-- Location Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet

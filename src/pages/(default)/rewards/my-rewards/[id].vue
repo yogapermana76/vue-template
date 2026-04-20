@@ -254,23 +254,23 @@
       <!-- Terms & Conditions Section -->
       <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
     </main>
+
+    <!-- Footer with Button -->
+    <Footer v-if="showFooterButton && !isPending" position="fixed">
+      <!-- Lottery coupon info (for lottery-coupon type) -->
+      <div
+        v-if="rewardType === 'lottery-coupon'"
+        class="flex w-full items-center justify-between gap-2"
+      >
+        <p class="body-m text-slate-950">Jumlah Kupon</p>
+        <p class="body-l-semibold text-slate-950">{{ lotteryCouponCount }} Kupon</p>
+      </div>
+
+      <Button variant="primary" size="sm" class="w-full" @click="buttonConfig.action">
+        {{ buttonConfig.label }}
+      </Button>
+    </Footer>
   </template>
-
-  <!-- Footer with Button -->
-  <Footer v-if="showFooterButton && !isPending" position="fixed">
-    <!-- Lottery coupon info (for lottery-coupon type) -->
-    <div
-      v-if="rewardType === 'lottery-coupon'"
-      class="flex w-full items-center justify-between gap-2"
-    >
-      <p class="body-m text-slate-950">Jumlah Kupon</p>
-      <p class="body-l-semibold text-slate-950">{{ lotteryCouponCount }} Kupon</p>
-    </div>
-
-    <Button variant="primary" size="sm" class="w-full" @click="buttonConfig.action">
-      {{ buttonConfig.label }}
-    </Button>
-  </Footer>
 
   <!-- Lottery Codes Bottom Sheet -->
   <LotteryCodesBottomSheet v-model:open="isLotteryCodesOpen" :lottery-detail="lotteryDetail" />
