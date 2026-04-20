@@ -25,8 +25,12 @@
   import { authStorage } from '@/utils/storage'
   import { formatDateRange } from '@/utils/date'
   import { formatNumber } from '@/utils/currency'
+  import { extractApiError } from '@/utils'
+  import { openDeeplink } from '@/utils/native-bridge'
   import type { User } from '@/types/services/auth.types'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.svg?component'
+  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.svg?component'
 
   definePage({
     meta: {
@@ -36,6 +40,14 @@
 
   const router = useRouter()
   const route = useRoute()
+
+  // ============================================
+  // Confirmation & Error State
+  // ============================================
+  const showErrorSheet = ref(false)
+  const errorTitle = ref('')
+  const errorDescription = ref('')
+  const errorDeeplink = ref('')
 
   // ============================================
   // Route & User Data
@@ -385,11 +397,17 @@
   }
 
   const handleCancelExchange = () => {
-    showConfirmationSheet.value = false
+    // Only allow cancel if not processing mutation
+    if (!isRedeeming.value) {
+      showConfirmationSheet.value = false
+    }
   }
 
   const handleConfirmExchange = handleSubmit(formValues => {
-    showConfirmationSheet.value = false
+    // Reset error state before submission
+    errorTitle.value = ''
+    errorDescription.value = ''
+    // Don't close confirmation sheet - keep it open until mutation completes
 
     // Destructure to separate id from other fields
     const { id, ...addressFields } = formValues
@@ -402,10 +420,20 @@
       }
       redeemLottery(lotteryRequest, {
         onSuccess: response => {
+          // Only close sheet on success
+          showConfirmationSheet.value = false
           const tUserPointId = response.data?.tUserPointId
           if (tUserPointId) {
             router.replace(`/rewards/redemption/${tUserPointId}`)
           }
+        },
+        onError: (error: unknown) => {
+          showConfirmationSheet.value = false
+          const { title, description, deeplink } = extractApiError(error, 'Gagal Menukar Undian')
+          errorTitle.value = title
+          errorDescription.value = description
+          errorDeeplink.value = deeplink || ''
+          showErrorSheet.value = true
         },
       })
     } else if (isReward.value) {
@@ -416,10 +444,20 @@
       }
       exchangeReward(rewardRequest, {
         onSuccess: response => {
+          // Only close sheet on success
+          showConfirmationSheet.value = false
           const redemptionId = response.data?.id
           if (redemptionId) {
             router.replace(`/rewards/redemption/${redemptionId}`)
           }
+        },
+        onError: (error: unknown) => {
+          showConfirmationSheet.value = false
+          const { title, description, deeplink } = extractApiError(error, 'Gagal Menukar Hadiah')
+          errorTitle.value = title
+          errorDescription.value = description
+          errorDeeplink.value = deeplink || ''
+          showErrorSheet.value = true
         },
       })
     }
@@ -437,6 +475,67 @@
     // Trigger validation by attempting to submit
     await onSubmit()
   }
+
+  // ============================================
+  // Error Illustration
+  // ============================================
+
+  const errorIllustration = computed(() => {
+    if (errorTitle.value === 'Ups, hadiah sudah habis') {
+      return DisappointedMascotIllustration
+    }
+    return PensiveMascotIllustration
+  })
+
+  // Handle email verification redirect
+  const handleVerifyEmail = () => {
+    if (errorDeeplink.value) {
+      openDeeplink(errorDeeplink.value)
+    }
+    showErrorSheet.value = false
+  }
+
+  // Close error sheet handler
+  const handleCloseError = (): void => {
+    showErrorSheet.value = false
+  }
+
+  // Lowercase error title for case-insensitive comparison
+  const errorTitleLower = computed(() => errorTitle.value.toLowerCase())
+
+  // Verification error titles to button labels map
+  const verificationLabels: Record<string, string> = {
+    'verifikasi email dulu, yuk!': 'Verifikasi Email',
+    'verifikasi nomor hp dulu, yuk!': 'Verifikasi Nomor HP',
+  }
+
+  // Dynamic error bottom sheet buttons
+  const errorSheetButtons = computed(() => {
+    const verificationLabel = verificationLabels[errorTitleLower.value]
+
+    if (verificationLabel) {
+      return [
+        {
+          label: verificationLabel,
+          variant: 'primary' as const,
+          onClick: handleVerifyEmail,
+        },
+        {
+          label: 'Tutup',
+          variant: 'secondary' as const,
+          onClick: handleCloseError,
+        },
+      ]
+    }
+
+    return [
+      {
+        label: 'Kembali',
+        variant: 'primary' as const,
+        onClick: handleCloseError,
+      },
+    ]
+  })
 </script>
 
 <template>
@@ -570,5 +669,15 @@
         onClick: handleConfirmExchange,
       },
     ]"
+  />
+
+  <!-- Error Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showErrorSheet"
+    :image="errorIllustration"
+    :title="errorTitle"
+    :description="errorDescription"
+    :button-layout="'column'"
+    :buttons="errorSheetButtons"
   />
 </template>

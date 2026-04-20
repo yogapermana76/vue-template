@@ -17,10 +17,13 @@
     useRewardExchange,
   } from '@/composables/services'
   import { authStorage } from '@/utils/storage'
-  import { formatNumber } from '@/utils'
+  import { formatNumber, extractApiError } from '@/utils'
+  import { openDeeplink } from '@/utils/native-bridge'
   import type { User } from '@/types/services/auth.types'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.svg?component'
+  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
@@ -33,6 +36,10 @@
   const router = useRouter()
   const showConfirmationSheet = ref(false)
   const showAddressSheet = ref(false)
+  const showErrorSheet = ref(false)
+  const errorTitle = ref('')
+  const errorDescription = ref('')
+  const errorDeeplink = ref('')
 
   // Get user profile from storage
   const userProfile = authStorage.getUser<User>()
@@ -178,6 +185,11 @@
   const handleConfirmExchange = () => {
     if (!lastAddressData.value?.data) return
 
+    // Reset error state before submission
+    errorTitle.value = ''
+    errorDescription.value = ''
+    // Don't close confirmation sheet - keep it open until mutation completes
+
     const address = lastAddressData.value.data
 
     exchangeReward(
@@ -199,11 +211,20 @@
       },
       {
         onSuccess: response => {
+          // Only close sheet on success
           showConfirmationSheet.value = false
           const redemptionId = response.data?.id
           if (redemptionId) {
             router.push(`/rewards/redemption/${redemptionId}`)
           }
+        },
+        onError: (error: unknown) => {
+          showConfirmationSheet.value = false
+          const { title, description, deeplink } = extractApiError(error, 'Gagal Menukar Hadiah')
+          errorTitle.value = title
+          errorDescription.value = description
+          errorDeeplink.value = deeplink || ''
+          showErrorSheet.value = true
         },
       },
     )
@@ -229,6 +250,64 @@
   const confirmationDescription = computed(() => {
     if (!reward.value) return ''
     return `Apakah anda ingin menukarkan <strong>${formatNumber(reward.value.pricePoint)} poin</strong> untuk mendapatkan hadiah ini?`
+  })
+
+  // Error illustration based on error title
+  const errorIllustration = computed(() => {
+    if (errorTitle.value === 'Ups, hadiah sudah habis') {
+      return DisappointedMascotIllustration
+    }
+    return PensiveMascotIllustration
+  })
+
+  // Handle email verification redirect
+  const handleVerifyEmail = () => {
+    if (errorDeeplink.value) {
+      openDeeplink(errorDeeplink.value)
+    }
+    showErrorSheet.value = false
+  }
+
+  // Close error sheet handler
+  const handleCloseError = (): void => {
+    showErrorSheet.value = false
+  }
+
+  // Lowercase error title for case-insensitive comparison
+  const errorTitleLower = computed(() => errorTitle.value.toLowerCase())
+
+  // Verification error titles to button labels map
+  const verificationLabels: Record<string, string> = {
+    'verifikasi email dulu, yuk!': 'Verifikasi Email',
+    'verifikasi nomor hp dulu, yuk!': 'Verifikasi Nomor HP',
+  }
+
+  // Dynamic error bottom sheet buttons
+  const errorSheetButtons = computed(() => {
+    const verificationLabel = verificationLabels[errorTitleLower.value]
+
+    if (verificationLabel) {
+      return [
+        {
+          label: verificationLabel,
+          variant: 'primary' as const,
+          onClick: handleVerifyEmail,
+        },
+        {
+          label: 'Tutup',
+          variant: 'secondary' as const,
+          onClick: handleCloseError,
+        },
+      ]
+    }
+
+    return [
+      {
+        label: 'Kembali',
+        variant: 'primary' as const,
+        onClick: handleCloseError,
+      },
+    ]
   })
 </script>
 
@@ -318,5 +397,15 @@
         onClick: handleConfirmAddress,
       },
     ]"
+  />
+
+  <!-- Error Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showErrorSheet"
+    :image="errorIllustration"
+    :title="errorTitle"
+    :description="errorDescription"
+    :button-layout="'column'"
+    :buttons="errorSheetButtons"
   />
 </template>

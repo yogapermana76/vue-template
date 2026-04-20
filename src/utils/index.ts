@@ -8,7 +8,13 @@ export {
   type LocaleCode,
 } from './currency'
 export { formatDate, formatRelativeDate, formatDateTime, formatTime, isValidDate } from './date'
-export { toAppError, getErrorMessage, type AppError } from './error'
+export {
+  toAppError,
+  getErrorMessage,
+  extractApiError,
+  type AppError,
+  type ExtractedApiError,
+} from './error'
 export {
   // Storage modules
   authStorage,

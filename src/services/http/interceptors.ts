@@ -12,6 +12,7 @@ import type {
 import { toast } from 'vue-sonner'
 import { authStorage } from '@/utils'
 import { refreshTokenWithQueue } from './token-refresh'
+import type { ApiErrorData } from '@/types'
 
 type RequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean
@@ -32,7 +33,7 @@ interface ApiResponse {
   success?: boolean
   code?: string
   message?: string
-  data?: unknown
+  data?: unknown | ApiErrorData
 }
 
 /**
@@ -46,6 +47,21 @@ const isBusinessError = (data: unknown): data is ApiResponse => {
   return (
     response.success === false || (response.code !== undefined && response.code !== SUCCESS_CODE)
   )
+}
+
+/**
+ * Check if error has structured data for UI display (bottomsheet)
+ * These errors should NOT show toast - they will be handled by component
+ */
+const hasStructuredErrorData = (data: unknown): boolean => {
+  if (!data || typeof data !== 'object') return false
+
+  const response = data as ApiResponse
+  const errorData = response.data
+
+  if (!errorData || typeof errorData !== 'object') return false
+
+  return 'title' in errorData && 'desc' in errorData
 }
 
 /**
@@ -112,9 +128,12 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
       if (response.data && isBusinessError(response.data)) {
         const errorMessage = response.data.message || 'Request failed'
 
-        // Show toast only if not explicitly disabled
+        // Skip toast if error has structured data (will be shown in bottomsheet)
+        // or if explicitly disabled via config
         const config = response.config as RequestConfig
-        const shouldShowToast = config.showErrorToast !== false
+        const hasUIErrorData = hasStructuredErrorData(response.data)
+        const shouldShowToast = config.showErrorToast !== false && !hasUIErrorData
+
         if (shouldShowToast) {
           showErrorToast(errorMessage)
         }
@@ -143,8 +162,11 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
         authStorage.clearSession()
       }
 
-      // Show toast for non-401 errors only if not explicitly disabled
-      const shouldShowToast = config?.showErrorToast !== false
+      // Skip toast if error has structured data (will be shown in bottomsheet)
+      // or if explicitly disabled via config
+      const hasUIErrorData = hasStructuredErrorData(error.response?.data)
+      const shouldShowToast = config?.showErrorToast !== false && !hasUIErrorData
+
       if (status !== 401 && shouldShowToast) {
         showErrorToast(getErrorMessage(error))
       }

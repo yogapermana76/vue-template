@@ -50,6 +50,28 @@ export type PaginatedResponse<T> = BaseResponse<PaginatedData<T>>
 // ============================================
 
 /**
+ * API error data structure for user-facing errors
+ * Used when API returns error with displayable title and description
+ */
+export interface ApiErrorData {
+  title: string
+  desc: string
+  deeplink?: string
+}
+
+/**
+ * API error response structure
+ * Matches the backend error response format
+ */
+export interface ApiErrorResponse {
+  success: false
+  message: string
+  code: string
+  data?: ApiErrorData
+  time?: string
+}
+
+/**
  * Business error type from HTTP interceptor
  * Used when API returns 200 but with success: false or code !== '2000'
  */
