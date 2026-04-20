@@ -3,11 +3,17 @@
  * File-based routing with auto-generated routes from src/pages/
  */
 
-import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteLocationNormalized,
+  type LocationQuery,
+} from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { config } from '@/config'
 import { useAuthService } from '@/composables/services'
 import { saveAuthQueryParams } from '@/utils/auth'
+import { authStorage } from '@/utils/storage/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,16 +27,26 @@ const router = createRouter({
 
 let authInitialized = false
 
+/**
+ * Check if query params have changed compared to stored params
+ */
+const hasParamsChanged = (stored: LocationQuery | null, current: LocationQuery): boolean => {
+  return !stored || JSON.stringify(stored) !== JSON.stringify(current)
+}
+
 const initializeAuth = async (route: RouteLocationNormalized) => {
   if (authInitialized) return
   authInitialized = true
 
-  // Save query params for token refresh
-  saveAuthQueryParams(route.query)
+  // Update stored params if query params changed
+  const storedParams = authStorage.getAuthFromApps<LocationQuery>()
+  if (hasParamsChanged(storedParams, route.query)) {
+    saveAuthQueryParams(route.query)
+  }
 
+  // Check auth with token from query params
   const { checkAuth } = useAuthService()
-  const token = route.query?.token as string | undefined
-  await checkAuth(token)
+  await checkAuth(route.query.token as string | undefined)
 }
 
 router.beforeEach(async to => {
