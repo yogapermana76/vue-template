@@ -193,7 +193,7 @@ export interface UserGiftInstantlyParams {
 }
 
 export interface UserGiftInstantlyDetailParams {
-  id: string
+  userPointId: string
 }
 
 export interface ExchangePointDetailParams {
@@ -230,7 +230,7 @@ export type UseUserGiftInstantlyParams = BaseComposableParams<PaginationOnly>
 /** Parameters for useUserGiftInstantlyDetail composable */
 export type UseUserGiftInstantlyDetailParams = BaseComposableParams<
   never,
-  { id?: MaybeRef<string> }
+  { userPointId?: MaybeRef<string> }
 >
 
 /** Parameters for useExchangePointDetail composable */

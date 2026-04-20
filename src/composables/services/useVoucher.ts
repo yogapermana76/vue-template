@@ -29,7 +29,7 @@ export const voucherKeys = {
   all: ['voucher'] as const,
   pages: (query?: { page?: number; size?: number; categoryId?: number }) =>
     [...voucherKeys.all, 'pages', query] as const,
-  detail: (id?: string) => [...voucherKeys.all, 'detail', id] as const,
+  detail: (voucherCodeAndId?: string) => [...voucherKeys.all, 'detail', voucherCodeAndId] as const,
   categories: () => [...voucherKeys.all, 'categories'] as const,
 }
 
@@ -96,29 +96,33 @@ export function useVoucherPages(params: UseVoucherPagesParams = {}) {
 }
 
 /**
- * Get voucher detail by ID
+ * Get voucher detail by code and ID
  *
  * @example
- * // Static ID
- * const { data } = useVoucherDetail({ params: { id: '123' } })
+ * // Static parameters
+ * const { data } = useVoucherDetail({ params: { voucherCode: 'LVXH9KNMDVO6', voucherId: '434' } })
  *
  * @example
- * // Reactive ID (from route) with options
+ * // Reactive parameters (from route) with options
  * const route = useRoute()
- * const id = computed(() => route.params.id as string)
+ * const voucherCode = computed(() => route.params.code as string)
+ * const voucherId = computed(() => route.params.id as string)
  * const { data } = useVoucherDetail({
- *   params: { id },
+ *   params: { voucherCode, voucherId },
  *   options: { enabled: isReady }
  * })
  */
 export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
   const { params: pathParams = {}, options = {} } = params
-  const { id } = pathParams
+  const { voucherCode, voucherId } = pathParams
 
   const authStore = useAuthStore()
-  const resolvedId = computed(() => unref(id))
+  const resolvedCode = computed(() => unref(voucherCode))
+  const resolvedId = computed(() => unref(voucherId))
 
-  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedId.value)
+  const defaultEnabled = computed(
+    () => authStore.isAuthenticated && !!resolvedCode.value && !!resolvedId.value,
+  )
   const resolvedEnabled = computed(() =>
     options.enabled !== undefined
       ? unref(options.enabled) && defaultEnabled.value
@@ -126,8 +130,12 @@ export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
   )
 
   return useQuery({
-    queryKey: computed(() => voucherKeys.detail(resolvedId.value)),
-    queryFn: () => voucherService.detail({ id: resolvedId.value! }),
+    queryKey: computed(() => voucherKeys.detail(`${resolvedCode.value}-${resolvedId.value}`)),
+    queryFn: () =>
+      voucherService.detail({
+        voucherCode: resolvedCode.value!,
+        voucherId: String(resolvedId.value!),
+      }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })

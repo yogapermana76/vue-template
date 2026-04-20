@@ -73,7 +73,8 @@ export interface VoucherPagesParams {
 }
 
 export interface VoucherDetailParams {
-  id: string
+  voucherCode: string
+  voucherId: string | number
 }
 
 // ============================================
@@ -86,7 +87,10 @@ export type UseVoucherPagesParams = BaseComposableParams<{
 }>
 
 /** Parameters for useVoucherDetail composable */
-export type UseVoucherDetailParams = BaseComposableParams<never, { id?: MaybeRef<string> }>
+export type UseVoucherDetailParams = BaseComposableParams<
+  never,
+  { voucherCode?: MaybeRef<string>; voucherId?: MaybeRef<string | number> }
+>
 
 /** Parameters for useVoucherCategories composable */
 export type UseVoucherCategoriesParams = BaseComposableParams

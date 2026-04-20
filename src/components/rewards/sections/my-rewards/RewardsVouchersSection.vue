@@ -105,10 +105,14 @@
     },
   })
 
-  const handleVoucherClick = (voucherId: string) => {
+  const handleVoucherClick = (voucherId: number, voucherCode: string | null) => {
+    const query: Record<string, string> = { type: 'voucher' }
+    if (voucherCode) {
+      query.voucherCode = voucherCode
+    }
     router.push({
       path: `/rewards/my-rewards/${voucherId}`,
-      query: { type: 'voucher' },
+      query,
     })
   }
 </script>
@@ -155,8 +159,8 @@
             :flag-text="
               voucher.availableQuota > 0 ? `Tersisa ${voucher.availableQuota}` : undefined
             "
-            @button-click="handleVoucherClick(voucher.voucherId.toString())"
-            @card-click="handleVoucherClick(voucher.voucherId.toString())"
+            @button-click="handleVoucherClick(voucher.voucherId, voucher.voucherCode)"
+            @card-click="handleVoucherClick(voucher.voucherId, voucher.voucherCode)"
           />
         </div>
 

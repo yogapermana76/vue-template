@@ -46,7 +46,7 @@
 
   // Fetch gift instantly detail if type is item
   const { data: giftInstantlyDetailData, isPending: isGiftPending } = useUserGiftInstantlyDetail({
-    params: { id: rewardId },
+    params: { userPointId: rewardId },
     options: {
       enabled: computed(() => rewardType.value === 'item'),
     },
@@ -55,8 +55,9 @@
   const giftInstantlyDetail = computed(() => giftInstantlyDetailData.value?.data)
 
   // Fetch voucher detail if type is voucher
+  const voucherCode = computed(() => (route.query.voucherCode as string) || '')
   const { data: voucherDetailData, isPending: isVoucherPending } = useVoucherDetail({
-    params: { id: rewardId },
+    params: { voucherCode, voucherId: rewardId },
     options: {
       enabled: computed(() => rewardType.value === 'voucher'),
     },

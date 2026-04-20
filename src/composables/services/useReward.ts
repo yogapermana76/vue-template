@@ -285,10 +285,10 @@ export function useUserGiftInstantly(params: UseUserGiftInstantlyParams = {}) {
  */
 export function useUserGiftInstantlyDetail(params: UseUserGiftInstantlyDetailParams = {}) {
   const { params: pathParams = {}, options = {} } = params
-  const { id } = pathParams
+  const { userPointId } = pathParams
 
   const authStore = useAuthStore()
-  const resolvedId = computed(() => unref(id))
+  const resolvedId = computed(() => unref(userPointId))
 
   const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedId.value)
   const resolvedEnabled = computed(() =>
@@ -299,7 +299,7 @@ export function useUserGiftInstantlyDetail(params: UseUserGiftInstantlyDetailPar
 
   return useQuery({
     queryKey: computed(() => rewardKeys.userGiftInstantlyDetail(resolvedId.value)),
-    queryFn: () => rewardService.userGiftInstantlyDetail({ id: resolvedId.value! }),
+    queryFn: () => rewardService.userGiftInstantlyDetail({ userPointId: resolvedId.value! }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })

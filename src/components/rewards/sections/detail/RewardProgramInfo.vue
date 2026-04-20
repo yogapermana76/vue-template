@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { Component } from 'vue'
-  import { MapPin } from 'lucide-vue-next'
+  import MapPinIcon from '@/assets/icons/map-pin.svg?component'
 
   interface ProgramInfo {
     title: string
@@ -35,7 +35,7 @@
 </script>
 
 <template>
-  <section class="flex flex-col gap-3">
+  <section class="flex flex-col gap-4">
     <!-- Title & Description -->
     <div class="flex flex-col gap-1">
       <h1 class="heading-s text-slate-950">{{ programInfo.title }}</h1>
@@ -54,10 +54,10 @@
     </div>
 
     <!-- Address Section (only show if address exists) -->
-    <div v-if="address" class="flex flex-col gap-2">
+    <div v-if="address" class="flex flex-col gap-2 py-3">
       <h2 class="body-m-semibold text-slate-950">Alamat</h2>
       <div class="flex items-start gap-2">
-        <MapPin class="text-primary-600 mt-0.5 size-5 shrink-0" />
+        <MapPinIcon class="mt-0.5 size-5 shrink-0" />
         <div class="flex flex-1 flex-col justify-center gap-1">
           <div class="flex items-center gap-1">
             <span class="body-m text-slate-950">{{ address.fullname }}</span>
