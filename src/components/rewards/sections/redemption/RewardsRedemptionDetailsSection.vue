@@ -73,8 +73,8 @@
         <MapPinIcon class="mt-0.5 size-5 shrink-0" />
         <div class="flex flex-1 flex-col gap-1">
           <div class="flex items-center gap-1">
-            <span class="body-m text-slate-950">Name</span>
-            <span class="body-caption text-slate-700/75">(Phone)</span>
+            <span class="body-m text-slate-950">{{ props.data.address.fullname }}</span>
+            <span class="body-caption text-slate-700/75">({{ props.data.address.nohp }})</span>
           </div>
           <!-- Address Info -->
           <p class="body-caption-medium text-slate-700">

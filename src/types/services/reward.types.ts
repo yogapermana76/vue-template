@@ -104,6 +104,8 @@ export interface UserGiftInstantlyDetail extends UserGiftInstantly {
 
 export interface ExchangePointAddress {
   id: number
+  fullname: string
+  nohp: string
   provinceId: string
   provinceName: string
   cityId: string
