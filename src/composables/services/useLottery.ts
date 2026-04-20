@@ -9,10 +9,11 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
 import { lotteryService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
+import { pointKeys } from './usePoint'
 import type {
   UseLotteryRedeemablePagesParams,
   UseLotteryDetailParams,
@@ -281,7 +282,13 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
  * ```
  */
 export function useLotteryRedeem(options?: { showErrorToast?: boolean }) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (request: LotteryRedeemRequest) => lotteryService.redeem(request, options),
+    onSuccess: () => {
+      // Invalidate point summary to refetch updated balance
+      queryClient.invalidateQueries({ queryKey: pointKeys.summary() })
+    },
   })
 }

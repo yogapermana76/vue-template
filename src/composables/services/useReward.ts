@@ -9,10 +9,11 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
 import { rewardService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
+import { pointKeys } from './usePoint'
 import type {
   UseRewardGiftInstantlyParams,
   UseRewardRedeemableParams,
@@ -466,7 +467,13 @@ export function useVerifyInfo(params: UseVerifyInfoParams = {}) {
  * ```
  */
 export function useRewardExchange(options?: { showErrorToast?: boolean }) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (request: ExchangeRequest) => rewardService.exchange(request, options),
+    onSuccess: () => {
+      // Invalidate point summary to refetch updated balance
+      queryClient.invalidateQueries({ queryKey: pointKeys.summary() })
+    },
   })
 }
