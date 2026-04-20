@@ -1,9 +1,11 @@
 <script setup lang="ts">
-  import { watch } from 'vue'
+  import { computed } from 'vue'
+  import { useRoute } from 'vue-router'
   import { useRouter } from 'vue-router'
   import { Header, Footer, GradientSection } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { RewardsRedemptionDetailsSection } from '@/components/rewards'
+  import { RewardDetailSkeleton } from '@/components/rewards/sections'
   import { useExchangePointDetail } from '@/composables/services'
   import CheckIcon from '@/assets/illustrations/check.svg?component'
 
@@ -13,72 +15,81 @@
     },
   })
 
+  const route = useRoute()
   const router = useRouter()
 
+  // Get tUserPointId from route params
+  const tUserPointId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
+
   // Fetch exchange point detail
-  const { data: exchangePointDetail } = useExchangePointDetail({
-    params: { tUserPointId: '3190794' as string },
+  const { data: exchangePointDetail, isPending } = useExchangePointDetail({
+    params: { tUserPointId },
   })
 
-  // Debug: log data on change
-  watch(exchangePointDetail, val => {
-    // eslint-disable-next-line no-console
-    console.log('Exchange Point Detail:', val)
-  })
-
-  const handleDownloadInvoice = () => {
-    // TODO: Implement download invoice
-    console.log('Download invoice')
+  const handleViewReward = () => {
+    // Navigate to my rewards page
+    router.push('/rewards/my-rewards')
   }
 
-  const handleBackToRewards = () => {
-    router.push('/rewards')
+  const handleBackToHome = () => {
+    router.push('/')
   }
 </script>
 
 <template>
   <!-- Header -->
-  <Header title="Detail Penukaran" positioning="fixed" transparent />
+  <Header title="Detail Penukaran" positioning="fixed" :transparent="!isPending" />
 
-  <!-- Hero Section -->
-  <GradientSection gradient="cyan" class="items-center pb-12">
-    <!-- Success Content Container -->
-    <div class="flex flex-col items-center gap-4 px-4">
-      <!-- Check Icon -->
-      <div class="size-20 shrink-0">
-        <CheckIcon class="size-full" />
+  <!-- Loading State -->
+  <template v-if="isPending">
+    <RewardDetailSkeleton />
+  </template>
+
+  <!-- Loaded State -->
+  <template v-else>
+    <!-- Hero Section -->
+    <GradientSection gradient="cyan" class="items-center pb-12">
+      <!-- Success Content Container -->
+      <div class="flex flex-col items-center gap-4 px-4">
+        <!-- Check Icon -->
+        <div class="size-20 shrink-0">
+          <CheckIcon class="size-full" />
+        </div>
+
+        <!-- Text Container -->
+        <div class="flex flex-col items-center gap-1">
+          <!-- Title -->
+          <h1 class="heading-s text-center text-white">Penukaran Berhasil</h1>
+
+          <!-- Subtitle -->
+          <p class="body-m text-center text-white opacity-90">
+            Penukaran yang anda lakukan telah berhasil
+          </p>
+        </div>
       </div>
+    </GradientSection>
 
-      <!-- Text Container -->
-      <div class="flex flex-col items-center gap-1">
-        <!-- Title -->
-        <h1 class="heading-s text-center text-white">Penukaran Berhasil</h1>
+    <!-- Main Content -->
+    <main class="flex flex-1 flex-col gap-5 pb-36">
+      <RewardsRedemptionDetailsSection :data="exchangePointDetail?.data" />
+    </main>
 
-        <!-- Subtitle -->
-        <p class="body-m text-center text-white opacity-90">
-          Penukaran yang anda lakukan telah berhasil
-        </p>
-      </div>
-    </div>
-  </GradientSection>
-
-  <!-- Main Content -->
-  <main class="flex flex-1 flex-col gap-5 pt-5 pb-36">
-    <RewardsRedemptionDetailsSection />
-  </main>
-
-  <!-- Footer with Buttons -->
-  <Footer position="fixed">
-    <Button variant="primary" size="md" class="w-full" @click="handleDownloadInvoice">
-      Unduh Invoice
-    </Button>
-    <Button
-      variant="secondary"
-      size="md"
-      class="border-primary-600/50 text-primary-700 w-full"
-      @click="handleBackToRewards"
-    >
-      Kembali ke Rewards
-    </Button>
-  </Footer>
+    <!-- Footer with Buttons -->
+    <Footer position="fixed">
+      <Button variant="primary" size="md" class="w-full" @click="handleViewReward">
+        Lihat Reward
+      </Button>
+      <Button
+        variant="secondary"
+        size="md"
+        class="border-primary-600/50 text-primary-700 w-full"
+        @click="handleBackToHome"
+      >
+        Kembali ke Beranda
+      </Button>
+    </Footer>
+  </template>
 </template>

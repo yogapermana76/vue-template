@@ -403,7 +403,7 @@
         onSuccess: response => {
           const tUserPointId = response.data?.tUserPointId
           if (tUserPointId) {
-            router.push(`/rewards/redemption/${tUserPointId}`)
+            router.replace(`/rewards/redemption/${tUserPointId}`)
           }
         },
       })
@@ -417,7 +417,7 @@
         onSuccess: response => {
           const redemptionId = response.data?.id
           if (redemptionId) {
-            router.push(`/rewards/redemption/${redemptionId}`)
+            router.replace(`/rewards/redemption/${redemptionId}`)
           }
         },
       })

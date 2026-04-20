@@ -119,6 +119,8 @@ export interface ExchangePointDetail {
   point: number
   title: string
   address: ExchangePointAddress | null
+  description?: string
+  typeOfService?: string
 }
 
 // ============================================
