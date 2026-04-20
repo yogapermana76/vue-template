@@ -78,6 +78,7 @@ export {
   useVoucherPages,
   useVoucherPagesInfinite,
   useVoucherDetail,
+  useVoucherDetailsPages,
   useVoucherCategories,
   voucherKeys,
 } from './useVoucher'

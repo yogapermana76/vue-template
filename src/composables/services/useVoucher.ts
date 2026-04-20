@@ -17,7 +17,9 @@ import { useAuthStore } from '@/stores/auth'
 import type {
   UseVoucherPagesParams,
   UseVoucherDetailParams,
+  UseVoucherDetailsPagesParams,
   UseVoucherCategoriesParams,
+  VoucherDetailParams,
   Voucher,
 } from '@/types'
 
@@ -29,7 +31,10 @@ export const voucherKeys = {
   all: ['voucher'] as const,
   pages: (query?: { page?: number; size?: number; categoryId?: number }) =>
     [...voucherKeys.all, 'pages', query] as const,
-  detail: (voucherCodeAndId?: string) => [...voucherKeys.all, 'detail', voucherCodeAndId] as const,
+  detail: (voucherId?: string, voucherCode?: string) =>
+    [...voucherKeys.all, 'detail', { voucherId, voucherCode }] as const,
+  detailsPages: (query?: { page?: number; size?: number; voucherId?: string | number }) =>
+    [...voucherKeys.all, 'detailsPages', query] as const,
   categories: () => [...voucherKeys.all, 'categories'] as const,
 }
 
@@ -120,9 +125,18 @@ export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
   const resolvedCode = computed(() => unref(voucherCode))
   const resolvedId = computed(() => unref(voucherId))
 
-  const defaultEnabled = computed(
-    () => authStore.isAuthenticated && !!resolvedCode.value && !!resolvedId.value,
-  )
+  // Build service params reactively
+  const serviceParams = computed(() => {
+    const params: VoucherDetailParams = {
+      voucherId: String(resolvedId.value || ''),
+    }
+    if (resolvedCode.value) {
+      params.voucherCode = resolvedCode.value
+    }
+    return params
+  })
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedId.value)
   const resolvedEnabled = computed(() =>
     options.enabled !== undefined
       ? unref(options.enabled) && defaultEnabled.value
@@ -130,11 +144,60 @@ export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
   )
 
   return useQuery({
-    queryKey: computed(() => voucherKeys.detail(`${resolvedCode.value}-${resolvedId.value}`)),
+    queryKey: computed(() =>
+      voucherKeys.detail(String(resolvedId.value || ''), resolvedCode.value),
+    ),
+    queryFn: () => voucherService.detail(serviceParams.value),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get voucher codes details with pagination for a specific voucherId
+ *
+ * @example
+ * // Static parameters
+ * const { data } = useVoucherDetailsPages({ query: { voucherId: '422', page: 0, size: 10 } })
+ *
+ * @example
+ * // Reactive parameters with pagination
+ * const voucherId = ref('422')
+ * const page = ref(0)
+ * const { data } = useVoucherDetailsPages({
+ *   query: { voucherId, page, size: 10 }
+ * })
+ */
+export function useVoucherDetailsPages(params: UseVoucherDetailsPagesParams = {}) {
+  const { query = {}, options = {} } = params
+  const { page = 0, size = 10, voucherId } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedPage = computed(() => unref(page))
+  const resolvedSize = computed(() => unref(size))
+  const resolvedVoucherId = computed(() => unref(voucherId))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedVoucherId.value)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() =>
+      voucherKeys.detailsPages({
+        page: resolvedPage.value,
+        size: resolvedSize.value,
+        voucherId: resolvedVoucherId.value,
+      }),
+    ),
     queryFn: () =>
-      voucherService.detail({
-        voucherCode: resolvedCode.value!,
-        voucherId: String(resolvedId.value!),
+      voucherService.detailsPages({
+        page: resolvedPage.value,
+        size: resolvedSize.value,
+        voucherId: String(resolvedVoucherId.value || ''),
       }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,

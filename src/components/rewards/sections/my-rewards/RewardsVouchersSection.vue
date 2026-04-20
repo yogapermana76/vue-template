@@ -105,15 +105,34 @@
     },
   })
 
-  const handleVoucherClick = (voucherId: number, voucherCode: string | null) => {
-    const query: Record<string, string> = { type: 'voucher' }
-    if (voucherCode) {
-      query.voucherCode = voucherCode
-    }
+  // Codenames that require showing voucher code in bottomsheet
+  const voucherCodeSheetCodenames = ['general_voucher_code', 'ultra_voucher', 'raw_voucher']
+
+  // State for voucher code bottomsheet
+  const showVoucherCodeSheet = ref(false)
+  const selectedVoucherData = ref<Voucher | null>(null)
+
+  // Handle card click - navigate without voucherCode
+  const handleVoucherCardClick = (voucherId: number) => {
     router.push({
       path: `/rewards/my-rewards/${voucherId}`,
-      query,
+      query: { type: 'voucher' },
     })
+  }
+
+  // Handle button click - check codename to decide action
+  const handleVoucherButtonClick = (voucher: Voucher) => {
+    if (voucherCodeSheetCodenames.includes(voucher.codename)) {
+      // Show bottomsheet for voucher code display
+      selectedVoucherData.value = voucher
+      showVoucherCodeSheet.value = true
+    } else {
+      // Navigate to detail page for other types
+      router.push({
+        path: `/rewards/my-rewards/${voucher.voucherId}`,
+        query: { type: 'voucher' },
+      })
+    }
   }
 </script>
 
@@ -159,8 +178,8 @@
             :flag-text="
               voucher.availableQuota > 0 ? `Tersisa ${voucher.availableQuota}` : undefined
             "
-            @button-click="handleVoucherClick(voucher.voucherId, voucher.voucherCode)"
-            @card-click="handleVoucherClick(voucher.voucherId, voucher.voucherCode)"
+            @button-click="handleVoucherButtonClick(voucher)"
+            @card-click="handleVoucherCardClick(voucher.voucherId)"
           />
         </div>
 
@@ -180,6 +199,13 @@
         title="Voucher belum tersedia"
         description="Mohon maaf voucher sedang tidak tersedia untuk saat ini."
       />
+    </div>
+
+    <!-- Voucher Code Bottom Sheet (for general_voucher_code, ultra_voucher, raw_voucher) -->
+    <!-- TODO: Implement voucher code display bottomsheet -->
+    <div v-if="showVoucherCodeSheet && selectedVoucherData">
+      <!-- Placeholder for voucher code bottomsheet -->
+      <!-- This will display voucher code and handle share/copy functionality -->
     </div>
   </div>
 </template>

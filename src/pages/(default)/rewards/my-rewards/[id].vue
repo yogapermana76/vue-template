@@ -57,7 +57,10 @@
   // Fetch voucher detail if type is voucher
   const voucherCode = computed(() => (route.query.voucherCode as string) || '')
   const { data: voucherDetailData, isPending: isVoucherPending } = useVoucherDetail({
-    params: { voucherCode, voucherId: rewardId },
+    params: {
+      voucherId: rewardId,
+      voucherCode: voucherCode,
+    },
     options: {
       enabled: computed(() => rewardType.value === 'voucher'),
     },
@@ -188,7 +191,13 @@
   })
 
   // Dynamic button configuration
-  const showFooterButton = computed(() => rewardType.value !== 'item') // Hide footer for item type
+  const showFooterButton = computed(() => {
+    // Hide footer for item type
+    if (rewardType.value === 'item') return false
+    // Hide footer for voucher type without voucherCode
+    if (rewardType.value === 'voucher' && !voucherCode.value) return false
+    return true
+  })
 
   const buttonConfig = computed(() => {
     if (rewardType.value === 'lottery-coupon') {

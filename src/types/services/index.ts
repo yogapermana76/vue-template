@@ -110,14 +110,18 @@ export type {
   Voucher,
   VoucherCategory,
   VoucherDetail,
+  VoucherCodeDetail,
   VoucherPagesResponse,
   VoucherDetailResponse,
+  VoucherCodesResponse,
   VoucherCategoryResponse,
   VoucherPagesParams,
   VoucherDetailParams,
+  VoucherDetailsPagesParams,
   // Composable Params
   UseVoucherPagesParams,
   UseVoucherDetailParams,
+  UseVoucherDetailsPagesParams,
   UseVoucherCategoriesParams,
 } from './voucher.types'
 
