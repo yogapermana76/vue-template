@@ -66,6 +66,7 @@ export {
   useRewardCategories,
   useExchangePointDetail,
   useVerifyInfo,
+  useRewardExchange,
   rewardKeys,
 } from './useReward'
 

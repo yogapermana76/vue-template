@@ -140,7 +140,7 @@
     showConfirmationSheet.value = false
     router.push({
       path: '/rewards/complete-address',
-      query: { lotteryId: lotteryId.value },
+      query: { id: lotteryId.value, type: 'lottery' },
     })
   }
 </script>

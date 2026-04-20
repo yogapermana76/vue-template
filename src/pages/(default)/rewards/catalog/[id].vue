@@ -10,9 +10,17 @@
     RewardTermsSection,
     RewardDetailSkeleton,
   } from '@/components/rewards/sections'
-  import { useRewardRedeemableDetail, usePointSummary } from '@/composables/services'
+  import {
+    useRewardRedeemableDetail,
+    usePointSummary,
+    useLastAddress,
+    useRewardExchange,
+  } from '@/composables/services'
+  import { authStorage } from '@/utils/storage'
   import { formatNumber } from '@/utils'
+  import type { User } from '@/types/services/auth.types'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import LocationIllustration from '@/assets/illustrations/location.svg?component'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
@@ -24,6 +32,10 @@
   const route = useRoute()
   const router = useRouter()
   const showConfirmationSheet = ref(false)
+  const showAddressSheet = ref(false)
+
+  // Get user profile from storage
+  const userProfile = authStorage.getUser<User>()
 
   // Get ID from route params
   const rewardId = computed(() => {
@@ -38,6 +50,12 @@
 
   // Fetch user points
   const { data: userPointsData } = usePointSummary()
+
+  // Fetch last address for exchange
+  const { data: lastAddressData } = useLastAddress()
+
+  // Exchange mutation
+  const { mutate: exchangeReward } = useRewardExchange()
 
   const reward = computed(() => rewardDetail.value?.data)
   const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
@@ -146,7 +164,11 @@
   })
 
   const handleExchangeClick = () => {
-    showConfirmationSheet.value = true
+    if (reward.value?.type === 'ITEM') {
+      showAddressSheet.value = true
+    } else {
+      showConfirmationSheet.value = true
+    }
   }
 
   const handleCancelExchange = () => {
@@ -154,10 +176,44 @@
   }
 
   const handleConfirmExchange = () => {
-    showConfirmationSheet.value = false
+    if (!lastAddressData.value?.data) return
+
+    const address = lastAddressData.value.data
+
+    exchangeReward(
+      {
+        rewardId: Number(rewardId.value),
+        provinceId: address.provinceId,
+        provinceName: address.provinceName,
+        cityId: address.cityId,
+        cityName: address.cityName,
+        districtId: address.districtId,
+        districtName: address.districtName,
+        address: address.address,
+        postalCode: address.postalCode,
+        receivedInfo: {
+          fullname: userProfile?.fullname || '',
+          email: userProfile?.email || '',
+          noHp: userProfile?.phoneNumber || '',
+        },
+      },
+      {
+        onSuccess: response => {
+          showConfirmationSheet.value = false
+          const redemptionId = response.data?.id
+          if (redemptionId) {
+            router.push(`/rewards/redemption/${redemptionId}`)
+          }
+        },
+      },
+    )
+  }
+
+  const handleConfirmAddress = () => {
+    showAddressSheet.value = false
     router.push({
       path: '/rewards/complete-address',
-      query: { rewardId: rewardId.value },
+      query: { id: rewardId.value, type: 'reward' },
     })
   }
 
@@ -244,6 +300,22 @@
         label: 'Tukar Poin',
         variant: 'primary',
         onClick: handleConfirmExchange,
+      },
+    ]"
+  />
+
+  <!-- Location Confirmation Bottom Sheet (for ITEM type) -->
+  <ConfirmationBottomSheet
+    v-model:open="showAddressSheet"
+    :image="LocationIllustration"
+    title="Alamat belum lengkap"
+    description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
+    button-layout="column"
+    :buttons="[
+      {
+        label: 'Lengkapi alamat',
+        variant: 'primary',
+        onClick: handleConfirmAddress,
       },
     ]"
   />

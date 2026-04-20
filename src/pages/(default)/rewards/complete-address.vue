@@ -15,10 +15,12 @@
   import {
     useLastAddress,
     useLotteryRedeem,
+    useRewardExchange,
     useProvinces,
     useCities,
     useDistricts,
     useUserLotteryDetail,
+    useRewardRedeemableDetail,
   } from '@/composables/services'
   import { authStorage } from '@/utils/storage'
   import { formatDateRange } from '@/utils/date'
@@ -38,11 +40,19 @@
   // Route & User Data
   // ============================================
 
-  // Get lottery/reward ID from query params only
-  const lotteryId = computed(() => {
-    const id = route.query.lotteryId as string | undefined
+  // Get ID and type from query params
+  const itemId = computed(() => {
+    const id = route.query.id as string | undefined
     return id || ''
   })
+
+  const itemType = computed(() => {
+    const type = route.query.type as string | undefined
+    return type || 'lottery' // default to lottery for backward compatibility
+  })
+
+  const isLottery = computed(() => itemType.value === 'lottery')
+  const isReward = computed(() => itemType.value === 'reward')
 
   const userProfile = authStorage.getUser<User>()
 
@@ -51,10 +61,21 @@
   // ============================================
 
   const { data: lastAddressData } = useLastAddress()
+
+  // Fetch detail based on type
   const { data: lotteryDetailData } = useUserLotteryDetail({
-    params: { id: lotteryId },
+    params: { id: itemId },
+    options: { enabled: isLottery },
   })
-  const { mutate: redeemLottery, isPending: isRedeeming } = useLotteryRedeem()
+  const { data: rewardDetailData } = useRewardRedeemableDetail({
+    params: { id: itemId },
+    options: { enabled: isReward },
+  })
+
+  const { mutate: redeemLottery, isPending: isRedeemingLottery } = useLotteryRedeem()
+  const { mutate: exchangeReward, isPending: isExchangingReward } = useRewardExchange()
+
+  const isRedeeming = computed(() => isRedeemingLottery.value || isExchangingReward.value)
 
   // ============================================
   // Form Schema & Validation
@@ -63,9 +84,10 @@
   /**
    * Zod validation schema matching backend request body structure
    * All location fields (provinceId, cityId, districtId) use number type
+   * Uses generic 'id' field that works for both lottery and reward
    */
-  const lotteryRedeemSchema = z.object({
-    lotteryId: z.number({ required_error: 'Lottery ID diperlukan' }),
+  const redeemSchema = z.object({
+    id: z.number({ required_error: 'ID diperlukan' }),
     provinceId: z.number().refine(val => val > 0, 'Provinsi harus dipilih'),
     provinceName: z.string().min(1, 'Nama provinsi diperlukan'),
     cityId: z.number().refine(val => val > 0, 'Kota harus dipilih'),
@@ -81,16 +103,16 @@
     }),
   })
 
-  type LotteryRedeemFormValues = z.infer<typeof lotteryRedeemSchema>
+  type RedeemFormValues = z.infer<typeof redeemSchema>
 
   // ============================================
   // Form Initialization
   // ============================================
 
-  const { handleSubmit, setFieldValue, values, resetForm } = useForm<LotteryRedeemFormValues>({
-    validationSchema: toTypedSchema(lotteryRedeemSchema),
+  const { handleSubmit, setFieldValue, values, resetForm } = useForm<RedeemFormValues>({
+    validationSchema: toTypedSchema(redeemSchema),
     initialValues: {
-      lotteryId: parseInt(lotteryId.value, 10) || 0,
+      id: parseInt(itemId.value, 10) || 0,
       provinceId: 0, // 0 = not selected
       provinceName: '',
       cityId: 0,
@@ -165,7 +187,7 @@
       // Batch update all form fields using resetForm (more efficient than individual setFieldValue)
       resetForm({
         values: {
-          lotteryId: parseInt(lotteryId.value, 10) || 0,
+          id: parseInt(itemId.value, 10) || 0,
           address: address || '',
           postalCode: postalCode || '',
           provinceId: parseLocationId(provinceId),
@@ -196,8 +218,8 @@
     // Helper to set both ID and name fields for a location level
     const setLocationField = (
       id: string | undefined,
-      idField: keyof LotteryRedeemFormValues,
-      nameField: keyof LotteryRedeemFormValues,
+      idField: keyof RedeemFormValues,
+      nameField: keyof RedeemFormValues,
       nameMap: Record<string, string>,
     ) => {
       setFieldValue(idField, id ? parseInt(id, 10) : 0)
@@ -301,26 +323,36 @@
   }
 
   // ============================================
-  // Prize Data from Lottery Detail
+  // Prize Data from Detail (Lottery or Reward)
   // ============================================
 
   const prizeData = computed(() => {
     const lottery = lotteryDetailData.value?.data
-    if (!lottery) {
+    const reward = rewardDetailData.value?.data
+
+    if (isLottery.value && lottery) {
       return {
-        image: 'https://placehold.co/80x80',
-        title: '',
-        date: '',
+        image: lottery.imageUrl || 'https://placehold.co/80x80',
+        title: lottery.title || '',
+        date:
+          lottery.startDate && lottery.endDate
+            ? formatDateRange(lottery.startDate, lottery.endDate)
+            : '',
+      }
+    }
+
+    if (isReward.value && reward) {
+      return {
+        image: reward.imageUrl || 'https://placehold.co/80x80',
+        title: reward.title || '',
+        date: '', // Reward doesn't have date range
       }
     }
 
     return {
-      image: lottery.imageUrl || 'https://placehold.co/80x80',
-      title: lottery.title || '',
-      date:
-        lottery.startDate && lottery.endDate
-          ? formatDateRange(lottery.startDate, lottery.endDate)
-          : '',
+      image: 'https://placehold.co/80x80',
+      title: '',
+      date: '',
     }
   })
 
@@ -329,9 +361,19 @@
   // ============================================
 
   const confirmationDescription = computed(() => {
-    const lottery = lotteryDetailData.value?.data
-    if (!lottery) return ''
-    return `Apakah anda ingin menukarkan <strong>${lottery.pricePoint ?? 0} poin</strong> untuk mendapatkan kupon undian ini?`
+    if (isLottery.value) {
+      const lottery = lotteryDetailData.value?.data
+      if (!lottery) return ''
+      return `Apakah anda ingin menukarkan <strong>${lottery.pricePoint ?? 0} poin</strong> untuk mendapatkan kupon undian ini?`
+    }
+
+    if (isReward.value) {
+      const reward = rewardDetailData.value?.data
+      if (!reward) return ''
+      return `Apakah anda ingin menukarkan <strong>${reward.pricePoint ?? 0} poin</strong> untuk mendapatkan hadiah ini?`
+    }
+
+    return ''
   })
 
   const handleShowConfirmation = () => {
@@ -344,12 +386,39 @@
 
   const handleConfirmExchange = handleSubmit(formValues => {
     showConfirmationSheet.value = false
-    redeemLottery(formValues, {
-      onSuccess: () => {
-        // TODO: Navigate to actual redemption detail page with ID from response
-        router.push('/rewards/redemption/1')
-      },
-    })
+
+    // Destructure to separate id from other fields
+    const { id, ...addressFields } = formValues
+
+    if (isLottery.value) {
+      // Transform form values to lottery redeem request
+      const lotteryRequest = {
+        ...addressFields,
+        lotteryId: id,
+      }
+      redeemLottery(lotteryRequest, {
+        onSuccess: response => {
+          const tUserPointId = response.data?.tUserPointId
+          if (tUserPointId) {
+            router.push(`/rewards/redemption/${tUserPointId}`)
+          }
+        },
+      })
+    } else if (isReward.value) {
+      // Transform form values to reward exchange request
+      const rewardRequest = {
+        ...addressFields,
+        rewardId: id,
+      }
+      exchangeReward(rewardRequest, {
+        onSuccess: response => {
+          const redemptionId = response.data?.id
+          if (redemptionId) {
+            router.push(`/rewards/redemption/${redemptionId}`)
+          }
+        },
+      })
+    }
   })
 
   // ============================================

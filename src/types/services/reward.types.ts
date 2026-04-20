@@ -22,6 +22,7 @@ export interface Reward {
   description: string
   imageUrl: string
   pricePoint: number
+  type?: 'ITEM' | 'VOUCHER'
   categoryId?: number
   categoryName?: string
   stock?: number
@@ -142,15 +143,14 @@ export interface LastAddress extends FullAddress {
 // ============================================
 
 export interface ExchangeRequest extends FullAddress {
-  itemId: number
+  rewardId: number
 }
 
 export interface ExchangeResult {
-  id: string
-  itemId: number
-  point: number
-  status: 'SUCCESS' | 'PENDING' | 'FAILED'
-  transactionId?: string
+  id: number
+  pricePoint: number
+  total: number
+  transactionDate: string
 }
 
 export type ExchangeResponse = BaseResponse<ExchangeResult>

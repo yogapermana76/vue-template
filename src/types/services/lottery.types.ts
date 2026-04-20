@@ -75,11 +75,13 @@ export interface LotteryRedeemRequest extends FullAddress {
 }
 
 export interface LotteryRedeemResult {
-  id: string
+  id: number
+  userId: number
   lotteryId: number
-  point: number
-  status: 'SUCCESS' | 'PENDING' | 'FAILED'
-  transactionId?: string
+  lotteryCode: string
+  created: string
+  updated: string
+  tUserPointId: number
 }
 
 export type LotteryRedeemResponse = BaseResponse<LotteryRedeemResult>

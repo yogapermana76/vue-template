@@ -6,12 +6,34 @@
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { RewardCouponCardCompact, RewardCouponCardCompactSkeleton } from '@/components/rewards'
-  import { useRewardCategories, useRewardGiftInstantlyInfinite } from '@/composables/services'
+  import { ConfirmationBottomSheet } from '@/components/shared'
+  import {
+    useRewardCategories,
+    useRewardGiftInstantlyInfinite,
+    useLastAddress,
+    useRewardExchange,
+  } from '@/composables/services'
+  import { authStorage } from '@/utils/storage'
   import type { GiftInstantly } from '@/types'
+  import type { User } from '@/types/services/auth.types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import LocationIllustration from '@/assets/illustrations/location.svg?component'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
+  const showConfirmationSheet = ref(false)
+  const showAddressSheet = ref(false)
+  const selectedReward = ref<GiftInstantly | null>(null)
+
+  // Get user profile from storage
+  const userProfile = authStorage.getUser<User>()
+
+  // Fetch last address for exchange
+  const { data: lastAddressData } = useLastAddress()
+
+  // Exchange mutation
+  const { mutate: exchangeReward } = useRewardExchange()
 
   // Fetch reward categories for filter pills
   const { data: categoriesData, isPending: isCategoriesLoading } = useRewardCategories()
@@ -103,6 +125,72 @@
   const handleCouponClick = (reward: GiftInstantly) => {
     router.push(`/rewards/catalog/${reward.id}`)
   }
+
+  const handleButtonClick = (reward: GiftInstantly) => {
+    selectedReward.value = reward
+    // Show address sheet for ITEM type, confirmation sheet for others
+    if (reward.type === 'ITEM') {
+      showAddressSheet.value = true
+    } else {
+      showConfirmationSheet.value = true
+    }
+  }
+
+  const handleConfirmExchange = () => {
+    if (!selectedReward.value || !lastAddressData.value?.data) return
+
+    const address = lastAddressData.value.data
+    const rewardId = Number(selectedReward.value.id)
+
+    exchangeReward(
+      {
+        rewardId,
+        provinceId: address.provinceId,
+        provinceName: address.provinceName,
+        cityId: address.cityId,
+        cityName: address.cityName,
+        districtId: address.districtId,
+        districtName: address.districtName,
+        address: address.address,
+        postalCode: address.postalCode,
+        receivedInfo: {
+          fullname: userProfile?.fullname || '',
+          email: userProfile?.email || '',
+          noHp: userProfile?.phoneNumber || '',
+        },
+      },
+      {
+        onSuccess: response => {
+          showConfirmationSheet.value = false
+          const redemptionId = response.data?.id
+          if (redemptionId) {
+            router.push(`/rewards/redemption/${redemptionId}`)
+          }
+        },
+      },
+    )
+  }
+
+  const handleCancelExchange = () => {
+    showConfirmationSheet.value = false
+    selectedReward.value = null
+  }
+
+  const handleConfirmAddress = () => {
+    showAddressSheet.value = false
+    if (selectedReward.value) {
+      router.push({
+        path: '/rewards/complete-address',
+        query: { id: String(selectedReward.value.id), type: 'reward' },
+      })
+    }
+  }
+
+  // Computed for confirmation description
+  const confirmationDescription = computed(() => {
+    if (!selectedReward.value) return ''
+    return `Apakah anda ingin menukarkan ${selectedReward.value.pricePoint} poin untuk mendapatkan voucher ini?`
+  })
 </script>
 
 <template>
@@ -163,7 +251,7 @@
                   : undefined
             "
             :disabled="isOutOfStock(reward)"
-            @button-click="handleCouponClick(reward)"
+            @button-click="handleButtonClick(reward)"
             @card-click="handleCouponClick(reward)"
           />
         </div>
@@ -178,5 +266,42 @@
         </div>
       </div>
     </template>
+
+    <!-- Confirmation Bottom Sheet -->
+    <ConfirmationBottomSheet
+      v-model:open="showConfirmationSheet"
+      :image="MascotIllustration"
+      title="Menukarkan hadiah?"
+      :description="confirmationDescription"
+      button-layout="row"
+      :buttons="[
+        {
+          label: 'Kembali',
+          variant: 'secondary',
+          onClick: handleCancelExchange,
+        },
+        {
+          label: 'Tukar Poin',
+          variant: 'primary',
+          onClick: handleConfirmExchange,
+        },
+      ]"
+    />
+
+    <!-- Location Confirmation Bottom Sheet (for ITEM type) -->
+    <ConfirmationBottomSheet
+      v-model:open="showAddressSheet"
+      :image="LocationIllustration"
+      title="Alamat belum lengkap"
+      description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
+      button-layout="column"
+      :buttons="[
+        {
+          label: 'Lengkapi alamat',
+          variant: 'primary',
+          onClick: handleConfirmAddress,
+        },
+      ]"
+    />
   </div>
 </template>
