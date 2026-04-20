@@ -1,8 +1,10 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useClipboard } from '@vueuse/core'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
+  import { useToast } from '@/composables/ui'
   import {
     RewardProgramInfo,
     RewardTermsSection,
@@ -190,12 +192,21 @@
     return []
   })
 
+  // Clipboard and toast for voucher code copy
+  const { copy } = useClipboard()
+  const { success: toastSuccess } = useToast()
+
+  // Voucher code info from API
+  const voucherCodeInfo = computed(() => voucherDetail.value?.voucherCode)
+
   // Dynamic button configuration
   const showFooterButton = computed(() => {
     // Hide footer for item type
     if (rewardType.value === 'item') return false
-    // Hide footer for voucher type without voucherCode
-    if (rewardType.value === 'voucher' && !voucherCode.value) return false
+    // Show footer for voucher type if voucherCode info exists
+    if (rewardType.value === 'voucher') {
+      return !!voucherCodeInfo.value
+    }
     return true
   })
 
@@ -208,7 +219,33 @@
         },
       }
     }
-    // voucher (item type doesn't show footer, so no button config needed)
+
+    // Voucher type with CODE - copy to clipboard
+    if (rewardType.value === 'voucher' && voucherCodeInfo.value?.type === 'CODE') {
+      return {
+        label: 'Salin Kode',
+        action: () => {
+          if (voucherCodeInfo.value?.value) {
+            copy(voucherCodeInfo.value.value)
+            toastSuccess('Kode berhasil disalin')
+          }
+        },
+      }
+    }
+
+    // Voucher type with LINK - open URL
+    if (rewardType.value === 'voucher' && voucherCodeInfo.value?.type === 'LINK') {
+      return {
+        label: 'Klaim Voucher',
+        action: () => {
+          if (voucherCodeInfo.value?.value) {
+            window.open(voucherCodeInfo.value.value, '_blank')
+          }
+        },
+      }
+    }
+
+    // Default fallback
     return {
       label: 'Gunakan Voucher',
       action: () => {
@@ -273,6 +310,15 @@
       >
         <p class="body-m text-slate-950">Jumlah Kupon</p>
         <p class="body-l-semibold text-slate-950">{{ lotteryCouponCount }} Kupon</p>
+      </div>
+
+      <!-- Voucher code display (for voucher type with CODE) -->
+      <div
+        v-if="rewardType === 'voucher' && voucherCodeInfo?.type === 'CODE'"
+        class="flex w-full items-center justify-between gap-2"
+      >
+        <p class="body-m text-slate-950">Kode</p>
+        <p class="body-l-semibold text-slate-950">{{ voucherCodeInfo.value }}</p>
       </div>
 
       <Button variant="primary" size="sm" class="w-full" @click="buttonConfig.action">

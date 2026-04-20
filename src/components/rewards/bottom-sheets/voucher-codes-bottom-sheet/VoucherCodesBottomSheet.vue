@@ -80,7 +80,7 @@
   const handleCardClick = (voucherCode: VoucherCodeDetail) => {
     emit('update:open', false)
     router.push({
-      path: `/rewards/my-rewards/${voucherCode.id}`,
+      path: `/rewards/my-rewards/${voucherCode.voucherId}`,
       query: { type: 'voucher', voucherCode: voucherCode.voucherCode },
     })
   }
