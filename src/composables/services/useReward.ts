@@ -361,6 +361,7 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
     getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
+    placeholderData: keepPreviousData,
   })
 
   // Extract total from first page

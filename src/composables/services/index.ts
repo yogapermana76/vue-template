@@ -84,6 +84,8 @@ export {
   voucherKeys,
 } from './useVoucher'
 
+export { useVoucherCategoryFilter } from './useVoucherCategoryFilter'
+
 // ============================================
 // Region (CRITICAL for address forms)
 // ============================================

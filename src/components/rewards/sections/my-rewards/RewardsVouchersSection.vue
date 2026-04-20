@@ -14,7 +14,11 @@
   } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
-  import { useVoucherPagesInfinite, useVoucherCategories } from '@/composables/services'
+  import {
+    useVoucherPagesInfinite,
+    useVoucherCategories,
+    useVoucherCategoryFilter,
+  } from '@/composables/services'
   import type { Voucher } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
 
@@ -24,27 +28,8 @@
   // Fetch voucher categories
   const { data: categoriesData, isPending: isCategoriesPending } = useVoucherCategories()
 
-  // Get first enabled category ID as default, or null for "Semua"
-  const defaultCategoryId = computed(() => {
-    // Return null to show "Semua" as default (no filter)
-    return null
-  })
-
-  const activeCategoryId = ref<number | null>(null)
-
-  // Set default category when categories load
-  watch(
-    defaultCategoryId,
-    newDefaultId => {
-      if (newDefaultId !== null && activeCategoryId.value === null) {
-        activeCategoryId.value = newDefaultId
-      }
-    },
-    { immediate: true },
-  )
-
-  // Convert null to undefined for API call (MaybeRef<number | undefined>)
-  const categoryIdForApi = computed(() => activeCategoryId.value ?? undefined)
+  // Use shared category filter state
+  const { categoryIdForApi, activeFilterKey } = useVoucherCategoryFilter()
 
   // Fetch user vouchers with infinite scroll
   const {
@@ -99,14 +84,6 @@
     }
 
     return pills
-  })
-
-  // Active filter key for ScrollablePillTabs (string-based v-model)
-  const activeFilterKey = computed({
-    get: () => (activeCategoryId.value !== null ? String(activeCategoryId.value) : 'all'),
-    set: (value: string) => {
-      activeCategoryId.value = value === 'all' ? null : Number(value)
-    },
   })
 
   // Codenames that require showing voucher code in bottomsheet
