@@ -45,7 +45,7 @@
     if (selectedLottery.value) {
       router.push({
         path: '/rewards/complete-address',
-        query: { lotteryId: selectedLottery.value.id },
+        query: { id: selectedLottery.value.id, type: 'lottery' },
       })
     }
   }
