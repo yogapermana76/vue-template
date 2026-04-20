@@ -177,16 +177,6 @@
   </Header>
 
   <GradientSection gradient="teal" class="pt-14">
-    <div class="z-10 flex justify-center px-4 pb-3">
-      <div
-        class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
-      >
-        <span class="body-caption-semibold flex-1 text-center text-white">
-          {{ periodLabel }}
-        </span>
-      </div>
-    </div>
-
     <div v-if="isPending" class="z-10 flex flex-col gap-2 px-4 pb-8">
       <WinnerCardSkeleton v-for="i in 3" :key="i" :show-rank-icon="true" />
     </div>
@@ -199,17 +189,29 @@
       />
     </div>
 
-    <div v-else class="z-10 flex flex-col gap-2 px-4 pb-8">
-      <WinnerCard
-        v-for="item in featuredWinners"
-        :key="item.rank"
-        :rank="item.rank"
-        :prize="item.prize"
-        :winner="item.winner"
-        :prize-image="item.prizeImage"
-        :show-rank-icon="true"
-      />
-    </div>
+    <template v-else>
+      <div class="z-10 flex justify-center px-4 pb-3">
+        <div
+          class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
+        >
+          <span class="body-caption-semibold flex-1 text-center text-white">
+            {{ periodLabel }}
+          </span>
+        </div>
+      </div>
+
+      <div class="z-10 flex flex-col gap-2 px-4 pb-8">
+        <WinnerCard
+          v-for="item in featuredWinners"
+          :key="item.rank"
+          :rank="item.rank"
+          :prize="item.prize"
+          :winner="item.winner"
+          :prize-image="item.prizeImage"
+          :show-rank-icon="true"
+        />
+      </div>
+    </template>
   </GradientSection>
 
   <main :class="['flex flex-1 flex-col gap-2 px-4', mainPaddingClass]">
