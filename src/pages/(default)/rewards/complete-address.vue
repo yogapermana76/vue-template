@@ -345,7 +345,10 @@
       return {
         image: reward.imageUrl || 'https://placehold.co/80x80',
         title: reward.title || '',
-        date: '', // Reward doesn't have date range
+        date:
+          reward.startDate && reward.endDate
+            ? formatDateRange(reward.startDate, reward.endDate)
+            : '',
       }
     }
 
