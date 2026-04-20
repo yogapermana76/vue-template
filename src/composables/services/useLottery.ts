@@ -289,6 +289,8 @@ export function useLotteryRedeem(options?: { showErrorToast?: boolean }) {
     onSuccess: () => {
       // Invalidate point summary to refetch updated balance
       queryClient.invalidateQueries({ queryKey: pointKeys.summary() })
+      // Invalidate user lottery list to reflect new redemption
+      queryClient.invalidateQueries({ queryKey: lotteryKeys.userList() })
     },
   })
 }

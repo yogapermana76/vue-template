@@ -14,6 +14,7 @@ import { rewardService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
 import { pointKeys } from './usePoint'
+import { voucherKeys } from './useVoucher'
 import type {
   UseRewardGiftInstantlyParams,
   UseRewardRedeemableParams,
@@ -474,6 +475,10 @@ export function useRewardExchange(options?: { showErrorToast?: boolean }) {
     onSuccess: () => {
       // Invalidate point summary to refetch updated balance
       queryClient.invalidateQueries({ queryKey: pointKeys.summary() })
+      // Invalidate voucher pages to reflect new exchange
+      queryClient.invalidateQueries({ queryKey: voucherKeys.pages() })
+      // Invalidate gift instantly list to reflect new exchange
+      queryClient.invalidateQueries({ queryKey: rewardKeys.userGiftInstantly() })
     },
   })
 }
