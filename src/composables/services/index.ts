@@ -79,6 +79,7 @@ export {
   useVoucherPagesInfinite,
   useVoucherDetail,
   useVoucherDetailsPages,
+  useVoucherDetailsPagesInfinite,
   useVoucherCategories,
   voucherKeys,
 } from './useVoucher'

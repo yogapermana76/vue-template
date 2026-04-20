@@ -7,7 +7,11 @@
     ScrollablePillTabsSkeleton,
     type PillTabItem,
   } from '@/components/ui/pill-tab'
-  import { RewardCouponCard, RewardCouponCardSkeleton } from '@/components/rewards'
+  import {
+    RewardCouponCard,
+    RewardCouponCardSkeleton,
+    VoucherCodesBottomSheet,
+  } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { useVoucherPagesInfinite, useVoucherCategories } from '@/composables/services'
@@ -201,11 +205,12 @@
       />
     </div>
 
-    <!-- Voucher Code Bottom Sheet (for general_voucher_code, ultra_voucher, raw_voucher) -->
-    <!-- TODO: Implement voucher code display bottomsheet -->
-    <div v-if="showVoucherCodeSheet && selectedVoucherData">
-      <!-- Placeholder for voucher code bottomsheet -->
-      <!-- This will display voucher code and handle share/copy functionality -->
-    </div>
+    <!-- Voucher Codes Bottom Sheet (for general_voucher_code, ultra_voucher, raw_voucher) -->
+    <VoucherCodesBottomSheet
+      v-if="selectedVoucherData"
+      v-model:open="showVoucherCodeSheet"
+      :voucher-id="selectedVoucherData.voucherId"
+      :title="selectedVoucherData.title"
+    />
   </div>
 </template>

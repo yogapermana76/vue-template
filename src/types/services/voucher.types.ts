@@ -112,7 +112,7 @@ export type UseVoucherDetailParams = BaseComposableParams<
 export type UseVoucherDetailsPagesParams = BaseComposableParams<{
   page?: MaybeRef<number>
   size?: MaybeRef<number>
-  voucherId?: MaybeRef<string | number>
+  voucherId?: MaybeRef<string | number | undefined>
 }>
 
 /** Parameters for useVoucherCategories composable */

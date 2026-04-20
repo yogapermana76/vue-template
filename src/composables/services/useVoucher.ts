@@ -303,3 +303,68 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
     total,
   }
 }
+
+/**
+ * Get voucher codes details with infinite scroll pagination
+ *
+ * @example
+ * // Basic usage
+ * const voucherId = ref(422)
+ * const { data } = useVoucherDetailsPagesInfinite({
+ *   query: { voucherId, size: 10 }
+ * })
+ */
+export function useVoucherDetailsPagesInfinite(params: UseVoucherDetailsPagesParams = {}) {
+  const { query = {}, options = {} } = params
+  const { size = 10, voucherId } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedSize = computed(() => unref(size))
+  const resolvedVoucherId = computed(() => unref(voucherId))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedVoucherId.value)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  const infiniteQuery = useInfiniteQuery({
+    queryKey: computed(() =>
+      voucherKeys.detailsPages({
+        size: resolvedSize.value,
+        voucherId: resolvedVoucherId.value,
+      }),
+    ),
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await voucherService.detailsPages({
+        page: pageParam,
+        size: resolvedSize.value,
+        voucherId: String(resolvedVoucherId.value || ''),
+      })
+
+      const items = response.data?.data ?? []
+      const total = response.data?.total ?? 0
+
+      return {
+        data: items,
+        page: pageParam,
+        total,
+        hasMore: (pageParam + 1) * resolvedSize.value < total,
+      }
+    },
+    initialPageParam: 0,
+    getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
+}
