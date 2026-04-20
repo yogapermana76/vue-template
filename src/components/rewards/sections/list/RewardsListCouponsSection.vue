@@ -14,6 +14,7 @@
     useRewardExchange,
   } from '@/composables/services'
   import { authStorage } from '@/utils/storage'
+  import { formatNumber } from '@/utils'
   import type { GiftInstantly } from '@/types'
   import type { User } from '@/types/services/auth.types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
@@ -189,7 +190,7 @@
   // Computed for confirmation description
   const confirmationDescription = computed(() => {
     if (!selectedReward.value) return ''
-    return `Apakah anda ingin menukarkan ${selectedReward.value.pricePoint} poin untuk mendapatkan voucher ini?`
+    return `Apakah anda ingin menukarkan <strong>${formatNumber(selectedReward.value.pricePoint)} poin</strong> untuk mendapatkan voucher ini?`
   })
 </script>
 
