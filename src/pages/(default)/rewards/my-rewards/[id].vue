@@ -262,6 +262,25 @@
     return 0
   })
 
+  // Footer display info
+  const footerDisplayInfo = computed(() => {
+    if (rewardType.value === 'lottery-coupon' && lotteryDetail.value) {
+      return {
+        label: 'Jumlah Kupon',
+        value: `${lotteryCouponCount.value} Kupon`,
+      }
+    }
+
+    if (rewardType.value === 'voucher' && voucherCodeInfo.value?.type === 'CODE') {
+      return {
+        label: 'Kode',
+        value: voucherCodeInfo.value.value,
+      }
+    }
+
+    return null
+  })
+
   // Address for item type
   const address = computed(() => {
     if (rewardType.value === 'item' && giftInstantlyDetail.value) {
@@ -303,22 +322,10 @@
 
     <!-- Footer with Button -->
     <Footer v-if="showFooterButton && !isPending" position="fixed">
-      <!-- Lottery coupon info (for lottery-coupon type) -->
-      <div
-        v-if="rewardType === 'lottery-coupon'"
-        class="flex w-full items-center justify-between gap-2"
-      >
-        <p class="body-m text-slate-950">Jumlah Kupon</p>
-        <p class="body-l-semibold text-slate-950">{{ lotteryCouponCount }} Kupon</p>
-      </div>
-
-      <!-- Voucher code display (for voucher type with CODE) -->
-      <div
-        v-if="rewardType === 'voucher' && voucherCodeInfo?.type === 'CODE'"
-        class="flex w-full items-center justify-between gap-2"
-      >
-        <p class="body-m text-slate-950">Kode</p>
-        <p class="body-l-semibold text-slate-950">{{ voucherCodeInfo.value }}</p>
+      <!-- Footer display info -->
+      <div v-if="footerDisplayInfo" class="flex w-full items-center justify-between gap-2">
+        <p class="body-m text-slate-950">{{ footerDisplayInfo.label }}</p>
+        <p class="body-l-semibold text-slate-950">{{ footerDisplayInfo.value }}</p>
       </div>
 
       <Button variant="primary" size="sm" class="w-full" @click="buttonConfig.action">
