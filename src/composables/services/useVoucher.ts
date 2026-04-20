@@ -265,7 +265,7 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
       : defaultEnabled.value,
   )
 
-  return useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery({
     queryKey: computed(() =>
       voucherKeys.pages({
         size: resolvedSize.value,
@@ -285,6 +285,7 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
       return {
         data: items,
         page: pageParam,
+        total,
         hasMore: (pageParam + 1) * resolvedSize.value < total,
       }
     },
@@ -293,4 +294,12 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
 }

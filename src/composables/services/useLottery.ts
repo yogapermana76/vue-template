@@ -224,7 +224,7 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
       : defaultEnabled.value,
   )
 
-  return useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery({
     queryKey: computed(() =>
       lotteryKeys.userList({
         size: resolvedSize.value,
@@ -242,6 +242,7 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
       return {
         data: items,
         page: pageParam,
+        total,
         hasMore: (pageParam + 1) * resolvedSize.value < total,
       }
     },
@@ -250,6 +251,14 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
 }
 
 // ============================================

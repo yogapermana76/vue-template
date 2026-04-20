@@ -14,6 +14,11 @@
     RewardsLotteryCouponsSection,
     RewardsItemsSection,
   } from '@/components/rewards/sections'
+  import {
+    useVoucherPagesInfinite,
+    useUserLotteryListInfinite,
+    useUserGiftInstantlyInfinite,
+  } from '@/composables/services'
 
   definePage({
     meta: {
@@ -29,9 +34,11 @@
   ]
 
   const activeTab = ref('voucher')
-  const voucherBadgeCount = ref(2)
-  const lotteryCouponsBadgeCount = ref(2)
-  const itemsBadgeCount = ref(2)
+
+  // Fetch totals for badge counts (using size: 1 to minimize data fetch)
+  const { total: voucherBadgeCount } = useVoucherPagesInfinite({ query: { size: 1 } })
+  const { total: lotteryCouponsBadgeCount } = useUserLotteryListInfinite({ query: { size: 1 } })
+  const { total: itemsBadgeCount } = useUserGiftInstantlyInfinite({ query: { size: 1 } })
 </script>
 
 <template>
@@ -43,21 +50,21 @@
     <SwipeableTabBar v-slot="{ tab }">
       {{ tab.label }}
       <Badge
-        v-if="tab.key === 'voucher'"
+        v-if="tab.key === 'voucher' && voucherBadgeCount > 0"
         variant="destructive"
         class="body-small-semibold size-3.5 p-0 text-white"
       >
         {{ voucherBadgeCount }}
       </Badge>
       <Badge
-        v-if="tab.key === 'lottery-coupons'"
+        v-if="tab.key === 'lottery-coupons' && lotteryCouponsBadgeCount > 0"
         variant="destructive"
         class="body-small-semibold size-3.5 p-0 text-white"
       >
         {{ lotteryCouponsBadgeCount }}
       </Badge>
       <Badge
-        v-if="tab.key === 'items'"
+        v-if="tab.key === 'items' && itemsBadgeCount > 0"
         variant="destructive"
         class="body-small-semibold size-3.5 p-0 text-white"
       >

@@ -333,7 +333,7 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
       : defaultEnabled.value,
   )
 
-  return useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery({
     queryKey: computed(() =>
       rewardKeys.userGiftInstantly({
         size: resolvedSize.value,
@@ -351,6 +351,7 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
       return {
         data: items,
         page: pageParam,
+        total,
         hasMore: (pageParam + 1) * resolvedSize.value < total,
       }
     },
@@ -359,6 +360,14 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
 }
 
 /**
