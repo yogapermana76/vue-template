@@ -89,6 +89,7 @@ export type {
   LastAddressResponse,
   ExchangePointDetailResponse,
   VerifyInfoResponse,
+  SetExpiredTokenResponse,
   RewardPagesParams,
   RewardDetailParams,
   UserGiftInstantlyParams,

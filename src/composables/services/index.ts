@@ -67,6 +67,7 @@ export {
   useExchangePointDetail,
   useVerifyInfo,
   useRewardExchange,
+  useSetExpiredToken,
   rewardKeys,
 } from './useReward'
 

@@ -10,6 +10,7 @@
 
 import { computed, unref } from 'vue'
 import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { rewardService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
@@ -28,6 +29,7 @@ import type {
   RewardPagesParams,
   UserGiftInstantly,
   GiftInstantly,
+  SetExpiredTokenResponse,
 } from '@/types'
 
 // ============================================
@@ -51,6 +53,7 @@ export const rewardKeys = {
   exchangePointDetail: (tUserPointId?: string | number) =>
     [...rewardKeys.all, 'exchange-point-detail', tUserPointId] as const,
   verifyInfo: () => [...rewardKeys.all, 'verify-info'] as const,
+  setExpiredToken: () => [...rewardKeys.all, 'set-expired-token'] as const,
 }
 
 // ============================================
@@ -481,5 +484,15 @@ export function useRewardExchange(options?: { showErrorToast?: boolean }) {
       // Invalidate gift instantly list to reflect new exchange
       queryClient.invalidateQueries({ queryKey: rewardKeys.userGiftInstantly() })
     },
+  })
+}
+
+/**
+ * Set expired token
+ */
+export function useSetExpiredToken(options?: UseMutationOptions<SetExpiredTokenResponse>) {
+  return useMutation({
+    mutationFn: () => rewardService.setExpiredToken(),
+    ...options,
   })
 }

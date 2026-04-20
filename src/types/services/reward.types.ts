@@ -175,6 +175,7 @@ export type LastAddressResponse = BaseResponse<LastAddress | null>
 
 export type ExchangePointDetailResponse = BaseResponse<ExchangePointDetail>
 export type VerifyInfoResponse = BaseResponse<VerifyInfoData | null>
+export type SetExpiredTokenResponse = BaseResponse<null>
 
 // ============================================
 // Request Parameters

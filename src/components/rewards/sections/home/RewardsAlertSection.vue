@@ -2,7 +2,7 @@
   import { computed } from 'vue'
   import { AlertBox, AlertBoxSkeleton } from '@/components/ui/alert'
   import { Button } from '@/components/ui/button'
-  import { useVerifyInfo } from '@/composables/services'
+  import { useVerifyInfo, useSetExpiredToken } from '@/composables/services'
   import { openDeeplink } from '@/utils/native-bridge'
   import type { BusinessError, VerifyInfoResponse } from '@/types'
 
@@ -33,11 +33,21 @@
     return responseData.value?.data?.deeplink
   })
 
+  // Set expired token mutation with onSuccess callback
+  const { mutate: setExpiredToken } = useSetExpiredToken({
+    onSuccess: () => {
+      const deeplink = verifyDeeplink.value
+      if (deeplink) {
+        openDeeplink(deeplink)
+      }
+    },
+  })
+
   const handleVerifyClick = () => {
     const deeplink = verifyDeeplink.value
     if (!deeplink) return
 
-    openDeeplink(deeplink)
+    setExpiredToken()
   }
 </script>
 
