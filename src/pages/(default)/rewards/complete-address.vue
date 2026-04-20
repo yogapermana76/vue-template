@@ -24,6 +24,7 @@
   } from '@/composables/services'
   import { authStorage } from '@/utils/storage'
   import { formatDateRange } from '@/utils/date'
+  import { formatNumber } from '@/utils/currency'
   import type { User } from '@/types/services/auth.types'
   import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
 
@@ -367,13 +368,13 @@
     if (isLottery.value) {
       const lottery = lotteryDetailData.value
       if (!lottery) return ''
-      return `Apakah anda ingin menukarkan <strong>${lottery.pricePoint ?? 0} poin</strong> untuk mendapatkan kupon undian ini?`
+      return `Apakah anda ingin menukarkan <strong>${formatNumber(lottery.pricePoint ?? 0)} poin</strong> untuk mendapatkan kupon undian ini?`
     }
 
     if (isReward.value) {
       const reward = rewardDetailData.value?.data
       if (!reward) return ''
-      return `Apakah anda ingin menukarkan <strong>${reward.pricePoint ?? 0} poin</strong> untuk mendapatkan hadiah ini?`
+      return `Apakah anda ingin menukarkan <strong>${formatNumber(reward.pricePoint ?? 0)} poin</strong> untuk mendapatkan hadiah ini?`
     }
 
     return ''
