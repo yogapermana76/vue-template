@@ -31,11 +31,11 @@
 
   const handleViewReward = () => {
     // Navigate to my rewards page
-    router.push('/rewards/my-rewards')
+    router.replace('/rewards/my-rewards')
   }
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.replace('/')
   }
 </script>
 

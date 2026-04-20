@@ -19,7 +19,7 @@
     useProvinces,
     useCities,
     useDistricts,
-    useUserLotteryDetail,
+    useLotteryDetail,
     useRewardRedeemableDetail,
   } from '@/composables/services'
   import { authStorage } from '@/utils/storage'
@@ -63,7 +63,7 @@
   const { data: lastAddressData } = useLastAddress()
 
   // Fetch detail based on type
-  const { data: lotteryDetailData } = useUserLotteryDetail({
+  const { data: lotteryDetailData } = useLotteryDetail({
     params: { id: itemId },
     options: { enabled: isLottery },
   })
@@ -327,7 +327,7 @@
   // ============================================
 
   const prizeData = computed(() => {
-    const lottery = lotteryDetailData.value?.data
+    const lottery = lotteryDetailData.value
     const reward = rewardDetailData.value?.data
 
     if (isLottery.value && lottery) {
@@ -365,7 +365,7 @@
 
   const confirmationDescription = computed(() => {
     if (isLottery.value) {
-      const lottery = lotteryDetailData.value?.data
+      const lottery = lotteryDetailData.value
       if (!lottery) return ''
       return `Apakah anda ingin menukarkan <strong>${lottery.pricePoint ?? 0} poin</strong> untuk mendapatkan kupon undian ini?`
     }
