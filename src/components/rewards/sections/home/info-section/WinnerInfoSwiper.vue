@@ -54,13 +54,6 @@
     </div>
   </div>
 
-  <!-- No Items -->
-  <div v-else-if="items.length === 0" class="px-4">
-    <div class="rounded-sm bg-white/5 p-4 text-center">
-      <p class="body-caption text-white/60">Belum ada informasi pemenang</p>
-    </div>
-  </div>
-
   <!-- Multiple Items - Swiper -->
   <div v-else-if="needsSwiper" class="flex flex-col gap-2">
     <div>

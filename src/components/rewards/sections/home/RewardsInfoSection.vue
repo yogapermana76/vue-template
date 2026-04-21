@@ -71,6 +71,7 @@
 
     <!-- Winner Info Cards -->
     <WinnerInfoSwiper
+      v-if="isLoadingWinners || winnerItems.length > 0"
       :items="winnerItems"
       :is-loading="isLoadingWinners"
       @click="handleViewWinners"
