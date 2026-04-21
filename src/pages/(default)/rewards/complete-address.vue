@@ -644,9 +644,9 @@
           <Field name="districtId" v-slot="{ field, meta: fieldMeta }">
             <LocationField
               v-model="selectedLocation"
-              label="Kota/kecamatan"
-              placeholder="Pilih Kota/Kecamatan"
-              picker-title="Kota, Kecamatan"
+              label="Provinsi/Kota/Kecamatan"
+              placeholder="Pilih Provinsi/Kota/Kecamatan"
+              picker-title="Provinsi, Kota, Kecamatan"
               :province-names="provinceNames"
               :city-names="cityNames"
               :district-names="districtNames"

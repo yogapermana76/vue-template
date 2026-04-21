@@ -70,7 +70,17 @@
   })
 
   const handleClose = () => {
+    // Reset editing state when closing modal
+    editingLevel.value = null
+    searchQuery.value = ''
     isOpen.value = false
+  }
+
+  // Override handleReset to set editing mode to 'province' after reset
+  const handleResetWrapper = () => {
+    handleReset()
+    // After reset, set to editing province so search is enabled
+    editingLevel.value = 'province'
   }
 
   const handleSave = () => {
@@ -100,6 +110,18 @@
   })
 
   const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
+
+  // Disable search when empty OR all filled, BUT enable when editing any field
+  const isSearchDisabled = computed<boolean>(() => {
+    const isEmpty = !selectedProvinceId.value && !selectedCityId.value && !selectedDistrictId.value
+    const isFull = !!(selectedProvinceId.value && selectedCityId.value && selectedDistrictId.value)
+    const isEditing = !!editingLevel.value
+    return (isEmpty || isFull) && !isEditing
+  })
+
+  const finalSearchPlaceholder = computed(() => {
+    return isSearchDisabled.value ? 'Cari Provinsi, Kota, Kecamatan' : searchPlaceholder.value
+  })
 </script>
 
 <template>
@@ -145,7 +167,11 @@
           <div class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-4">
             <!-- Search Input (Sticky) -->
             <div class="sticky top-0 z-10 bg-white px-4 pt-4 pb-3">
-              <SearchInput v-model="searchQuery" :placeholder="searchPlaceholder" />
+              <SearchInput
+                v-model="searchQuery"
+                :placeholder="finalSearchPlaceholder"
+                :disabled="isSearchDisabled"
+              />
             </div>
 
             <!-- Selected Location Section -->
@@ -155,7 +181,7 @@
                 :province-name="selectedProvinceName"
                 :city-name="selectedCityName"
                 :district-name="selectedDistrictName"
-                @reset="handleReset"
+                @reset="handleResetWrapper"
                 @edit-province="handleEditProvince"
                 @edit-city="handleEditCity"
                 @edit-district="handleEditDistrict"
