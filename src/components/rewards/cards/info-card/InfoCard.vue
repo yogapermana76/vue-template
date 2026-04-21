@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
+  import lightningGlowImg from '@/assets/vectors/lightning-glow-md.png'
 
   interface Props {
     /**
@@ -61,6 +62,11 @@
         );
       "
     />
+
+    <!-- Lightning Glow -->
+    <div class="pointer-events-none absolute -top-8 -right-11">
+      <img :src="lightningGlowImg" alt="" />
+    </div>
 
     <!-- Title -->
     <h3 class="relative z-10 text-sm leading-5 font-semibold text-white">

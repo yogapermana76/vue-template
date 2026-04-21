@@ -3,7 +3,7 @@
   import { computed } from 'vue'
   import { RoundedOverlap } from '@/components/ui'
   import { cn } from '@/utils/cn'
-  import LightningGlowIcon from '@/assets/vectors/lightning-glow.svg?component'
+  import lightningGlowImg from '@/assets/vectors/lightning-glow-lg.png'
   import ellipseGlowSvg from '@/assets/vectors/ellipse-glow.png'
 
   type GradientVariant = 'navy' | 'cyan' | 'blue-cyan' | 'teal'
@@ -66,7 +66,9 @@
     </div>
 
     <!-- Lightning Glow Vector -->
-    <LightningGlowIcon class="absolute -top-35 -right-20" />
+    <div class="pointer-events-none absolute -top-35 -right-20">
+      <img :src="lightningGlowImg" alt="" />
+    </div>
 
     <!-- Slot for hero content -->
     <slot />
