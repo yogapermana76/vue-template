@@ -25,7 +25,7 @@
 </script>
 
 <template>
-  <GradientSection gradient="navy" :rounded-bottom="false" class="py-4">
+  <GradientSection gradient="navy" show-ellipse-glow :rounded-bottom="false" class="py-4">
     <h2 class="body-l-semibold mb-4 px-4 text-white">Cara Menggunakan Rewards</h2>
 
     <div v-if="isPending">

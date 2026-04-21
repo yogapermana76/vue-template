@@ -69,9 +69,7 @@
     <LightningGlowIcon class="absolute -top-35 -right-20" />
 
     <!-- Slot for hero content -->
-    <div class="relative z-10">
-      <slot />
-    </div>
+    <slot />
 
     <!-- Rounded Bottom Shape -->
     <RoundedOverlap v-if="roundedBottom" />
