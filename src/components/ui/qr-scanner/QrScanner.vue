@@ -3,7 +3,7 @@
   import { QrcodeStream } from 'vue-qrcode-reader'
   import { QrCode } from 'lucide-vue-next'
   import { cn } from '@/utils/cn'
-  import { config } from '@/config'
+  import { useResponsiveMaxWidth } from '@/composables/ui'
   import { Header } from '@/components/layout'
 
   /** Default error messages for camera errors */
@@ -101,6 +101,8 @@
     errorMessage.value = getErrorMessage(error.name)
     emit('error', error)
   }
+
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 </script>
 
 <template>
@@ -116,7 +118,7 @@
         <!-- Centered container with max-width -->
         <div
           :class="cn('relative mx-auto h-full w-full', props.class)"
-          :style="{ maxWidth: `${config.ui.maxWidth}px` }"
+          :style="responsiveMaxWidthStyle"
           data-slot="qr-scanner"
         >
           <!-- Header with Close Button -->

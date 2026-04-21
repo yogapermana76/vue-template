@@ -3,8 +3,7 @@
   import { ArrowLeft, X, Sun, Moon } from 'lucide-vue-next'
   import { useRouter } from 'vue-router'
   import { useThemeStore } from '@/stores/theme'
-  import { useWindowScroll } from '@/composables'
-  import { config } from '@/config'
+  import { useWindowScroll, useResponsiveMaxWidth } from '@/composables/ui'
   import { IconButton } from '@/components/ui/button'
   import { HeaderActionItem } from '@/components/layout'
   import type { HeaderProps } from '@/types'
@@ -24,6 +23,7 @@
 
   const router = useRouter()
   const themeStore = useThemeStore()
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
   const { isScrolled } = useWindowScroll({
     threshold: () => props.scrollThreshold,
   })
@@ -72,7 +72,7 @@
   /** Header max-width style for fixed/sticky positioning */
   const headerStyle = computed(() => {
     if (!isFixedOrSticky.value) return undefined
-    return { maxWidth: `${config.ui.maxWidth}px` }
+    return responsiveMaxWidthStyle.value
   })
 
   /** Title text color class */

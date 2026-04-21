@@ -1,5 +1,6 @@
 // UI interaction composables
 export { usePullToRefresh, type UsePullToRefreshOptions } from './usePullToRefresh'
+export { useResponsiveMaxWidth } from './useResponsiveMaxWidth'
 export {
   useSwipeableTabs,
   type TabItem,

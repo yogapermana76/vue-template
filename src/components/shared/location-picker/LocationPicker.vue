@@ -1,13 +1,12 @@
 <script setup lang="ts">
   import { computed, watch } from 'vue'
-  import { config } from '@/config'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
   import { SearchInput } from '@/components/shared/search-input'
   import LocationListGroup from './LocationListGroup.vue'
   import LocationSelectedFields from './LocationSelectedFields.vue'
-  import { useLocationPicker } from '@/composables/ui'
+  import { useLocationPicker, useResponsiveMaxWidth } from '@/composables/ui'
   import { EMPTY_STATE_MESSAGES } from './constants'
   import type { LocationPickerProps, LocationPickerEmits } from './types'
 
@@ -88,6 +87,8 @@
     if (searchQuery.value) return EMPTY_STATE_MESSAGES.noResults
     return EMPTY_STATE_MESSAGES.noData
   })
+
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 </script>
 
 <template>
@@ -118,7 +119,7 @@
         <!-- Centered container with max-width and white background -->
         <div
           class="relative mx-auto flex h-full w-full flex-col bg-white"
-          :style="{ maxWidth: `${config.ui.maxWidth}px` }"
+          :style="responsiveMaxWidthStyle"
         >
           <!-- Header -->
           <Header

@@ -1,10 +1,8 @@
 <script setup lang="ts">
   import type { HTMLAttributes, CSSProperties } from 'vue'
   import { provide, computed } from 'vue'
-  import { useMediaQuery } from '@vueuse/core'
-  import { useSwipeableTabs } from '@/composables/ui'
+  import { useSwipeableTabs, useResponsiveMaxWidth } from '@/composables/ui'
   import { cn } from '@/utils/cn'
-  import { config } from '@/config'
   import {
     SWIPEABLE_TABS_INJECTION_KEY,
     type SwipeableTabsProps,
@@ -26,8 +24,7 @@
     change: [value: string]
   }>()
 
-  // Check if viewport is wider than maxWidth (desktop)
-  const isDesktop = useMediaQuery(`(min-width: ${config.ui.maxWidth + 1}px)`)
+  const { responsiveMaxWidth } = useResponsiveMaxWidth()
 
   // Composable
   const swipeableTabs = useSwipeableTabs({
@@ -42,7 +39,7 @@
   const containerStyle = computed<CSSProperties>(() => ({
     top: props.heightOffset,
     height: `calc(100dvh - ${props.heightOffset})`,
-    ...(isDesktop.value && { maxWidth: `${config.ui.maxWidth}px` }),
+    ...(responsiveMaxWidth.value && { maxWidth: responsiveMaxWidth.value }),
   }))
 
   // Methods

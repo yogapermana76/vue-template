@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import { config } from '@/config'
+  import { useResponsiveMaxWidth } from '@/composables/ui'
+
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 </script>
 
 <template>
   <div
     class="bg-background mx-auto flex min-h-screen flex-col shadow-xl"
-    :style="{ maxWidth: `${config.ui.maxWidth}px` }"
+    :style="responsiveMaxWidthStyle"
   >
     <slot />
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { config } from '@/config'
+  import { useResponsiveMaxWidth } from '@/composables/ui'
 
   type PositionType = 'fixed' | 'sticky' | 'static'
 
@@ -12,6 +12,8 @@
   }
 
   const { position = 'fixed', class: customClass } = defineProps<Props>()
+
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 
   // Base classes applied to all footer instances
   const baseClasses =
@@ -30,7 +32,7 @@
   // Dynamic style for fixed/sticky positioning
   const footerStyle = computed(() => {
     if (position === 'fixed' || position === 'sticky') {
-      return { maxWidth: `${config.ui.maxWidth}px` }
+      return responsiveMaxWidthStyle.value
     }
     return undefined
   })
