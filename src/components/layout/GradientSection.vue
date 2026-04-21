@@ -3,6 +3,8 @@
   import { computed } from 'vue'
   import { RoundedOverlap } from '@/components/ui'
   import { cn } from '@/utils/cn'
+  import LightningGlowIcon from '@/assets/vectors/lightning-glow.svg?component'
+  import ellipseGlowSvg from '@/assets/vectors/ellipse-glow.png'
 
   type GradientVariant = 'navy' | 'cyan' | 'blue-cyan' | 'teal'
 
@@ -22,11 +24,23 @@
      * @default true
      */
     roundedBottom?: boolean
+    /**
+     * Show or hide the ellipse glow at bottom
+     * @default false
+     */
+    showEllipseGlow?: boolean
+    /**
+     * Custom ellipse glow image source
+     * If not provided, uses default ellipse-glow.png
+     */
+    ellipseGlowSrc?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
     gradient: 'navy',
     roundedBottom: true,
+    showEllipseGlow: false,
+    ellipseGlowSrc: ellipseGlowSvg,
   })
 
   const gradientClass = computed(() => {
@@ -46,8 +60,18 @@
       cn('relative flex w-full flex-col overflow-hidden pt-16 pb-5', gradientClass, props.class)
     "
   >
+    <!-- Ellipse Glow at Bottom (z-0 = paling bawah) -->
+    <div v-if="showEllipseGlow" class="pointer-events-none absolute bottom-0 left-0 z-0 w-full">
+      <img :src="props.ellipseGlowSrc" alt="" class="h-auto w-full object-cover" />
+    </div>
+
+    <!-- Lightning Glow Vector -->
+    <LightningGlowIcon class="absolute -top-35 -right-20" />
+
     <!-- Slot for hero content -->
-    <slot />
+    <div class="relative z-10">
+      <slot />
+    </div>
 
     <!-- Rounded Bottom Shape -->
     <RoundedOverlap v-if="roundedBottom" />

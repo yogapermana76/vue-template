@@ -41,7 +41,7 @@
   </Header>
 
   <!-- Hero Section -->
-  <GradientSection gradient="navy">
+  <GradientSection gradient="navy" show-ellipse-glow>
     <RewardsInfoSection />
   </GradientSection>
 
