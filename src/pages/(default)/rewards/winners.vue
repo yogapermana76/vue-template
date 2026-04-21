@@ -210,7 +210,7 @@
     </div>
 
     <template v-else>
-      <div class="z-10 flex justify-center px-4 pb-3">
+      <div v-if="featuredWinners.length > 0" class="z-10 flex justify-center px-4 pb-3">
         <div
           class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
         >
@@ -220,7 +220,19 @@
         </div>
       </div>
 
-      <div class="z-10 flex flex-col gap-2 px-4 pb-8">
+      <div
+        v-if="featuredWinners.length === 0"
+        class="z-10 flex flex-col items-center justify-center px-4 pb-8"
+      >
+        <EmptyState
+          :image="PemenangIllustration"
+          title="Belum ada pemenang"
+          description="Saat ini belum ada pemenang untuk periode ini."
+          class="[&_h3]:text-white! [&_p]:text-white/80!"
+        />
+      </div>
+
+      <div v-else class="z-10 flex flex-col gap-2 px-4 pb-8">
         <WinnerCard
           v-for="item in featuredWinners"
           :key="item.rank"
@@ -248,23 +260,36 @@
     </div>
 
     <template v-else>
-      <WinnerCard
-        v-for="item in otherWinners"
-        :key="item.rank"
-        :rank="item.rank"
-        :prize="item.prize"
-        :winner="item.winner"
-        :prize-image="item.prizeImage"
-      />
-
-      <!-- Infinite Scroll Trigger -->
-      <div ref="loadMoreRef">
-        <InfiniteScrollTrigger
-          :is-fetching="isFetchingNextPage"
-          :has-more="hasNextPage"
-          :current-page="currentPageCount"
+      <div
+        v-if="otherWinners.length === 0 && featuredWinners.length === 0"
+        class="flex flex-1 flex-col items-center justify-center py-8"
+      >
+        <EmptyState
+          :image="PemenangIllustration"
+          title="Belum ada pemenang"
+          description="Saat ini belum ada pemenang untuk periode ini."
         />
       </div>
+
+      <template v-else>
+        <WinnerCard
+          v-for="item in otherWinners"
+          :key="item.rank"
+          :rank="item.rank"
+          :prize="item.prize"
+          :winner="item.winner"
+          :prize-image="item.prizeImage"
+        />
+
+        <!-- Infinite Scroll Trigger -->
+        <div ref="loadMoreRef">
+          <InfiniteScrollTrigger
+            :is-fetching="isFetchingNextPage"
+            :has-more="hasNextPage"
+            :current-page="currentPageCount"
+          />
+        </div>
+      </template>
     </template>
   </main>
 
