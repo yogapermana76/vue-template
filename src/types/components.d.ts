@@ -118,6 +118,7 @@ declare module 'vue' {
     OverviewCard: typeof import('./../components/demo/dashboard/OverviewCard.vue')['default']
     PillTab: typeof import('./../components/ui/pill-tab/PillTab.vue')['default']
     PillTabSkeleton: typeof import('./../components/ui/pill-tab/PillTabSkeleton.vue')['default']
+    PointsDisplay: typeof import('./../components/rewards/common/PointsDisplay.vue')['default']
     PointsInfo: typeof import('./../components/rewards/sections/home/info-section/PointsInfo.vue')['default']
     PointsInfoSection: typeof import('./../components/rewards/sections/history/PointsInfoSection.vue')['default']
     PreferencesSection: typeof import('./../components/demo/home/PreferencesSection.vue')['default']

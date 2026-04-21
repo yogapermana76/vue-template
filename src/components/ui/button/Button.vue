@@ -49,6 +49,11 @@
     )
   })
 
+  const slotWrapperClasses = computed(() => {
+    // Wrapper needs to inherit flex behavior from parent button
+    return cn('contents', props.loading && 'invisible')
+  })
+
   const emit = defineEmits<{
     click: [event: MouseEvent]
   }>()
@@ -72,7 +77,7 @@
     :class="cn(buttonClasses, loading && 'relative opacity-70')"
     @click="handleClick"
   >
-    <span :class="loading && 'invisible'">
+    <span :class="slotWrapperClasses">
       <slot />
     </span>
     <span v-if="loading" class="absolute inset-0 flex items-center justify-center">

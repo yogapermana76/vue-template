@@ -12,7 +12,7 @@
   } from '@/components/rewards'
   import { IconButton } from '@/components/ui/button'
   import { PullToRefresh } from '@/components/shared'
-  import { History } from 'lucide-vue-next'
+  import HistoryIcon from '@/assets/icons/history.svg?component'
   import { usePullToRefresh } from '@/composables/ui'
   import {
     rewardKeys,
@@ -68,11 +68,11 @@
     <template #actions="{ isDarkBg, iconClass }">
       <IconButton
         variant="tertiary"
-        :class="['-mr-2', iconClass]"
+        :class="['-mr-2 [&_svg]:size-[unset]!', iconClass]"
         :is-dark-bg="isDarkBg"
         @click="handleNavigateToHistory"
       >
-        <History />
+        <HistoryIcon />
       </IconButton>
     </template>
   </Header>

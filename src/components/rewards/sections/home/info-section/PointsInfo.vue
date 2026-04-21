@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { ChevronRight, CoinsIcon, Ticket } from 'lucide-vue-next'
+  import { ChevronRight } from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
-  import { formatNumber } from '@/utils'
+  import PointsDisplay from '@/components/rewards/common/PointsDisplay.vue'
+  import VoucherIcon from '@/assets/icons/voucher.svg?component'
 
   interface PointsInfoProps {
     /** Points value to display */
@@ -20,17 +21,8 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-start gap-1 self-stretch px-4">
-    <!-- Points Label -->
-    <p class="body-caption-medium self-stretch text-white">Poin Kamu</p>
-
-    <!-- Points Value and Link -->
-    <div class="flex flex-row items-center gap-2 self-stretch">
-      <CoinsIcon class="size-4 shrink-0 text-white" />
-
-      <!-- Points Value -->
-      <span class="heading-l flex-1 leading-none text-white">{{ formatNumber(points ?? 0) }}</span>
-
+  <PointsDisplay :points="points" variant="dark" class="px-4">
+    <template #action>
       <Button
         variant="tertiary"
         size="xs"
@@ -39,10 +31,10 @@
         class="text-primary-300 h-auto w-auto p-0"
         @click="handleViewRewards"
       >
-        <Ticket />
+        <VoucherIcon class="size-5!" />
         Rewards saya
         <ChevronRight />
       </Button>
-    </div>
-  </div>
+    </template>
+  </PointsDisplay>
 </template>
