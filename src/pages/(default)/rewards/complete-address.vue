@@ -21,6 +21,7 @@
     useDistricts,
     useLotteryDetail,
     useRewardRedeemableDetail,
+    usePointSummary,
   } from '@/composables/services'
   import { authStorage } from '@/utils/storage'
   import { formatDateRange } from '@/utils/date'
@@ -75,12 +76,15 @@
 
   const { data: lastAddressData } = useLastAddress()
 
+  // Fetch user points
+  const { data: userPointsData } = usePointSummary()
+
   // Fetch detail based on type
-  const { data: lotteryDetailData } = useLotteryDetail({
+  const { data: lotteryDetailData, isPending: isLotteryLoading } = useLotteryDetail({
     params: { id: itemId },
     options: { enabled: isLottery },
   })
-  const { data: rewardDetailData } = useRewardRedeemableDetail({
+  const { data: rewardDetailData, isPending: isRewardLoading } = useRewardRedeemableDetail({
     params: { id: itemId },
     options: { enabled: isReward },
   })
@@ -89,6 +93,13 @@
   const { mutate: exchangeReward, isPending: isExchangingReward } = useRewardExchange()
 
   const isRedeeming = computed(() => isRedeemingLottery.value || isExchangingReward.value)
+
+  // Check if data is still loading
+  const isLoading = computed(() => {
+    if (isLottery.value) return isLotteryLoading.value
+    if (isReward.value) return isRewardLoading.value
+    return false
+  })
 
   // ============================================
   // Form Schema & Validation
@@ -122,25 +133,26 @@
   // Form Initialization
   // ============================================
 
-  const { handleSubmit, setFieldValue, values, resetForm } = useForm<RedeemFormValues>({
-    validationSchema: toTypedSchema(redeemSchema),
-    initialValues: {
-      id: parseInt(itemId.value, 10) || 0,
-      provinceId: 0, // 0 = not selected
-      provinceName: '',
-      cityId: 0,
-      cityName: '',
-      districtId: 0,
-      districtName: '',
-      address: '',
-      postalCode: '',
-      receivedInfo: {
-        fullname: userProfile?.fullname || '',
-        email: userProfile?.email || '',
-        noHp: userProfile?.phoneNumber || '',
+  const { handleSubmit, setFieldValue, setFieldTouched, values, resetForm } =
+    useForm<RedeemFormValues>({
+      validationSchema: toTypedSchema(redeemSchema),
+      initialValues: {
+        id: parseInt(itemId.value, 10) || 0,
+        provinceId: 0, // 0 = not selected
+        provinceName: '',
+        cityId: 0,
+        cityName: '',
+        districtId: 0,
+        districtName: '',
+        address: '',
+        postalCode: '',
+        receivedInfo: {
+          fullname: userProfile?.fullname || '',
+          email: userProfile?.email || '',
+          noHp: userProfile?.phoneNumber || '',
+        },
       },
-    },
-  })
+    })
 
   // ============================================
   // Helpers
@@ -224,24 +236,27 @@
    * Handle location change from LocationPicker
    * Converts SelectedLocation (string IDs) to form values (number IDs + names)
    */
-  const handleLocationChange = (location: SelectedLocation | undefined) => {
+  const handleLocationChange = async (location: SelectedLocation | undefined) => {
     selectedLocation.value = location
     const { provinceId, cityId, districtId } = location || {}
 
-    // Helper to set both ID and name fields for a location level
-    const setLocationField = (
-      id: string | undefined,
-      idField: keyof RedeemFormValues,
-      nameField: keyof RedeemFormValues,
-      nameMap: Record<string, string>,
-    ) => {
-      setFieldValue(idField, id ? parseInt(id, 10) : 0)
-      setFieldValue(nameField, id ? nameMap[id] || '' : '')
-    }
+    // Set IDs immediately (convert string to number)
+    setFieldValue('provinceId', provinceId ? parseInt(provinceId, 10) : 0)
+    setFieldValue('cityId', cityId ? parseInt(cityId, 10) : 0)
+    setFieldValue('districtId', districtId ? parseInt(districtId, 10) : 0)
 
-    setLocationField(provinceId, 'provinceId', 'provinceName', provinceNames.value)
-    setLocationField(cityId, 'cityId', 'cityName', cityNames.value)
-    setLocationField(districtId, 'districtId', 'districtName', districtNames.value)
+    // Wait for next tick to allow computed name maps to update from API data
+    await nextTick()
+
+    // Set names from the updated name maps
+    setFieldValue('provinceName', provinceId ? provinceNames.value[provinceId] || '' : '')
+    setFieldValue('cityName', cityId ? cityNames.value[cityId] || '' : '')
+    setFieldValue('districtName', districtId ? districtNames.value[districtId] || '' : '')
+
+    // Mark fields as touched to enable validation
+    setFieldTouched('provinceId', true)
+    setFieldTouched('cityId', true)
+    setFieldTouched('districtId', true)
   }
 
   /**
@@ -370,6 +385,36 @@
       title: '',
       date: '',
     }
+  })
+
+  // ============================================
+  // Points Check
+  // ============================================
+
+  const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
+
+  // Check if user has enough points
+  const hasEnoughPoints = computed(() => {
+    const lottery = lotteryDetailData.value
+    const reward = rewardDetailData.value?.data
+
+    if (isLottery.value && lottery) {
+      return userPoints.value >= (lottery.pricePoint ?? 0)
+    }
+
+    if (isReward.value && reward) {
+      return userPoints.value >= (reward.pricePoint ?? 0)
+    }
+
+    return true
+  })
+
+  // Footer message for disabled state
+  const disabledMessage = computed(() => {
+    if (!hasEnoughPoints.value) {
+      return 'Poin anda tidak mencukupi'
+    }
+    return null
   })
 
   // ============================================
@@ -596,7 +641,7 @@
           </Field>
 
           <!-- City/District - Using LocationField -->
-          <Field name="districtId" v-slot="{ meta: fieldMeta }" :validate-on-model-update="false">
+          <Field name="districtId" v-slot="{ field, meta: fieldMeta }">
             <LocationField
               v-model="selectedLocation"
               label="Kota/kecamatan"
@@ -607,7 +652,13 @@
               :district-names="districtNames"
               required
               :error="fieldMeta.touched && locationError ? locationError : undefined"
-              @change="handleLocationChange"
+              @change="
+                location => {
+                  handleLocationChange(location)
+                  const districtId = location?.districtId ? parseInt(location.districtId, 10) : 0
+                  field.onChange(districtId)
+                }
+              "
             />
           </Field>
 
@@ -630,7 +681,13 @@
   </div>
 
   <!-- Footer with Button -->
-  <Footer position="fixed">
+  <Footer v-if="!isLoading" position="fixed">
+    <!-- Disabled state message -->
+    <div v-if="disabledMessage">
+      <p class="body-m text-slate-950">{{ disabledMessage }}</p>
+    </div>
+
+    <!-- Button -->
     <Button
       variant="primary"
       size="md"
