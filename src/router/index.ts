@@ -35,14 +35,17 @@ const hasParamsChanged = (stored: LocationQuery | null, current: LocationQuery):
 }
 
 const initializeAuth = async (route: RouteLocationNormalized) => {
-  if (authInitialized) return
-  authInitialized = true
-
-  // Update stored params if query params changed
   const storedParams = authStorage.getAuthFromApps<LocationQuery>()
-  if (hasParamsChanged(storedParams, route.query)) {
+  const paramsChanged = hasParamsChanged(storedParams, route.query)
+
+  // Always update stored params if query params changed
+  if (paramsChanged && route.query.token) {
     saveAuthQueryParams(route.query)
   }
+
+  // Skip auth check if already initialized AND no new token
+  if (authInitialized && !paramsChanged) return
+  authInitialized = true
 
   // Check auth with token from query params
   const { checkAuth } = useAuthService()
