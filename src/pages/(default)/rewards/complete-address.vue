@@ -635,10 +635,10 @@
       variant="primary"
       size="md"
       class="w-full"
-      :disabled="isRedeeming"
+      :loading="isRedeeming"
       @click="handleButtonClick"
     >
-      {{ isRedeeming ? 'Memproses...' : 'Tukar Poin' }}
+      Tukar Poin
     </Button>
   </Footer>
 
@@ -666,6 +666,7 @@
       {
         label: 'Tukar Poin',
         variant: 'primary',
+        loading: isRedeeming,
         onClick: handleConfirmExchange,
       },
     ]"

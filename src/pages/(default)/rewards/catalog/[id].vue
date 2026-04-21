@@ -62,7 +62,7 @@
   const { data: lastAddressData } = useLastAddress()
 
   // Exchange mutation
-  const { mutate: exchangeReward } = useRewardExchange()
+  const { mutate: exchangeReward, isPending: isExchanging } = useRewardExchange()
 
   const reward = computed(() => rewardDetail.value?.data)
   const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
@@ -355,6 +355,7 @@
         size="sm"
         class="w-full"
         :disabled="!canExchange"
+        :loading="isExchanging"
         @click="handleExchangeClick"
       >
         Tukar Poin
@@ -378,6 +379,7 @@
       {
         label: 'Tukar Poin',
         variant: 'primary',
+        loading: isExchanging,
         onClick: handleConfirmExchange,
       },
     ]"

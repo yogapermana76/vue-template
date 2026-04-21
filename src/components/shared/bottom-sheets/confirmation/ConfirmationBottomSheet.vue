@@ -11,6 +11,8 @@
     variant?: 'primary' | 'secondary' | 'tertiary'
     /** Button size */
     size?: 'xs' | 'sm' | 'md' | 'lg'
+    /** Loading state */
+    loading?: boolean
     /** Click handler */
     onClick: () => void
   }
@@ -88,6 +90,7 @@
           :key="index"
           :variant="button.variant || 'primary'"
           :size="button.size || 'sm'"
+          :loading="button.loading"
           :class="buttonLayout === 'row' ? 'flex-1' : 'w-full'"
           @click="button.onClick"
         >

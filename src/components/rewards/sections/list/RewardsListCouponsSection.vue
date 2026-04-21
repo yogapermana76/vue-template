@@ -42,7 +42,7 @@
   const { data: lastAddressData } = useLastAddress()
 
   // Exchange mutation
-  const { mutate: exchangeReward } = useRewardExchange()
+  const { mutate: exchangeReward, isPending: isExchanging } = useRewardExchange()
 
   // Fetch reward categories for filter pills
   const { data: categoriesData, isPending: isCategoriesLoading } = useRewardCategories()
@@ -360,6 +360,7 @@
         {
           label: 'Tukar Poin',
           variant: 'primary',
+          loading: isExchanging,
           onClick: handleConfirmExchange,
         },
       ]"
