@@ -72,7 +72,7 @@
   } = useRewardGiftInstantly({
     query: {
       page: 0,
-      size: 10,
+      size: 4,
       rewardCategoryId: categoryIdForApi,
     },
     options: {
@@ -255,7 +255,7 @@
   <div class="flex flex-col gap-4">
     <!-- Header with View All Button -->
     <div class="flex items-center justify-between px-4">
-      <h2 class="body-l-semibold text-slate-950">Kupon Poin Kami</h2>
+      <h2 class="body-l-semibold text-slate-950">Tukarkan Poin Kamu</h2>
       <Button
         variant="tertiary"
         size="sm"
