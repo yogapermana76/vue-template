@@ -11,3 +11,4 @@ export {
 export { useToast, type ToastOptions, type ToastType } from './useToast'
 export { useWindowScroll, type UseWindowScrollOptions } from './useWindowScroll'
 export { useLocationPicker, type UseLocationPickerParams } from './useLocationPicker'
+export { useRewardsFilter } from './useRewardsFilter'

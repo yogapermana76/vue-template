@@ -13,6 +13,7 @@
     useLastAddress,
     useRewardExchange,
   } from '@/composables/services'
+  import { useRewardsFilter } from '@/composables/ui'
   import { authStorage } from '@/utils/storage'
   import { formatNumber, extractApiError } from '@/utils'
   import { openDeeplink } from '@/utils/native-bridge'
@@ -46,24 +47,20 @@
   // Fetch reward categories for filter pills
   const { data: categoriesData, isPending: isCategoriesLoading } = useRewardCategories()
 
+  // Filter state management with session persistence
+  const { activeCategoryId, categoryIdForApi, initializeWithDefault } = useRewardsFilter()
+
   // Get first category ID as default filter
   const defaultCategoryId = computed(() => categoriesData.value?.data?.[0]?.id ?? null)
 
-  const activeCategoryId = ref<number | null>(null)
-
-  // Set default category when categories load
+  // Initialize filter with default category when categories load
   watch(
     defaultCategoryId,
     newDefaultId => {
-      if (newDefaultId && !activeCategoryId.value) {
-        activeCategoryId.value = newDefaultId
-      }
+      initializeWithDefault(newDefaultId)
     },
     { immediate: true },
   )
-
-  // Convert null to undefined for API call (MaybeRef<string | number | undefined>)
-  const categoryIdForApi = computed(() => activeCategoryId.value ?? undefined)
 
   // Fetch gift instantly rewards with infinite scroll
   const {
