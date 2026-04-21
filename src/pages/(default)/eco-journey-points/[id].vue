@@ -10,7 +10,7 @@
     EcoJourneyTermsSection,
   } from '@/components/eco-journey-points/sections'
   import { ExchangeSummaryBottomSheet } from '@/components/eco-journey-points/bottom-sheets'
-  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({

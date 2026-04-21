@@ -20,7 +20,7 @@
   import type { GiftInstantly } from '@/types'
   import type { User } from '@/types/services/auth.types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
-  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
   import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.svg?component'
   import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.svg?component'

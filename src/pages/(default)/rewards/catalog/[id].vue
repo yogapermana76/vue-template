@@ -24,7 +24,7 @@
   import { formatNumber, extractApiError } from '@/utils'
   import { openDeeplink } from '@/utils/native-bridge'
   import type { User } from '@/types/services/auth.types'
-  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
   import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.svg?component'
   import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.svg?component'
