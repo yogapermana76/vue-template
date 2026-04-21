@@ -2,11 +2,14 @@
   import { computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { useRouter } from 'vue-router'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Header, Footer, GradientSection } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { RewardsRedemptionDetailsSection } from '@/components/rewards'
   import { RewardDetailSkeleton } from '@/components/rewards/sections'
-  import { useExchangePointDetail } from '@/composables/services'
+  import { useExchangePointDetail, rewardKeys } from '@/composables/services'
+  import { PullToRefresh } from '@/components/shared'
+  import { usePullToRefresh } from '@/composables/ui'
   import CheckIcon from '@/assets/illustrations/check.svg?component'
 
   definePage({
@@ -17,6 +20,7 @@
 
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   // Get tUserPointId from route params
   const tUserPointId = computed(() => {
@@ -37,9 +41,21 @@
   const handleBackToHome = () => {
     router.replace('/')
   }
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: rewardKeys.exchangePointDetail(tUserPointId.value),
+      })
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Detail Penukaran" positioning="fixed" :transparent="!isPending" />
 

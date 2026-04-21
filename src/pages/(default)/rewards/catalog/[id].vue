@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Package, Ticket } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { ConfirmationBottomSheet } from '@/components/shared'
+  import { ConfirmationBottomSheet, PullToRefresh } from '@/components/shared'
   import {
     RewardProgramInfo,
     RewardTermsSection,
@@ -15,7 +16,10 @@
     usePointSummary,
     useLastAddress,
     useRewardExchange,
+    rewardKeys,
+    pointKeys,
   } from '@/composables/services'
+  import { usePullToRefresh } from '@/composables/ui'
   import { authStorage } from '@/utils/storage'
   import { formatNumber, extractApiError } from '@/utils'
   import { openDeeplink } from '@/utils/native-bridge'
@@ -34,6 +38,7 @@
 
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const showConfirmationSheet = ref(false)
   const showAddressSheet = ref(false)
   const showErrorSheet = ref(false)
@@ -309,9 +314,23 @@
       },
     ]
   })
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: rewardKeys.redeemableDetail(rewardId.value) }),
+        queryClient.invalidateQueries({ queryKey: pointKeys.summary() }),
+        queryClient.invalidateQueries({ queryKey: rewardKeys.lastAddress() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Detail" positioning="sticky" />
 

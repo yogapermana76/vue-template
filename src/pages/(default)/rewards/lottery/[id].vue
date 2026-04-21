@@ -1,16 +1,18 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Ticket, Calendar } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { ConfirmationBottomSheet } from '@/components/shared'
+  import { ConfirmationBottomSheet, PullToRefresh } from '@/components/shared'
   import {
     RewardProgramInfo,
     RewardTermsSection,
     RewardDetailSkeleton,
   } from '@/components/rewards/sections'
-  import { useLotteryDetail, usePointSummary } from '@/composables/services'
+  import { useLotteryDetail, usePointSummary, lotteryKeys, pointKeys } from '@/composables/services'
+  import { usePullToRefresh } from '@/composables/ui'
   import { formatDate } from '@/utils/date'
   import { formatNumber } from '@/utils'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
@@ -24,6 +26,7 @@
 
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const showConfirmationSheet = ref(false)
 
   // Get ID from route params
@@ -143,9 +146,22 @@
       query: { id: lotteryId.value, type: 'lottery' },
     })
   }
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: lotteryKeys.detail(lotteryId.value) }),
+        queryClient.invalidateQueries({ queryKey: pointKeys.summary() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Detail" positioning="sticky" />
 

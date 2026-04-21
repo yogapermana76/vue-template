@@ -2,9 +2,10 @@
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useClipboard } from '@vueuse/core'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { useToast } from '@/composables/ui'
+  import { useToast, usePullToRefresh } from '@/composables/ui'
   import {
     RewardProgramInfo,
     RewardTermsSection,
@@ -15,7 +16,11 @@
     useUserLotteryDetail,
     useUserGiftInstantlyDetail,
     useVoucherDetail,
+    lotteryKeys,
+    rewardKeys,
+    voucherKeys,
   } from '@/composables/services'
+  import { PullToRefresh } from '@/components/shared'
 
   definePage({
     meta: {
@@ -25,6 +30,7 @@
 
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   // Bottom sheet state for lottery coupon codes
   const isLotteryCodesOpen = ref(false)
@@ -295,9 +301,39 @@
     }
     return undefined
   })
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      const queries = []
+
+      if (rewardType.value === 'lottery-coupon') {
+        queries.push(
+          queryClient.invalidateQueries({ queryKey: lotteryKeys.userDetail(rewardId.value) }),
+        )
+      } else if (rewardType.value === 'item') {
+        queries.push(
+          queryClient.invalidateQueries({
+            queryKey: rewardKeys.userGiftInstantlyDetail(rewardId.value),
+          }),
+        )
+      } else if (rewardType.value === 'voucher') {
+        queries.push(
+          queryClient.invalidateQueries({
+            queryKey: voucherKeys.detail(rewardId.value, voucherCode.value),
+          }),
+        )
+      }
+
+      await Promise.all(queries)
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Detail" positioning="sticky" />
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Header } from '@/components/layout'
   import {
     SwipeableTabs,
@@ -19,13 +20,20 @@
     useVoucherCategoryFilter,
     useUserLotteryListInfinite,
     useUserGiftInstantlyInfinite,
+    voucherKeys,
+    lotteryKeys,
+    rewardKeys,
   } from '@/composables/services'
+  import { PullToRefresh } from '@/components/shared'
+  import { usePullToRefresh } from '@/composables/ui'
 
   definePage({
     meta: {
       title: 'Rewards Saya',
     },
   })
+
+  const queryClient = useQueryClient()
 
   // Main tabs
   const mainTabs: TabItem[] = [
@@ -63,9 +71,24 @@
     formatBadgeCount(lotteryCouponsBadgeCount.value ?? 0),
   )
   const itemsBadgeDisplay = computed(() => formatBadgeCount(itemsBadgeCount.value ?? 0))
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: voucherKeys.pages() }),
+        queryClient.invalidateQueries({ queryKey: voucherKeys.categories() }),
+        queryClient.invalidateQueries({ queryKey: lotteryKeys.userList() }),
+        queryClient.invalidateQueries({ queryKey: rewardKeys.userGiftInstantly() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Rewards Saya" positioning="fixed" />
 
