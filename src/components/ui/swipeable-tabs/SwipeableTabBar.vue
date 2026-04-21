@@ -31,13 +31,14 @@
 
   const tabBarRef = ref<HTMLElement | null>(null)
   const tabRefs = ref<HTMLElement[]>([])
+  let resizeObserver: ResizeObserver | null = null
 
   // Computed
   const useEqualWidth = computed(() => context.tabs.length <= props.equalWidthMaxTabs)
 
   const containerClass = computed(() =>
     cn(
-      'sticky top-0 z-40 flex w-full shrink-0 border-b border-slate-200 bg-white px-4',
+      'relative z-40 flex w-full shrink-0 border-b border-slate-200 bg-white px-4',
       useEqualWidth.value ? 'gap-0' : 'gap-5 overflow-x-auto scrollbar-none',
       props.class,
     ),
@@ -84,10 +85,22 @@
   onMounted(() => {
     updateMeasurements()
     window.addEventListener('resize', updateMeasurements)
+
+    // Use ResizeObserver to detect tab content changes (e.g., when badges appear)
+    resizeObserver = new ResizeObserver(() => {
+      updateMeasurements()
+    })
+
+    // Observe all tab elements for size changes
+    tabRefs.value.forEach(el => {
+      if (el) resizeObserver?.observe(el)
+    })
   })
 
   onUnmounted(() => {
     window.removeEventListener('resize', updateMeasurements)
+    resizeObserver?.disconnect()
+    resizeObserver = null
   })
 
   // Watchers

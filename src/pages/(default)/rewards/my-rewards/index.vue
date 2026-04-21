@@ -67,7 +67,7 @@
 
 <template>
   <!-- Header -->
-  <Header title="Rewards Saya" positioning="sticky" />
+  <Header title="Rewards Saya" positioning="fixed" />
 
   <!-- Swipeable Tabs -->
   <SwipeableTabs v-model="activeTab" :tabs="mainTabs" height-offset="3rem">
