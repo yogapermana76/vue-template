@@ -692,6 +692,7 @@
       variant="primary"
       size="md"
       class="w-full"
+      :disabled="!hasEnoughPoints"
       :loading="isRedeeming"
       @click="handleButtonClick"
     >
