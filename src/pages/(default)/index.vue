@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router'
+  import { History } from 'lucide-vue-next'
   import { useQueryClient } from '@tanstack/vue-query'
   import { Header, GradientSection } from '@/components/layout'
   import {
@@ -12,7 +13,6 @@
   } from '@/components/rewards'
   import { IconButton } from '@/components/ui/button'
   import { PullToRefresh } from '@/components/shared'
-  import HistoryIcon from '@/assets/icons/history.svg?component'
   import { usePullToRefresh } from '@/composables/ui'
   import {
     rewardKeys,
@@ -72,7 +72,7 @@
         :is-dark-bg="isDarkBg"
         @click="handleNavigateToHistory"
       >
-        <HistoryIcon />
+        <History />
       </IconButton>
     </template>
   </Header>
