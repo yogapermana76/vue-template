@@ -199,7 +199,12 @@
         },
         onError: (error: unknown) => {
           showConfirmationSheet.value = false
-          const { title, description, deeplink } = extractApiError(error, 'Gagal Menukar Hadiah')
+          const { title, description, deeplink, hasData } = extractApiError(
+            error,
+            'Gagal Menukar Hadiah',
+          )
+          // Only show error sheet if response has valid error data structure
+          if (!hasData) return
           errorTitle.value = title
           errorDescription.value = description
           errorDeeplink.value = deeplink || ''

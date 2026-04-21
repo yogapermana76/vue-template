@@ -19,6 +19,7 @@ export interface ExtractedApiError {
   title: string
   description: string
   deeplink?: string
+  hasData: boolean // Flag indicating if error response had valid data structure
 }
 
 /**
@@ -40,9 +41,13 @@ function hasApiErrorData(data: unknown): data is ApiErrorResponse {
  * Extract API error data for display in UI (bottomsheet, toast, etc.)
  * Handles the structured error response from backend
  *
+ * Returns `hasData: false` when error response doesn't have proper data structure,
+ * allowing caller to decide whether to display the error sheet
+ *
  * @example
  * onError: (error) => {
- *   const { title, description } = extractApiError(error, 'Gagal menukar hadiah')
+ *   const { title, description, hasData } = extractApiError(error, 'Gagal menukar hadiah')
+ *   if (!hasData) return // Don't show sheet if no valid error data
  *   errorTitle.value = title
  *   errorMessage.value = description
  *   showErrorSheet.value = true
@@ -61,16 +66,16 @@ export function extractApiError(
       title: responseData.data.title,
       description: responseData.data.desc,
       deeplink: responseData.data.deeplink,
+      hasData: true,
     }
   }
 
-  // Fallback to message field if no structured data
-  const errorResponse = responseData as { message?: string } | undefined
-  const message = errorResponse?.message || 'Terjadi kesalahan. Silakan coba lagi.'
-
+  // If response doesn't have proper data structure, return hasData: false
+  // This allows caller to prevent showing error sheet for invalid responses
   return {
     title: fallbackTitle,
-    description: message,
+    description: 'Terjadi kesalahan. Silakan coba lagi.',
+    hasData: false,
   }
 }
 
