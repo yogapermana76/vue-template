@@ -19,6 +19,7 @@ export interface FYIItem {
   question: string
   answer: string
   imageUrl: string
+  bannerImageUrl: string
 }
 
 export type FYIResponse = BaseResponse<FYIItem[]>

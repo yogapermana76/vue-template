@@ -30,7 +30,7 @@
 <template>
   <Header title="Detail" positioning="sticky" />
 
-  <HeroBanner v-if="selectedItem" :src="selectedItem.imageUrl" />
+  <HeroBanner v-if="selectedItem" :src="selectedItem.bannerImageUrl" />
 
   <main v-if="selectedItem" class="flex flex-1 flex-col gap-6 px-4 pb-24">
     <section class="flex flex-col gap-3">
