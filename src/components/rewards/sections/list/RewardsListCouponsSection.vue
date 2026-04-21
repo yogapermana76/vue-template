@@ -258,6 +258,7 @@
   const verificationLabels: Record<string, string> = {
     'verifikasi email dulu, yuk!': 'Verifikasi Email',
     'verifikasi nomor hp dulu, yuk!': 'Verifikasi Nomor HP',
+    'verifikasi akun dulu, yuk!': 'Verifikasi Akun',
   }
 
   // Dynamic error bottom sheet buttons
