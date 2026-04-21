@@ -10,7 +10,7 @@
     RewardTermsSection,
     RewardDetailSkeleton,
   } from '@/components/rewards/sections'
-  import { useUserLotteryDetail, usePointSummary } from '@/composables/services'
+  import { useLotteryDetail, usePointSummary } from '@/composables/services'
   import { formatDate } from '@/utils/date'
   import { formatNumber } from '@/utils'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
@@ -33,14 +33,14 @@
   })
 
   // Fetch lottery detail
-  const { data: lotteryDetail, isPending } = useUserLotteryDetail({
+  const { data: lotteryDetail, isPending } = useLotteryDetail({
     params: { id: lotteryId },
   })
 
   // Fetch user points
   const { data: userPointsData } = usePointSummary()
 
-  const lottery = computed(() => lotteryDetail.value?.data)
+  const lottery = computed(() => lotteryDetail.value)
   const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
 
   // Program info

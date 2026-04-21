@@ -68,7 +68,7 @@
     </h3>
 
     <!-- Image Container - positioned at bottom left with spacing -->
-    <div class="absolute bottom-3 left-3 z-10 h-24 w-24">
+    <div class="absolute bottom-3 left-3 z-10 size-20">
       <img :src="image" :alt="title" class="h-full w-full object-contain" />
     </div>
   </div>
