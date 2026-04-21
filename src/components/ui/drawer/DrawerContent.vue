@@ -4,6 +4,7 @@
   import { useForwardPropsEmits } from 'reka-ui'
   import { DrawerContent, DrawerPortal } from 'vaul-vue'
   import { cn } from '@/utils/cn'
+  import { useResponsiveMaxWidth } from '@/composables/ui'
   import DrawerOverlay from './DrawerOverlay.vue'
 
   defineOptions({
@@ -20,6 +21,7 @@
   const emits = defineEmits<DialogContentEmits>()
 
   const forwarded = useForwardPropsEmits(props, emits)
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 </script>
 
 <template>
@@ -28,11 +30,12 @@
     <DrawerContent
       data-slot="drawer-content"
       v-bind="{ ...$attrs, ...forwarded }"
+      :style="responsiveMaxWidthStyle"
       :class="
         cn(
           'group/drawer-content bg-background fixed z-50 flex h-auto flex-col',
           'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg',
-          'data-[vaul-drawer-direction=bottom]:right-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:left-0 data-[vaul-drawer-direction=bottom]:mx-auto data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:w-full data-[vaul-drawer-direction=bottom]:max-w-106.25 data-[vaul-drawer-direction=bottom]:rounded-t-2xl',
+          'data-[vaul-drawer-direction=bottom]:right-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:left-0 data-[vaul-drawer-direction=bottom]:mx-auto data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:w-full data-[vaul-drawer-direction=bottom]:rounded-t-2xl',
           'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:sm:max-w-sm',
           'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:sm:max-w-sm',
           props.class,
