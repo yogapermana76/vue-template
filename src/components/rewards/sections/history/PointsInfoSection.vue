@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div :class="cn('flex flex-col gap-2', props.class)">
+  <div :class="cn('flex flex-col gap-4', props.class)">
     <!-- Points Info -->
     <PointsDisplay :points="points" variant="light" />
 
