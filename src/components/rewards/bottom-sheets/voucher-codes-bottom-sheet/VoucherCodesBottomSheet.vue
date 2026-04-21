@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
+  import { Check, Clock } from 'lucide-vue-next'
   import { BottomSheet } from '@/components/ui/bottom-sheet'
   import { RewardCouponCard, RewardCouponCardSkeleton } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
@@ -9,6 +10,7 @@
   import { useVoucherDetailsPagesInfinite } from '@/composables/services'
   import type { VoucherCodeDetail } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import { formatDate } from '@/utils/date'
 
   interface Props {
     open: boolean
@@ -27,10 +29,8 @@
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
 
-  // Computed voucherId for API (only fetch when bottomsheet is open)
-  const voucherIdForApi = computed(() => (props.open ? props.voucherId : undefined))
-
   // Fetch voucher codes with infinite scroll
+  // Only enabled when bottomsheet is open
   const {
     data: voucherCodesData,
     isPending,
@@ -38,23 +38,15 @@
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    refetch,
   } = useVoucherDetailsPagesInfinite({
     query: {
       size: 10,
-      voucherId: voucherIdForApi,
+      voucherId: computed(() => props.voucherId),
+    },
+    options: {
+      enabled: computed(() => props.open),
     },
   })
-
-  // Refetch when bottomsheet opens with a new voucherId
-  watch(
-    () => [props.open, props.voucherId],
-    ([isOpen]) => {
-      if (isOpen) {
-        refetch()
-      }
-    },
-  )
 
   // Intersection observer for infinite scroll
   useIntersectionObserver(
@@ -108,11 +100,19 @@
           <RewardCouponCard
             :title="voucherCode.title"
             :image-url="voucherCode.imageUrl"
-            :points="0"
             button-label="Lihat Detail"
+            :status-text="`Hingga ${formatDate(voucherCode.expiredDate, 'dd/MM/yyyy')}`"
+            :status-icon="Clock"
             @button-click="handleCardClick(voucherCode)"
             @card-click="handleCardClick(voucherCode)"
-          />
+          >
+            <template #footer>
+              <div class="flex flex-1 items-center gap-1">
+                <Check class="size-4 shrink-0 text-teal-600" :stroke-width="4" />
+                <span class="body-caption-medium text-teal-700"> Voucher dimiliki </span>
+              </div>
+            </template>
+          </RewardCouponCard>
         </div>
 
         <!-- Infinite Scroll Trigger -->

@@ -2,6 +2,7 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
+  import { Check, Clock } from 'lucide-vue-next'
   import {
     ScrollablePillTabs,
     ScrollablePillTabsSkeleton,
@@ -21,6 +22,7 @@
   } from '@/composables/services'
   import type { Voucher } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import { formatDate } from '@/utils/date'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
@@ -94,15 +96,15 @@
   const selectedVoucherData = ref<Voucher | null>(null)
 
   // Handle card click - navigate without voucherCode
-  const handleVoucherCardClick = (voucherId: number) => {
-    router.push({
-      path: `/rewards/my-rewards/${voucherId}`,
-      query: { type: 'voucher' },
-    })
-  }
+  // const handleVoucherCardClick = (voucherId: number) => {
+  //   router.push({
+  //     path: `/rewards/my-rewards/${voucherId}`,
+  //     query: { type: 'voucher' },
+  //   })
+  // }
 
   // Handle button click - check codename to decide action
-  const handleVoucherButtonClick = (voucher: Voucher) => {
+  const handleVoucherCardClick = (voucher: Voucher) => {
     if (voucherCodeSheetCodenames.includes(voucher.codename)) {
       // Show bottomsheet for voucher code display
       selectedVoucherData.value = voucher
@@ -154,14 +156,23 @@
           <RewardCouponCard
             :title="voucher.title"
             :image-url="voucher.imageUrl"
-            :points="0"
             button-label="Lihat Detail"
-            :flag-text="
-              voucher.availableQuota > 0 ? `Tersisa ${voucher.availableQuota}` : undefined
+            :stock-text="
+              voucher.availableQuota > 1 ? `${voucher.availableQuota} Voucher` : undefined
             "
-            @button-click="handleVoucherButtonClick(voucher)"
-            @card-click="handleVoucherCardClick(voucher.voucherId)"
-          />
+            stock-variant="secondary"
+            :status-text="`Hingga ${formatDate(voucher.expiredDate, 'dd/MM/yyyy')}`"
+            :status-icon="Clock"
+            @button-click="handleVoucherCardClick(voucher)"
+            @card-click="handleVoucherCardClick(voucher)"
+          >
+            <template #footer>
+              <div class="flex flex-1 items-center gap-1">
+                <Check class="size-4 shrink-0 text-teal-600" :stroke-width="4" />
+                <span class="body-caption-medium text-teal-700"> Voucher dimiliki </span>
+              </div>
+            </template>
+          </RewardCouponCard>
         </div>
 
         <!-- Infinite Scroll Trigger -->
