@@ -1,14 +1,18 @@
 <script setup lang="ts">
-  import { useResponsiveMaxWidth } from '@/composables/ui'
+  import { computed } from 'vue'
+  import { useResponsiveMaxWidth, useSafeArea } from '@/composables/ui'
 
   const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
+  const { safeAreaBottomStyle } = useSafeArea()
+
+  const containerStyle = computed(() => ({
+    ...responsiveMaxWidthStyle.value,
+    ...safeAreaBottomStyle.value,
+  }))
 </script>
 
 <template>
-  <div
-    class="bg-background mx-auto flex min-h-screen flex-col shadow-xl"
-    :style="responsiveMaxWidthStyle"
-  >
+  <div class="bg-background mx-auto flex min-h-screen flex-col shadow-xl" :style="containerStyle">
     <slot />
   </div>
 

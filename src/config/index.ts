@@ -34,12 +34,16 @@ export const config = {
   },
 
   ui: {
-    // 'webview' = mobile app style (bottom nav, fixed width)
-    // 'desktop' = website style (top nav, responsive)
-    mode: 'webview' as 'webview' | 'desktop',
+    // 'auto' = auto-detect native app vs browser (recommended)
+    // 'native' = force native app mode (mobile app webview with bottom nav safe area)
+    // 'browser' = force browser mode (regular web, no safe area)
+    mode: 'auto' as 'auto' | 'native' | 'browser',
     maxWidth: 425,
     // Set to true to disable dark mode and force light mode
     disableDarkMode: true,
+    // Safe area bottom padding for native app webview with bottom navigation
+    // Used when app is embedded in mobile app webview with bottom tab bar
+    safeAreaBottom: 80, // in pixels, adjust based on native app bottom nav height
   },
 } as const
 

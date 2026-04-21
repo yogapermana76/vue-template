@@ -1,10 +1,11 @@
 <script lang="ts" setup>
   import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
   import type { HTMLAttributes } from 'vue'
+  import { computed } from 'vue'
   import { useForwardPropsEmits } from 'reka-ui'
   import { DrawerContent, DrawerPortal } from 'vaul-vue'
   import { cn } from '@/utils/cn'
-  import { useResponsiveMaxWidth } from '@/composables/ui'
+  import { useResponsiveMaxWidth, useSafeArea } from '@/composables/ui'
   import DrawerOverlay from './DrawerOverlay.vue'
 
   defineOptions({
@@ -22,6 +23,12 @@
 
   const forwarded = useForwardPropsEmits(props, emits)
   const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
+  const { safeAreaBottomPosition } = useSafeArea()
+
+  const drawerStyle = computed(() => ({
+    ...responsiveMaxWidthStyle.value,
+    ...safeAreaBottomPosition.value,
+  }))
 </script>
 
 <template>
@@ -30,7 +37,7 @@
     <DrawerContent
       data-slot="drawer-content"
       v-bind="{ ...$attrs, ...forwarded }"
-      :style="responsiveMaxWidthStyle"
+      :style="drawerStyle"
       :class="
         cn(
           'group/drawer-content bg-background fixed z-50 flex h-auto flex-col',
