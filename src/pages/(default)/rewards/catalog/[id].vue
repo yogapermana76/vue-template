@@ -188,26 +188,43 @@
   }
 
   const handleConfirmExchange = () => {
-    if (!lastAddressData.value?.data) return
-
     // Reset error state before submission
     errorTitle.value = ''
     errorDescription.value = ''
     // Don't close confirmation sheet - keep it open until mutation completes
 
-    const address = lastAddressData.value.data
+    const address = lastAddressData.value?.data
+    const isItemType = reward.value?.type === 'ITEM'
+
+    // For non-ITEM types, send empty values for address fields (user might not have last address)
+    // For ITEM types, use actual address data
+    const addressData =
+      isItemType && address
+        ? {
+            provinceId: address.provinceId,
+            provinceName: address.provinceName,
+            cityId: address.cityId,
+            cityName: address.cityName,
+            districtId: address.districtId,
+            districtName: address.districtName,
+            address: address.address,
+            postalCode: address.postalCode,
+          }
+        : {
+            provinceId: 0,
+            provinceName: '',
+            cityId: 0,
+            cityName: '',
+            districtId: 0,
+            districtName: '',
+            address: '',
+            postalCode: '',
+          }
 
     exchangeReward(
       {
         rewardId: Number(rewardId.value),
-        provinceId: address.provinceId,
-        provinceName: address.provinceName,
-        cityId: address.cityId,
-        cityName: address.cityName,
-        districtId: address.districtId,
-        districtName: address.districtName,
-        address: address.address,
-        postalCode: address.postalCode,
+        ...addressData,
         receivedInfo: {
           fullname: userProfile?.fullname || '',
           email: userProfile?.email || '',
