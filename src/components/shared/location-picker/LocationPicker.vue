@@ -36,6 +36,7 @@
     canSave,
     searchPlaceholder,
     sectionTitle,
+    editingLevel,
     handleSelect,
     handleReset,
     handleEditProvince,
@@ -86,6 +87,16 @@
     if (isError.value) return EMPTY_STATE_MESSAGES.error
     if (searchQuery.value) return EMPTY_STATE_MESSAGES.noResults
     return EMPTY_STATE_MESSAGES.noData
+  })
+
+  // Hide district list if district is already selected and not being edited
+  const shouldShowList = computed(() => {
+    // Always show list for province and city
+    if (currentLevel.value !== 'district') return true
+
+    // For district: only show if user is actively editing (clicked the field)
+    // or if district is not yet selected
+    return !selectedDistrictId.value || editingLevel.value === 'district'
   })
 
   const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
@@ -152,10 +163,10 @@
             </div>
 
             <!-- Divider -->
-            <Divider class="shrink-0" thick />
+            <Divider v-if="shouldShowList" class="shrink-0" thick />
 
             <!-- Location List Section -->
-            <div class="flex-1 px-4 pt-4 pb-20">
+            <div v-if="shouldShowList" class="flex-1 px-4 pt-4 pb-20">
               <h2 class="body-l-semibold mb-3 text-neutral-950">
                 {{ sectionTitle }}
               </h2>

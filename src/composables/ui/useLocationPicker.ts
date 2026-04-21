@@ -211,8 +211,8 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
   // ============================================
 
   const canSave = computed(() => {
-    // At minimum, need province and city selected
-    return !!(selectedProvinceId.value && selectedCityId.value)
+    // Need province, city, and district all selected
+    return !!(selectedProvinceId.value && selectedCityId.value && selectedDistrictId.value)
   })
 
   // ============================================
@@ -304,6 +304,7 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
     selectedProvinceId,
     selectedCityId,
     selectedDistrictId,
+    editingLevel,
 
     // Current level
     currentLevel,
