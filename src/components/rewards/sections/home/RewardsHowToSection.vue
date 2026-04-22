@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useMediaQuery } from '@vueuse/core'
   import { Swiper, SwiperSlide } from 'swiper/vue'
   import { Pagination } from 'swiper/modules'
   import { GradientSection } from '@/components/layout'
@@ -12,10 +13,20 @@
   import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
+  const isExtraSmallScreen = useMediaQuery('(max-width: 374px)')
+  const isSmallScreen = useMediaQuery('(max-width: 424px)')
+  const isLargeScreen = useMediaQuery('(min-width: 768px)')
 
   const { data: fyiData, isPending, isError } = useFYI()
 
   const fyiItems = computed(() => (fyiData.value?.data ?? []) as FYIItem[])
+
+  const slidesPerView = computed(() => {
+    if (isExtraSmallScreen.value) return 1.9
+    if (isSmallScreen.value) return 2.3
+    if (isLargeScreen.value) return 4.8
+    return 2.6
+  })
 
   const handleInfoCardClick = (item: FYIItem) => {
     router.push(`/rewards/fyi/${item.order}`)
@@ -31,7 +42,7 @@
     <div v-if="isPending">
       <swiper
         :modules="modules"
-        :slides-per-view="2.6"
+        :slides-per-view="slidesPerView"
         :slides-offset-before="16"
         :slides-offset-after="8"
       >
@@ -67,7 +78,7 @@
     <div v-else>
       <swiper
         :modules="modules"
-        :slides-per-view="2.6"
+        :slides-per-view="slidesPerView"
         :slides-offset-before="16"
         :slides-offset-after="8"
         :pagination="{ clickable: true, el: '#swiper-pagination-custom' }"
