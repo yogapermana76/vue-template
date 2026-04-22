@@ -27,38 +27,41 @@ const router = createRouter({
 
 let authInitialized = false
 
-/**
- * Check if query params have changed compared to stored params
- */
-const hasParamsChanged = (stored: LocationQuery | null, current: LocationQuery): boolean => {
+const paramsChanged = (stored: LocationQuery | null, current: LocationQuery): boolean => {
   return !stored || JSON.stringify(stored) !== JSON.stringify(current)
 }
 
-const initializeAuth = async (route: RouteLocationNormalized) => {
-  const storedParams = authStorage.getAuthFromApps<LocationQuery>()
-  const paramsChanged = hasParamsChanged(storedParams, route.query)
+const authenticateUser = async (route: RouteLocationNormalized) => {
+  const stored = authStorage.getAuthFromApps<LocationQuery>()
+  const isChanged = paramsChanged(stored, route.query)
 
-  // Always update stored params if query params changed
-  if (paramsChanged && route.query.token) {
+  if (isChanged && route.query.token) {
     saveAuthQueryParams(route.query)
   }
 
-  // Skip auth check if already initialized AND no new token
-  if (authInitialized && !paramsChanged) return
+  if (authInitialized && !isChanged) return
   authInitialized = true
 
-  // Check auth with token from query params
   const { checkAuth } = useAuthService()
   await checkAuth(route.query.token as string | undefined)
 }
 
 router.beforeEach(async to => {
-  // Update document title
   const title = to.meta.title as string | undefined
   document.title = title ? `${title} | ${config.app.name}` : config.app.name
 
-  // Initialize auth on first navigation
-  await initializeAuth(to)
+  const stored = authStorage.getAuthFromApps<LocationQuery>()
+  const isChanged = paramsChanged(stored, to.query)
+  const hasNewToken = isChanged && to.query.token
+
+  // If token changed in URL, re-authenticate (blocking)
+  // Otherwise authenticate in background (non-blocking for faster first load)
+  if (hasNewToken) {
+    authInitialized = false
+    await authenticateUser(to)
+  } else {
+    authenticateUser(to)
+  }
 })
 
 export default router
