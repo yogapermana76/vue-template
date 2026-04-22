@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
   import { useQueryClient } from '@tanstack/vue-query'
   import { Header } from '@/components/layout'
   import {
@@ -35,6 +36,9 @@
 
   const queryClient = useQueryClient()
 
+  const route = useRoute()
+  const router = useRouter()
+
   // Main tabs
   const mainTabs: TabItem[] = [
     { key: 'voucher', label: 'Voucher' },
@@ -42,7 +46,20 @@
     { key: 'items', label: 'Barang' },
   ]
 
-  const activeTab = ref('voucher')
+  const validTabKeys = mainTabs.map(tab => tab.key)
+
+  // Initialize from URL query or default to 'voucher'
+  const getInitialTab = (): string => {
+    const tabFromUrl = route.query.tab as string
+    return validTabKeys.includes(tabFromUrl) ? tabFromUrl : 'voucher'
+  }
+
+  const activeTab = ref(getInitialTab())
+
+  // Sync activeTab changes to URL
+  watch(activeTab, newTab => {
+    router.replace({ query: { ...route.query, tab: newTab } })
+  })
 
   // Use shared voucher category filter state
   const { categoryIdForApi } = useVoucherCategoryFilter()
