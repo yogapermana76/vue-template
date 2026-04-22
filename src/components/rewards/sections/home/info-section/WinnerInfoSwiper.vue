@@ -4,6 +4,9 @@
   import { Pagination } from 'swiper/modules'
   import { WinnerInfoCard, WinnerInfoCardSkeleton } from '@/components/rewards'
   import { SwiperPagination } from '@/components/ui/swiper'
+  import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
+
+  useSwiperStyles()
 
   interface WinnerItem {
     id: string | number

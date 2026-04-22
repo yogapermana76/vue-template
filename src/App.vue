@@ -23,7 +23,29 @@
 
 <template>
   <AppLayout>
-    <RouterView />
+    <RouterView v-slot="{ Component, route: currentRoute }">
+      <Transition name="page" mode="out-in">
+        <KeepAlive v-if="currentRoute.meta.keepAlive" :max="5">
+          <component :is="Component" :key="currentRoute.path" />
+        </KeepAlive>
+        <component v-else :is="Component" :key="currentRoute.path" />
+      </Transition>
+    </RouterView>
   </AppLayout>
   <Toaster />
 </template>
+
+<style>
+  .page-enter-active {
+    transition: opacity 0.15s ease-out;
+  }
+
+  .page-leave-active {
+    transition: opacity 0.1s ease-in;
+  }
+
+  .page-enter-from,
+  .page-leave-to {
+    opacity: 0;
+  }
+</style>

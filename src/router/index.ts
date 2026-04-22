@@ -12,8 +12,8 @@ const router = createRouter({
   routes,
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) return savedPosition
-    if (to.hash) return { el: to.hash, behavior: 'smooth' }
-    return { top: 0, behavior: 'smooth' }
+    if (to.hash) return { el: to.hash, behavior: 'instant' }
+    return { top: 0, behavior: 'instant' }
   },
 })
 
@@ -27,5 +27,6 @@ export default router
 declare module 'vue-router' {
   interface RouteMeta {
     title?: string
+    keepAlive?: boolean
   }
 }

@@ -10,8 +10,11 @@
   import { EmptyState } from '@/components/ui/empty-state'
   import { useFYI } from '@/composables/services'
   import { useResponsiveMaxWidth } from '@/composables/ui/useResponsiveMaxWidth'
+  import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
   import type { FYIItem } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/history.png'
+
+  useSwiperStyles()
 
   const router = useRouter()
   const isExtraSmallScreen = useMediaQuery('(max-width: 374px)')

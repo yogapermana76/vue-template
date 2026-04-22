@@ -1,16 +1,10 @@
 <script setup lang="ts">
+  import { defineAsyncComponent } from 'vue'
   import { useRouter } from 'vue-router'
   import { History } from 'lucide-vue-next'
   import { useQueryClient } from '@tanstack/vue-query'
   import { Header, GradientSection } from '@/components/layout'
-  import {
-    RewardsFaqSection,
-    RewardsInfoSection,
-    RewardsOurCouponsSection,
-    RewardsAlertSection,
-    RewardsFollowDrawSection,
-    RewardsHowToSection,
-  } from '@/components/rewards'
+  import { RewardsInfoSection } from '@/components/rewards'
   import { IconButton } from '@/components/ui/button'
   import { PullToRefresh } from '@/components/shared'
   import { usePullToRefresh } from '@/composables/ui'
@@ -22,9 +16,27 @@
     publicKeys,
   } from '@/composables/services'
 
+  // Async components (below the fold)
+  const RewardsAlertSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsAlertSection.vue'),
+  )
+  const RewardsFollowDrawSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsFollowDrawSection.vue'),
+  )
+  const RewardsOurCouponsSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsOurCouponsSection.vue'),
+  )
+  const RewardsHowToSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsHowToSection.vue'),
+  )
+  const RewardsFaqSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsFaqSection.vue'),
+  )
+
   definePage({
     meta: {
       title: 'Rewards',
+      keepAlive: true,
     },
   })
 
