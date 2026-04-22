@@ -45,7 +45,7 @@
     return categories.map(item => ({
       id: item.lotteryId,
       title: item.title,
-      description: `Undian periode ${formatDate(item.startDate, 'dd MMM yyyy')} - ${formatDate(item.endDate, 'dd MMM yyyy')}`,
+      description: `Periode ${formatDate(item.startDate, 'dd MMM yyyy')} - ${formatDate(item.endDate, 'dd MMM yyyy')}`,
     }))
   })
 

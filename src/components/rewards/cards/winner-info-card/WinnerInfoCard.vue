@@ -64,7 +64,7 @@
 
     <!-- Content -->
     <div class="relative z-10 ml-3 flex flex-1 flex-col items-start gap-0.5">
-      <h3 class="body-m-semibold text-white">{{ title }}</h3>
+      <h3 class="body-m-semibold line-clamp-1 text-white">{{ title }}</h3>
       <p class="body-caption text-white/80">{{ description }}</p>
     </div>
 
