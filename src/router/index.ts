@@ -50,13 +50,8 @@ router.beforeEach(async to => {
   const title = to.meta.title as string | undefined
   document.title = title ? `${title} | ${config.app.name}` : config.app.name
 
-  const stored = authStorage.getAuthFromApps<LocationQuery>()
-  const isChanged = paramsChanged(stored, to.query)
-  const hasNewToken = isChanged && to.query.token
-
-  // If token changed in URL, re-authenticate (blocking)
-  // Otherwise authenticate in background (non-blocking for faster first load)
-  if (hasNewToken) {
+  // If token in URL, reset flag to force re-authentication
+  if (to.query.token) {
     authInitialized = false
     await authenticateUser(to)
   } else {
