@@ -89,21 +89,38 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
   const districts = computed<District[]>(() => districtsData.value?.data || [])
 
   // ============================================
+  // Level-based Data Maps (DRY pattern)
+  // ============================================
+
+  const levelDataMap = {
+    province: provinces,
+    city: cities,
+    district: districts,
+  } as const
+
+  const levelSelectedIdMap = {
+    province: selectedProvinceId,
+    city: selectedCityId,
+    district: selectedDistrictId,
+  } as const
+
+  const levelLoadingMap = {
+    province: isLoadingProvinces,
+    city: isLoadingCities,
+    district: isLoadingDistricts,
+  } as const
+
+  const levelErrorMap = {
+    province: isErrorProvinces,
+    city: isErrorCities,
+    district: isErrorDistricts,
+  } as const
+
+  // ============================================
   // Computed - Current Data
   // ============================================
 
-  const currentData = computed<LocationItem[]>(() => {
-    switch (currentLevel.value) {
-      case 'province':
-        return provinces.value
-      case 'city':
-        return cities.value
-      case 'district':
-        return districts.value
-      default:
-        return []
-    }
-  })
+  const currentData = computed<LocationItem[]>(() => levelDataMap[currentLevel.value].value)
 
   // ============================================
   // Computed - Filtered Data
@@ -163,48 +180,16 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
   // Computed - Selected ID (for current level)
   // ============================================
 
-  const selectedId = computed<string | undefined>(() => {
-    switch (currentLevel.value) {
-      case 'province':
-        return selectedProvinceId.value
-      case 'city':
-        return selectedCityId.value
-      case 'district':
-        return selectedDistrictId.value
-      default:
-        return undefined
-    }
-  })
+  const selectedId = computed<string | undefined>(
+    () => levelSelectedIdMap[currentLevel.value].value,
+  )
 
   // ============================================
   // Computed - Loading & Error States
   // ============================================
 
-  const isLoading = computed(() => {
-    switch (currentLevel.value) {
-      case 'province':
-        return isLoadingProvinces.value
-      case 'city':
-        return isLoadingCities.value
-      case 'district':
-        return isLoadingDistricts.value
-      default:
-        return false
-    }
-  })
-
-  const isError = computed(() => {
-    switch (currentLevel.value) {
-      case 'province':
-        return isErrorProvinces.value
-      case 'city':
-        return isErrorCities.value
-      case 'district':
-        return isErrorDistricts.value
-      default:
-        return false
-    }
-  })
+  const isLoading = computed(() => levelLoadingMap[currentLevel.value].value)
+  const isError = computed(() => levelErrorMap[currentLevel.value].value)
 
   // ============================================
   // Computed - Can Save
@@ -268,22 +253,23 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
     searchQuery.value = ''
   }
 
-  const handleEditProvince = () => {
-    // Set editing mode to show province list (don't reset yet)
-    editingLevel.value = 'province'
+  /**
+   * Set editing mode to show specific level's list
+   */
+  const handleEditLevel = (level: LocationLevel) => {
+    editingLevel.value = level
     searchQuery.value = ''
   }
 
-  const handleEditCity = () => {
-    // Set editing mode to show city list (don't reset yet)
-    editingLevel.value = 'city'
-    searchQuery.value = ''
-  }
-
-  const handleEditDistrict = () => {
-    // Set editing mode to show district list (don't reset yet)
-    editingLevel.value = 'district'
-    searchQuery.value = ''
+  /**
+   * Sync selection from external source (e.g., when picker opens with existing selection)
+   */
+  const syncFromSelection = (selection?: SelectedLocation) => {
+    if (selection) {
+      selectedProvinceId.value = selection.provinceId
+      selectedCityId.value = selection.cityId
+      selectedDistrictId.value = selection.districtId
+    }
   }
 
   const getSelectedLocation = (): SelectedLocation => {
@@ -332,9 +318,8 @@ export function useLocationPicker(params: UseLocationPickerParams = {}) {
     // Methods
     handleSelect,
     handleReset,
-    handleEditProvince,
-    handleEditCity,
-    handleEditDistrict,
+    handleEditLevel,
+    syncFromSelection,
     getSelectedLocation,
   }
 }

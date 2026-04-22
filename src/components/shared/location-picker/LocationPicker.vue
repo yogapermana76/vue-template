@@ -25,8 +25,6 @@
     currentLevel,
     groupedData,
     selectedId,
-    selectedProvinceId,
-    selectedCityId,
     selectedDistrictId,
     selectedProvinceName,
     selectedCityName,
@@ -39,23 +37,19 @@
     editingLevel,
     handleSelect,
     handleReset,
-    handleEditProvince,
-    handleEditCity,
-    handleEditDistrict,
+    handleEditLevel,
+    syncFromSelection,
     getSelectedLocation,
   } = useLocationPicker({
     initialSelection: props.selectedLocation,
   })
 
-  // Watch for prop changes to sync state when picker opens
+  // Sync selection when picker opens with existing selection
   watch(
     () => props.open,
     isOpen => {
       if (isOpen && props.selectedLocation) {
-        // Sync selected IDs when picker opens with existing selection
-        selectedProvinceId.value = props.selectedLocation.provinceId
-        selectedCityId.value = props.selectedLocation.cityId
-        selectedDistrictId.value = props.selectedLocation.districtId
+        syncFromSelection(props.selectedLocation)
       }
     },
   )
@@ -76,21 +70,19 @@
     isOpen.value = false
   }
 
-  // Override handleReset to set editing mode to 'province' after reset
-  const handleResetWrapper = () => {
+  const handleResetAndEdit = () => {
     handleReset()
     // After reset, set to editing province so search is enabled
-    editingLevel.value = 'province'
+    handleEditLevel('province')
   }
 
   const handleSave = () => {
-    const selection = getSelectedLocation()
-    emit('save', selection)
+    emit('save', getSelectedLocation())
     handleClose()
   }
 
   // ============================================
-  // Empty State Message
+  // Computed
   // ============================================
 
   const emptyStateMessage = computed(() => {
@@ -111,13 +103,8 @@
 
   const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 
-  // Disable search when empty OR all filled, BUT enable when editing any field
-  const isSearchDisabled = computed<boolean>(() => {
-    const isEmpty = !selectedProvinceId.value && !selectedCityId.value && !selectedDistrictId.value
-    const isFull = !!(selectedProvinceId.value && selectedCityId.value && selectedDistrictId.value)
-    const isEditing = !!editingLevel.value
-    return (isEmpty || isFull) && !isEditing
-  })
+  // Disable search when all fields are filled and not editing
+  const isSearchDisabled = computed(() => canSave.value && !editingLevel.value)
 
   const finalSearchPlaceholder = computed(() => {
     return isSearchDisabled.value ? 'Cari Provinsi, Kota, Kecamatan' : searchPlaceholder.value
@@ -181,10 +168,8 @@
                 :province-name="selectedProvinceName"
                 :city-name="selectedCityName"
                 :district-name="selectedDistrictName"
-                @reset="handleResetWrapper"
-                @edit-province="handleEditProvince"
-                @edit-city="handleEditCity"
-                @edit-district="handleEditDistrict"
+                @reset="handleResetAndEdit"
+                @edit-level="handleEditLevel"
               />
             </div>
 
