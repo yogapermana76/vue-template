@@ -2,7 +2,7 @@
   import { computed, type Component, type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
   import CoinIcon from '@/assets/icons/coin.svg?component'
-  import HistoryIcon from '@/assets/icons/history.svg?component'
+  import HistoryIcon from '@/assets/icons/history-fill.svg?component'
 
   export interface RewardsTransactionCardProps {
     /** Transaction title (e.g., "Marketplace", "SPKLU", "Voucher 100.000") */

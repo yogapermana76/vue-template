@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { Divider } from '@/components/ui/divider'
   import MapPinIcon from '@/assets/icons/map-pin.svg?component'
-  import HistoryIcon from '@/assets/icons/history.svg?component'
+  import HistoryIcon from '@/assets/icons/history-fill.svg?component'
   import { formatDate } from '@/utils/date'
   import { formatNumber } from '@/utils/currency'
   import type { ExchangePointDetail } from '@/types/services'
