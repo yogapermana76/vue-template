@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
   import { Check, Clock } from 'lucide-vue-next'
@@ -19,6 +19,7 @@
     useVoucherPagesInfinite,
     useVoucherCategories,
     useVoucherCategoryFilter,
+    useVoucherDetailsPages,
   } from '@/composables/services'
   import type { Voucher } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/history.png'
@@ -95,20 +96,46 @@
   const showVoucherCodeSheet = ref(false)
   const selectedVoucherData = ref<Voucher | null>(null)
 
-  // Handle card click - navigate without voucherCode
-  // const handleVoucherCardClick = (voucherId: number) => {
-  //   router.push({
-  //     path: `/rewards/my-rewards/${voucherId}`,
-  //     query: { type: 'voucher' },
-  //   })
-  // }
+  // State for fetching single voucher code when availableQuota === 1
+  const voucherIdToFetch = ref<number | undefined>()
+
+  // Fetch single voucher code detail when availableQuota === 1
+  const { data: voucherCodeData } = useVoucherDetailsPages({
+    query: {
+      voucherId: computed(() => voucherIdToFetch.value),
+      page: 0,
+      size: 1,
+    },
+    options: {
+      enabled: computed(() => voucherIdToFetch.value !== undefined),
+    },
+  })
+
+  // Watch for voucher code and auto-redirect
+  watch(
+    () => voucherCodeData.value?.data?.data?.[0],
+    voucherCode => {
+      if (voucherCode) {
+        router.push({
+          path: `/rewards/my-rewards/${voucherCode.voucherId}`,
+          query: { type: 'voucher', voucherCode: voucherCode.voucherCode },
+        })
+        voucherIdToFetch.value = undefined
+      }
+    },
+  )
 
   // Handle button click - check codename to decide action
   const handleVoucherCardClick = (voucher: Voucher) => {
     if (voucherCodeSheetCodenames.includes(voucher.codename)) {
-      // Show bottomsheet for voucher code display
-      selectedVoucherData.value = voucher
-      showVoucherCodeSheet.value = true
+      // Check if only 1 voucher code available - fetch and redirect directly
+      if (voucher.availableQuota === 1) {
+        voucherIdToFetch.value = voucher.voucherId
+      } else {
+        // Show bottomsheet for voucher code display (multiple codes)
+        selectedVoucherData.value = voucher
+        showVoucherCodeSheet.value = true
+      }
     } else {
       // Navigate to detail page for other types
       router.push({
