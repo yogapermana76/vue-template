@@ -9,6 +9,7 @@
   import { SwiperPagination } from '@/components/ui/swiper'
   import { EmptyState } from '@/components/ui/empty-state'
   import { useFYI } from '@/composables/services'
+  import { useResponsiveMaxWidth } from '@/composables/ui/useResponsiveMaxWidth'
   import type { FYIItem } from '@/types'
   import RiwayatIllustration from '@/assets/illustrations/history.png'
 
@@ -16,13 +17,20 @@
   const isExtraSmallScreen = useMediaQuery('(max-width: 374px)')
   const isSmallScreen = useMediaQuery('(max-width: 424px)')
   const isLargeScreen = useMediaQuery('(min-width: 768px)')
+  const { isDesktop, responsiveMaxWidth } = useResponsiveMaxWidth()
 
   const { data: fyiData, isPending, isError } = useFYI()
 
   const fyiItems = computed(() => (fyiData.value?.data ?? []) as FYIItem[])
 
   const slidesPerView = computed(() => {
-    if (isExtraSmallScreen.value) return 1.9
+    // Desktop with maxWidth constraint (simulating mobile-like container)
+    if (isDesktop.value && responsiveMaxWidth.value) {
+      return 2.6
+    }
+
+    // Mobile/Tablet breakpoints
+    if (isExtraSmallScreen.value) return 2
     if (isSmallScreen.value) return 2.3
     if (isLargeScreen.value) return 4.8
     return 2.6
