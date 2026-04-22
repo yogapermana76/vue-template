@@ -8,8 +8,11 @@
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
   import { TextField, TextAreaField } from '@/components/ui/form'
-  import { RewardPrizeCard, RecipientInfoCard } from '@/components/rewards'
-  import { RecipientInfoBottomSheet } from '@/components/rewards'
+  import {
+    RewardPrizeCard,
+    RecipientInfoCard,
+    RecipientInfoBottomSheet,
+  } from '@/components/rewards'
   import { LocationField, type SelectedLocation } from '@/components/shared/location-picker'
   import { ConfirmationBottomSheet } from '@/components/shared'
   import {
@@ -42,44 +45,26 @@
   const router = useRouter()
   const route = useRoute()
 
-  // ============================================
-  // Confirmation & Error State
-  // ============================================
+  // Route params
+  const itemId = computed(() => (route.query.id as string) || '')
+  const itemType = computed(() => (route.query.type as string) || 'lottery')
+  const isLottery = computed(() => itemType.value === 'lottery')
+  const isReward = computed(() => itemType.value === 'reward')
+
+  // User profile
+  const userProfile = authStorage.getUser<User>()
+
+  // Bottom sheet states
+  const showEditRecipientSheet = ref(false)
+  const showConfirmationSheet = ref(false)
   const showErrorSheet = ref(false)
   const errorTitle = ref('')
   const errorDescription = ref('')
   const errorDeeplink = ref('')
 
-  // ============================================
-  // Route & User Data
-  // ============================================
-
-  // Get ID and type from query params
-  const itemId = computed(() => {
-    const id = route.query.id as string | undefined
-    return id || ''
-  })
-
-  const itemType = computed(() => {
-    const type = route.query.type as string | undefined
-    return type || 'lottery' // default to lottery for backward compatibility
-  })
-
-  const isLottery = computed(() => itemType.value === 'lottery')
-  const isReward = computed(() => itemType.value === 'reward')
-
-  const userProfile = authStorage.getUser<User>()
-
-  // ============================================
-  // API Queries & Mutations
-  // ============================================
-
+  // API Queries
   const { data: lastAddressData } = useLastAddress()
-
-  // Fetch user points
   const { data: userPointsData } = usePointSummary()
-
-  // Fetch detail based on type
   const { data: lotteryDetailData, isPending: isLotteryLoading } = useLotteryDetail({
     params: { id: itemId },
     options: { enabled: isLottery },
@@ -89,27 +74,18 @@
     options: { enabled: isReward },
   })
 
+  // API Mutations
   const { mutate: redeemLottery, isPending: isRedeemingLottery } = useLotteryRedeem()
   const { mutate: exchangeReward, isPending: isExchangingReward } = useRewardExchange()
 
+  // Derived states
   const isRedeeming = computed(() => isRedeemingLottery.value || isExchangingReward.value)
+  const isLoading = computed(() =>
+    isLottery.value ? isLotteryLoading.value : isRewardLoading.value,
+  )
+  const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
 
-  // Check if data is still loading
-  const isLoading = computed(() => {
-    if (isLottery.value) return isLotteryLoading.value
-    if (isReward.value) return isRewardLoading.value
-    return false
-  })
-
-  // ============================================
-  // Form Schema & Validation
-  // ============================================
-
-  /**
-   * Zod validation schema matching backend request body structure
-   * All location fields (provinceId, cityId, districtId) use number type
-   * Uses generic 'id' field that works for both lottery and reward
-   */
+  // Form Schema
   const redeemSchema = z.object({
     id: z.number({ required_error: 'ID diperlukan' }),
     provinceId: z.number().refine(val => val > 0, 'Provinsi harus dipilih'),
@@ -129,75 +105,51 @@
 
   type RedeemFormValues = z.infer<typeof redeemSchema>
 
-  // ============================================
-  // Form Initialization
-  // ============================================
-
-  const { handleSubmit, setFieldValue, setFieldTouched, values, resetForm } =
-    useForm<RedeemFormValues>({
-      validationSchema: toTypedSchema(redeemSchema),
-      initialValues: {
-        id: parseInt(itemId.value, 10) || 0,
-        provinceId: 0, // 0 = not selected
-        provinceName: '',
-        cityId: 0,
-        cityName: '',
-        districtId: 0,
-        districtName: '',
-        address: '',
-        postalCode: '',
-        receivedInfo: {
-          fullname: userProfile?.fullname || '',
-          email: userProfile?.email || '',
-          noHp: userProfile?.phoneNumber || '',
-        },
-      },
-    })
-
-  // ============================================
-  // Helpers
-  // ============================================
-
-  /**
-   * Parse location ID to number (API may return string or number)
-   * Returns 0 if invalid (represents "not selected" state)
-   */
+  // Helper
   const parseLocationId = (id: string | number | undefined): number => {
     if (!id) return 0
     return typeof id === 'string' ? parseInt(id, 10) : id
   }
 
-  // ============================================
-  // Location Selection State & Handlers
-  // ============================================
+  // Form initialization
+  const getInitialFormValues = (): RedeemFormValues => {
+    const lastAddress = lastAddressData.value?.data
+    return {
+      id: parseInt(itemId.value, 10) || 0,
+      provinceId: parseLocationId(lastAddress?.provinceId),
+      provinceName: lastAddress?.provinceName || '',
+      cityId: parseLocationId(lastAddress?.cityId),
+      cityName: lastAddress?.cityName || '',
+      districtId: parseLocationId(lastAddress?.districtId),
+      districtName: lastAddress?.districtName || '',
+      address: lastAddress?.address || '',
+      postalCode: lastAddress?.postalCode || '',
+      receivedInfo: {
+        fullname: userProfile?.fullname || '',
+        email: userProfile?.email || '',
+        noHp: userProfile?.phoneNumber || '',
+      },
+    }
+  }
 
+  const { handleSubmit, setFieldValue, setFieldTouched, values, resetForm } =
+    useForm<RedeemFormValues>({
+      validationSchema: toTypedSchema(redeemSchema),
+      initialValues: getInitialFormValues(),
+    })
+
+  // Location state
   const selectedLocation = ref<SelectedLocation>()
 
-  // ============================================
-  // Auto-fill from Last Address
-  // ============================================
-
-  /**
-   * Populate form with last used address data
-   * Uses resetForm for declarative batch updates (better than multiple setFieldValue calls)
-   */
+  // Auto-fill: sync form and selectedLocation when lastAddressData loads
   watch(
     lastAddressData,
-    async data => {
+    (data, oldData) => {
       if (!data?.data) return
 
-      const {
-        address,
-        postalCode,
-        provinceId,
-        provinceName,
-        cityId,
-        cityName,
-        districtId,
-        districtName,
-      } = data.data
+      const { provinceId, cityId, districtId } = data.data
 
-      // Update selectedLocation first to trigger dependent API queries (cities/districts)
+      // Sync selectedLocation for LocationField
       if (provinceId && cityId && districtId) {
         selectedLocation.value = {
           provinceId: String(provinceId),
@@ -206,75 +158,15 @@
         }
       }
 
-      // Wait for Field components to mount and API queries to trigger
-      await nextTick()
-
-      // Batch update all form fields using resetForm (more efficient than individual setFieldValue)
-      resetForm({
-        values: {
-          id: parseInt(itemId.value, 10) || 0,
-          address: address || '',
-          postalCode: postalCode || '',
-          provinceId: parseLocationId(provinceId),
-          provinceName: provinceName || '',
-          cityId: parseLocationId(cityId),
-          cityName: cityName || '',
-          districtId: parseLocationId(districtId),
-          districtName: districtName || '',
-          receivedInfo: {
-            fullname: userProfile?.fullname || '',
-            email: userProfile?.email || '',
-            noHp: userProfile?.phoneNumber || '',
-          },
-        },
-      })
+      // Reset form only on first load (empty -> populated)
+      if (!oldData?.data) {
+        resetForm({ values: getInitialFormValues() })
+      }
     },
     { immediate: true },
   )
 
-  /**
-   * Handle location change from LocationPicker
-   * Converts SelectedLocation (string IDs) to form values (number IDs + names)
-   */
-  const handleLocationChange = async (location: SelectedLocation | undefined) => {
-    selectedLocation.value = location
-    const { provinceId, cityId, districtId } = location || {}
-
-    // Set IDs immediately (convert string to number)
-    setFieldValue('provinceId', provinceId ? parseInt(provinceId, 10) : 0)
-    setFieldValue('cityId', cityId ? parseInt(cityId, 10) : 0)
-    setFieldValue('districtId', districtId ? parseInt(districtId, 10) : 0)
-
-    // Wait for next tick to allow computed name maps to update from API data
-    await nextTick()
-
-    // Set names from the updated name maps
-    setFieldValue('provinceName', provinceId ? provinceNames.value[provinceId] || '' : '')
-    setFieldValue('cityName', cityId ? cityNames.value[cityId] || '' : '')
-    setFieldValue('districtName', districtId ? districtNames.value[districtId] || '' : '')
-
-    // Mark fields as touched to enable validation
-    setFieldTouched('provinceId', true)
-    setFieldTouched('cityId', true)
-    setFieldTouched('districtId', true)
-  }
-
-  /**
-   * Computed error message for LocationField
-   * Shows the most specific missing field (district > city > province)
-   */
-  const locationError = computed(() => {
-    if (!values.provinceId || values.provinceId === 0) return 'Provinsi harus dipilih'
-    if (!values.cityId || values.cityId === 0) return 'Kota harus dipilih'
-    if (!values.districtId || values.districtId === 0) return 'Kecamatan harus dipilih'
-    return undefined
-  })
-
-  // ============================================
-  // Region Data & Name Maps
-  // ============================================
-
-  // Fetch region data for LocationPicker
+  // Region data for LocationField
   const { data: provincesData } = useProvinces()
   const { data: citiesData } = useCities({
     query: { provinceId: computed(() => selectedLocation.value?.provinceId) },
@@ -283,27 +175,19 @@
     query: { cityId: computed(() => selectedLocation.value?.cityId) },
   })
 
-  /**
-   * Create name maps for LocationField display
-   * Merges API data with lastAddress data for immediate availability on initial load
-   */
+  // Name maps for LocationField display
   const createNameMap = (
     apiData: typeof provincesData | typeof citiesData | typeof districtsData,
-    lastAddressId?: string | number,
-    lastAddressName?: string,
-  ) => {
+    fallbackId?: string | number,
+    fallbackName?: string,
+  ): Record<string, string> => {
     const map: Record<string, string> = {}
-
-    // Add all names from API response
     apiData.value?.data?.forEach(item => {
       map[item.id] = item.name
     })
-
-    // Add name from lastAddress as fallback (ensures name available before API loads)
-    if (lastAddressId && lastAddressName) {
-      map[String(lastAddressId)] = lastAddressName
+    if (fallbackId && fallbackName) {
+      map[String(fallbackId)] = fallbackName
     }
-
     return map
   }
 
@@ -314,7 +198,6 @@
       lastAddressData.value?.data?.provinceName,
     ),
   )
-
   const cityNames = computed(() =>
     createNameMap(
       citiesData,
@@ -322,7 +205,6 @@
       lastAddressData.value?.data?.cityName,
     ),
   )
-
   const districtNames = computed(() =>
     createNameMap(
       districtsData,
@@ -331,307 +213,200 @@
     ),
   )
 
-  // ============================================
-  // Recipient Info Section
-  // ============================================
+  // Location error message
+  const locationError = computed(() => {
+    if (!values.provinceId || values.provinceId === 0) return 'Provinsi harus dipilih'
+    if (!values.cityId || values.cityId === 0) return 'Kota harus dipilih'
+    if (!values.districtId || values.districtId === 0) return 'Kecamatan harus dipilih'
+    return undefined
+  })
 
-  const showEditRecipientSheet = ref(false)
-  const showConfirmationSheet = ref(false)
+  // Handle location change
+  const handleLocationChange = async (location: SelectedLocation | undefined) => {
+    selectedLocation.value = location
+    const { provinceId, cityId, districtId } = location || {}
 
-  const recipientData = computed(() => values.receivedInfo)
+    setFieldValue('provinceId', provinceId ? parseInt(provinceId, 10) : 0)
+    setFieldValue('cityId', cityId ? parseInt(cityId, 10) : 0)
+    setFieldValue('districtId', districtId ? parseInt(districtId, 10) : 0)
 
-  const handleRecipientClick = () => {
-    showEditRecipientSheet.value = true
+    await nextTick()
+
+    setFieldValue('provinceName', provinceId ? provinceNames.value[provinceId] || '' : '')
+    setFieldValue('cityName', cityId ? cityNames.value[cityId] || '' : '')
+    setFieldValue('districtName', districtId ? districtNames.value[districtId] || '' : '')
+
+    setFieldTouched('provinceId', true)
+    setFieldTouched('cityId', true)
+    setFieldTouched('districtId', true)
   }
 
+  // Recipient info handlers
   const handleSaveRecipientInfo = (email: string, phone: string) => {
     setFieldValue('receivedInfo.email', email)
     setFieldValue('receivedInfo.noHp', phone)
     showEditRecipientSheet.value = false
   }
 
-  // ============================================
-  // Prize Data from Detail (Lottery or Reward)
-  // ============================================
-
+  // Prize data (unified for lottery/reward)
   const prizeData = computed(() => {
-    const lottery = lotteryDetailData.value
-    const reward = rewardDetailData.value?.data
-
-    if (isLottery.value && lottery) {
-      return {
-        image: lottery.imageUrl || 'https://placehold.co/80x80',
-        title: lottery.title || '',
-        date:
-          lottery.startDate && lottery.endDate
-            ? formatDateRange(lottery.startDate, lottery.endDate)
-            : '',
-      }
-    }
-
-    if (isReward.value && reward) {
-      return {
-        image: reward.imageUrl || 'https://placehold.co/80x80',
-        title: reward.title || '',
-        date:
-          reward.startDate && reward.endDate
-            ? formatDateRange(reward.startDate, reward.endDate)
-            : '',
-      }
-    }
+    const data = isLottery.value ? lotteryDetailData.value : rewardDetailData.value?.data
+    if (!data) return { image: 'https://placehold.co/80x80', title: '', date: '' }
 
     return {
-      image: 'https://placehold.co/80x80',
-      title: '',
-      date: '',
+      image: data.imageUrl || 'https://placehold.co/80x80',
+      title: data.title || '',
+      date: data.startDate && data.endDate ? formatDateRange(data.startDate, data.endDate) : '',
     }
   })
 
-  // ============================================
-  // Points Check
-  // ============================================
-
-  const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
-
-  // Check if user has enough points
-  const hasEnoughPoints = computed(() => {
-    const lottery = lotteryDetailData.value
-    const reward = rewardDetailData.value?.data
-
-    if (isLottery.value && lottery) {
-      return userPoints.value >= (lottery.pricePoint ?? 0)
-    }
-
-    if (isReward.value && reward) {
-      return userPoints.value >= (reward.pricePoint ?? 0)
-    }
-
-    return true
+  // Points check
+  const requiredPoints = computed(() => {
+    if (isLottery.value) return lotteryDetailData.value?.pricePoint ?? 0
+    if (isReward.value) return rewardDetailData.value?.data?.pricePoint ?? 0
+    return 0
   })
 
-  // Footer message for disabled state
-  const disabledMessage = computed(() => {
-    if (!hasEnoughPoints.value) {
-      return 'Poin anda tidak mencukupi'
-    }
-    return null
-  })
+  const hasEnoughPoints = computed(() => userPoints.value >= requiredPoints.value)
+  const disabledMessage = computed(() =>
+    hasEnoughPoints.value ? null : 'Poin anda tidak mencukupi',
+  )
 
-  // ============================================
-  // Confirmation Bottom Sheet
-  // ============================================
-
+  // Confirmation description
   const confirmationDescription = computed(() => {
-    if (isLottery.value) {
-      const lottery = lotteryDetailData.value
-      if (!lottery) return ''
-      return `Apakah anda ingin menukarkan <strong>${formatNumber(lottery.pricePoint ?? 0)} poin</strong> untuk mendapatkan kupon undian ini?`
-    }
-
-    if (isReward.value) {
-      const reward = rewardDetailData.value?.data
-      if (!reward) return ''
-      return `Apakah anda ingin menukarkan <strong>${formatNumber(reward.pricePoint ?? 0)} poin</strong> untuk mendapatkan hadiah ini?`
-    }
-
-    return ''
+    if (!requiredPoints.value) return ''
+    const itemLabel = isLottery.value ? 'kupon undian ini' : 'hadiah ini'
+    return `Apakah anda ingin menukarkan <strong>${formatNumber(requiredPoints.value)} poin</strong> untuk mendapatkan ${itemLabel}?`
   })
 
-  const handleShowConfirmation = () => {
-    showConfirmationSheet.value = true
+  // Error handling helper
+  const handleMutationError = (error: unknown, defaultTitle: string, checkHasData = false) => {
+    showConfirmationSheet.value = false
+    const { title, description, deeplink, hasData } = extractApiError(error, defaultTitle)
+    if (checkHasData && !hasData) return
+    errorTitle.value = title
+    errorDescription.value = description
+    errorDeeplink.value = deeplink || ''
+    showErrorSheet.value = true
   }
 
+  // Form submission
+  const handleConfirmExchange = handleSubmit(formValues => {
+    errorTitle.value = ''
+    errorDescription.value = ''
+
+    const { id, ...addressFields } = formValues
+
+    if (isLottery.value) {
+      redeemLottery(
+        { ...addressFields, lotteryId: id },
+        {
+          onSuccess: response => {
+            showConfirmationSheet.value = false
+            if (response.data?.tUserPointId) {
+              router.replace(`/rewards/redemption/${response.data.tUserPointId}`)
+            }
+          },
+          onError: error => handleMutationError(error, 'Gagal Menukar Undian'),
+        },
+      )
+    } else if (isReward.value) {
+      exchangeReward(
+        { ...addressFields, rewardId: id },
+        {
+          onSuccess: response => {
+            showConfirmationSheet.value = false
+            if (response.data?.id) {
+              router.replace(`/rewards/redemption/${response.data.id}`)
+            }
+          },
+          onError: error => handleMutationError(error, 'Gagal Menukar Hadiah', true),
+        },
+      )
+    }
+  })
+
+  const onSubmit = handleSubmit(() => {
+    showConfirmationSheet.value = true
+  })
+
   const handleCancelExchange = () => {
-    // Only allow cancel if not processing mutation
     if (!isRedeeming.value) {
       showConfirmationSheet.value = false
     }
   }
 
-  const handleConfirmExchange = handleSubmit(formValues => {
-    // Reset error state before submission
-    errorTitle.value = ''
-    errorDescription.value = ''
-    // Don't close confirmation sheet - keep it open until mutation completes
+  // Error sheet
+  const errorIllustration = computed(() =>
+    errorTitle.value === 'Ups, hadiah sudah habis'
+      ? DisappointedMascotIllustration
+      : PensiveMascotIllustration,
+  )
 
-    // Destructure to separate id from other fields
-    const { id, ...addressFields } = formValues
-
-    if (isLottery.value) {
-      // Transform form values to lottery redeem request
-      const lotteryRequest = {
-        ...addressFields,
-        lotteryId: id,
-      }
-      redeemLottery(lotteryRequest, {
-        onSuccess: response => {
-          // Only close sheet on success
-          showConfirmationSheet.value = false
-          const tUserPointId = response.data?.tUserPointId
-          if (tUserPointId) {
-            router.replace(`/rewards/redemption/${tUserPointId}`)
-          }
-        },
-        onError: (error: unknown) => {
-          showConfirmationSheet.value = false
-          const { title, description, deeplink } = extractApiError(error, 'Gagal Menukar Undian')
-          errorTitle.value = title
-          errorDescription.value = description
-          errorDeeplink.value = deeplink || ''
-          showErrorSheet.value = true
-        },
-      })
-    } else if (isReward.value) {
-      // Transform form values to reward exchange request
-      const rewardRequest = {
-        ...addressFields,
-        rewardId: id,
-      }
-      exchangeReward(rewardRequest, {
-        onSuccess: response => {
-          // Only close sheet on success
-          showConfirmationSheet.value = false
-          const redemptionId = response.data?.id
-          if (redemptionId) {
-            router.replace(`/rewards/redemption/${redemptionId}`)
-          }
-        },
-        onError: (error: unknown) => {
-          showConfirmationSheet.value = false
-          const { title, description, deeplink, hasData } = extractApiError(
-            error,
-            'Gagal Menukar Hadiah',
-          )
-          // Only show error sheet if response has valid error data structure
-          if (!hasData) return
-          errorTitle.value = title
-          errorDescription.value = description
-          errorDeeplink.value = deeplink || ''
-          showErrorSheet.value = true
-        },
-      })
-    }
-  })
-
-  // ============================================
-  // Form Submission
-  // ============================================
-
-  const onSubmit = handleSubmit(() => {
-    handleShowConfirmation()
-  })
-
-  const handleButtonClick = async () => {
-    // Trigger validation by attempting to submit
-    await onSubmit()
+  const closeErrorSheet = () => {
+    showErrorSheet.value = false
   }
 
-  // ============================================
-  // Error Illustration
-  // ============================================
-
-  const errorIllustration = computed(() => {
-    if (errorTitle.value === 'Ups, hadiah sudah habis') {
-      return DisappointedMascotIllustration
-    }
-    return PensiveMascotIllustration
-  })
-
-  // Handle email verification redirect
-  const handleVerifyEmail = () => {
+  const handleVerifyAction = () => {
     if (errorDeeplink.value) {
       openDeeplink(errorDeeplink.value)
     }
-    showErrorSheet.value = false
+    closeErrorSheet()
   }
 
-  // Close error sheet handler
-  const handleCloseError = (): void => {
-    showErrorSheet.value = false
-  }
-
-  // Lowercase error title for case-insensitive comparison
-  const errorTitleLower = computed(() => errorTitle.value.toLowerCase())
-
-  // Verification error titles to button labels map
   const verificationLabels: Record<string, string> = {
     'verifikasi email dulu, yuk!': 'Verifikasi Email',
     'verifikasi nomor hp dulu, yuk!': 'Verifikasi Nomor HP',
     'verifikasi akun dulu, yuk!': 'Verifikasi Akun',
   }
 
-  // Dynamic error bottom sheet buttons
   const errorSheetButtons = computed(() => {
-    const verificationLabel = verificationLabels[errorTitleLower.value]
-
+    const verificationLabel = verificationLabels[errorTitle.value.toLowerCase()]
     if (verificationLabel) {
       return [
-        {
-          label: verificationLabel,
-          variant: 'primary' as const,
-          onClick: handleVerifyEmail,
-        },
-        {
-          label: 'Tutup',
-          variant: 'secondary' as const,
-          onClick: handleCloseError,
-        },
+        { label: verificationLabel, variant: 'primary' as const, onClick: handleVerifyAction },
+        { label: 'Tutup', variant: 'secondary' as const, onClick: closeErrorSheet },
       ]
     }
-
-    return [
-      {
-        label: 'Kembali',
-        variant: 'primary' as const,
-        onClick: handleCloseError,
-      },
-    ]
+    return [{ label: 'Kembali', variant: 'primary' as const, onClick: closeErrorSheet }]
   })
 </script>
 
 <template>
-  <!-- Header -->
   <Header title="Tukar Poin" />
 
-  <!-- Content with Fixed Header Gap and Footer Padding -->
   <div class="pt-14 pb-36">
-    <!-- Main Content -->
     <main class="flex flex-1 flex-col gap-5 pt-4 pb-6">
       <!-- Prize Card -->
       <div class="px-4">
         <RewardPrizeCard :image="prizeData.image" :title="prizeData.title" :date="prizeData.date" />
       </div>
 
-      <!-- Divider with background -->
       <Divider thick class="w-full bg-neutral-50" />
 
-      <!-- Informasi Penerima Section -->
+      <!-- Informasi Penerima -->
       <div class="flex w-full flex-col gap-3 px-4">
         <h2 class="body-l-semibold text-slate-950">Informasi Penerima</h2>
-
         <RecipientInfoCard
-          :name="recipientData.fullname"
-          :email="recipientData.email"
-          :phone="recipientData.noHp"
-          @click="handleRecipientClick"
+          :name="values.receivedInfo.fullname"
+          :email="values.receivedInfo.email"
+          :phone="values.receivedInfo.noHp"
+          @click="showEditRecipientSheet = true"
         />
       </div>
 
-      <!-- Divider with background -->
       <Divider thick class="w-full bg-neutral-50" />
 
-      <!-- Alamat Pengiriman Section -->
+      <!-- Alamat Pengiriman -->
       <div class="flex w-full flex-col gap-3 px-4">
         <h2 class="body-l-semibold text-slate-950">Alamat Pengiriman</h2>
-
         <p class="body-caption text-slate-700">
           Hadiah akan dikirimkan ke alamat yang dimasukkan. Barang yang gagal kirim karena alamat
           tidak lengkap menjadi tanggungjawab pelanggan/
         </p>
 
-        <!-- Form Fields -->
         <div class="flex flex-col gap-4">
-          <!-- Full Address -->
+          <!-- Alamat Lengkap -->
           <Field name="address" v-slot="{ field, meta: fieldMeta, errorMessage }">
             <TextAreaField
               :model-value="field.value"
@@ -640,13 +415,13 @@
               required
               :rows="4"
               resize="none"
-              :error="fieldMeta.touched && !!errorMessage ? errorMessage : undefined"
+              :error="fieldMeta.touched && errorMessage ? errorMessage : undefined"
               @update:model-value="field.onChange"
               @blur="field.onBlur"
             />
           </Field>
 
-          <!-- City/District - Using LocationField -->
+          <!-- Lokasi -->
           <Field name="districtId" v-slot="{ field, meta: fieldMeta }">
             <LocationField
               v-model="selectedLocation"
@@ -661,14 +436,13 @@
               @change="
                 location => {
                   handleLocationChange(location)
-                  const districtId = location?.districtId ? parseInt(location.districtId, 10) : 0
-                  field.onChange(districtId)
+                  field.onChange(location?.districtId ? parseInt(location.districtId, 10) : 0)
                 }
               "
             />
           </Field>
 
-          <!-- Postal Code -->
+          <!-- Kode Pos -->
           <Field name="postalCode" v-slot="{ field, meta: fieldMeta, errorMessage }">
             <TextField
               :model-value="field.value"
@@ -676,7 +450,7 @@
               placeholder="10114"
               type="text"
               required
-              :error="fieldMeta.touched && !!errorMessage ? errorMessage : undefined"
+              :error="fieldMeta.touched && errorMessage ? errorMessage : undefined"
               @update:model-value="field.onChange"
               @blur="field.onBlur"
             />
@@ -686,35 +460,31 @@
     </main>
   </div>
 
-  <!-- Footer with Button -->
+  <!-- Footer -->
   <Footer v-if="!isLoading" position="fixed">
-    <!-- Disabled state message -->
     <div v-if="disabledMessage">
       <p class="body-m text-slate-950">{{ disabledMessage }}</p>
     </div>
-
-    <!-- Button -->
     <Button
       variant="primary"
       size="md"
       class="w-full"
       :disabled="!hasEnoughPoints"
       :loading="isRedeeming"
-      @click="handleButtonClick"
+      @click="onSubmit"
     >
       Tukar Poin
     </Button>
   </Footer>
 
-  <!-- Recipient Info Bottom Sheet -->
+  <!-- Bottom Sheets -->
   <RecipientInfoBottomSheet
     v-model:open="showEditRecipientSheet"
-    :email="recipientData.email"
-    :phone="recipientData.noHp"
+    :email="values.receivedInfo.email"
+    :phone="values.receivedInfo.noHp"
     @save="handleSaveRecipientInfo"
   />
 
-  <!-- Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet
     v-model:open="showConfirmationSheet"
     :image="MascotIllustration"
@@ -722,11 +492,7 @@
     :description="confirmationDescription"
     button-layout="row"
     :buttons="[
-      {
-        label: 'Kembali',
-        variant: 'secondary',
-        onClick: handleCancelExchange,
-      },
+      { label: 'Kembali', variant: 'secondary', onClick: handleCancelExchange },
       {
         label: 'Tukar Poin',
         variant: 'primary',
@@ -736,13 +502,12 @@
     ]"
   />
 
-  <!-- Error Bottom Sheet -->
   <ConfirmationBottomSheet
     v-model:open="showErrorSheet"
     :image="errorIllustration"
     :title="errorTitle"
     :description="errorDescription"
-    :button-layout="'column'"
+    button-layout="column"
     :buttons="errorSheetButtons"
   />
 </template>
