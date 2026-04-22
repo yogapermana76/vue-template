@@ -26,8 +26,8 @@
   import type { User } from '@/types/services/auth.types'
   import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
-  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.svg?component'
-  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.svg?component'
+  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.png'
+  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.png'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({

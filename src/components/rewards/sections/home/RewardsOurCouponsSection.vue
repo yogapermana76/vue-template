@@ -1,11 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
-  import { ScrollablePillTabs, ScrollablePillTabsSkeleton } from '@/components/ui/pill-tab'
-  import { Button } from '@/components/ui/button'
-  import { EmptyState } from '@/components/ui/empty-state'
-  import { RewardCouponCardCompact, RewardCouponCardCompactSkeleton } from '@/components/rewards'
-  import { ConfirmationBottomSheet } from '@/components/shared'
   import {
     useRewardGiftInstantly,
     useRewardCategories,
@@ -21,8 +16,8 @@
   import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
   import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
   import LocationIllustration from '@/assets/illustrations/location.svg?component'
-  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.svg?component'
-  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.svg?component'
+  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.png'
+  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.png'
 
   const router = useRouter()
   const showConfirmationSheet = ref(false)
