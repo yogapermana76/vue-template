@@ -13,7 +13,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{vue,ts,js,json,css}\"",
     "format:check": "prettier --check \"src/**/*.{vue,ts,js,json,css}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy:dev": "npm run build:dev && firebase deploy --only hosting:loket-lifestyle-v2"
   },
   "lint-staged": {
     "*.{vue,ts,js}": [

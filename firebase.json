@@ -1,0 +1,15 @@
+{
+  "hosting": [
+    {
+      "target": "loket-lifestyle-v2",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}
