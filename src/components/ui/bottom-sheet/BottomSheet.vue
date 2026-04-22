@@ -9,6 +9,7 @@
     DrawerHeader,
     DrawerTitle,
   } from '@/components/ui/drawer'
+  import { useSafeArea } from '@/composables/ui'
 
   // ============================================================================
   // Type Definitions & Constants
@@ -72,6 +73,8 @@
     'update:open': [value: boolean]
   }>()
 
+  const { safeAreaBottomStyle } = useSafeArea()
+
   const isOpen = computed({
     get: () => props.open,
     set: value => emit('update:open', value),
@@ -112,12 +115,15 @@
       </template>
 
       <!-- Flexible content slot (scrollable) -->
-      <div :class="['scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 pb-6', contentSlotClass]">
+      <div
+        :class="['scrollbar-none min-h-0 flex-1 overflow-y-auto px-4 pb-6', contentSlotClass]"
+        :style="!hasFooter ? safeAreaBottomStyle : undefined"
+      >
         <slot />
       </div>
 
       <!-- Footer (optional) -->
-      <div v-if="hasFooter" :class="footerClasses">
+      <div v-if="hasFooter" :class="footerClasses" :style="safeAreaBottomStyle">
         <slot name="footer" />
       </div>
     </DrawerContent>

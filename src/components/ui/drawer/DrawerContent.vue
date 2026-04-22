@@ -5,7 +5,7 @@
   import { useForwardPropsEmits } from 'reka-ui'
   import { DrawerContent, DrawerPortal } from 'vaul-vue'
   import { cn } from '@/utils/cn'
-  import { useResponsiveMaxWidth, useSafeArea } from '@/composables/ui'
+  import { useResponsiveMaxWidth } from '@/composables/ui'
   import DrawerOverlay from './DrawerOverlay.vue'
 
   defineOptions({
@@ -23,11 +23,9 @@
 
   const forwarded = useForwardPropsEmits(props, emits)
   const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
-  const { safeAreaBottomPosition } = useSafeArea()
 
   const drawerStyle = computed(() => ({
     ...responsiveMaxWidthStyle.value,
-    ...safeAreaBottomPosition.value,
   }))
 </script>
 
