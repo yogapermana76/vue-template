@@ -7,16 +7,16 @@
   import { useTokenAuth } from '@/composables/auth'
 
   const route = useRoute()
-  const { processAuth } = useTokenAuth()
+  const { processAuth, handleTokenChange } = useTokenAuth()
 
   onMounted(() => {
     processAuth(route.query.token as string | undefined)
   })
 
   watch(
-    () => route.query.token,
+    () => (route.path === '/' ? route.query.token : null),
     newToken => {
-      processAuth(newToken as string | undefined)
+      handleTokenChange(newToken as string | undefined)
     },
   )
 </script>
