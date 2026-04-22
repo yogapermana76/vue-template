@@ -9,7 +9,7 @@
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { useVoucherDetailsPagesInfinite } from '@/composables/services'
   import type { VoucherCodeDetail } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
   import { formatDate } from '@/utils/date'
 
   interface Props {

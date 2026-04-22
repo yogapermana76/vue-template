@@ -13,9 +13,9 @@
   import { openDeeplink } from '@/utils/native-bridge'
   import type { GiftInstantly } from '@/types'
   import type { User } from '@/types/services/auth.types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
   import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import LocationIllustration from '@/assets/illustrations/location.png'
   import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.png'
   import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.png'
 

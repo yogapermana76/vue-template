@@ -15,7 +15,7 @@
   import { usePullToRefresh } from '@/composables/ui'
   import { formatDate } from '@/utils/date'
   import { formatNumber } from '@/utils'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import LocationIllustration from '@/assets/illustrations/location.png'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({

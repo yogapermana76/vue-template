@@ -3,7 +3,7 @@
   import { Header, Footer, GradientSection } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { EcoJourneyRedemptionDetailsSection } from '@/components/eco-journey-points/sections/redemption'
-  import CheckIcon from '@/assets/illustrations/check.svg?component'
+  import CheckIcon from '@/assets/illustrations/check.png?component'
 
   definePage({
     meta: {

@@ -10,7 +10,7 @@
   import { useExchangePointDetail, rewardKeys } from '@/composables/services'
   import { PullToRefresh } from '@/components/shared'
   import { usePullToRefresh } from '@/composables/ui'
-  import CheckIcon from '@/assets/illustrations/check.svg?component'
+  import CheckIcon from '@/assets/illustrations/check.png?component'
 
   definePage({
     meta: {

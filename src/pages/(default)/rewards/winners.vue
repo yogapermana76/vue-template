@@ -23,7 +23,7 @@
   import { formatDate } from '@/utils/date'
   import { AlertCircle } from 'lucide-vue-next'
   import type { Winner } from '@/types'
-  import PemenangIllustration from '@/assets/illustrations/riwayat.svg'
+  import PemenangIllustration from '@/assets/illustrations/history.png'
   import { PullToRefresh } from '@/components/shared'
 
   definePage({

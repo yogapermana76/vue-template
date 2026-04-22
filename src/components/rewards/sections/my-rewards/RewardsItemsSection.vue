@@ -8,7 +8,7 @@
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { useUserGiftInstantlyInfinite } from '@/composables/services'
   import type { UserGiftInstantly } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
