@@ -8,8 +8,8 @@
   import { useLotteryRedeemablePages } from '@/composables/services'
   import { formatDateRange } from '@/utils/date'
   import type { Lottery } from '@/types'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import LocationIllustration from '@/assets/illustrations/location.png'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
   const showLocationSheet = ref(false)

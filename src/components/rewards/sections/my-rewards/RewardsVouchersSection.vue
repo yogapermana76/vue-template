@@ -21,7 +21,7 @@
     useVoucherCategoryFilter,
   } from '@/composables/services'
   import type { Voucher } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
   import { formatDate } from '@/utils/date'
 
   const router = useRouter()

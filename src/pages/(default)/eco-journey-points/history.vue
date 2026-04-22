@@ -4,7 +4,7 @@
   import { EmptyState } from '@/components/ui/empty-state'
   import { Button } from '@/components/ui/button'
   import { EcoJourneyTransactionHistorySection } from '@/components/eco-journey-points/sections/history'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   definePage({
     meta: {

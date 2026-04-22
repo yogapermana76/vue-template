@@ -9,7 +9,7 @@
   import { useUserLotteryListInfinite } from '@/composables/services'
   import { formatDate } from '@/utils/date'
   import type { UserLottery } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)

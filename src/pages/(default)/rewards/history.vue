@@ -13,7 +13,7 @@
   import { usePointHistoryInfinite, usePointSummary, pointKeys } from '@/composables/services'
   import { formatDate } from '@/utils/date'
   import type { PointHistoryItem } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
   import { PullToRefresh } from '@/components/shared'
   import { usePullToRefresh } from '@/composables/ui'
 

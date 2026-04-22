@@ -9,7 +9,7 @@
   import { EmptyState } from '@/components/ui/empty-state'
   import { useFYI } from '@/composables/services'
   import type { FYIItem } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
 

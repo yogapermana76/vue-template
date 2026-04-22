@@ -10,7 +10,7 @@
   import { useExchangePointDetail, rewardKeys } from '@/composables/services'
   import { PullToRefresh } from '@/components/shared'
   import { usePullToRefresh } from '@/composables/ui'
-  import CheckIcon from '@/assets/illustrations/check.svg?component'
+  import CheckIcon from '@/assets/illustrations/check.png'
 
   definePage({
     meta: {
@@ -72,7 +72,7 @@
       <div class="flex flex-col items-center gap-4 px-4">
         <!-- Check Icon -->
         <div class="size-20 shrink-0">
-          <CheckIcon class="size-full" />
+          <img :src="CheckIcon" class="size-full" />
         </div>
 
         <!-- Text Container -->
