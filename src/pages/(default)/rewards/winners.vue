@@ -13,12 +13,7 @@
   import { IconButton } from '@/components/ui/button'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { EmptyState } from '@/components/ui/empty-state'
-  import {
-    useWinnerListInfinite,
-    usePublicWinnerTnc,
-    winnerKeys,
-    publicKeys,
-  } from '@/composables/services'
+  import { useWinnerListInfinite, usePublicWinnerTnc, publicKeys } from '@/composables/services'
   import { useResponsiveMaxWidth, usePullToRefresh } from '@/composables/ui'
   import { formatDate } from '@/utils/date'
   import { AlertCircle } from 'lucide-vue-next'
@@ -172,8 +167,8 @@
   const { pullDistance, isRefreshing } = usePullToRefresh({
     onRefresh: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: winnerKeys.listInfinite() }),
-        queryClient.invalidateQueries({ queryKey: publicKeys.winnerTnc() }),
+        queryClient.resetQueries({ queryKey: ['winner', 'list-infinite'] }),
+        queryClient.resetQueries({ queryKey: publicKeys.winnerTnc() }),
       ])
     },
   })

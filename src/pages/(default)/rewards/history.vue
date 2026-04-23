@@ -110,8 +110,8 @@
   const { pullDistance, isRefreshing } = usePullToRefresh({
     onRefresh: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: pointKeys.summary() }),
-        queryClient.invalidateQueries({ queryKey: pointKeys.history() }),
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
+        queryClient.resetQueries({ queryKey: ['point', 'history-infinite'] }),
       ])
     },
   })

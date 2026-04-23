@@ -8,13 +8,7 @@
   import { IconButton } from '@/components/ui/button'
   import { PullToRefresh } from '@/components/shared'
   import { usePullToRefresh } from '@/composables/ui'
-  import {
-    rewardKeys,
-    lotteryKeys,
-    pointKeys,
-    winnerKeys,
-    publicKeys,
-  } from '@/composables/services'
+  import { rewardKeys, pointKeys, publicKeys } from '@/composables/services'
 
   // Async components (below the fold)
   const RewardsAlertSection = defineAsyncComponent(
@@ -52,20 +46,20 @@
     onRefresh: async () => {
       await Promise.all([
         // RewardsInfoSection
-        queryClient.invalidateQueries({ queryKey: pointKeys.summary() }),
-        queryClient.invalidateQueries({ queryKey: winnerKeys.categories() }),
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
+        queryClient.resetQueries({ queryKey: ['winner', 'categories'] }),
         // RewardsAlertSection
-        queryClient.invalidateQueries({ queryKey: rewardKeys.verifyInfo() }),
+        queryClient.resetQueries({ queryKey: rewardKeys.verifyInfo() }),
         // RewardsFollowDrawSection
-        queryClient.invalidateQueries({ queryKey: lotteryKeys.redeemablePages() }),
+        queryClient.resetQueries({ queryKey: ['lottery', 'redeemable-pages'] }),
         // RewardsOurCouponsSection
-        queryClient.invalidateQueries({ queryKey: rewardKeys.categories() }),
-        queryClient.invalidateQueries({ queryKey: rewardKeys.giftInstantly() }),
-        queryClient.invalidateQueries({ queryKey: rewardKeys.lastAddress() }),
+        queryClient.resetQueries({ queryKey: rewardKeys.categories() }),
+        queryClient.resetQueries({ queryKey: ['reward', 'gift-instantly'] }),
+        queryClient.resetQueries({ queryKey: rewardKeys.lastAddress() }),
         // RewardsHowToSection
-        queryClient.invalidateQueries({ queryKey: publicKeys.fyi() }),
+        queryClient.resetQueries({ queryKey: publicKeys.fyi() }),
         // RewardsFaqSection
-        queryClient.invalidateQueries({ queryKey: publicKeys.faq() }),
+        queryClient.resetQueries({ queryKey: publicKeys.faq() }),
       ])
     },
   })

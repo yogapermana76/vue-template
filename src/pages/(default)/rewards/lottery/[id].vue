@@ -151,8 +151,8 @@
   const { pullDistance, isRefreshing } = usePullToRefresh({
     onRefresh: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: lotteryKeys.detail(lotteryId.value) }),
-        queryClient.invalidateQueries({ queryKey: pointKeys.summary() }),
+        queryClient.resetQueries({ queryKey: lotteryKeys.detail(lotteryId.value) }),
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
       ])
     },
   })

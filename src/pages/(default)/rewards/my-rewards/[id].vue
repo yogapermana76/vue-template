@@ -308,18 +308,16 @@
       const queries = []
 
       if (rewardType.value === 'lottery-coupon') {
-        queries.push(
-          queryClient.invalidateQueries({ queryKey: lotteryKeys.userDetail(rewardId.value) }),
-        )
+        queries.push(queryClient.resetQueries({ queryKey: lotteryKeys.userDetail(rewardId.value) }))
       } else if (rewardType.value === 'item') {
         queries.push(
-          queryClient.invalidateQueries({
+          queryClient.resetQueries({
             queryKey: rewardKeys.userGiftInstantlyDetail(rewardId.value),
           }),
         )
       } else if (rewardType.value === 'voucher') {
         queries.push(
-          queryClient.invalidateQueries({
+          queryClient.resetQueries({
             queryKey: voucherKeys.detail(rewardId.value, voucherCode.value),
           }),
         )

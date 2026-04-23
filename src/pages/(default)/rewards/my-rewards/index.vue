@@ -22,8 +22,6 @@
     useUserLotteryListInfinite,
     useUserGiftInstantlyInfinite,
     voucherKeys,
-    lotteryKeys,
-    rewardKeys,
   } from '@/composables/services'
   import { PullToRefresh } from '@/components/shared'
   import { usePullToRefresh } from '@/composables/ui'
@@ -93,10 +91,10 @@
   const { pullDistance, isRefreshing } = usePullToRefresh({
     onRefresh: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: voucherKeys.pages() }),
-        queryClient.invalidateQueries({ queryKey: voucherKeys.categories() }),
-        queryClient.invalidateQueries({ queryKey: lotteryKeys.userList() }),
-        queryClient.invalidateQueries({ queryKey: rewardKeys.userGiftInstantly() }),
+        queryClient.resetQueries({ queryKey: ['voucher', 'pages'] }),
+        queryClient.resetQueries({ queryKey: voucherKeys.categories() }),
+        queryClient.resetQueries({ queryKey: ['lottery', 'user-list'] }),
+        queryClient.resetQueries({ queryKey: ['reward', 'user-gift-instantly'] }),
       ])
     },
   })

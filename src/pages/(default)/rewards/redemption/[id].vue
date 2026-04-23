@@ -45,7 +45,7 @@
   // Pull to refresh
   const { pullDistance, isRefreshing } = usePullToRefresh({
     onRefresh: async () => {
-      await queryClient.invalidateQueries({
+      await queryClient.resetQueries({
         queryKey: rewardKeys.exchangePointDetail(tUserPointId.value),
       })
     },
