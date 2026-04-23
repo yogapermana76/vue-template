@@ -13,3 +13,8 @@ export { useWindowScroll, type UseWindowScrollOptions } from './useWindowScroll'
 export { useLocationPicker, type UseLocationPickerParams } from './useLocationPicker'
 export { useRewardsFilter } from './useRewardsFilter'
 export { useSwiperStyles } from './useSwiperStyles'
+export {
+  useDominantColor,
+  type UseDominantColorOptions,
+  type UseDominantColorReturn,
+} from './useDominantColor'
