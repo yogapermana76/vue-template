@@ -47,7 +47,7 @@
       await Promise.all([
         // RewardsInfoSection
         queryClient.resetQueries({ queryKey: pointKeys.summary() }),
-        queryClient.resetQueries({ queryKey: ['winner', 'categories'] }),
+        queryClient.resetQueries({ queryKey: ['public', 'category'] }),
         // RewardsAlertSection
         queryClient.resetQueries({ queryKey: rewardKeys.verifyInfo() }),
         // RewardsFollowDrawSection
