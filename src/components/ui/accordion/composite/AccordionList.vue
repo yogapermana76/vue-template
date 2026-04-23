@@ -21,7 +21,6 @@
     items: AccordionListItem[]
     type?: 'single' | 'multiple'
     collapsible?: boolean
-    modelValue?: string | string[] | undefined
     defaultValue?: string | string[]
     class?: HTMLAttributes['class']
     ariaLabel?: string
@@ -36,19 +35,10 @@
   })
 
   const emit = defineEmits<{
-    'update:modelValue': [value: string | string[] | undefined]
     change: [value: string | string[] | undefined]
   }>()
 
-  const isControlled = () => 'modelValue' in props
-
-  const getCurrentValue = () => {
-    return isControlled() ? props.modelValue : props.defaultValue
-  }
-
-  // Emit both events for backward compatibility
   const handleValueChange = (value: string | string[] | undefined) => {
-    emit('update:modelValue', value)
     emit('change', value)
   }
 
@@ -82,8 +72,7 @@
   <Accordion
     :type="props.type"
     :collapsible="props.collapsible"
-    :default-value="getCurrentValue()"
-    :model-value="isControlled() ? props.modelValue : undefined"
+    :default-value="props.defaultValue"
     :class="`${props.class} *:border-0`"
     :aria-label="props.ariaLabel"
     @update:model-value="handleValueChange"
