@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed, type Component, type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
+  import { formatNumber } from '@/utils/currency'
   import { Button } from '@/components/ui/button'
   import { Flag, type FlagVariant } from '@/components/ui/flag'
   import { StockBadge, type StockBadgeVariant, type StockBadgeIcon } from '@/components/ui/badge'
@@ -66,7 +67,7 @@
   // Compute display text for points
   const pointsDisplay = computed(() => {
     if (props.points === undefined) return ''
-    return `${props.points.toLocaleString('id-ID')} poin`
+    return `${formatNumber(props.points)} poin`
   })
 
   const handleButtonClick = (event: Event) => {
