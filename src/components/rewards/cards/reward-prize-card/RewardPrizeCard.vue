@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
+  import { Image } from '@/components/ui'
 
   export interface RewardPrizeCardProps {
     /** Prize image URL or component */
@@ -23,9 +24,7 @@
     "
   >
     <!-- Prize Image -->
-    <div v-if="image" class="size-16 shrink-0 overflow-hidden rounded-lg">
-      <img :src="image" :alt="title" class="size-full object-cover" />
-    </div>
+    <Image v-if="image" :src="image" :alt="title" container-class="size-16 shrink-0 rounded-lg" />
 
     <!-- Prize Info -->
     <div class="flex flex-1 flex-col gap-1">

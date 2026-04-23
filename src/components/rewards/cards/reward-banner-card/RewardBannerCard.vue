@@ -5,6 +5,7 @@
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
   import { useDominantColor } from '@/composables/ui'
+  import { Image } from '@/components/ui'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   export interface RewardBannerCardProps {
@@ -80,11 +81,12 @@
     <!-- Banner Image Container (fixed height) -->
     <div class="relative h-28 w-full overflow-hidden rounded-t-sm">
       <!-- Image -->
-      <img
+      <Image
         :src="imageUrl"
         :alt="imageAlt"
-        class="h-42.75 w-full object-cover"
         crossorigin="anonymous"
+        loading-strategy="none"
+        container-class="h-42.75 w-full"
         @load="onImageLoad"
       />
       <!-- Gradient Overlay (bottom fade to dominant color, fallback to primary-500) -->

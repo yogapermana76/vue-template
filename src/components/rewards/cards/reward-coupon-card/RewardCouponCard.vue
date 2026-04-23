@@ -6,6 +6,7 @@
   import { Flag, type FlagVariant } from '@/components/ui/flag'
   import { StockBadge, type StockBadgeVariant, type StockBadgeIcon } from '@/components/ui/badge'
   import { Divider } from '@/components/ui/divider'
+  import { Image } from '@/components/ui'
   import CoinIcon from '@/assets/icons/coin.svg?component'
   import EllipseSvg from '@/assets/icons/ellipse.svg?component'
 
@@ -102,27 +103,24 @@
     </div>
 
     <!-- Image Container -->
-    <div
-      :class="
+    <Image
+      :src="imageUrl"
+      :alt="imageAlt"
+      :class="disabled && 'grayscale'"
+      :container-class="
         cn(
-          'relative h-42.75 w-full overflow-hidden rounded-t-sm rounded-bl-sm border-b border-slate-200',
+          'h-42.75 w-full rounded-t-sm rounded-bl-sm border-b border-slate-200',
           !stockText && 'rounded-br-sm',
         )
       "
     >
-      <img
-        :src="imageUrl"
-        :alt="imageAlt"
-        :class="cn('h-full w-full object-cover', disabled && 'grayscale')"
-      />
-
       <!-- Stock Badge (Bottom-right of image) -->
       <div v-if="stockText" class="absolute right-0 bottom-0">
         <StockBadge class="rounded-bl-sm" :variant="stockVariant" :icon="stockIcon">
           {{ stockText }}
         </StockBadge>
       </div>
-    </div>
+    </Image>
 
     <!-- Content Container -->
     <div class="relative flex flex-col gap-1 py-3">

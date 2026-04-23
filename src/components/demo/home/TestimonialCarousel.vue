@@ -7,7 +7,7 @@
     CarouselItem,
     CarouselIndicators,
   } from '@/components/ui/carousel'
-  import { Card, CardContent } from '@/components/ui/card'
+  import { Card, CardContent, Image } from '@/components/ui'
 
   interface Testimonial {
     id: number
@@ -113,11 +113,11 @@
 
                 <!-- Author -->
                 <div class="flex items-center gap-4">
-                  <img
+                  <Image
                     v-if="testimonial.avatar"
                     :src="testimonial.avatar"
                     :alt="testimonial.name"
-                    class="size-12 rounded-full object-cover"
+                    container-class="size-12 rounded-full"
                   />
                   <div class="flex-1">
                     <p class="font-semibold">{{ testimonial.name }}</p>

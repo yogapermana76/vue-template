@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { Image } from '@/components/ui'
   import type { Product } from '@/services/product'
 
   interface Props {
@@ -9,7 +10,5 @@
 </script>
 
 <template>
-  <div class="relative aspect-square w-full overflow-hidden bg-neutral-100">
-    <img :src="product.image" :alt="product.title" class="size-full object-cover" />
-  </div>
+  <Image :src="product.image" :alt="product.title" aspect-ratio="square" container-class="w-full" />
 </template>

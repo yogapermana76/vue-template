@@ -15,6 +15,7 @@
   import Rank1Icon from '@/assets/icons/rank-1.svg?component'
   import Rank2Icon from '@/assets/icons/rank-2.svg?component'
   import Rank3Icon from '@/assets/icons/rank-3.svg?component'
+  import { Image } from '@/components/ui'
 
   export interface WinnerData {
     name: string
@@ -131,14 +132,12 @@
       </div>
 
       <!-- Prize Image -->
-      <div class="ml-3 size-14 shrink-0 overflow-hidden rounded-xs bg-slate-200">
-        <img
-          v-if="prizeImage"
-          :src="prizeImage"
-          :alt="prizeImageAlt || prize"
-          class="size-full object-cover"
-        />
-      </div>
+      <Image
+        v-if="prizeImage"
+        :src="prizeImage"
+        :alt="prizeImageAlt || prize"
+        container-class="ml-3 size-14 shrink-0 rounded-xs"
+      />
     </div>
   </div>
 </template>

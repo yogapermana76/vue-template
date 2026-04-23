@@ -34,6 +34,8 @@
     containerClass?: HTMLAttributes['class']
     /** Custom class for the image */
     class?: HTMLAttributes['class']
+    /** CORS setting for the image */
+    crossorigin?: 'anonymous' | 'use-credentials'
   }
 
   const props = withDefaults(defineProps<ImageProps>(), {
@@ -146,6 +148,7 @@
       :class="imageClasses"
       :style="imageStyle"
       :loading="lazy ? 'lazy' : 'eager'"
+      :crossorigin="crossorigin"
       decoding="async"
       @load="handleLoad"
       @error="handleError"

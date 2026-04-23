@@ -10,6 +10,7 @@
   } from '@/components/ui/carousel'
   import { Button } from '@/components/ui/button'
   import { Badge } from '@/components/ui/badge'
+  import { Image } from '@/components/ui'
 
   interface Props {
     slides?: Array<{
@@ -63,13 +64,12 @@
         <CarouselItem v-for="slide in props.slides" :key="slide.id" basis="full">
           <div class="relative h-full w-full overflow-hidden rounded-lg">
             <!-- Background Image -->
-            <img
+            <Image
               v-if="slide.image"
               :src="slide.image"
               :alt="slide.title"
-              class="absolute inset-0 size-full object-cover"
-              loading="lazy"
-              decoding="async"
+              loading-strategy="none"
+              container-class="absolute inset-0 size-full"
             />
 
             <!-- Overlay gradient -->
