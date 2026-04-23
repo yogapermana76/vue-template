@@ -39,12 +39,12 @@
     "
     @click="handleClick"
   >
-    <ItemContent class="items-start gap-0.5">
+    <ItemContent class="min-w-0 items-start gap-0.5">
       <h3 class="body-m-semibold w-full text-left text-slate-950">{{ name }}</h3>
-      <div class="body-caption flex items-center gap-1 text-slate-800/75">
-        <span>{{ email }}</span>
-        <span class="size-1 rounded-full bg-slate-200" />
-        <span>{{ phone }}</span>
+      <div class="body-caption flex flex-wrap items-center gap-1 text-slate-800/75">
+        <span class="truncate">{{ email }}</span>
+        <span class="size-1 shrink-0 rounded-full bg-slate-200" />
+        <span class="shrink-0">{{ phone }}</span>
       </div>
     </ItemContent>
 
