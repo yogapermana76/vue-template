@@ -18,3 +18,9 @@ export {
   type UseDominantColorOptions,
   type UseDominantColorReturn,
 } from './useDominantColor'
+export {
+  useImage,
+  type UseImageOptions,
+  type UseImageReturn,
+  type ImageLoadingStrategy,
+} from './useImage'

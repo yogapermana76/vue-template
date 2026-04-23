@@ -106,6 +106,9 @@ export { RoundedOverlap } from './rounded-overlap'
 // Skeleton
 export { Skeleton } from './skeleton'
 
+// Image
+export { Image, type ImageProps } from './image'
+
 // Sonner (Toaster)
 export { Toaster } from './sonner'
 
