@@ -141,7 +141,7 @@
           @click="handleDetailClick"
         >
           <span>{{ detailText }}</span>
-          <ChevronDown class="size-3 rotate-[-90deg]" />
+          <ChevronDown class="size-3 -rotate-90" />
         </button>
       </div>
     </div>

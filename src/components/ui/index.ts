@@ -81,6 +81,9 @@ export {
 // Label
 export { Label } from './label'
 
+// NumberStepper
+export { NumberStepper } from './number-stepper'
+
 // PillTab
 export {
   PillTab,
