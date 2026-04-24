@@ -18,4 +18,8 @@ export type {
   Nullable,
   Optional,
   MaybeRef,
+  BaseQueryParams,
+  BaseQueryOptions,
+  PaginationOnly,
+  BaseComposableParams,
 } from './base.types'

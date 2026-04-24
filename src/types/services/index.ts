@@ -173,3 +173,6 @@ export type {
   UseWinnersCategoryParams,
   UsePublicWinnerTncParams,
 } from './public.types'
+
+// Lifestyle
+export * from './lifestyle'
