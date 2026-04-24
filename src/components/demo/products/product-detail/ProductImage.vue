@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { Image } from '@/components/ui'
-  import type { Product } from '@/services/product'
+  import type { Product } from '@/services/demo/product.service'
 
   interface Props {
     product: Product

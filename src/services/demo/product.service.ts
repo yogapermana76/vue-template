@@ -1,41 +1,48 @@
-import { z } from 'zod'
-import { http } from './http'
+/**
+ * Product Service (Demo)
+ * Handles product-related API calls using DummyJSON API
+ * This is a demo service for demonstration purposes
+ */
+
+import { createHttpClient } from '../http'
 
 // ============================================
-// Schemas
+// HTTP Client (uses external DummyJSON API)
 // ============================================
 
-const DummyProductSchema = z.object({
-  id: z.number(),
-  title: z.string(),
-  price: z.number(),
-  description: z.string(),
-  category: z.string(),
-  images: z.array(z.string()),
-  thumbnail: z.string(),
-  rating: z.number(),
-  stock: z.number(),
-  brand: z.string().optional(),
-  discountPercentage: z.number().optional(),
-  reviews: z.array(z.unknown()).optional(), // For review count
-})
-
-const DummyProductResponseSchema = z.object({
-  products: z.array(DummyProductSchema),
-  total: z.number(),
-  skip: z.number(),
-  limit: z.number(),
-})
-
-const DummyCategorySchema = z.object({
-  slug: z.string(),
-  name: z.string(),
-  url: z.string(),
-})
+const demoHttp = createHttpClient('https://dummyjson.com', 'none')
 
 // ============================================
 // Types
 // ============================================
+
+interface DummyProduct {
+  id: number
+  title: string
+  price: number
+  description: string
+  category: string
+  images: string[]
+  thumbnail: string
+  rating: number
+  stock: number
+  brand?: string
+  discountPercentage?: number
+  reviews?: unknown[]
+}
+
+interface DummyProductResponse {
+  products: DummyProduct[]
+  total: number
+  skip: number
+  limit: number
+}
+
+interface DummyCategory {
+  slug: string
+  name: string
+  url: string
+}
 
 export interface Product {
   id: number
@@ -56,13 +63,17 @@ export interface ProductFilters {
   sort?: 'asc' | 'desc'
 }
 
-export interface PaginationParams {
+export interface ProductPaginationParams {
   page?: number
   limit?: number
 }
 
-// Infer types from Zod schemas
-type DummyProduct = z.infer<typeof DummyProductSchema>
+export interface ProductListResponse {
+  products: Product[]
+  total: number
+  page: number
+  totalPages: number
+}
 
 // ============================================
 // Adapter
@@ -79,7 +90,6 @@ const productAdapter = {
       image: dummyProduct.thumbnail,
       rating: {
         rate: dummyProduct.rating,
-        // Use reviews array length if available, otherwise derive from rating
         count: dummyProduct.reviews?.length ?? Math.round(dummyProduct.rating * 10),
       },
     }
@@ -91,7 +101,7 @@ const productAdapter = {
 }
 
 // ============================================
-// Product Service
+// Service
 // ============================================
 
 export const productService = {
@@ -100,22 +110,20 @@ export const productService = {
    */
   async getAll(
     filters: ProductFilters = {},
-    pagination: PaginationParams = {},
-  ): Promise<{ products: Product[]; total: number; page: number; totalPages: number }> {
+    pagination: ProductPaginationParams = {},
+  ): Promise<ProductListResponse> {
     const { category, search, sort } = filters
     const { page = 1, limit = 12 } = pagination
 
     const skip = (page - 1) * limit
-    const sortBy = 'price'
-    const order = sort === 'desc' ? 'desc' : 'asc'
-
-    let endpoint = '/products'
     const params: Record<string, string | number> = {
       limit,
       skip,
-      sortBy,
-      order,
+      sortBy: 'price',
+      order: sort === 'desc' ? 'desc' : 'asc',
     }
+
+    let endpoint = '/products'
 
     if (search) {
       endpoint = '/products/search'
@@ -124,16 +132,13 @@ export const productService = {
       endpoint = `/products/category/${encodeURIComponent(category)}`
     }
 
-    const { data } = await http.get(endpoint, { params })
-
-    const validated = DummyProductResponseSchema.parse(data)
-    const totalPages = Math.ceil(validated.total / limit)
+    const { data } = await demoHttp.get<DummyProductResponse>(endpoint, { params })
 
     return {
-      products: productAdapter.fromApiList(validated.products),
-      total: validated.total,
+      products: productAdapter.fromApiList(data.products),
+      total: data.total,
       page,
-      totalPages,
+      totalPages: Math.ceil(data.total / limit),
     }
   },
 
@@ -141,22 +146,18 @@ export const productService = {
    * Get product categories
    */
   async getCategories(): Promise<string[]> {
-    const { data } = await http.get('/products/categories')
+    const { data } = await demoHttp.get<DummyCategory[]>('/products/categories')
 
-    const validated = z.array(DummyCategorySchema).parse(data)
-
-    return validated.map(cat => cat.slug)
+    return data.map(cat => cat.slug)
   },
 
   /**
    * Get single product by ID
    */
   async getById(id: number): Promise<Product> {
-    const { data } = await http.get(`/products/${id}`)
+    const { data } = await demoHttp.get<DummyProduct>(`/products/${id}`)
 
-    const validated = DummyProductSchema.parse(data)
-
-    return productAdapter.fromApi(validated)
+    return productAdapter.fromApi(data)
   },
 
   /**

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { Product } from '@/services/product'
+  import type { Product } from '@/services/demo/product.service'
 
   interface Props {
     product: Product

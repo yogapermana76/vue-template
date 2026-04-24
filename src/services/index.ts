@@ -2,7 +2,6 @@
 export { http, publicHttp, createHttpClient } from './http'
 
 // Services
-export { productService, type Product, type ProductFilters, type PaginationParams } from './product'
 export { authService } from './auth.service'
 export { publicService } from './public.service'
 export { pointService } from './point.service'

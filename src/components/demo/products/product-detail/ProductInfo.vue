@@ -2,7 +2,7 @@
   import { Star } from 'lucide-vue-next'
   import { Badge } from '@/components/ui/badge'
   import { formatCurrency } from '@/utils/currency'
-  import type { Product } from '@/services/product'
+  import type { Product } from '@/services/demo/product.service'
 
   interface Props {
     product: Product

@@ -6,7 +6,11 @@
 
 import { computed, ref, unref, type Ref } from 'vue'
 import { useQuery, useInfiniteQuery, keepPreviousData } from '@tanstack/vue-query'
-import { productService, type ProductFilters, type PaginationParams } from '@/services/product'
+import {
+  productService,
+  type ProductFilters,
+  type ProductPaginationParams,
+} from '@/services/demo/product.service'
 import { config } from '@/config'
 
 // ============================================
@@ -15,7 +19,7 @@ import { config } from '@/config'
 
 export const productKeys = {
   all: ['products'] as const,
-  list: (filters?: ProductFilters, pagination?: PaginationParams) =>
+  list: (filters?: ProductFilters, pagination?: ProductPaginationParams) =>
     [...productKeys.all, 'list', { filters, pagination }] as const,
   detail: (id: number) => [...productKeys.all, id] as const,
   categories: ['products', 'categories'] as const,
@@ -30,7 +34,7 @@ export const productKeys = {
  */
 export function useProducts(
   filters: Ref<ProductFilters> = ref({}),
-  pagination: Ref<PaginationParams> = ref({}),
+  pagination: Ref<ProductPaginationParams> = ref({}),
 ) {
   return useQuery({
     queryKey: computed(() => productKeys.list(unref(filters), unref(pagination))),

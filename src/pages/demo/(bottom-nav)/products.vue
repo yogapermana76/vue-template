@@ -15,7 +15,7 @@
     ProductGrid,
     ProductFilters,
   } from '@/components/demo/products'
-  import type { ProductFilters as ProductFiltersType } from '@/services/product'
+  import type { ProductFilters as ProductFiltersType } from '@/services/demo/product.service'
 
   definePage({
     meta: {

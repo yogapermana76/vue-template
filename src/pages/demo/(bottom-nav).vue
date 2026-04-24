@@ -12,9 +12,11 @@
 </script>
 
 <template>
-  <main class="flex-1 pb-20">
-    <RouterView />
-  </main>
+  <div class="contents">
+    <main class="flex-1 pb-20">
+      <RouterView />
+    </main>
 
-  <BottomNav :navigation="navigation" />
+    <BottomNav :navigation="navigation" />
+  </div>
 </template>

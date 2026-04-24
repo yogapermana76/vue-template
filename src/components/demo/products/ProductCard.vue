@@ -2,7 +2,7 @@
   import { RouterLink } from 'vue-router'
   import { Card, CardContent, CardHeader, CardTitle, Image } from '@/components/ui'
   import { formatCurrency } from '@/utils/currency'
-  import type { Product } from '@/services/product'
+  import type { Product } from '@/services/demo/product.service'
 
   interface Props {
     product: Product

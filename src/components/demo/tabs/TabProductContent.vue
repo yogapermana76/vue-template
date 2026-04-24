@@ -5,7 +5,7 @@
   import ProductCard from '@/components/demo/products/ProductCard.vue'
   import ProductCardSkeleton from '@/components/demo/products/ProductCardSkeleton.vue'
   import ProductGrid from '@/components/demo/products/ProductGrid.vue'
-  import { productService, type Product } from '@/services/product'
+  import { productService, type Product } from '@/services/demo/product.service'
 
   const router = useRouter()
   const searchQuery = ref('')

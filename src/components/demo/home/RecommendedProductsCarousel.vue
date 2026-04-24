@@ -9,7 +9,7 @@
     CarouselIndicators,
   } from '@/components/ui/carousel'
   import { ProductCard } from '@/components/demo/products'
-  import type { Product } from '@/services/product'
+  import type { Product } from '@/services/demo/product.service'
 
   interface Props {
     products?: Product[]

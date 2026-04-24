@@ -2,7 +2,7 @@
   import { computed } from 'vue'
   import { ShoppingCart } from 'lucide-vue-next'
   import { IconButton } from '@/components/ui/button'
-  import { useCartStore } from '@/stores/cart'
+  import { useCartStore } from '@/stores/demo/cart'
 
   const props = defineProps<{
     onClick?: () => void | Promise<void>

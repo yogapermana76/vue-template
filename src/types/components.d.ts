@@ -44,7 +44,7 @@ declare module 'vue' {
     CarouselItem: typeof import('./../components/ui/carousel/CarouselItem.vue')['default']
     CarouselNext: typeof import('./../components/ui/carousel/CarouselNext.vue')['default']
     CarouselPrevious: typeof import('./../components/ui/carousel/CarouselPrevious.vue')['default']
-    CartActionItem: typeof import('./../components/layout/CartActionItem.vue')['default']
+    CartActionItem: typeof import('./../components/layout/demo/CartActionItem.vue')['default']
     CategoryFilterBottomSheet: typeof import('./../components/demo/products/filters/CategoryFilterBottomSheet.vue')['default']
     Checkbox: typeof import('./../components/ui/checkbox/Checkbox.vue')['default']
     ConfirmationBottomSheet: typeof import('./../components/shared/bottom-sheets/confirmation/ConfirmationBottomSheet.vue')['default']
