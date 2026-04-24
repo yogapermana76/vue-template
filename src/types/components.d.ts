@@ -48,6 +48,8 @@ declare module 'vue' {
     CouponListBottomSheet: typeof import('./../components/rewards/bottom-sheets/coupon-list-bottom-sheet/CouponListBottomSheet.vue')['default']
     CTASection: typeof import('./../components/demo/home/CTASection.vue')['default']
     DashboardHeader: typeof import('./../components/demo/dashboard/DashboardHeader.vue')['default']
+    DatePickerCard: typeof import('./../components/lifestyle/cards/date-picker/DatePickerCard.vue')['default']
+    DatePickerCardSkeleton: typeof import('./../components/lifestyle/cards/date-picker/DatePickerCardSkeleton.vue')['default']
     Divider: typeof import('./../components/ui/divider/Divider.vue')['default']
     Drawer: typeof import('./../components/ui/drawer/Drawer.vue')['default']
     DrawerClose: typeof import('./../components/ui/drawer/DrawerClose.vue')['default']
