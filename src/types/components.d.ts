@@ -198,6 +198,7 @@ declare module 'vue' {
     TooltipProvider: typeof import('./../components/ui/tooltip/TooltipProvider.vue')['default']
     TooltipTrigger: typeof import('./../components/ui/tooltip/TooltipTrigger.vue')['default']
     TransactionHistorySection: typeof import('./../components/rewards/sections/history/TransactionHistorySection.vue')['default']
+    TransitionedRouterView: typeof import('./../components/shared/TransitionedRouterView.vue')['default']
     VoucherCodesBottomSheet: typeof import('./../components/rewards/bottom-sheets/voucher-codes-bottom-sheet/VoucherCodesBottomSheet.vue')['default']
     WinnerCard: typeof import('./../components/rewards/cards/winner-card/WinnerCard.vue')['default']
     WinnerCardSkeleton: typeof import('./../components/rewards/cards/winner-card/WinnerCardSkeleton.vue')['default']
