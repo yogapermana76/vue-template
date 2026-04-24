@@ -1,13 +1,12 @@
 <script setup lang="ts">
-  import { useCarouselState } from '@/composables/carousel'
   import { Star, Quote } from 'lucide-vue-next'
-  import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselIndicators,
-  } from '@/components/ui/carousel'
+  import { Swiper, SwiperSlide } from 'swiper/vue'
+  import { Pagination, Autoplay } from 'swiper/modules'
   import { Card, CardContent, Image } from '@/components/ui'
+  import { SwiperPagination } from '@/components/ui/swiper'
+  import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
+
+  useSwiperStyles()
 
   interface Testimonial {
     id: number
@@ -65,77 +64,71 @@
     ],
   })
 
-  // Use composable for carousel state synchronization
-  // carouselRef is used in template via ref="carouselRef" binding
-  const { carouselRef, currentIndex, handleDotClick } = useCarouselState()
-
-  // Ensure TypeScript recognizes carouselRef is used (referenced in template)
-  void carouselRef
+  const modules = [Pagination, Autoplay]
 </script>
 
 <template>
   <section class="bg-secondary-50 py-12 md:py-16">
-    <div class="mx-auto max-w-6xl px-4">
-      <!-- Section Header -->
-      <div class="mb-8 text-center md:mb-12">
-        <h2 class="text-secondary-900 mb-2 text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
-        <p class="text-secondary-600 text-sm md:text-base">
-          Hear from our satisfied customers and community members
-        </p>
-      </div>
+    <!-- Section Header -->
+    <div class="mx-auto mb-8 max-w-6xl px-4 text-center md:mb-12">
+      <h2 class="text-secondary-900 mb-2 text-2xl font-bold md:text-3xl">{{ props.title }}</h2>
+      <p class="text-secondary-600 text-sm md:text-base">
+        Hear from our satisfied customers and community members
+      </p>
+    </div>
 
-      <!-- Carousel -->
-      <Carousel ref="carouselRef" :autoplay="true" :autoplay-delay="6000" class="mx-auto max-w-4xl">
-        <CarouselContent gap="gap-6">
-          <CarouselItem
-            v-for="testimonial in props.testimonials"
-            :key="testimonial.id"
-            basis="full"
-          >
-            <Card class="border-secondary-200 h-full">
-              <CardContent class="flex flex-col p-6 md:p-8">
-                <!-- Quote Icon -->
-                <Quote class="text-primary-500 mb-4 size-8" />
+    <!-- Swiper -->
+    <div class="mx-auto max-w-4xl">
+      <swiper
+        :modules="modules"
+        :slides-per-view="1"
+        :space-between="24"
+        :slides-offset-before="16"
+        :slides-offset-after="16"
+        :autoplay="{ delay: 6000, disableOnInteraction: false }"
+        :loop="true"
+        :pagination="{ clickable: true, el: '#swiper-pagination-testimonials' }"
+      >
+        <swiper-slide v-for="testimonial in props.testimonials" :key="testimonial.id">
+          <Card class="border-secondary-200 h-full">
+            <CardContent class="flex flex-col p-6 md:p-8">
+              <!-- Quote Icon -->
+              <Quote class="text-primary-500 mb-4 size-8" />
 
-                <!-- Rating -->
-                <div class="mb-4 flex gap-1">
-                  <Star
-                    v-for="n in testimonial.rating"
-                    :key="`star-${n}`"
-                    class="fill-warning-400 text-warning-400 size-4"
-                  />
+              <!-- Rating -->
+              <div class="mb-4 flex gap-1">
+                <Star
+                  v-for="n in testimonial.rating"
+                  :key="`star-${n}`"
+                  class="fill-warning-400 text-warning-400 size-4"
+                />
+              </div>
+
+              <!-- Content -->
+              <p class="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed md:text-base">
+                "{{ testimonial.content }}"
+              </p>
+
+              <!-- Author -->
+              <div class="flex items-center gap-4">
+                <Image
+                  v-if="testimonial.avatar"
+                  :src="testimonial.avatar"
+                  :alt="testimonial.name"
+                  container-class="size-12 rounded-full"
+                />
+                <div class="flex-1">
+                  <p class="font-semibold">{{ testimonial.name }}</p>
+                  <p class="text-muted-foreground text-xs md:text-sm">{{ testimonial.role }}</p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </swiper-slide>
+      </swiper>
 
-                <!-- Content -->
-                <p class="text-muted-foreground mb-6 flex-1 text-sm leading-relaxed md:text-base">
-                  "{{ testimonial.content }}"
-                </p>
-
-                <!-- Author -->
-                <div class="flex items-center gap-4">
-                  <Image
-                    v-if="testimonial.avatar"
-                    :src="testimonial.avatar"
-                    :alt="testimonial.name"
-                    container-class="size-12 rounded-full"
-                  />
-                  <div class="flex-1">
-                    <p class="font-semibold">{{ testimonial.name }}</p>
-                    <p class="text-muted-foreground text-xs md:text-sm">{{ testimonial.role }}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </CarouselItem>
-        </CarouselContent>
-
-        <!-- Indicators -->
-        <CarouselIndicators
-          :total="props.testimonials.length"
-          :selected="currentIndex"
-          @dot-click="handleDotClick"
-        />
-      </Carousel>
+      <!-- Pagination -->
+      <SwiperPagination id="swiper-pagination-testimonials" variant="small" class="mt-4 px-4" />
     </div>
   </section>
 </template>

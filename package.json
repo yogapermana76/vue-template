@@ -36,7 +36,6 @@
     "clsx": "^2.1.1",
     "colorthief": "^3.3.1",
     "date-fns": "^4.1.0",
-    "embla-carousel": "^8.6.0",
     "lucide-vue-next": "^1.0.0",
     "pinia": "^3.0.4",
     "postcss": "^8.5.8",

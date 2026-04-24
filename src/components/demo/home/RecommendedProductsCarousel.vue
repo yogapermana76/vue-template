@@ -1,15 +1,16 @@
 <script setup lang="ts">
-  import { useCarouselState } from '@/composables/carousel'
-  import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselPrevious,
-    CarouselNext,
-    CarouselIndicators,
-  } from '@/components/ui/carousel'
+  import { computed } from 'vue'
+  import { useMediaQuery } from '@vueuse/core'
+  import { Swiper, SwiperSlide } from 'swiper/vue'
+  import { Pagination, Navigation } from 'swiper/modules'
+  import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
   import { ProductCard } from '@/components/demo/products'
+  import { SwiperPagination } from '@/components/ui/swiper'
+  import { IconButton } from '@/components/ui/button'
+  import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
   import type { Product } from '@/services/demo/product.service'
+
+  useSwiperStyles()
 
   interface Props {
     products?: Product[]
@@ -67,9 +68,11 @@
     ],
   })
 
-  // Use composable for carousel state  synchronization
-  const { carouselRef, currentIndex, handlePrevious, handleNext, handleDotClick } =
-    useCarouselState()
+  const isSmallScreen = useMediaQuery('(max-width: 640px)')
+
+  const slidesPerView = computed(() => (isSmallScreen.value ? 2 : 2.5))
+
+  const modules = [Pagination, Navigation]
 </script>
 
 <template>
@@ -79,27 +82,52 @@
       <h2 class="text-xl font-bold text-neutral-900">{{ props.title }}</h2>
     </div>
 
-    <!-- Carousel -->
-    <Carousel ref="carouselRef" class="px-4">
-      <CarouselContent gap="gap-4">
-        <CarouselItem v-for="product in props.products" :key="product.id" basis="1/2">
+    <!-- Swiper -->
+    <div class="relative">
+      <swiper
+        :modules="modules"
+        :slides-per-view="slidesPerView"
+        :space-between="16"
+        :slides-offset-before="16"
+        :slides-offset-after="16"
+        :pagination="{ clickable: true, el: '#swiper-pagination-products' }"
+        :navigation="{
+          prevEl: '#swiper-button-prev-products',
+          nextEl: '#swiper-button-next-products',
+        }"
+      >
+        <swiper-slide v-for="product in props.products" :key="product.id">
           <ProductCard :product="product" />
-        </CarouselItem>
-      </CarouselContent>
+        </swiper-slide>
+      </swiper>
 
-      <!-- Navigation -->
-      <CarouselPrevious :disabled="!carouselRef?.canScrollPrev" @click="handlePrevious" />
-      <CarouselNext :disabled="!carouselRef?.canScrollNext" @click="handleNext" />
+      <!-- Custom Navigation Buttons -->
+      <IconButton
+        id="swiper-button-prev-products"
+        variant="primary"
+        size="md"
+        class="absolute top-1/2 left-0 z-10 -translate-y-1/2"
+        title="Previous slide"
+      >
+        <ChevronLeft />
+      </IconButton>
+      <IconButton
+        id="swiper-button-next-products"
+        variant="primary"
+        size="md"
+        class="absolute top-1/2 right-0 z-10 -translate-y-1/2"
+        title="Next slide"
+      >
+        <ChevronRight />
+      </IconButton>
 
-      <!-- Indicators - using outside slot for positioning below carousel -->
-      <template #outside>
-        <CarouselIndicators
-          :total="props.products.length"
-          :selected="currentIndex"
-          position-class="relative mt-2"
-          @dot-click="handleDotClick"
-        />
-      </template>
-    </Carousel>
+      <!-- Pagination -->
+      <SwiperPagination
+        id="swiper-pagination-products"
+        variant="small"
+        color="primary"
+        class="mt-2 px-4"
+      />
+    </div>
   </section>
 </template>
