@@ -18,7 +18,7 @@
 
 <template>
   <nav
-    class="safe-bottom fixed bottom-0 left-1/2 w-full -translate-x-1/2 rounded-t-2xl border border-neutral-100 bg-white"
+    class="safe-bottom fixed bottom-0 left-1/2 z-50 w-full -translate-x-1/2 rounded-t-2xl border border-neutral-100 bg-white"
     :style="responsiveMaxWidthStyle"
   >
     <div class="flex items-center justify-between gap-4 px-4 py-3">
