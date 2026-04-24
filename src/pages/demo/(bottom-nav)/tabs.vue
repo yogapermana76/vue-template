@@ -4,7 +4,7 @@
     SwipeableTabs,
     SwipeableTabBar,
     SwipeableTabPanels,
-    SwipeableTabPanel,
+    BottomNavTabPanel,
     type TabItem,
   } from '@/components/ui/swipeable-tabs'
   import { Badge } from '@/components/ui/badge'
@@ -32,7 +32,7 @@
 </script>
 
 <template>
-  <SwipeableTabs v-model="activeTab" :tabs="tabs" height-offset="4rem">
+  <SwipeableTabs v-model="activeTab" :tabs="tabs">
     <SwipeableTabBar v-slot="{ tab }">
       {{ tab.label }}
       <Badge v-if="tab.key === 'product'" variant="destructive" class="ml-1">
@@ -41,17 +41,17 @@
     </SwipeableTabBar>
 
     <SwipeableTabPanels>
-      <SwipeableTabPanel value="home">
+      <BottomNavTabPanel value="home">
         <TabHomeContent />
-      </SwipeableTabPanel>
+      </BottomNavTabPanel>
 
-      <SwipeableTabPanel value="product">
+      <BottomNavTabPanel value="product">
         <TabProductContent />
-      </SwipeableTabPanel>
+      </BottomNavTabPanel>
 
-      <SwipeableTabPanel value="dashboard">
+      <BottomNavTabPanel value="dashboard">
         <TabDashboardContent />
-      </SwipeableTabPanel>
+      </BottomNavTabPanel>
     </SwipeableTabPanels>
   </SwipeableTabs>
 </template>

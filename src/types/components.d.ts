@@ -29,6 +29,7 @@ declare module 'vue' {
     AppLayout: typeof import('./../components/layout/AppLayout.vue')['default']
     Badge: typeof import('./../components/ui/badge/Badge.vue')['default']
     BottomNav: typeof import('./../components/layout/BottomNav.vue')['default']
+    BottomNavTabPanel: typeof import('./../components/ui/swipeable-tabs/BottomNavTabPanel.vue')['default']
     BottomSheet: typeof import('./../components/ui/bottom-sheet/BottomSheet.vue')['default']
     Button: typeof import('./../components/ui/button/Button.vue')['default']
     Card: typeof import('./../components/ui/card/Card.vue')['default']
