@@ -195,6 +195,8 @@ declare module 'vue' {
     TicketCardSkeleton: typeof import('./../components/lifestyle/cards/ticket-category-card/TicketCardSkeleton.vue')['default']
     TicketCategoryCard: typeof import('./../components/lifestyle/cards/ticket-category-card/TicketCategoryCard.vue')['default']
     TicketCategoryCardSkeleton: typeof import('./../components/lifestyle/cards/ticket-category-card/TicketCategoryCardSkeleton.vue')['default']
+    TicketTypeCard: typeof import('./../components/lifestyle/cards/ticket-type-card/TicketTypeCard.vue')['default']
+    TicketTypeCardSkeleton: typeof import('./../components/lifestyle/cards/ticket-type-card/TicketTypeCardSkeleton.vue')['default']
     Tooltip: typeof import('./../components/ui/tooltip/Tooltip.vue')['default']
     TooltipContent: typeof import('./../components/ui/tooltip/TooltipContent.vue')['default']
     TooltipProvider: typeof import('./../components/ui/tooltip/TooltipProvider.vue')['default']

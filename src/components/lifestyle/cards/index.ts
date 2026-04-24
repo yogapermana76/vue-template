@@ -7,3 +7,10 @@ export {
   type TicketCategoryCardBenefit,
   type TicketCategoryCardSkeletonProps,
 } from './ticket-category-card'
+export {
+  TicketTypeCard,
+  TicketTypeCardSkeleton,
+  type TicketTypeCardProps,
+  type TicketTypeCardFeature,
+  type TicketTypeCardSkeletonProps,
+} from './ticket-type-card'
