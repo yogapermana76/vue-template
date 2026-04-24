@@ -68,6 +68,8 @@ declare module 'vue' {
     EcoJourneyTransactionCard: typeof import('./../components/eco-journey-points/transaction-card/EcoJourneyTransactionCard.vue')['default']
     EcoJourneyTransactionHistorySection: typeof import('./../components/eco-journey-points/sections/history/EcoJourneyTransactionHistorySection.vue')['default']
     EmptyState: typeof import('./../components/ui/empty-state/EmptyState.vue')['default']
+    EventCard: typeof import('./../components/lifestyle/cards/event-card/EventCard.vue')['default']
+    EventCardSkeleton: typeof import('./../components/lifestyle/cards/event-card/EventCardSkeleton.vue')['default']
     ExchangeSummaryBottomSheet: typeof import('./../components/eco-journey-points/bottom-sheets/ExchangeSummaryBottomSheet.vue')['default']
     ExpandableItem: typeof import('./../components/ui/accordion/composite/expandable-item/ExpandableItem.vue')['default']
     ExpandableItemSkeleton: typeof import('./../components/ui/accordion/composite/expandable-item/ExpandableItemSkeleton.vue')['default']
