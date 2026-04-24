@@ -6,6 +6,3 @@ export * from './auth'
 
 // UI interaction composables
 export * from './ui'
-
-// Carousel composables
-export * from './carousel'
