@@ -130,6 +130,7 @@ declare module 'vue' {
     ProductGrid: typeof import('./../components/demo/products/ProductGrid.vue')['default']
     ProductImage: typeof import('./../components/demo/products/product-detail/ProductImage.vue')['default']
     ProductInfo: typeof import('./../components/demo/products/product-detail/ProductInfo.vue')['default']
+    Progress: typeof import('./../components/ui/progress/Progress.vue')['default']
     PullToRefresh: typeof import('./../components/shared/pull-to-refresh/PullToRefresh.vue')['default']
     QrScanner: typeof import('./../components/ui/qr-scanner/QrScanner.vue')['default']
     QuickActionsSection: typeof import('./../components/demo/home/QuickActionsSection.vue')['default']
