@@ -24,3 +24,4 @@ export {
   type UseImageReturn,
   type ImageLoadingStrategy,
 } from './useImage'
+export { useCountdown, type UseCountdownOptions, type UseCountdownReturn } from './useCountdown'

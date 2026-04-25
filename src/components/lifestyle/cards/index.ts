@@ -14,3 +14,11 @@ export {
   type TicketTypeCardFeature,
   type TicketTypeCardSkeletonProps,
 } from './ticket-type-card'
+export {
+  PurchaseHistoryCard,
+  PurchaseHistoryCardSkeleton,
+  type PurchaseHistoryCardProps,
+  type PurchaseHistoryStatus,
+  type PurchaseHistoryTicketInfo,
+  type PurchaseHistoryCardSkeletonProps,
+} from './purchase-history-card'

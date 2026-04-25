@@ -134,6 +134,8 @@ declare module 'vue' {
     ProductInfo: typeof import('./../components/demo/products/product-detail/ProductInfo.vue')['default']
     Progress: typeof import('./../components/ui/progress/Progress.vue')['default']
     PullToRefresh: typeof import('./../components/shared/pull-to-refresh/PullToRefresh.vue')['default']
+    PurchaseHistoryCard: typeof import('./../components/lifestyle/cards/purchase-history-card/PurchaseHistoryCard.vue')['default']
+    PurchaseHistoryCardSkeleton: typeof import('./../components/lifestyle/cards/purchase-history-card/PurchaseHistoryCardSkeleton.vue')['default']
     QrScanner: typeof import('./../components/ui/qr-scanner/QrScanner.vue')['default']
     QuickActionsSection: typeof import('./../components/demo/home/QuickActionsSection.vue')['default']
     RadioGroup: typeof import('./../components/ui/radio-group/RadioGroup.vue')['default']
