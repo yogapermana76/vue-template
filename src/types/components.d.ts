@@ -73,6 +73,8 @@ declare module 'vue' {
     EmptyState: typeof import('./../components/ui/empty-state/EmptyState.vue')['default']
     EventCard: typeof import('./../components/lifestyle/cards/event-card/EventCard.vue')['default']
     EventCardSkeleton: typeof import('./../components/lifestyle/cards/event-card/EventCardSkeleton.vue')['default']
+    EventDetailsCard: typeof import('./../components/lifestyle/sections/detail/EventDetailsCard.vue')['default']
+    EventDetailsCardSkeleton: typeof import('./../components/lifestyle/sections/detail/EventDetailsCardSkeleton.vue')['default']
     ExchangeSummaryBottomSheet: typeof import('./../components/eco-journey-points/bottom-sheets/ExchangeSummaryBottomSheet.vue')['default']
     ExpandableItem: typeof import('./../components/ui/accordion/composite/expandable-item/ExpandableItem.vue')['default']
     ExpandableItemSkeleton: typeof import('./../components/ui/accordion/composite/expandable-item/ExpandableItemSkeleton.vue')['default']
