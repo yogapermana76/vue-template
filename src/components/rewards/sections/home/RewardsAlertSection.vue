@@ -4,6 +4,7 @@
   import { Button } from '@/components/ui/button'
   import { useVerifyInfo, useSetExpiredToken } from '@/composables/services'
   import { openDeeplink } from '@/utils/native-bridge'
+  import { authStorage } from '@/utils/storage'
   import type { BusinessError, VerifyInfoResponse } from '@/types'
 
   // Fetch verify info
@@ -36,6 +37,7 @@
   // Set expired token mutation with onSuccess callback
   const { mutate: setExpiredToken } = useSetExpiredToken({
     onSuccess: () => {
+      authStorage.clearSession()
       const deeplink = verifyDeeplink.value
       if (deeplink) {
         openDeeplink(deeplink)

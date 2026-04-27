@@ -38,34 +38,34 @@ export const authStorage = {
    * Set JWT token to localStorage
    */
   setToken(val: string): void {
-    localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, val)
+    sessionStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, val)
   },
 
   /**
-   * Get JWT token from localStorage
+   * Get JWT token from sessionStorage
    */
   getToken(): string | null {
-    return localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN)
+    return sessionStorage.getItem(AUTH_STORAGE_KEYS.TOKEN)
   },
 
   /**
-   * Set user object to localStorage
+   * Set user object to sessionStorage
    * @param val - User object or null to remove
    */
   setUser(val: object | null): void {
     if (val === null) {
-      localStorage.removeItem(AUTH_STORAGE_KEYS.USER)
+      sessionStorage.removeItem(AUTH_STORAGE_KEYS.USER)
     } else {
-      localStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(val))
+      sessionStorage.setItem(AUTH_STORAGE_KEYS.USER, JSON.stringify(val))
     }
   },
 
   /**
-   * Get user object from localStorage
+   * Get user object from sessionStorage
    * @returns Parsed user object or null
    */
   getUser<T = object>(): T | null {
-    const user = localStorage.getItem(AUTH_STORAGE_KEYS.USER)
+    const user = sessionStorage.getItem(AUTH_STORAGE_KEYS.USER)
     if (!user) return null
     try {
       return JSON.parse(user) as T
@@ -80,9 +80,9 @@ export const authStorage = {
    */
   setAuthFromApps(val: object | null): void {
     if (val === null) {
-      localStorage.removeItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS)
+      sessionStorage.removeItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS)
     } else {
-      localStorage.setItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS, JSON.stringify(val))
+      sessionStorage.setItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS, JSON.stringify(val))
     }
   },
 
@@ -91,7 +91,7 @@ export const authStorage = {
    * @returns Parsed auth params or null
    */
   getAuthFromApps<T = object>(): T | null {
-    const auth = localStorage.getItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS)
+    const auth = sessionStorage.getItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS)
     if (!auth) return null
     try {
       return JSON.parse(auth) as T
@@ -101,13 +101,11 @@ export const authStorage = {
   },
 
   /**
-   * Clear all auth-related data from localStorage
-   * Note: AUTH_TOKEN (demo auth) is not cleared - it's for demo pages only
+   * Clear all auth-related data from sessionStorage
    */
   clearSession(): void {
-    // Clear production auth (PLN Mobile webview)
-    localStorage.removeItem(AUTH_STORAGE_KEYS.TOKEN)
-    localStorage.removeItem(AUTH_STORAGE_KEYS.USER)
-    localStorage.removeItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS)
+    sessionStorage.removeItem(AUTH_STORAGE_KEYS.TOKEN)
+    sessionStorage.removeItem(AUTH_STORAGE_KEYS.USER)
+    sessionStorage.removeItem(AUTH_STORAGE_KEYS.AUTH_FROM_APPS)
   },
 }
