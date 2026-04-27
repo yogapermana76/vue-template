@@ -81,7 +81,7 @@
     data-slot="ticket-category-card"
     :class="
       cn(
-        'relative flex w-full flex-col items-center gap-2 overflow-visible rounded-xl px-0 pt-2 pb-0',
+        'relative flex w-full flex-col items-center gap-2 overflow-visible rounded-sm px-0 pt-2 pb-0',
         headerBackgroundClass,
         props.class,
       )
@@ -126,7 +126,7 @@
 
     <!-- Content Card -->
     <div
-      class="bg-primary-50 relative z-20 flex w-full flex-col items-center justify-center gap-0.5 self-stretch rounded-xl px-0 py-3"
+      class="bg-primary-50 relative z-20 flex w-full flex-col items-center justify-center gap-0.5 self-stretch rounded-sm px-0 py-3"
     >
       <!-- Information Section -->
       <div class="flex w-full flex-col gap-1 px-4">
@@ -151,15 +151,10 @@
       </div>
 
       <!-- Divider with circles (ticket perforation effect) -->
-      <div class="relative h-5 w-full">
+      <div class="relative h-5 w-full overflow-hidden">
         <!-- Left Circle -->
         <div
-          :class="
-            cn(
-              'absolute top-1/2 -left-2 size-5 -translate-y-1/2 rounded-full',
-              headerBackgroundClass,
-            )
-          "
+          class="absolute top-1/2 -left-2.5 size-5 -translate-y-1/2 rounded-full bg-white"
           aria-hidden="true"
         />
 
@@ -170,12 +165,7 @@
 
         <!-- Right Circle -->
         <div
-          :class="
-            cn(
-              'absolute top-1/2 -right-2 size-5 -translate-y-1/2 rounded-full',
-              headerBackgroundClass,
-            )
-          "
+          class="absolute top-1/2 -right-2.5 size-5 -translate-y-1/2 rounded-full bg-white"
           aria-hidden="true"
         />
       </div>
@@ -195,32 +185,18 @@
           </div>
 
           <!-- Final Price -->
-          <p class="body-l-semibold" :class="available ? 'text-secondary-700' : 'text-slate-500'">
+          <div class="flex flex-col">
             <span v-if="!available" class="body-caption text-slate-500">Mulai dari</span>
-            {{ formattedPrice }}
-          </p>
+            <p class="body-l-semibold" :class="available ? 'text-secondary-700' : 'text-slate-500'">
+              {{ formattedPrice }}
+            </p>
+          </div>
         </div>
 
         <!-- Action Button -->
-        <Button
-          v-if="available"
-          variant="primary"
-          size="xs"
-          class="bg-primary-500 h-8 min-w-21.25 rounded-full px-4 py-2"
-          @click="handleSelectClick"
-        >
-          {{ buttonLabel }}
+        <Button variant="primary" size="xs" :disabled="!available" @click="handleSelectClick">
+          {{ available ? buttonLabel : 'Habis' }}
         </Button>
-
-        <!-- Disabled Button (Habis) -->
-        <button
-          v-else
-          type="button"
-          class="body-caption-semibold flex h-8 min-w-15.75 items-center justify-center rounded-full border border-slate-200 bg-transparent px-4 py-2 text-slate-500"
-          disabled
-        >
-          Habis
-        </button>
       </div>
     </div>
   </div>

@@ -39,10 +39,18 @@
       return 'bg-slate-100 border-slate-200'
     }
     if (props.selected) {
-      // Using custom teal color #1AB6BE with shadow
-      return 'bg-[#1AB6BE] border-[#1AB6BE] shadow-[2px_2px_12px_rgba(0,162,185,0.12)]'
+      return 'border-transparent shadow-[2px_2px_12px_rgba(0,162,185,0.12)]'
     }
     return 'bg-white border-slate-200 hover:border-slate-300'
+  })
+
+  const cardStyle = computed(() => {
+    if (props.selected && props.available) {
+      return {
+        background: 'linear-gradient(180deg, #3D8BA8 0%, #2A7A9E 50%, #1D6B8F 100%)',
+      }
+    }
+    return undefined
   })
 
   const dayNameClasses = computed(() => {
@@ -91,11 +99,12 @@
   <button
     :class="
       cn(
-        'flex h-19.5 w-19.5 flex-col items-center justify-center gap-1 rounded-xl border p-2 px-3 transition-colors',
+        'flex h-19.5 w-19.5 flex-col items-center justify-center gap-1 rounded-sm border p-2 px-3 transition-colors',
         cardClasses,
         props.class,
       )
     "
+    :style="cardStyle"
     :disabled="!available"
     @click="onClick"
   >

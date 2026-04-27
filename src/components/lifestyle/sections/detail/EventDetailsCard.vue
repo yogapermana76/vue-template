@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { Component, FunctionalComponent } from 'vue'
-  import { Star, CalendarDays, MapPin, ChevronDown, type LucideProps } from 'lucide-vue-next'
+  import { Star, CalendarDays, MapPin, type LucideProps } from 'lucide-vue-next'
 
   type IconComponent = Component | FunctionalComponent<LucideProps>
 
@@ -8,12 +8,8 @@
     id: string
     icon?: IconComponent
     label: string
-    value: string
-    secondaryValue?: string
-    actionText?: string
-    actionHandler?: () => void
-    showChevron?: boolean
-    onChevronClick?: () => void
+    value?: string
+    useSlot?: boolean
   }
 
   interface Props {
@@ -50,40 +46,14 @@
           {{ item.label }}
         </span>
 
-        <!-- Value Container -->
-        <div class="flex w-full items-center gap-0.5">
-          <div class="flex min-w-0 flex-1 flex-col gap-1">
-            <!-- Primary Value -->
-            <span :class="['text-slate-950', item.id === 'type' ? 'body-m-semibold' : 'body-m']">
-              {{ item.value }}
-            </span>
-
-            <!-- Secondary Value (e.g., time or address) -->
-            <span v-if="item.secondaryValue" class="body-caption text-slate-950">
-              {{ item.secondaryValue }}
-            </span>
-
-            <!-- Action Button (e.g., Lihat Peta) -->
-            <button
-              v-if="item.actionText"
-              type="button"
-              class="body-caption-semibold text-primary-700 w-fit"
-              @click="item.actionHandler"
-            >
-              {{ item.actionText }}
-            </button>
-          </div>
-
-          <!-- Chevron (optional, for expandable items) -->
-          <button
-            v-if="item.showChevron"
-            type="button"
-            class="shrink-0 p-1"
-            @click="item.onChevronClick"
-          >
-            <ChevronDown class="size-4 text-slate-950" :stroke-width="2" />
-          </button>
-        </div>
+        <!-- Value: Slot or String -->
+        <slot v-if="item.useSlot" :name="`${item.id}-value`" :item="item">
+          <!-- Default fallback if slot not provided -->
+          <span class="body-m text-slate-950">-</span>
+        </slot>
+        <span v-else :class="['text-slate-950', item.id === 'type' ? 'body-m-semibold' : 'body-m']">
+          {{ item.value || '-' }}
+        </span>
       </div>
     </div>
   </div>
