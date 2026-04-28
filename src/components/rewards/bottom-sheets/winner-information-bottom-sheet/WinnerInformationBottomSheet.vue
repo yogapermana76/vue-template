@@ -33,7 +33,7 @@
         <div v-for="item in tncItems" :key="item.order" class="flex flex-col gap-2">
           <h3 class="body-m-semibold text-neutral-90">{{ item.title }}</h3>
           <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="body-caption text-neutral-80" v-html="item.value" />
+          <div class="html-content body-caption text-neutral-80" v-html="item.value" />
         </div>
       </div>
     </div>

@@ -37,7 +37,7 @@
       <div class="flex flex-col gap-1">
         <h1 class="heading-s text-slate-950">{{ selectedItem.question }}</h1>
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="body-caption text-slate-600" v-html="selectedItem.answer" />
+        <div class="html-content body-caption text-slate-600" v-html="selectedItem.answer" />
       </div>
     </section>
   </main>

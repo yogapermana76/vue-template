@@ -105,7 +105,7 @@
       .map(term => {
         return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
       })
-      .join('<div class="mt-4"></div>') // Add spacing between multiple terms
+      .join('<div></div>') // Add spacing between multiple terms
 
     return [
       {

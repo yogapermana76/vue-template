@@ -63,7 +63,7 @@
   }
 
   const getContentClass = (item: AccordionListItem): string => {
-    const defaultClass = 'pt-3 pb-4 px-0 body-caption text-slate-700'
+    const defaultClass = 'pb-4 px-0 body-caption text-slate-700'
     return item.contentClass ? `${defaultClass} ${item.contentClass}` : defaultClass
   }
 </script>
@@ -92,7 +92,7 @@
         <slot :name="`content-${item.id}`" :item="item">
           <template v-if="isStringContent(item.content)">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-html="item.content" />
+            <div class="html-content" v-html="item.content" />
           </template>
           <component v-else :is="item.content" :item="item" />
         </slot>

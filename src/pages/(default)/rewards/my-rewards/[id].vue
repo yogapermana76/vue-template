@@ -137,11 +137,13 @@
   // Helper function to generate terms and conditions content
   const generateTermsContent = (termsCondition: { label: string; value: string | string[] }[]) => {
     return termsCondition
-      .map(
-        term =>
-          `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${formatTermValue(term.value)}`,
-      )
-      .join('<div class="mt-4"></div>')
+      .map(term => {
+        const labelHtml = term.label
+          ? `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>`
+          : ''
+        return `${labelHtml}${formatTermValue(term.value)}`
+      })
+      .join('')
   }
 
   // Terms items - includes both "Cara Penggunaan" and "Syarat dan Ketentuan"
@@ -166,19 +168,19 @@
         items.push({
           id: 'how-to-use',
           title: 'Cara Penggunaan',
-          content: `<ol style="list-style-type: decimal; padding-left: 1.25rem;">${howToUseSteps}</ol>`,
+          content: `<ol>${howToUseSteps}</ol>`,
         })
       }
 
       // Add "Syarat dan Ketentuan" if exists (array of strings)
       if (voucherDetail.value.termsCondition?.length) {
         const termsSteps = voucherDetail.value.termsCondition
-          .map(term => `<li class="pl-1">${term}</li>`)
+          .map(term => `<li>${term}</li>`)
           .join('')
         items.push({
           id: 'terms-and-conditions',
           title: 'Syarat dan Ketentuan',
-          content: `<ol class="list-decimal pl-5 flex flex-col gap-2">${termsSteps}</ol>`,
+          content: `<ol>${termsSteps}</ol>`,
         })
       }
 

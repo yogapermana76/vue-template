@@ -152,7 +152,7 @@
       items.push({
         id: 'how-to-use',
         title: 'Cara Penggunaan',
-        content: `<ol style="list-style-type: decimal; padding-left: 1.25rem;">${howToUseSteps}</ol>`,
+        content: `<ol>${howToUseSteps}</ol>`,
       })
     }
 
@@ -161,9 +161,12 @@
       // Combine all terms into single content
       const allTermsContent = reward.value.termsCondition
         .map(term => {
-          return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
+          const labelHtml = term.label
+            ? `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>`
+            : ''
+          return `${labelHtml}${term.value}`
         })
-        .join('<div class="mt-4"></div>') // Add spacing between multiple terms
+        .join('') // Join without additional spacing
 
       items.push({
         id: 'terms-and-conditions',
