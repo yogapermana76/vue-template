@@ -5,5 +5,6 @@ export type { LifestyleDateSelectionSectionProps } from './LifestyleDateSelectio
 export { default as LifestyleTicketQuantitySection } from './LifestyleTicketQuantitySection.vue'
 export type {
   LifestyleTicketQuantitySectionProps,
-  TicketQuantityOption,
+  AvailableTicketOption,
+  SelectedTicketQuantity,
 } from './LifestyleTicketQuantitySection.vue'

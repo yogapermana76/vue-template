@@ -22,4 +22,4 @@ export {
 export { TicketQuantitySelector } from './ticket-quantity-selector'
 
 // ContactInfoItem
-export { ContactInfoItem, type ContactInfoItemProps } from './contact-info-item'
+export { ContactInfoItem, type ContactInfoItemProps } from './cards/contact-info-item'

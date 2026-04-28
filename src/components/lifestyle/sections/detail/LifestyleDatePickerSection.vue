@@ -32,10 +32,7 @@
       <DatePickerCard
         v-for="(dateItem, index) in dates"
         :key="index"
-        :day-name="dateItem.dayName"
         :date="dateItem.date"
-        :month="dateItem.month"
-        :year="dateItem.year"
         :available="dateItem.available"
         :status-label="dateItem.statusLabel"
         :selected="selectedIndex === index && dateItem.available !== false"
