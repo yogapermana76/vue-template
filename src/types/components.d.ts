@@ -214,7 +214,7 @@ declare module 'vue' {
     TextField: typeof import('./../components/ui/form/TextField.vue')['default']
     TicketCategoryCard: typeof import('./../components/lifestyle/cards/ticket-category-card/TicketCategoryCard.vue')['default']
     TicketCategoryCardSkeleton: typeof import('./../components/lifestyle/cards/ticket-category-card/TicketCategoryCardSkeleton.vue')['default']
-    TicketQuantitySelector: typeof import('./../components/lifestyle/ticket-quantity-selector/TicketQuantitySelector.vue')['default']
+    TicketQuantitySelector: typeof import('./../components/shared/ticket-quantity-selector/TicketQuantitySelector.vue')['default']
     TicketTypeCard: typeof import('./../components/lifestyle/cards/ticket-type-card/TicketTypeCard.vue')['default']
     TicketTypeCardSkeleton: typeof import('./../components/lifestyle/cards/ticket-type-card/TicketTypeCardSkeleton.vue')['default']
     Tooltip: typeof import('./../components/ui/tooltip/Tooltip.vue')['default']

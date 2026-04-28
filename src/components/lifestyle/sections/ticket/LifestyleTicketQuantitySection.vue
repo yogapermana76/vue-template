@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { TicketQuantitySelector } from '@/components/lifestyle/ticket-quantity-selector'
+  import { TicketQuantitySelector } from '@/components/shared/ticket-quantity-selector'
   import { getMockPricing } from '@/mocks/lifestyle/ticket-data'
 
   export interface AvailableTicketOption {
