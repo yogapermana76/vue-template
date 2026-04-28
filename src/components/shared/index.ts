@@ -15,3 +15,6 @@ export {
   InformationBottomSheet,
   type InformationBottomSheetProps,
 } from './bottom-sheets'
+
+// Ticket quantity selector
+export { TicketQuantitySelector } from './ticket-quantity-selector'

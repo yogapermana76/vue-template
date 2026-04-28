@@ -18,8 +18,5 @@ export {
   type TicketTypeCardSkeletonProps,
 } from './cards'
 
-// TicketQuantitySelector
-export { TicketQuantitySelector } from './ticket-quantity-selector'
-
 // ContactInfoItem
 export { ContactInfoItem, type ContactInfoItemProps } from './cards/contact-info-item'
