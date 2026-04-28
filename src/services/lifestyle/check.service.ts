@@ -7,6 +7,8 @@ import { http } from '../http'
 import { LifestyleCheckEndpoint } from './endpoints'
 import type {
   LifestyleHealthCheckResponse,
+  LifestyleCheckConditionParams,
+  LifestyleCheckConditionResponse,
   LifestyleValidatePromoCodeRequest,
   LifestyleValidatePromoCodeResponse,
   LifestyleValidateUserEligibilityRequest,
@@ -20,6 +22,19 @@ export const lifestyleCheckService = {
    */
   async health(): Promise<LifestyleHealthCheckResponse> {
     const { data } = await http.get<LifestyleHealthCheckResponse>(LifestyleCheckEndpoint.HEALTH)
+    return data
+  },
+
+  /**
+   * Check booking condition
+   */
+  async checkCondition(
+    params: LifestyleCheckConditionParams,
+  ): Promise<LifestyleCheckConditionResponse> {
+    const { data } = await http.get<LifestyleCheckConditionResponse>(
+      LifestyleCheckEndpoint.CHECK_CONDITION,
+      { params },
+    )
     return data
   },
 

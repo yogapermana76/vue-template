@@ -4,6 +4,14 @@
  */
 
 import type { BaseResponse } from '@/types/common/base.types'
+import type {
+  ProgramDetailData,
+  VisitDateDataDaily,
+  VisitDateDataDateRange,
+  TicketCategory,
+  TicketCategoryDetail,
+  CategoryTicket,
+} from './booking.types'
 
 // ============================================
 // Common Entities
@@ -14,71 +22,6 @@ export interface LifestyleArticle {
   title: string
   provinceId: number
   provinceName: string
-}
-
-export interface LifestyleProgramContact {
-  name: string
-  email: string
-  phone: string
-}
-
-export interface LifestyleProgramFacility {
-  name: string
-  iconUrl: string
-}
-
-export interface LifestyleProgramInfoSection {
-  title: string
-  iconUrl: string
-  messages: string[]
-}
-
-export interface LifestyleProgramSchedule {
-  dayName: string
-  dayNum: string
-  startTime: string
-  endTime: string
-  isActive: boolean
-}
-
-export interface LifestyleTicketInformation {
-  description: string
-  benefitTickets: string[]
-  listEffectiveDay: string[] | null
-  ticketRedemption: string
-  listEffectiveDate: string[] | null
-  termsAndConditions: string
-  additionalInformation: string[]
-}
-
-export interface LifestyleTicketCategory {
-  programTicketCategoryId: number
-  ticketCategory: string
-  information: LifestyleTicketInformation
-  discountValue: number
-  discountCostType: string
-  amountDiscount: number
-  beforeDiscountPrice: number
-  afterDiscount: number
-  finalPrice: number
-  basePrice: number
-  quotaUsed: number
-  remainingQuota: number
-  earliestStartSaleDatetime: string
-  latestEndSaleDatetime: string
-}
-
-export interface LifestyleProgramDetail {
-  programId: number
-  programName: string
-  programScheduleCategory: string
-  programScheduleCategoryFlag: string
-  programCategory: string
-  contact: LifestyleProgramContact[]
-  facilities: LifestyleProgramFacility[]
-  infoSection: LifestyleProgramInfoSection
-  termsAndConditions: string
-  schedules: LifestyleProgramSchedule[]
 }
 
 export interface LifestyleBanner {
@@ -135,25 +78,29 @@ export interface LifestyleProgramDetailParams {
 
 export interface LifestyleListVisitDateParams {
   programId: number
-  programScheduleCategoryFlag: string
+  programScheduleCategoryFlag: 'DAILY' | 'DATE_RANGE'
   programTicketCategoryId?: number
 }
 
 export interface LifestyleListTicketByVisitDateParams {
   programId: number
-  programScheduleCategoryFlag: string
+  programScheduleCategoryFlag: 'DAILY' | 'DATE_RANGE'
   date: string // YYYY-MM-DD
 }
 
 export interface LifestyleDetailTicketCategoryParams {
   programId: number
   programTicketCategoryId: number
+  date: string // YYYY-MM-DD
+  programScheduleCategoryFlag: 'DAILY' | 'DATE_RANGE'
 }
 
 export interface LifestyleCategoryListTicketParams {
   programId: number
-  programScheduleCategoryFlag: string
-  date?: string // YYYY-MM-DD
+  programTicketCategoryId: number
+  programScheduleCategoryFlag: 'DAILY' | 'DATE_RANGE'
+  date: string // YYYY-MM-DD
+  dayNum?: number
 }
 
 export interface LifestyleGetFormParams {
@@ -201,33 +148,17 @@ export type LifestyleArticleListResponse = LifestyleArticleGroupProvinceResponse
 
 export type LifestyleArticleDetailResponse = LifestyleArticleGroupProvinceResponse
 
-export type LifestyleProgramDetailResponse = {
-  code: string
-  message: string
-  data: LifestyleProgramDetail
-}
+export type LifestyleProgramDetailResponse = BaseResponse<ProgramDetailData>
 
-export type LifestyleListVisitDateResponse = {
-  code: string
-  message: string
-  data: {
-    visitDates: string[]
-  }
-}
+export type LifestyleListVisitDateResponse = BaseResponse<
+  VisitDateDataDaily | VisitDateDataDateRange
+>
 
-export type LifestyleListTicketByVisitDateResponse = {
-  code: string
-  message: string
-  data: LifestyleTicketCategory[]
-}
+export type LifestyleListTicketByVisitDateResponse = BaseResponse<TicketCategory[]>
 
-export type LifestyleDetailTicketCategoryResponse = {
-  code: string
-  message: string
-  data: LifestyleTicketCategory
-}
+export type LifestyleDetailTicketCategoryResponse = BaseResponse<TicketCategoryDetail>
 
-export type LifestyleCategoryListTicketResponse = LifestyleListTicketByVisitDateResponse
+export type LifestyleCategoryListTicketResponse = BaseResponse<CategoryTicket[]>
 
 export type LifestyleGetFormResponse = BaseResponse<unknown>
 

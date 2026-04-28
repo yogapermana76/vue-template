@@ -1,17 +1,13 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { computed } from 'vue'
+  import { parseISO, format } from 'date-fns'
+  import { id as idLocale } from 'date-fns/locale'
   import { cn } from '@/utils/cn'
 
   export interface DatePickerCardProps {
-    /** Day of week (e.g., 'Kamis', 'Sabtu') */
-    dayName: string
-    /** Date number (e.g., 23, 25) */
-    date: number
-    /** Month name (e.g., 'MEI', 'JUN') */
-    month: string
-    /** Year (e.g., 2026) */
-    year: number
+    /** Date string in any format (ISO, locale, etc.) */
+    date: string
     /** Whether this date is selected */
     selected?: boolean
     /** Whether this date is available/has stock */
@@ -29,6 +25,13 @@
     available: true,
     statusLabel: 'Habis',
   })
+
+  const parsedDate = computed(() => parseISO(props.date))
+
+  const dayName = computed(() => format(parsedDate.value, 'EEEE', { locale: idLocale }))
+  const dateNumber = computed(() => format(parsedDate.value, 'd'))
+  const month = computed(() => format(parsedDate.value, 'MMM', { locale: idLocale }).toUpperCase())
+  const year = computed(() => format(parsedDate.value, 'yyyy'))
 
   /**
    * Computed classes based on state
@@ -119,7 +122,7 @@
 
     <!-- Date Number -->
     <span :class="cn('body-l-semibold', dateClasses)">
-      {{ date }}
+      {{ dateNumber }}
     </span>
 
     <!-- Month, Year, or Status -->

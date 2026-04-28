@@ -4,8 +4,8 @@
 
   export interface ContactInfoItemProps {
     name: string
-    email: string
-    phone: string
+    email?: string
+    phone?: string
     clickable?: boolean
   }
 
@@ -21,7 +21,7 @@
 <template>
   <Item
     :class="[
-      'box-border flex min-h-15.5 w-full items-start gap-2 rounded-xl border border-neutral-200 bg-white p-3',
+      'box-border flex min-h-15.5 w-full items-center gap-2 rounded-sm border border-neutral-200 bg-white p-3',
       clickable ? 'cursor-pointer transition-colors hover:bg-neutral-50' : '',
     ]"
     @click="clickable ? $emit('click') : undefined"
@@ -33,7 +33,10 @@
       </ItemTitle>
 
       <!-- Info kontak dengan separator dot -->
-      <ItemDescription class="flex min-h-4.5 flex-wrap items-center gap-1 text-left">
+      <ItemDescription
+        v-if="email && phone"
+        class="flex min-h-4.5 flex-wrap items-center gap-1 text-left"
+      >
         <span class="body-caption break-all text-neutral-600">{{ email }}</span>
         <span class="h-1 w-1 shrink-0 rounded-full bg-neutral-300"></span>
         <span class="body-caption break-all text-neutral-600">{{ phone }}</span>
@@ -41,7 +44,7 @@
     </ItemContent>
 
     <!-- Chevron hanya muncul kalau clickable, selalu di kanan -->
-    <ItemActions v-if="clickable" class="flex shrink-0 items-center justify-center p-1">
+    <ItemActions v-if="clickable" class="flex shrink-0 items-center justify-center">
       <ChevronRight class="size-4 text-neutral-900" />
     </ItemActions>
   </Item>

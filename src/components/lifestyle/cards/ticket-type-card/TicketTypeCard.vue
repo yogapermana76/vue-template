@@ -3,6 +3,7 @@
   import { computed } from 'vue'
   import { cn } from '@/utils/cn'
   import { Check, CheckCircle2, ChevronDown } from 'lucide-vue-next'
+  import { Button } from '@/components/ui/button'
 
   export interface TicketTypeCardFeature {
     /** Feature text */
@@ -20,8 +21,10 @@
     detailText?: string
     /** Whether the ticket is selected */
     selected?: boolean
-    /** Whether the ticket is selectable (shows checkbox) */
+    /** Whether the ticket is selectable (shows radio button) */
     selectable?: boolean
+    /** Value for radio button */
+    value?: string
     /** Additional CSS classes */
     class?: HTMLAttributes['class']
   }
@@ -41,7 +44,7 @@
   }>()
 
   const cardBorderClass = computed(() => {
-    return props.selected ? 'border-primary-500' : 'border-slate-100'
+    return props.selected ? 'border-[1.5px] border-primary-500' : 'border-[1.5px] border-slate-100'
   })
 
   const cardBackgroundClass = computed(() => {
@@ -54,6 +57,10 @@
 
   const titleColorClass = computed(() => {
     return props.selected ? 'text-primary-600' : 'text-slate-950'
+  })
+
+  const titleFontClass = computed(() => {
+    return props.selected ? 'font-bold text-base' : 'body-l-semibold'
   })
 
   const handleCardClick = () => {
@@ -73,7 +80,7 @@
     data-slot="ticket-type-card"
     :class="
       cn(
-        'border-1.5 relative flex w-full max-w-82 flex-col gap-2 rounded-xl pt-3 pb-0 transition-all',
+        'relative flex w-full max-w-82 flex-col gap-2 rounded-sm pt-3 pb-0 transition-all',
         cardBorderClass,
         cardBackgroundClass,
         selectable && 'cursor-pointer hover:shadow-sm',
@@ -85,30 +92,32 @@
     <!-- Header Section -->
     <div class="flex w-full items-center gap-2 px-3">
       <!-- Title -->
-      <h3 :class="cn('body-l-semibold flex-1', titleColorClass)">
+      <h3 :class="cn(titleFontClass, 'flex-1', titleColorClass)">
         {{ title }}
       </h3>
 
-      <!-- Selected Checkmark Icon -->
-      <CheckCircle2
-        v-if="selected"
-        class="text-success-600 fill-success-100 size-4 shrink-0"
-        aria-label="Selected"
-      />
-
-      <!-- Unselected Checkbox -->
-      <div
-        v-else-if="selectable"
-        class="size-4 shrink-0 rounded-full border border-slate-200 bg-slate-100"
-        aria-label="Not selected"
-      />
+      <!-- Radio Button Indicator -->
+      <div v-if="selectable" class="shrink-0">
+        <!-- Selected State: CheckCircle2 -->
+        <CheckCircle2
+          v-if="selected"
+          class="text-success-600 fill-success-100 size-4"
+          aria-label="Selected"
+        />
+        <!-- Unselected State: Empty Circle -->
+        <div
+          v-else
+          class="size-4 rounded-full border border-slate-200 bg-slate-100"
+          aria-label="Not selected"
+        />
+      </div>
     </div>
 
     <!-- Content Card -->
     <div
       :class="
         cn(
-          'flex w-full flex-col items-center justify-center gap-0.5 self-stretch rounded-b-xl px-0 py-2',
+          'flex w-full flex-col items-center justify-center gap-0.5 self-stretch rounded-b-sm px-0 py-2',
           contentBackgroundClass,
         )
       "
@@ -126,7 +135,11 @@
               <!-- Checkmark Icon -->
               <Check class="text-primary-600 size-4 shrink-0" />
               <!-- Feature Text -->
-              <span class="body-caption-medium flex-1 text-slate-900">
+              <span
+                :class="
+                  selected ? 'body-caption-medium text-slate-900' : 'body-caption text-slate-950'
+                "
+              >
                 {{ feature.text }}
               </span>
             </div>
@@ -134,15 +147,21 @@
         </div>
 
         <!-- Detail Link -->
-        <button
+        <Button
           v-if="detailText"
-          type="button"
-          class="body-caption-semibold text-primary-700 flex w-fit items-center gap-0.5 transition-opacity hover:opacity-80"
+          variant="tertiary"
+          size="xs"
+          class="h-auto w-fit items-center gap-0.5 p-0"
+          :class="
+            selected
+              ? 'body-caption-medium text-primary-700'
+              : 'body-caption-semibold text-primary-700'
+          "
           @click="handleDetailClick"
         >
           <span>{{ detailText }}</span>
           <ChevronDown class="size-3 -rotate-90" />
-        </button>
+        </Button>
       </div>
     </div>
   </div>

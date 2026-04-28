@@ -22,3 +22,4 @@ export {
   type PurchaseHistoryTicketInfo,
   type PurchaseHistoryCardSkeletonProps,
 } from './purchase-history-card'
+export { ContactInfoItem } from './contact-info-item'

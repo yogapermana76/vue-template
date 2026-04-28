@@ -128,7 +128,7 @@ export const lifestyleProgramService = {
   },
 
   /**
-   * Get category list ticket
+   * Get list of tickets by category
    */
   async getCategoryListTicket(
     params: LifestyleCategoryListTicketParams,

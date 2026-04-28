@@ -16,7 +16,11 @@
     type TicketCategory,
     type LifestyleMoreItem,
   } from '@/components/lifestyle/sections'
-  import type { DatePickerCardProps } from '@/components/lifestyle/cards/date-picker'
+  import {
+    getMockEventData,
+    getMockAvailableDates,
+    getMockTicketTypes,
+  } from '@/mocks/lifestyle/ticket-data'
 
   definePage({
     meta: {
@@ -33,26 +37,13 @@
     return params.id || ''
   })
 
+  // Mock data (TODO: Replace with API integration)
+  const eventData = ref(getMockEventData(eventId.value))
+  const availableDates = ref(getMockAvailableDates())
+  const ticketTypes = ref(getMockTicketTypes())
+
   // Selected date state
   const selectedDateIndex = ref(0)
-
-  // Mock event data - replace with actual API call
-  const eventData = ref({
-    id: eventId.value,
-    title: 'PLN Mobile Gelegar Musik Prambanan 2024',
-    imageUrl: 'https://picsum.photos/375/187',
-    type: 'Musik',
-    dateRange: 'Kamis - Sabtu, 23 - 25 Mei 2024',
-    time: '18:00 - 23:00 WIB',
-    location: {
-      name: 'Komplek Candi Prambanan',
-      address:
-        'Jl. Raya Solo - Yogyakarta No.16, Kranggan, Bokoharjo, Kec. Prambanan, Kabupaten Sleman, Daerah Istimew...',
-    },
-    alertMessage: 'Anda hanya dapat membeli maksimal 5 tiket.',
-    description:
-      'PLN Mobile Kembali mempersembahkan konser musik bertajuk PLN Mobile Gelegar Musik Prambanan 2024. Acara yang digelar di Kawasan Candi Prambanan ini akan dimeriahkan...',
-  })
 
   // Event detail items for EventDetailsCard
   const eventDetailItems = computed<EventDetailItem[]>(() => [
@@ -73,56 +64,17 @@
     },
   ])
 
-  // Mock dates data
-  const availableDates = ref<DatePickerCardProps[]>([
-    {
-      dayName: 'Kamis',
-      date: 23,
-      month: 'MEI',
-      year: 2024,
+  // Transform ticketTypes to ticketCategories format for LifestyleTicketSection
+  const ticketCategories = computed<TicketCategory[]>(() => {
+    return ticketTypes.value.map(ticket => ({
+      id: ticket.id,
+      category: ticket.title,
+      benefits: ticket.features,
+      price: 300000, // TODO: Get from API ticket price
+      variant: 'regular' as const,
       available: true,
-    },
-    {
-      dayName: 'Jumat',
-      date: 24,
-      month: 'MEI',
-      year: 2024,
-      available: true,
-    },
-    {
-      dayName: 'Sabtu',
-      date: 25,
-      month: 'MEI',
-      year: 2024,
-      available: false,
-      statusLabel: 'Habis',
-    },
-  ])
-
-  // Mock ticket categories
-  const ticketCategories = ref<TicketCategory[]>([
-    {
-      id: 'regular',
-      category: 'Reguler',
-      benefits: [{ text: 'Tiket masuk Acara' }, { text: 'Sticker Make A Wish' }],
-      price: 300000,
-      variant: 'regular',
-      available: true,
-    },
-    {
-      id: 'vip',
-      category: 'VIP',
-      benefits: [
-        { text: 'Tiket masuk Acara' },
-        { text: 'Sticker Make A Wish' },
-        { text: 'Special Entry' },
-        { text: 'Backstage Pass' },
-      ],
-      price: 300000,
-      variant: 'vip',
-      available: false,
-    },
-  ])
+    }))
+  })
 
   // Information items for "Informasi Lainnya" section
   const informationItems = ref<LifestyleMoreItem[]>([
@@ -266,9 +218,6 @@
       :selected-index="selectedDateIndex"
       @select="handleDateSelect"
     />
-
-    <!-- Divider -->
-    <Divider thick />
 
     <!-- Ticket Category Section -->
     <LifestyleTicketSection

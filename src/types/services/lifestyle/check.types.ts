@@ -36,9 +36,21 @@ export interface LifestyleValidateUserEligibilityRequest {
   userId: number
 }
 
+export interface LifestyleCheckConditionParams {
+  programId: number
+}
+
 // ============================================
 // Response Types
 // ============================================
+
+export interface LifestyleCheckConditionData {
+  totalOwnedTickets: number
+  maxTicketRulesTrx: boolean
+  maxTicketTrx: number
+  maxTicketRulesAccount: boolean
+  maxTicketAccount: number
+}
 
 export type LifestyleHealthCheckResponse = BaseResponse<LifestyleHealthCheck>
 
@@ -55,3 +67,5 @@ export type LifestyleSystemStatusResponse = BaseResponse<{
   isOnline: boolean
   message: string
 }>
+
+export type LifestyleCheckConditionResponse = BaseResponse<LifestyleCheckConditionData>

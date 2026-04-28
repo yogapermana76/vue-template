@@ -76,6 +76,25 @@ type UseLifestyleListTicketByVisitDateParams = BaseComposableParams<
     date?: MaybeRef<string>
   }
 >
+type UseLifestyleDetailTicketCategoryParams = BaseComposableParams<
+  never,
+  {
+    programId?: MaybeRef<number>
+    programTicketCategoryId?: MaybeRef<number>
+    date?: MaybeRef<string>
+    programScheduleCategoryFlag?: MaybeRef<string>
+  }
+>
+type UseLifestyleCategoryListTicketParams = BaseComposableParams<
+  never,
+  {
+    programId?: MaybeRef<number>
+    programTicketCategoryId?: MaybeRef<number>
+    programScheduleCategoryFlag?: MaybeRef<string>
+    date?: MaybeRef<string>
+    dayNum?: MaybeRef<number>
+  }
+>
 type UseLifestyleProgramSearchParams = BaseComposableParams<
   Omit<LifestyleProgramSearchParams, 'page' | 'size'>
 >
@@ -222,6 +241,101 @@ export function useLifestyleListTicketByVisitDate(
         programId: resolvedProgramId.value!,
         programScheduleCategoryFlag: resolvedScheduleFlag.value!,
         date: resolvedDate.value!,
+      }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get ticket category detail
+ */
+export function useLifestyleDetailTicketCategory(
+  params: UseLifestyleDetailTicketCategoryParams = {},
+) {
+  const { params: pathParams = {}, options = {} } = params
+
+  const resolvedProgramId = computed(() => unref(pathParams.programId))
+  const resolvedTicketCategoryId = computed(() => unref(pathParams.programTicketCategoryId))
+  const resolvedDate = computed(() => unref(pathParams.date))
+  const resolvedScheduleFlag = computed(() => unref(pathParams.programScheduleCategoryFlag))
+
+  const defaultEnabled = computed(
+    () =>
+      !!resolvedProgramId.value &&
+      !!resolvedTicketCategoryId.value &&
+      !!resolvedDate.value &&
+      !!resolvedScheduleFlag.value,
+  )
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() =>
+      lifestyleProgramKeys.detailTicketCategory({
+        programId: resolvedProgramId.value!,
+        programTicketCategoryId: resolvedTicketCategoryId.value!,
+        date: resolvedDate.value!,
+        programScheduleCategoryFlag: resolvedScheduleFlag.value!,
+      }),
+    ),
+    queryFn: () =>
+      lifestyleProgramService.getDetailTicketCategory({
+        programId: resolvedProgramId.value!,
+        programTicketCategoryId: resolvedTicketCategoryId.value!,
+        date: resolvedDate.value!,
+        programScheduleCategoryFlag: resolvedScheduleFlag.value!,
+      }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get list of tickets by category
+ */
+export function useLifestyleCategoryListTicket(params: UseLifestyleCategoryListTicketParams = {}) {
+  const { params: pathParams = {}, options = {} } = params
+
+  const resolvedProgramId = computed(() => unref(pathParams.programId))
+  const resolvedTicketCategoryId = computed(() => unref(pathParams.programTicketCategoryId))
+  const resolvedScheduleFlag = computed(() => unref(pathParams.programScheduleCategoryFlag))
+  const resolvedDate = computed(() => unref(pathParams.date))
+  const resolvedDayNum = computed(() => unref(pathParams.dayNum))
+
+  const defaultEnabled = computed(
+    () =>
+      !!resolvedProgramId.value &&
+      !!resolvedTicketCategoryId.value &&
+      !!resolvedScheduleFlag.value &&
+      !!resolvedDate.value,
+  )
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() =>
+      lifestyleProgramKeys.categoryListTicket({
+        programId: resolvedProgramId.value!,
+        programTicketCategoryId: resolvedTicketCategoryId.value!,
+        programScheduleCategoryFlag: resolvedScheduleFlag.value!,
+        date: resolvedDate.value!,
+        dayNum: resolvedDayNum.value,
+      }),
+    ),
+    queryFn: () =>
+      lifestyleProgramService.getCategoryListTicket({
+        programId: resolvedProgramId.value!,
+        programTicketCategoryId: resolvedTicketCategoryId.value!,
+        programScheduleCategoryFlag: resolvedScheduleFlag.value!,
+        date: resolvedDate.value!,
+        dayNum: resolvedDayNum.value,
       }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,

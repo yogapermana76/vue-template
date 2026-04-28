@@ -38,7 +38,7 @@
     opacity: 0.4;
     border-radius: 9999px;
     transition: all 200ms ease-in-out;
-    margin: 0 0.125rem;
+    margin: 0 !important;
   }
 
   .swiper-pagination-container :deep(.swiper-pagination-bullet-active) {
@@ -68,6 +68,6 @@
 
   /* Primary color variant */
   .swiper-pagination-container[data-color='primary'] :deep(.swiper-pagination-bullet) {
-    background-color: rgb(var(--color-primary-500));
+    background-color: var(--color-primary-600);
   }
 </style>
