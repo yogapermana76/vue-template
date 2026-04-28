@@ -1,7 +1,7 @@
 export { default as LifestyleBookingStep1Section } from './LifestyleBookingStep1Section.vue'
 export type {
   LifestyleBookingStep1SectionProps,
-  TicketQuantityItem,
+  SelectedQuantity,
 } from './LifestyleBookingStep1Section.vue'
 
 export { default as LifestyleBookingStep2Section } from './LifestyleBookingStep2Section.vue'

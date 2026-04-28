@@ -64,7 +64,7 @@ type UseLifestyleListVisitDateParams = BaseComposableParams<
   never,
   {
     programId?: MaybeRef<number>
-    programScheduleCategoryFlag?: MaybeRef<string>
+    programScheduleCategoryFlag?: MaybeRef<'DAILY' | 'DATE_RANGE'>
     programTicketCategoryId?: MaybeRef<number>
   }
 >
@@ -72,7 +72,7 @@ type UseLifestyleListTicketByVisitDateParams = BaseComposableParams<
   never,
   {
     programId?: MaybeRef<number>
-    programScheduleCategoryFlag?: MaybeRef<string>
+    programScheduleCategoryFlag?: MaybeRef<'DAILY' | 'DATE_RANGE'>
     date?: MaybeRef<string>
   }
 >
@@ -82,7 +82,7 @@ type UseLifestyleDetailTicketCategoryParams = BaseComposableParams<
     programId?: MaybeRef<number>
     programTicketCategoryId?: MaybeRef<number>
     date?: MaybeRef<string>
-    programScheduleCategoryFlag?: MaybeRef<string>
+    programScheduleCategoryFlag?: MaybeRef<'DAILY' | 'DATE_RANGE'>
   }
 >
 type UseLifestyleCategoryListTicketParams = BaseComposableParams<
@@ -90,7 +90,7 @@ type UseLifestyleCategoryListTicketParams = BaseComposableParams<
   {
     programId?: MaybeRef<number>
     programTicketCategoryId?: MaybeRef<number>
-    programScheduleCategoryFlag?: MaybeRef<string>
+    programScheduleCategoryFlag?: MaybeRef<'DAILY' | 'DATE_RANGE'>
     date?: MaybeRef<string>
     dayNum?: MaybeRef<number>
   }
