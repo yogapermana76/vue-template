@@ -38,11 +38,23 @@
   type BookingStep = (typeof BOOKING_STEPS)[keyof typeof BOOKING_STEPS]
 
   const TOTAL_STEPS = 3
+  const MIN_TICKET_QUANTITY = 1
+  const MAX_TICKET_QUANTITY = 5
+  const ADMIN_FEE = 2500 // TODO: Get from API
 
-  const STEP_TITLES = {
-    [BOOKING_STEPS.TICKET_SELECTION]: 'Detail Tiket',
-    [BOOKING_STEPS.ORDER_INFO]: 'Isi Data Diri',
-    [BOOKING_STEPS.PAYMENT]: 'Detail Tagihan',
+  const STEP_CONFIG = {
+    [BOOKING_STEPS.TICKET_SELECTION]: {
+      title: 'Detail Tiket',
+      buttonText: 'Selanjutnya',
+    },
+    [BOOKING_STEPS.ORDER_INFO]: {
+      title: 'Isi Data Diri',
+      buttonText: 'Selanjutnya',
+    },
+    [BOOKING_STEPS.PAYMENT]: {
+      title: 'Detail Tagihan',
+      buttonText: 'Bayar',
+    },
   } as const
 
   const FORM_FIELD_PATHS = {
@@ -78,10 +90,10 @@
           (sum, ticket) => sum + ticket.quantity,
           0,
         )
-        return totalQuantity > 0 && totalQuantity <= 5
+        return totalQuantity >= MIN_TICKET_QUANTITY && totalQuantity <= MAX_TICKET_QUANTITY
       },
       {
-        message: 'Pilih 1-5 tiket untuk melanjutkan',
+        message: `Pilih ${MIN_TICKET_QUANTITY}-${MAX_TICKET_QUANTITY} tiket untuk melanjutkan`,
         path: ['ticketQuantities'],
       },
     )
@@ -167,7 +179,7 @@
     validateOnMount: false,
   })
 
-  // v-model bindings
+  // v-model bindings for Step 1
   const ticketCategoryId = computed({
     get: () => ticketSelectionForm.values.selectedTicketCategoryId,
     set: (value: number) =>
@@ -179,40 +191,26 @@
     set: (value: string) => ticketSelectionForm.setFieldValue(FORM_FIELD_PATHS.VISIT_DATE, value),
   })
 
-  const isFirstVisitor = computed({
-    get: () => orderInfoForm.values.setAsFirstVisitor,
-    set: value => orderInfoForm.setFieldValue(FORM_FIELD_PATHS.SET_AS_FIRST_VISITOR, value),
-  })
-
-  const termsAgreed = computed({
-    get: () => paymentForm.values.agreedToTerms,
-    set: value => paymentForm.setFieldValue(FORM_FIELD_PATHS.AGREED_TO_TERMS, value),
-  })
+  // ============================================================================
+  // Ticket Quantity Management
+  // ============================================================================
 
   /**
    * Calculate total ticket quantity
    */
-  function getTotalTicketQuantity(quantities: TicketSelectionFormValues['ticketQuantities']) {
-    return quantities.reduce((sum, ticket) => sum + ticket.quantity, 0)
-  }
+  const getTotalTicketQuantity = (quantities: TicketSelectionFormValues['ticketQuantities']) =>
+    quantities.reduce((sum, ticket) => sum + ticket.quantity, 0)
 
   /**
-   * Find or create ticket quantity entry
+   * Update ticket quantity and sync visitor list
    */
-  function getUpdatedTicketQuantities(
-    ticketId: number,
-    quantity: number,
-    ticketData: TicketData,
-    currentQuantities: TicketSelectionFormValues['ticketQuantities'],
-  ) {
-    const quantities = [...currentQuantities]
+  function updateTicketQuantity(ticketId: number, quantity: number, ticketData: TicketData) {
+    const quantities = [...ticketSelectionForm.values.ticketQuantities]
     const existingIndex = quantities.findIndex(t => t.ticketId === ticketId)
 
     if (existingIndex >= 0) {
-      // Update existing ticket quantity
       quantities[existingIndex] = { ...quantities[existingIndex], quantity }
     } else {
-      // Add new ticket entry
       quantities.push({
         ticketId,
         ticketName: ticketData.ticketName,
@@ -222,25 +220,8 @@
       })
     }
 
-    return quantities
-  }
-
-  /**
-   * Update ticket quantity and sync visitor list
-   */
-  function updateTicketQuantity(ticketId: number, quantity: number, ticketData: TicketData) {
-    const updatedQuantities = getUpdatedTicketQuantities(
-      ticketId,
-      quantity,
-      ticketData,
-      ticketSelectionForm.values.ticketQuantities,
-    )
-
-    ticketSelectionForm.setFieldValue(FORM_FIELD_PATHS.TICKET_QUANTITIES, updatedQuantities)
-
-    // Sync visitors list with total ticket quantity
-    const totalQuantity = getTotalTicketQuantity(updatedQuantities)
-    updateVisitorsList(totalQuantity)
+    ticketSelectionForm.setFieldValue(FORM_FIELD_PATHS.TICKET_QUANTITIES, quantities)
+    updateVisitorsList(getTotalTicketQuantity(quantities))
   }
 
   // Step 2: Order Info Form
@@ -256,50 +237,38 @@
     validateOnMount: false,
   })
 
+  // ============================================================================
+  // Visitor Management
+  // ============================================================================
+
   /**
    * Create default visitor entry
    */
-  function createDefaultVisitor(index: number): VisitorInfo {
-    return {
-      id: String(index + 1),
-      type: '',
-      name: '',
-      email: '',
-      phone: '',
-    }
-  }
-
-  /**
-   * Generate visitors list based on total quantity
-   * Preserves existing visitor data when possible
-   */
-  function generateVisitorsList(
-    totalQuantity: number,
-    currentVisitors: VisitorInfo[],
-  ): VisitorInfo[] {
-    if (totalQuantity === 0) {
-      return []
-    }
-
-    return Array.from({ length: totalQuantity }, (_, index) => {
-      // Preserve existing visitor completely (including their type selection)
-      return currentVisitors[index] || createDefaultVisitor(index)
-    })
-  }
+  const createDefaultVisitor = (index: number): VisitorInfo => ({
+    id: String(index + 1),
+    type: '',
+    name: '',
+    email: '',
+    phone: '',
+  })
 
   /**
    * Update visitors list based on total ticket quantity
-   * Only updates if quantity has changed
+   * Preserves existing visitor data when possible
    */
   function updateVisitorsList(totalQuantity: number) {
     const currentVisitors = orderInfoForm.values.visitors
 
-    // Skip update if quantity hasn't changed
-    if (totalQuantity === currentVisitors.length) {
-      return
-    }
+    if (totalQuantity === currentVisitors.length) return
 
-    const newVisitors = generateVisitorsList(totalQuantity, currentVisitors)
+    const newVisitors =
+      totalQuantity === 0
+        ? []
+        : Array.from(
+            { length: totalQuantity },
+            (_, i) => currentVisitors[i] || createDefaultVisitor(i),
+          )
+
     orderInfoForm.setFieldValue(FORM_FIELD_PATHS.VISITORS, newVisitors)
   }
 
@@ -310,6 +279,12 @@
   function handleVisitorsUpdate(updatedVisitors: VisitorInfo[]) {
     orderInfoForm.setFieldValue(FORM_FIELD_PATHS.VISITORS, updatedVisitors)
   }
+
+  // v-model binding for Step 2
+  const isFirstVisitor = computed({
+    get: () => orderInfoForm.values.setAsFirstVisitor,
+    set: value => orderInfoForm.setFieldValue(FORM_FIELD_PATHS.SET_AS_FIRST_VISITOR, value),
+  })
 
   // Step 3: Payment Form
 
@@ -322,32 +297,35 @@
     validateOnMount: false,
   })
 
+  // v-model binding for Step 3
+  const termsAgreed = computed({
+    get: () => paymentForm.values.agreedToTerms,
+    set: value => paymentForm.setFieldValue(FORM_FIELD_PATHS.AGREED_TO_TERMS, value),
+  })
+
   // ============================================================================
   // Computed Values & Helpers
   // ============================================================================
 
-  // TODO: Get admin fee from API
-  const ADMIN_FEE = 2500
-
   /**
    * Get selected ticket quantities in simplified format
    */
-  const selectedQuantities = computed(() => {
-    return ticketSelectionForm.values.ticketQuantities.map(ticket => ({
-      ticketId: ticket.ticketId,
-      quantity: ticket.quantity,
-    }))
-  })
+  const selectedQuantities = computed(() =>
+    ticketSelectionForm.values.ticketQuantities.map(({ ticketId, quantity }) => ({
+      ticketId,
+      quantity,
+    })),
+  )
 
   /**
    * Calculate total ticket price
    */
-  const ticketPrice = computed(() => {
-    return ticketSelectionForm.values.ticketQuantities.reduce(
+  const ticketPrice = computed(() =>
+    ticketSelectionForm.values.ticketQuantities.reduce(
       (sum, ticket) => sum + ticket.quantity * ticket.finalPrice,
       0,
-    )
-  })
+    ),
+  )
 
   /**
    * Calculate total price including admin fee
@@ -362,12 +340,12 @@
   /**
    * Generate order summary details string (e.g., "2 Adult • 1 Child")
    */
-  const orderSummaryDetails = computed(() => {
-    return ticketSelectionForm.values.ticketQuantities
+  const orderSummaryDetails = computed(() =>
+    ticketSelectionForm.values.ticketQuantities
       .filter(ticket => ticket.quantity > 0)
       .map(ticket => `${ticket.quantity} ${ticket.ticketName}`)
-      .join(' • ')
-  })
+      .join(' • '),
+  )
 
   /**
    * Get payment breakdown for display
@@ -378,51 +356,40 @@
     total: totalPrice.value,
   }))
 
-  const headerTitle = computed(() => {
-    return STEP_TITLES[currentStep.value as keyof typeof STEP_TITLES] || STEP_TITLES[1]
-  })
+  /**
+   * Current step configuration
+   */
+  const currentStepConfig = computed(() => STEP_CONFIG[currentStep.value])
 
-  const footerButtonText = computed(() => {
-    return currentStep.value === TOTAL_STEPS ? 'Bayar' : 'Selanjutnya'
-  })
+  const headerTitle = computed(() => currentStepConfig.value.title)
+
+  const footerButtonText = computed(() => currentStepConfig.value.buttonText)
 
   // Form validation
   const isCurrentStepValid = computed(() => {
-    switch (currentStep.value) {
-      case BOOKING_STEPS.TICKET_SELECTION:
-        return ticketSelectionForm.meta.value.valid
-      case BOOKING_STEPS.ORDER_INFO:
-        return orderInfoForm.meta.value.valid
-      case BOOKING_STEPS.PAYMENT:
-        return paymentForm.meta.value.valid
-      default:
-        return false
-    }
+    const form = stepFormMap.value[currentStep.value]
+    return form?.meta.value.valid ?? false
   })
 
-  const isNextButtonDisabled = computed(() => {
-    return !isCurrentStepValid.value
-  })
+  const isNextButtonDisabled = computed(() => !isCurrentStepValid.value)
 
   // ============================================================================
   // Step Navigation
   // ============================================================================
 
   /**
+   * Map of step to form instance
+   */
+  const stepFormMap = computed(() => ({
+    [BOOKING_STEPS.TICKET_SELECTION]: ticketSelectionForm,
+    [BOOKING_STEPS.ORDER_INFO]: orderInfoForm,
+    [BOOKING_STEPS.PAYMENT]: paymentForm,
+  }))
+
+  /**
    * Get form instance for current step
    */
-  function getCurrentStepForm() {
-    switch (currentStep.value) {
-      case BOOKING_STEPS.TICKET_SELECTION:
-        return ticketSelectionForm
-      case BOOKING_STEPS.ORDER_INFO:
-        return orderInfoForm
-      case BOOKING_STEPS.PAYMENT:
-        return paymentForm
-      default:
-        return null
-    }
-  }
+  const getCurrentStepForm = () => stepFormMap.value[currentStep.value] || null
 
   /**
    * Validate current step form
@@ -470,16 +437,17 @@
   // Event Handlers
   // ============================================================================
 
-  function handleEditVisitor(visitorId: string) {
-    // TODO: Implement edit visitor modal
+  // TODO: Implement edit visitor modal
+  const handleEditVisitor = (visitorId: string) => {
     const visitor = formVisitors.value.find(v => v.id === visitorId)
     if (visitor) {
       // Modal implementation pending
     }
   }
 
-  function handlePromoCode() {
-    // TODO: Implement promo code modal
+  // TODO: Implement promo code modal
+  const handlePromoCode = () => {
+    // Modal implementation pending
   }
 
   // ============================================================================
@@ -492,35 +460,24 @@
   function distributeVisitorsToTickets(
     tickets: TicketSelectionFormValues['ticketQuantities'],
     visitors: VisitorInfo[],
-  ) {
-    const result = tickets
+  ): LifestyleCreateBookingRequest['listTicket'] {
+    let offset = 0
+
+    return tickets
       .filter(ticket => ticket.quantity > 0)
-      .reduce<{
-        tickets: LifestyleCreateBookingRequest['listTicket']
-        offset: number
-      }>(
-        (acc, ticket) => {
-          const ticketVisitors = visitors
-            .slice(acc.offset, acc.offset + ticket.quantity)
-            .map(visitor => {
-              // Exclude internal fields (id, type)
-              const { id, type, ...formData } = visitor
-              return formData
-            })
+      .map(ticket => {
+        const ticketVisitors = visitors
+          .slice(offset, offset + ticket.quantity)
+          .map(({ id: _id, type: _type, ...formData }) => formData)
 
-          acc.tickets.push({
-            ticketId: ticket.ticketId,
-            ticketAmount: ticket.quantity,
-            orderInformationForm: ticketVisitors,
-          })
+        offset += ticket.quantity
 
-          acc.offset += ticket.quantity
-          return acc
-        },
-        { tickets: [], offset: 0 },
-      )
-
-    return result.tickets
+        return {
+          ticketId: ticket.ticketId,
+          ticketAmount: ticket.quantity,
+          orderInformationForm: ticketVisitors,
+        }
+      })
   }
 
   /**
@@ -549,14 +506,15 @@
 
   /**
    * Validate all form steps
-   * Returns tuple of validation results
    */
-  async function validateAllSteps() {
-    return Promise.all([
-      ticketSelectionForm.validate().then(result => result.valid),
-      orderInfoForm.validate().then(result => result.valid),
-      paymentForm.validate().then(result => result.valid),
+  const validateAllSteps = async () => {
+    const results = await Promise.all([
+      ticketSelectionForm.validate(),
+      orderInfoForm.validate(),
+      paymentForm.validate(),
     ])
+
+    return results.every(result => result.valid)
   }
 
   // ============================================================================
@@ -564,9 +522,9 @@
   // ============================================================================
 
   async function processPayment() {
-    const [step1Valid, step2Valid, step3Valid] = await validateAllSteps()
+    const isValid = await validateAllSteps()
 
-    if (!step1Valid || !step2Valid || !step3Valid) {
+    if (!isValid) {
       // eslint-disable-next-line no-console
       console.error('Form validation failed')
       return
