@@ -25,9 +25,8 @@
 
   useSwiperStyles()
 
-  // ============================================================================
   // Constants
-  // ============================================================================
+  // ---------
 
   const BOOKING_STEPS = {
     TICKET_SELECTION: 1,
@@ -66,9 +65,7 @@
     AGREED_TO_TERMS: 'agreedToTerms',
   } as const
 
-  // ============================================================================
   // Validation Schemas
-  // ============================================================================
 
   const ticketQuantitySchema = z.object({
     ticketId: z.number(),
@@ -125,9 +122,7 @@
 
   type PaymentFormValues = z.infer<typeof paymentSchema>
 
-  // ============================================================================
   // Page Setup
-  // ============================================================================
 
   definePage({
     meta: {
@@ -164,11 +159,13 @@
     }
   })
 
-  // Multi-step form state
+  // State Management
+
   const currentStep = ref<BookingStep>(BOOKING_STEPS.TICKET_SELECTION)
 
-  // Step 1: Ticket Selection Form
+  // Form Instances
 
+  // Step 1: Ticket Selection Form
   const ticketSelectionForm = useForm<TicketSelectionFormValues>({
     validationSchema: toTypedSchema(ticketSelectionSchema),
     initialValues: {
@@ -179,7 +176,31 @@
     validateOnMount: false,
   })
 
-  // v-model bindings for Step 1
+  // Step 2: Order Info Form
+  const orderInfoForm = useForm<OrderInfoFormValues>({
+    validationSchema: toTypedSchema(orderInfoSchema),
+    initialValues: {
+      userEmail: buyerInfo.value.email,
+      userName: buyerInfo.value.fullName,
+      setAsFirstVisitor: false,
+      visitors: [],
+    },
+    validateOnMount: false,
+  })
+
+  // Step 3: Payment Form
+  const paymentForm = useForm<PaymentFormValues>({
+    validationSchema: toTypedSchema(paymentSchema),
+    initialValues: {
+      agreedToTerms: false,
+      promoCode: '',
+    },
+    validateOnMount: false,
+  })
+
+  // Form Field Bindings (v-model)
+
+  // Step 1 bindings
   const ticketCategoryId = computed({
     get: () => ticketSelectionForm.values.selectedTicketCategoryId,
     set: (value: number) =>
@@ -191,15 +212,111 @@
     set: (value: string) => ticketSelectionForm.setFieldValue(FORM_FIELD_PATHS.VISIT_DATE, value),
   })
 
-  // ============================================================================
-  // Ticket Quantity Management
-  // ============================================================================
+  // Step 2 bindings
+  const isFirstVisitor = computed({
+    get: () => orderInfoForm.values.setAsFirstVisitor,
+    set: value => orderInfoForm.setFieldValue(FORM_FIELD_PATHS.SET_AS_FIRST_VISITOR, value),
+  })
+
+  const formVisitors = computed(() => orderInfoForm.values.visitors as VisitorInfo[])
+
+  // Step 3 bindings
+  const termsAgreed = computed({
+    get: () => paymentForm.values.agreedToTerms,
+    set: value => paymentForm.setFieldValue(FORM_FIELD_PATHS.AGREED_TO_TERMS, value),
+  })
+
+  // Computed Properties
+
+  // Step form mapping
+  const stepFormMap = computed(() => ({
+    [BOOKING_STEPS.TICKET_SELECTION]: ticketSelectionForm,
+    [BOOKING_STEPS.ORDER_INFO]: orderInfoForm,
+    [BOOKING_STEPS.PAYMENT]: paymentForm,
+  }))
+
+  // Step configuration
+  const currentStepConfig = computed(() => STEP_CONFIG[currentStep.value])
+  const headerTitle = computed(() => currentStepConfig.value.title)
+  const footerButtonText = computed(() => currentStepConfig.value.buttonText)
+
+  // Ticket quantities
+  const selectedQuantities = computed(() =>
+    ticketSelectionForm.values.ticketQuantities.map(({ ticketId, quantity }) => ({
+      ticketId,
+      quantity,
+    })),
+  )
+
+  // Price calculations
+  const ticketPrice = computed(() =>
+    ticketSelectionForm.values.ticketQuantities.reduce(
+      (sum, ticket) => sum + ticket.quantity * ticket.finalPrice,
+      0,
+    ),
+  )
+
+  const totalPrice = computed(() => ticketPrice.value + ADMIN_FEE)
+  const formattedTotalPrice = computed(() => formatCurrency(totalPrice.value))
+
+  // Order summary
+  const orderSummaryDetails = computed(() =>
+    ticketSelectionForm.values.ticketQuantities
+      .filter(ticket => ticket.quantity > 0)
+      .map(ticket => `${ticket.quantity} ${ticket.ticketName}`)
+      .join(' • '),
+  )
+
+  const paymentBreakdown = computed<PaymentBreakdown>(() => ({
+    ticketPrice: ticketPrice.value,
+    adminFee: ADMIN_FEE,
+    total: totalPrice.value,
+  }))
+
+  // Form validation
+  const isCurrentStepValid = computed(() => {
+    const form = stepFormMap.value[currentStep.value]
+    return form?.meta.value.valid ?? false
+  })
+
+  const isNextButtonDisabled = computed(() => !isCurrentStepValid.value)
+
+  // Helper Functions
 
   /**
    * Calculate total ticket quantity
    */
   const getTotalTicketQuantity = (quantities: TicketSelectionFormValues['ticketQuantities']) =>
     quantities.reduce((sum, ticket) => sum + ticket.quantity, 0)
+
+  /**
+   * Create default visitor entry
+   */
+  const createDefaultVisitor = (index: number): VisitorInfo => ({
+    id: String(index + 1),
+    type: '',
+    name: '',
+    email: '',
+    phone: '',
+  })
+
+  /**
+   * Get form instance for current step
+   */
+  const getCurrentStepForm = () => stepFormMap.value[currentStep.value] || null
+
+  /**
+   * Validate current step form
+   */
+  async function validateCurrentStep(): Promise<boolean> {
+    const form = getCurrentStepForm()
+    if (!form) return false
+
+    const result = await form.validate()
+    return result.valid
+  }
+
+  // Ticket & Visitor Management
 
   /**
    * Update ticket quantity and sync visitor list
@@ -224,34 +341,6 @@
     updateVisitorsList(getTotalTicketQuantity(quantities))
   }
 
-  // Step 2: Order Info Form
-
-  const orderInfoForm = useForm<OrderInfoFormValues>({
-    validationSchema: toTypedSchema(orderInfoSchema),
-    initialValues: {
-      userEmail: buyerInfo.value.email,
-      userName: buyerInfo.value.fullName,
-      setAsFirstVisitor: false,
-      visitors: [],
-    },
-    validateOnMount: false,
-  })
-
-  // ============================================================================
-  // Visitor Management
-  // ============================================================================
-
-  /**
-   * Create default visitor entry
-   */
-  const createDefaultVisitor = (index: number): VisitorInfo => ({
-    id: String(index + 1),
-    type: '',
-    name: '',
-    email: '',
-    phone: '',
-  })
-
   /**
    * Update visitors list based on total ticket quantity
    * Preserves existing visitor data when possible
@@ -272,135 +361,14 @@
     orderInfoForm.setFieldValue(FORM_FIELD_PATHS.VISITORS, newVisitors)
   }
 
-  // Computed: Get visitors from form values (single source of truth)
-  const formVisitors = computed(() => orderInfoForm.values.visitors as VisitorInfo[])
-
-  // Handler for visitor updates from Step2Section
+  /**
+   * Handler for visitor updates from Step2Section
+   */
   function handleVisitorsUpdate(updatedVisitors: VisitorInfo[]) {
     orderInfoForm.setFieldValue(FORM_FIELD_PATHS.VISITORS, updatedVisitors)
   }
 
-  // v-model binding for Step 2
-  const isFirstVisitor = computed({
-    get: () => orderInfoForm.values.setAsFirstVisitor,
-    set: value => orderInfoForm.setFieldValue(FORM_FIELD_PATHS.SET_AS_FIRST_VISITOR, value),
-  })
-
-  // Step 3: Payment Form
-
-  const paymentForm = useForm<PaymentFormValues>({
-    validationSchema: toTypedSchema(paymentSchema),
-    initialValues: {
-      agreedToTerms: false,
-      promoCode: '',
-    },
-    validateOnMount: false,
-  })
-
-  // v-model binding for Step 3
-  const termsAgreed = computed({
-    get: () => paymentForm.values.agreedToTerms,
-    set: value => paymentForm.setFieldValue(FORM_FIELD_PATHS.AGREED_TO_TERMS, value),
-  })
-
-  // ============================================================================
-  // Computed Values & Helpers
-  // ============================================================================
-
-  /**
-   * Get selected ticket quantities in simplified format
-   */
-  const selectedQuantities = computed(() =>
-    ticketSelectionForm.values.ticketQuantities.map(({ ticketId, quantity }) => ({
-      ticketId,
-      quantity,
-    })),
-  )
-
-  /**
-   * Calculate total ticket price
-   */
-  const ticketPrice = computed(() =>
-    ticketSelectionForm.values.ticketQuantities.reduce(
-      (sum, ticket) => sum + ticket.quantity * ticket.finalPrice,
-      0,
-    ),
-  )
-
-  /**
-   * Calculate total price including admin fee
-   */
-  const totalPrice = computed(() => ticketPrice.value + ADMIN_FEE)
-
-  /**
-   * Format total price as currency string
-   */
-  const formattedTotalPrice = computed(() => formatCurrency(totalPrice.value))
-
-  /**
-   * Generate order summary details string (e.g., "2 Adult • 1 Child")
-   */
-  const orderSummaryDetails = computed(() =>
-    ticketSelectionForm.values.ticketQuantities
-      .filter(ticket => ticket.quantity > 0)
-      .map(ticket => `${ticket.quantity} ${ticket.ticketName}`)
-      .join(' • '),
-  )
-
-  /**
-   * Get payment breakdown for display
-   */
-  const paymentBreakdown = computed<PaymentBreakdown>(() => ({
-    ticketPrice: ticketPrice.value,
-    adminFee: ADMIN_FEE,
-    total: totalPrice.value,
-  }))
-
-  /**
-   * Current step configuration
-   */
-  const currentStepConfig = computed(() => STEP_CONFIG[currentStep.value])
-
-  const headerTitle = computed(() => currentStepConfig.value.title)
-
-  const footerButtonText = computed(() => currentStepConfig.value.buttonText)
-
-  // Form validation
-  const isCurrentStepValid = computed(() => {
-    const form = stepFormMap.value[currentStep.value]
-    return form?.meta.value.valid ?? false
-  })
-
-  const isNextButtonDisabled = computed(() => !isCurrentStepValid.value)
-
-  // ============================================================================
-  // Step Navigation
-  // ============================================================================
-
-  /**
-   * Map of step to form instance
-   */
-  const stepFormMap = computed(() => ({
-    [BOOKING_STEPS.TICKET_SELECTION]: ticketSelectionForm,
-    [BOOKING_STEPS.ORDER_INFO]: orderInfoForm,
-    [BOOKING_STEPS.PAYMENT]: paymentForm,
-  }))
-
-  /**
-   * Get form instance for current step
-   */
-  const getCurrentStepForm = () => stepFormMap.value[currentStep.value] || null
-
-  /**
-   * Validate current step form
-   */
-  async function validateCurrentStep(): Promise<boolean> {
-    const form = getCurrentStepForm()
-    if (!form) return false
-
-    const result = await form.validate()
-    return result.valid
-  }
+  // Navigation Handlers
 
   /**
    * Navigate to previous step or back to previous page
@@ -417,14 +385,10 @@
    * Continue to next step or process payment
    */
   async function handleContinue() {
-    if (isNextButtonDisabled.value) {
-      return
-    }
+    if (isNextButtonDisabled.value) return
 
     const isValid = await validateCurrentStep()
-    if (!isValid) {
-      return
-    }
+    if (!isValid) return
 
     if (currentStep.value < TOTAL_STEPS) {
       currentStep.value++
@@ -433,11 +397,12 @@
     }
   }
 
-  // ============================================================================
   // Event Handlers
-  // ============================================================================
 
-  // TODO: Implement edit visitor modal
+  /**
+   * Handle edit visitor modal
+   * TODO: Implement edit visitor modal
+   */
   const handleEditVisitor = (visitorId: string) => {
     const visitor = formVisitors.value.find(v => v.id === visitorId)
     if (visitor) {
@@ -445,14 +410,15 @@
     }
   }
 
-  // TODO: Implement promo code modal
+  /**
+   * Handle promo code modal
+   * TODO: Implement promo code modal
+   */
   const handlePromoCode = () => {
     // Modal implementation pending
   }
 
-  // ============================================================================
-  // Data Transformation Helpers
-  // ============================================================================
+  // Data Transformation
 
   /**
    * Distribute visitors to tickets based on quantity
@@ -517,10 +483,11 @@
     return results.every(result => result.valid)
   }
 
-  // ============================================================================
   // Payment Processing
-  // ============================================================================
 
+  /**
+   * Process payment with validated booking data
+   */
   async function processPayment() {
     const isValid = await validateAllSteps()
 
