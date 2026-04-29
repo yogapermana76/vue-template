@@ -8,7 +8,7 @@
   import type { PaymentBreakdown } from '@/components/lifestyle/sections/order/LifestylePaymentInfoSection.vue'
   import type { VisitorInfo } from '@/components/lifestyle/sections/order/LifestyleOrderInfoSection.vue'
 
-  const VISITOR_LIST_TITLE = 'Informasi Pemesanan'
+  const VISITOR_LIST_TITLE = 'Informasi Pengunjung'
 
   export interface LifestyleBookingStep3SectionProps {
     /** List of visitors */

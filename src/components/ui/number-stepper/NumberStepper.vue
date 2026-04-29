@@ -59,17 +59,22 @@
   const containerClasses = computed(() => {
     return cn(
       // Base layout
-      'inline-flex flex-row items-center gap-2 p-1',
+      'inline-flex flex-row items-center',
+      // Spacing
+      'px-2 py-1 gap-2',
       // Sizing
-      'h-8',
+      'w-[104px] h-8',
       // Background & border
-      'bg-white border border-slate-200 rounded-xl',
+      'bg-white border border-slate-200 rounded-sm',
       // Disabled state
       props.disabled && 'opacity-50 cursor-not-allowed',
       // Custom classes
       props.class,
     )
   })
+
+  // IconButton custom styling
+  const iconButtonClasses = 'size-6 !p-0 !rounded-full [&_svg]:size-4'
 </script>
 
 <template>
@@ -77,28 +82,27 @@
     <IconButton
       variant="tertiary"
       size="sm"
+      :class="iconButtonClasses"
       :disabled="!canDecrement"
       title="Decrease"
       @click="handleDecrement"
     >
-      <Minus :size="16" class="text-neutral-600" />
+      <Minus class="text-neutral-600" />
     </IconButton>
 
-    <span
-      class="min-w-6 text-center text-sm leading-5 font-semibold text-slate-800 select-none"
-      data-slot="value"
-    >
+    <span class="body-m-semibold min-w-6 text-center text-slate-800 select-none" data-slot="value">
       {{ modelValue }}
     </span>
 
     <IconButton
       variant="tertiary"
       size="sm"
+      :class="iconButtonClasses"
       :disabled="!canIncrement"
       title="Increase"
       @click="handleIncrement"
     >
-      <Plus :size="16" class="text-neutral-600" />
+      <Plus class="text-neutral-600" />
     </IconButton>
   </div>
 </template>

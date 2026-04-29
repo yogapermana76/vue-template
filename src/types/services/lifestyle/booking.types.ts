@@ -11,11 +11,7 @@ import type { BaseResponse } from '@/types/common/base.types'
 
 /** Order information form for each visitor */
 export interface OrderInformationForm {
-  /** Visitor name */
-  name: string
-  /** Visitor NIK (ID number) - optional */
-  nik?: string
-  [key: string]: unknown // For dynamic form fields
+  [key: string]: string | undefined
 }
 
 /** Ticket order item */

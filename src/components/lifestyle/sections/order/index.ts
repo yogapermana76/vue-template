@@ -1,5 +1,9 @@
 export { default as LifestyleOrderInfoSection } from './LifestyleOrderInfoSection.vue'
-export type { LifestyleOrderInfoSectionProps, VisitorInfo } from './LifestyleOrderInfoSection.vue'
+export type {
+  LifestyleOrderInfoSectionProps,
+  VisitorInfo,
+  BuyerInfo,
+} from './LifestyleOrderInfoSection.vue'
 export { default as LifestylePaymentInfoSection } from './LifestylePaymentInfoSection.vue'
 export type {
   LifestylePaymentInfoSectionProps,

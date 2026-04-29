@@ -1,12 +1,14 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { TicketQuantitySelector } from '@/components/shared/ticket-quantity-selector'
-  import { getMockPricing } from '@/mocks/lifestyle/ticket-data'
+  import type { CategoryTicket } from '@/types/services/lifestyle/booking.types'
 
+  /**
+   * Available ticket option mapped from API CategoryTicket
+   */
   export interface AvailableTicketOption {
     ticketId: number
     ticketName: string
-    label: string
     price: number
     remainingQuota: number
   }
@@ -19,8 +21,12 @@
   export interface LifestyleTicketQuantitySectionProps {
     /** Section title */
     title?: string
-    /** Program/Event ID to fetch available tickets */
-    programId?: string
+    /** Program/Event ID */
+    programId: string
+    /** Selected ticket type/category ID */
+    selectedTicketTypeId: string | null
+    /** Selected visit date */
+    selectedDate: string | null
     /** Selected quantities from form */
     selectedQuantities: SelectedTicketQuantity[]
     /** Max total quantity across all ticket types */
@@ -32,37 +38,130 @@
     maxTotalQuantity: 5,
   })
 
-  defineEmits<{
-    'ticket-quantity-change': [ticketId: number, quantity: number]
+  const emit = defineEmits<{
+    'ticket-quantity-change': [
+      ticketId: number,
+      quantity: number,
+      ticketData: AvailableTicketOption,
+    ]
   }>()
 
-  // Fetch available tickets based on programId
-  // TODO: Replace with actual API call using composable
-  const pricing = getMockPricing()
-  const availableTickets: AvailableTicketOption[] = [
-    {
-      ticketId: 1,
-      ticketName: 'Adult',
-      label: 'Dewasa (16+ Tahun)',
-      price: pricing.adultPrice,
-      remainingQuota: 100,
-    },
-    {
-      ticketId: 2,
-      ticketName: 'Child',
-      label: 'Anak-Anak (3-15 Tahun)',
-      price: pricing.childPrice,
-      remainingQuota: 100,
-    },
-  ]
+  // ============================================================================
+  // API Integration - Fetch Available Tickets
+  // ============================================================================
 
-  // Merge available tickets with selected quantities
+  // TODO: Replace with actual API call using composable
+  // Example:
+  // const { data: availableTickets, isLoading } = useQuery({
+  //   queryKey: ['categoryTickets', props.programId, props.selectedTicketTypeId, props.selectedDate],
+  //   queryFn: () => lifestyleApi.getCategoryTickets({
+  //     programId: props.programId,
+  //     programCategoryId: props.selectedTicketTypeId,
+  //     visitDate: props.selectedDate,
+  //   }),
+  //   enabled: computed(() => !!props.selectedTicketTypeId && !!props.selectedDate),
+  // })
+
+  const availableTickets = ref<CategoryTicket[]>([
+    {
+      ticketId: 241,
+      ticketName: 'Regular Ticket',
+      programTicketCategoryId: 195,
+      startVisitDate: '2026-03-02',
+      startVisitTime: '10:00:00',
+      endVisitDate: '2026-04-30',
+      endVisitTime: '23:00:00',
+      saleStartDatetime: '2026-03-01T10:00:00',
+      saleEndDatetime: '2026-04-30T23:00:00',
+      priceDetail: {
+        basePrice: 50000,
+        partnershipCost: 0,
+        listingPrice: 50000,
+        platformCost: 0,
+        entertainmentTax: 0,
+        ppnTax: 0,
+        discountValue: 0,
+        discountCostType: null,
+        discount: 0,
+        finalPrice: 50000,
+      },
+      quota: 100,
+      quotaUsed: 1,
+      remainingQuota: 99,
+    },
+    {
+      ticketId: 246,
+      ticketName: 'VIP Ticket',
+      programTicketCategoryId: 195,
+      startVisitDate: '2026-03-02',
+      startVisitTime: '10:00:00',
+      endVisitDate: '2026-04-30',
+      endVisitTime: '23:00:00',
+      saleStartDatetime: '2026-04-01T10:00:00',
+      saleEndDatetime: '2026-04-30T23:00:00',
+      priceDetail: {
+        basePrice: 219500,
+        partnershipCost: 10000,
+        listingPrice: 190000,
+        platformCost: 10000,
+        entertainmentTax: 9500,
+        ppnTax: 10000,
+        discountValue: 0,
+        discountCostType: null,
+        discount: 0,
+        finalPrice: 219500,
+      },
+      quota: 10,
+      quotaUsed: 3,
+      remainingQuota: 7,
+    },
+  ])
+
+  // Watch for changes in ticket type or date to refetch tickets
+  watch(
+    () => [props.selectedTicketTypeId, props.selectedDate],
+    () => {
+      // TODO: Trigger API refetch when ticket type or date changes
+      // This will automatically update availableTickets
+    },
+  )
+
+  /**
+   * Map API tickets to internal format
+   */
+  const mappedTickets = computed<AvailableTicketOption[]>(() => {
+    return availableTickets.value.map(ticket => ({
+      ticketId: ticket.ticketId,
+      ticketName: ticket.ticketName,
+      price: ticket.priceDetail.finalPrice,
+      remainingQuota: ticket.remainingQuota,
+    }))
+  })
+
+  /**
+   * Merge available tickets with selected quantities
+   */
   const ticketsWithQuantities = computed(() => {
-    return availableTickets.map(ticket => ({
+    return mappedTickets.value.map(ticket => ({
       ...ticket,
       quantity: props.selectedQuantities.find(q => q.ticketId === ticket.ticketId)?.quantity || 0,
     }))
   })
+
+  /**
+   * Handle ticket quantity change
+   */
+  function handleQuantityChange(
+    ticket: AvailableTicketOption & { quantity: number },
+    newQuantity: number,
+  ) {
+    emit('ticket-quantity-change', ticket.ticketId, newQuantity, {
+      ticketId: ticket.ticketId,
+      ticketName: ticket.ticketName,
+      price: ticket.price,
+      remainingQuota: ticket.remainingQuota,
+    })
+  }
 </script>
 
 <template>
@@ -73,10 +172,10 @@
         v-for="ticket in ticketsWithQuantities"
         :key="ticket.ticketId"
         :model-value="ticket.quantity"
-        :label="ticket.label"
+        :label="ticket.ticketName"
         :price="ticket.price"
         :max="ticket.remainingQuota || maxTotalQuantity"
-        @update:model-value="$emit('ticket-quantity-change', ticket.ticketId, $event)"
+        @update:model-value="handleQuantityChange(ticket, $event)"
       />
     </div>
   </section>

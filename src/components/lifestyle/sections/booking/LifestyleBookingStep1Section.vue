@@ -33,11 +33,34 @@
 
   defineProps<LifestyleBookingStep1SectionProps>()
 
-  defineEmits<{
+  export interface TicketData {
+    ticketId: number
+    ticketName: string
+    price: number
+    remainingQuota: number
+  }
+
+  const emit = defineEmits<{
     'ticket-type-selected': [ticketTypeId: string]
     'date-selected': [date: string]
-    'ticket-quantity-changed': [ticketId: number, quantity: number]
+    'ticket-quantity-changed': [ticketId: number, quantity: number, ticketData: TicketData]
   }>()
+
+  const handleTicketTypeSelected = (ticketTypeId: string) => {
+    emit('ticket-type-selected', ticketTypeId)
+  }
+
+  const handleDateSelected = (date: string) => {
+    emit('date-selected', date)
+  }
+
+  const handleTicketQuantityChange = (
+    ticketId: number,
+    quantity: number,
+    ticketData: TicketData,
+  ) => {
+    emit('ticket-quantity-changed', ticketId, quantity, ticketData)
+  }
 </script>
 
 <template>
@@ -48,7 +71,7 @@
       <LifestyleTicketTypeSection
         :program-id="programId"
         :selected-id="selectedTicketTypeId"
-        @ticket-type-selected="id => $emit('ticket-type-selected', id)"
+        @ticket-type-selected="handleTicketTypeSelected"
       />
     </div>
 
@@ -58,7 +81,7 @@
       <LifestyleDateSelectionSection
         :program-id="programId"
         :selected-date="selectedDate"
-        @date-selected="date => $emit('date-selected', date)"
+        @date-selected="handleDateSelected"
       />
     </div>
 
@@ -67,10 +90,10 @@
     <div class="px-4">
       <LifestyleTicketQuantitySection
         :program-id="programId"
+        :selected-ticket-type-id="selectedTicketTypeId"
+        :selected-date="selectedDate"
         :selected-quantities="selectedQuantities"
-        @ticket-quantity-change="
-          (ticketId, quantity) => $emit('ticket-quantity-changed', ticketId, quantity)
-        "
+        @ticket-quantity-change="handleTicketQuantityChange"
       />
     </div>
 
