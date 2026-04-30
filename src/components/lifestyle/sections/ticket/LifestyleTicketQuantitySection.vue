@@ -23,8 +23,8 @@
     title?: string
     /** Program/Event ID */
     programId: string
-    /** Selected ticket type/category ID */
-    selectedTicketTypeId: string | null
+    /** Selected ticket category ID */
+    selectedTicketCategoryId: string | null
     /** Selected visit date */
     selectedDate: string | null
     /** Selected quantities from form */
@@ -117,11 +117,11 @@
     },
   ])
 
-  // Watch for changes in ticket type or date to refetch tickets
+  // Watch for changes in ticket category or date to refetch tickets
   watch(
-    () => [props.selectedTicketTypeId, props.selectedDate],
+    () => [props.selectedTicketCategoryId, props.selectedDate],
     () => {
-      // TODO: Trigger API refetch when ticket type or date changes
+      // TODO: Trigger API refetch when ticket category or date changes
       // This will automatically update availableTickets
     },
   )

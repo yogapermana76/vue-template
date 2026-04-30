@@ -5,16 +5,16 @@
   import { Check, CheckCircle2, ChevronDown } from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
 
-  export interface TicketTypeCardFeature {
+  export interface TicketCategorySelectionCardFeature {
     /** Feature text */
     text: string
   }
 
-  export interface TicketTypeCardProps {
-    /** Ticket type title (e.g., "Reguler", "VIP") */
+  export interface TicketCategorySelectionCardProps {
+    /** Ticket category title (e.g., "Testing Custom Code Tiket", "VIP Package") */
     title: string
-    /** Ticket features/inclusions list */
-    features: TicketTypeCardFeature[]
+    /** Ticket category features/inclusions list */
+    features: TicketCategorySelectionCardFeature[]
     /** Subtitle/description (e.g., "Apa yang didapatkan:") */
     subtitle?: string
     /** Detail link text */
@@ -29,7 +29,7 @@
     class?: HTMLAttributes['class']
   }
 
-  const props = withDefaults(defineProps<TicketTypeCardProps>(), {
+  const props = withDefaults(defineProps<TicketCategorySelectionCardProps>(), {
     subtitle: 'Apa yang didapatkan:',
     detailText: 'Lihat Detail',
     selected: false,

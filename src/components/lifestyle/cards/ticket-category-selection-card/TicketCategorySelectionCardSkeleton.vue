@@ -2,21 +2,21 @@
   import type { HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
 
-  export interface TicketTypeCardSkeletonProps {
+  export interface TicketCategorySelectionCardSkeletonProps {
     /** Number of feature items to show in skeleton */
     featureCount?: number
     /** Additional CSS classes */
     class?: HTMLAttributes['class']
   }
 
-  const props = withDefaults(defineProps<TicketTypeCardSkeletonProps>(), {
+  const props = withDefaults(defineProps<TicketCategorySelectionCardSkeletonProps>(), {
     featureCount: 2,
   })
 </script>
 
 <template>
   <div
-    data-slot="ticket-type-card-skeleton"
+    data-slot="ticket-category-selection-card-skeleton"
     :class="
       cn(
         'relative flex w-full max-w-82 animate-pulse flex-col gap-2 rounded-xl border border-slate-100 bg-white pt-3 pb-0',

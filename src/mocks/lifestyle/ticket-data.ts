@@ -3,7 +3,7 @@
  * TODO: Remove this file when API integration is ready
  */
 
-import type { TicketType } from '@/components/lifestyle/sections/ticket'
+import type { ProgramTicketCategory } from '@/components/lifestyle/sections/ticket'
 import type { VisitorInfo } from '@/components/lifestyle/sections/order'
 import type { DatePickerCardProps } from '@/components/lifestyle/cards/date-picker'
 import type { ProgramDetailData, TicketCategory } from '@/types/services/lifestyle/booking.types'
@@ -127,9 +127,11 @@ function getMockTicketCategories(): TicketCategory[] {
 // ============================================================================
 
 /**
- * Transform API ticket categories to UI TicketType format
+ * Transform API ticket categories to UI ProgramTicketCategory format
  */
-function transformTicketCategoriesToTicketTypes(categories: TicketCategory[]): TicketType[] {
+function transformTicketCategoriesToTicketTypes(
+  categories: TicketCategory[],
+): ProgramTicketCategory[] {
   return categories.map(category => ({
     id: String(category.programTicketCategoryId),
     title: category.ticketCategory,
@@ -198,7 +200,7 @@ export function getMockAvailableDates(): DatePickerCardProps[] {
   return transformVisitDatesToDatePicker(visitDates)
 }
 
-export function getMockTicketTypes(): TicketType[] {
+export function getMockProgramTicketCategories(): ProgramTicketCategory[] {
   const categories = getMockTicketCategories()
   return transformTicketCategoriesToTicketTypes(categories)
 }

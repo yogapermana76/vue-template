@@ -19,7 +19,7 @@
   import {
     getMockEventData,
     getMockAvailableDates,
-    getMockTicketTypes,
+    getMockProgramTicketCategories,
   } from '@/mocks/lifestyle/ticket-data'
 
   definePage({
@@ -40,7 +40,7 @@
   // Mock data (TODO: Replace with API integration)
   const eventData = ref(getMockEventData(eventId.value))
   const availableDates = ref(getMockAvailableDates())
-  const ticketTypes = ref(getMockTicketTypes())
+  const ticketTypes = ref(getMockProgramTicketCategories())
 
   // Selected date state
   const selectedDateIndex = ref(0)

@@ -2,7 +2,7 @@
   import { Divider } from '@/components/ui/divider'
   import { AlertBox } from '@/components/ui/alert'
   import {
-    LifestyleTicketTypeSection,
+    LifestyleTicketCategorySection,
     LifestyleDateSelectionSection,
     LifestyleTicketQuantitySection,
   } from '@/components/lifestyle/sections/ticket'
@@ -23,8 +23,8 @@
     programId: string
     /** Event title */
     eventTitle: string
-    /** Selected ticket type ID */
-    selectedTicketTypeId: string | null
+    /** Selected ticket category ID */
+    selectedTicketCategoryId: string | null
     /** Selected visit date (ISO format) */
     selectedDate: string | null
     /** Selected quantities from form state */
@@ -41,13 +41,13 @@
   }
 
   const emit = defineEmits<{
-    'ticket-type-selected': [ticketTypeId: string]
+    'ticket-category-selected': [ticketCategoryId: string]
     'date-selected': [date: string]
     'ticket-quantity-changed': [ticketId: number, quantity: number, ticketData: TicketData]
   }>()
 
-  const handleTicketTypeSelected = (ticketTypeId: string) => {
-    emit('ticket-type-selected', ticketTypeId)
+  const handleTicketCategorySelected = (ticketCategoryId: string) => {
+    emit('ticket-category-selected', ticketCategoryId)
   }
 
   const handleDateSelected = (date: string) => {
@@ -68,10 +68,10 @@
     <h1 class="heading-s px-4 text-slate-950">{{ eventTitle }}</h1>
 
     <div class="px-4">
-      <LifestyleTicketTypeSection
+      <LifestyleTicketCategorySection
         :program-id="programId"
-        :selected-id="selectedTicketTypeId"
-        @ticket-type-selected="handleTicketTypeSelected"
+        :selected-id="selectedTicketCategoryId"
+        @ticket-category-selected="handleTicketCategorySelected"
       />
     </div>
 
@@ -90,7 +90,7 @@
     <div class="px-4">
       <LifestyleTicketQuantitySection
         :program-id="programId"
-        :selected-ticket-type-id="selectedTicketTypeId"
+        :selected-ticket-category-id="selectedTicketCategoryId"
         :selected-date="selectedDate"
         :selected-quantities="selectedQuantities"
         @ticket-quantity-change="handleTicketQuantityChange"

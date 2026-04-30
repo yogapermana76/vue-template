@@ -8,12 +8,12 @@ export {
   type TicketCategoryCardSkeletonProps,
 } from './ticket-category-card'
 export {
-  TicketTypeCard,
-  TicketTypeCardSkeleton,
-  type TicketTypeCardProps,
-  type TicketTypeCardFeature,
-  type TicketTypeCardSkeletonProps,
-} from './ticket-type-card'
+  TicketCategorySelectionCard,
+  TicketCategorySelectionCardSkeleton,
+  type TicketCategorySelectionCardProps,
+  type TicketCategorySelectionCardFeature,
+  type TicketCategorySelectionCardSkeletonProps,
+} from './ticket-category-selection-card'
 export {
   PurchaseHistoryCard,
   PurchaseHistoryCardSkeleton,

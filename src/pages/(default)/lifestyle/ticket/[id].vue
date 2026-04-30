@@ -19,7 +19,7 @@
   import type { PaymentBreakdown, VisitorInfo } from '@/components/lifestyle/sections/order'
   import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
   import { useVoucherSelection, useBooking } from '@/composables/lifestyle'
-  import { getMockEventData, getMockTicketTypes } from '@/mocks/lifestyle/ticket-data'
+  import { getMockEventData, getMockProgramTicketCategories } from '@/mocks/lifestyle/ticket-data'
   import { formatCurrency } from '@/utils/currency'
   import { authStorage } from '@/utils/storage'
   import type { LifestyleCreateBookingRequest } from '@/types/services/lifestyle/booking.types'
@@ -157,7 +157,7 @@
 
   // Mock data (TODO: Replace with API integration)
   const eventData = ref(getMockEventData(eventId.value))
-  const ticketCategories = getMockTicketTypes()
+  const ticketCategories = getMockProgramTicketCategories()
 
   /**
    * Get buyer info from session storage
@@ -606,10 +606,10 @@
       v-if="currentStep === BOOKING_STEPS.TICKET_SELECTION"
       :program-id="eventId"
       :event-title="eventData.title"
-      :selected-ticket-type-id="String(ticketCategoryId)"
+      :selected-ticket-category-id="String(ticketCategoryId)"
       :selected-date="visitDate"
       :selected-quantities="selectedQuantities"
-      @ticket-type-selected="id => (ticketCategoryId = Number(id))"
+      @ticket-category-selected="id => (ticketCategoryId = Number(id))"
       @date-selected="date => (visitDate = date)"
       @ticket-quantity-changed="updateTicketQuantity"
     />
