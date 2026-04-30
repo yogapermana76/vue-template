@@ -4,6 +4,7 @@
   import { parseISO, format } from 'date-fns'
   import { id as idLocale } from 'date-fns/locale'
   import { cn } from '@/utils/cn'
+  import lightningGlow from '@/assets/vectors/lightning-glow-md.png'
 
   export interface DatePickerCardProps {
     /** Date string in any format (ISO, locale, etc.) */
@@ -39,21 +40,12 @@
    */
   const cardClasses = computed(() => {
     if (!props.available) {
-      return 'bg-slate-100 border-slate-200'
+      return 'bg-slate-100 border border-slate-200'
     }
     if (props.selected) {
-      return 'border-transparent shadow-[2px_2px_12px_rgba(0,162,185,0.12)]'
+      return 'bg-gradient-date-selected border-none shadow-[2px_2px_12px_rgba(0,162,185,0.12)]'
     }
-    return 'bg-white border-slate-200 hover:border-slate-300'
-  })
-
-  const cardStyle = computed(() => {
-    if (props.selected && props.available) {
-      return {
-        background: 'linear-gradient(180deg, #3D8BA8 0%, #2A7A9E 50%, #1D6B8F 100%)',
-      }
-    }
-    return undefined
+    return 'bg-white border border-slate-200 hover:border-slate-300'
   })
 
   const dayNameClasses = computed(() => {
@@ -102,15 +94,22 @@
   <button
     :class="
       cn(
-        'flex h-19.5 w-19.5 flex-col items-center justify-center gap-1 rounded-sm border p-2 px-3 transition-colors',
+        'relative flex h-19.5 w-19.5 flex-col items-center justify-center gap-1 overflow-hidden rounded-sm p-2 px-3 transition-colors',
         cardClasses,
         props.class,
       )
     "
-    :style="cardStyle"
     :disabled="!available"
     @click="onClick"
   >
+    <!-- Lightning Glow decoration for selected state -->
+    <img
+      v-if="selected && available"
+      :src="lightningGlow"
+      alt=""
+      class="pointer-events-none absolute -top-16 -right-8 h-34.75 w-21 -rotate-2 opacity-60"
+    />
+
     <!-- Day Name -->
     <span
       :class="
