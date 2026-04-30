@@ -6,7 +6,7 @@
   import lightningGlowImg from '@/assets/vectors/lightning-glow-lg.png'
   import ellipseGlowSvg from '@/assets/vectors/ellipse-glow.png'
 
-  type GradientVariant = 'navy' | 'cyan' | 'blue-cyan' | 'teal'
+  type GradientVariant = 'navy' | 'cyan' | 'blue-cyan' | 'teal' | 'voucher'
 
   interface Props {
     /**
@@ -49,6 +49,7 @@
       cyan: 'bg-gradient-cyan',
       'blue-cyan': 'bg-gradient-blue-cyan',
       teal: 'bg-gradient-teal',
+      voucher: 'bg-gradient-voucher',
     }
     return gradientMap[props.gradient]
   })

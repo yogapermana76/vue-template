@@ -660,6 +660,10 @@
     background: linear-gradient(to bottom, #04619f 0%, #177bad 30%, #12cbe4 70%);
   }
 
+  .bg-gradient-voucher {
+    background: linear-gradient(to bottom, #003557 0%, #0d5580 35%, #0c6594 70%, #0d6fa0 100%);
+  }
+
   .bg-gradient-date-selected {
     background: linear-gradient(to bottom, #004471 0%, #004979 30%, #0f79af 100%);
   }
