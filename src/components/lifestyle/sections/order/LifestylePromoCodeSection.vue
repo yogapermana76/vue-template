@@ -1,5 +1,8 @@
 <script setup lang="ts">
   import { ChevronRight } from 'lucide-vue-next'
+  import CouponIcon from '@/assets/icons/coupon.svg?component'
+  import EllipseGlowSm from '@/assets/vectors/ellipse-glow-sm.png'
+  import LightningGlowLg from '@/assets/vectors/lightning-glow-lg.png'
 
   defineEmits<{
     'apply-promo': []
@@ -9,33 +12,28 @@
 <template>
   <button
     type="button"
-    class="from-primary-600 to-primary-700 flex w-full items-center gap-3 rounded-lg bg-gradient-to-r p-3 transition-opacity hover:opacity-90"
+    class="relative flex h-13 w-full items-center gap-3 overflow-hidden rounded-lg bg-linear-to-b from-[#051D41] via-[#093552] to-[#0B283B] px-4 transition-all hover:opacity-90 active:scale-[0.98] active:opacity-80"
     @click="$emit('apply-promo')"
   >
+    <!-- Lightning Glow Decoration -->
+    <img :src="LightningGlowLg" alt="" class="pointer-events-none absolute -right-24 -bottom-20" />
+
+    <!-- Ellipse Glow Decoration -->
+    <img
+      :src="EllipseGlowSm"
+      alt=""
+      class="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2"
+    />
+
     <!-- Icon -->
-    <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white/20">
-      <svg
-        class="size-6 text-white"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <rect x="3" y="7" width="18" height="10" rx="2" />
-        <path d="M3 11h18" />
-        <path d="M7 15h.01" />
-        <path d="M11 15h2" />
-      </svg>
-    </div>
+    <CouponIcon />
 
     <!-- Text -->
-    <div class="flex flex-1 flex-col items-start gap-0.5">
+    <div class="relative z-10 flex flex-1 flex-col items-start gap-0.5">
       <span class="body-m-semibold text-white">Masukkan Kode Promo</span>
     </div>
 
     <!-- Chevron -->
-    <ChevronRight class="size-5 shrink-0 text-white" />
+    <ChevronRight class="relative z-10 size-5 shrink-0 text-white" />
   </button>
 </template>
