@@ -224,6 +224,7 @@ declare module 'vue' {
     TransactionHistorySection: typeof import('./../components/rewards/sections/history/TransactionHistorySection.vue')['default']
     TransitionedRouterView: typeof import('./../components/shared/TransitionedRouterView.vue')['default']
     VoucherCodesBottomSheet: typeof import('./../components/rewards/bottom-sheets/voucher-codes-bottom-sheet/VoucherCodesBottomSheet.vue')['default']
+    VoucherInputCard: typeof import('./../components/lifestyle/cards/voucher-input-card/VoucherInputCard.vue')['default']
     WinnerCard: typeof import('./../components/rewards/cards/winner-card/WinnerCard.vue')['default']
     WinnerCardSkeleton: typeof import('./../components/rewards/cards/winner-card/WinnerCardSkeleton.vue')['default']
     WinnerInfoCard: typeof import('./../components/rewards/cards/winner-info-card/WinnerInfoCard.vue')['default']
