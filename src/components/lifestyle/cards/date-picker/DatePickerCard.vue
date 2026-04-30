@@ -94,7 +94,7 @@
   <button
     :class="
       cn(
-        'relative flex h-19.5 w-19.5 flex-col items-center justify-center gap-1 overflow-hidden rounded-sm p-2 px-3 transition-colors',
+        'relative flex h-19.5 w-19.5 flex-col items-center justify-center gap-1 overflow-hidden rounded-sm p-2 px-3 transition-all active:scale-[0.98] active:opacity-80',
         cardClasses,
         props.class,
       )

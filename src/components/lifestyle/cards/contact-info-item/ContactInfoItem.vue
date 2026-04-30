@@ -22,7 +22,9 @@
   <Item
     :class="[
       'box-border flex min-h-15.5 w-full items-center gap-2 rounded-sm border border-neutral-200 bg-white p-3',
-      clickable ? 'cursor-pointer transition-colors hover:bg-neutral-50' : '',
+      clickable
+        ? 'cursor-pointer transition-all hover:bg-neutral-50 active:scale-[0.98] active:opacity-80'
+        : '',
     ]"
     @click="clickable ? $emit('click') : undefined"
   >

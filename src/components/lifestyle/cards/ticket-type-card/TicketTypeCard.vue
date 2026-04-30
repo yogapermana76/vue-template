@@ -83,7 +83,7 @@
         'relative flex w-full max-w-82 flex-col gap-2 rounded-sm pt-3 pb-0 transition-all',
         cardBorderClass,
         cardBackgroundClass,
-        selectable && 'cursor-pointer hover:shadow-sm',
+        selectable && 'cursor-pointer hover:shadow-sm active:scale-[0.98] active:opacity-80',
         props.class,
       )
     "
