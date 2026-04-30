@@ -22,7 +22,7 @@
     selectedId: string | null
   }
 
-  const props = defineProps<LifestyleTicketTypeSectionProps>()
+  defineProps<LifestyleTicketTypeSectionProps>()
 
   defineEmits<{
     'ticket-type-selected': [ticketTypeId: string]

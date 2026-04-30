@@ -60,7 +60,7 @@
   })
 
   const titleFontClass = computed(() => {
-    return props.selected ? 'font-bold text-base' : 'body-l-semibold'
+    return 'body-l font-bold'
   })
 
   const handleCardClick = () => {
@@ -133,13 +133,9 @@
           <div class="flex flex-col gap-1">
             <div v-for="(feature, index) in features" :key="index" class="flex items-center gap-1">
               <!-- Checkmark Icon -->
-              <Check class="text-primary-600 size-4 shrink-0" />
+              <Check class="text-primary-600 size-4 shrink-0" :stroke-width="4" />
               <!-- Feature Text -->
-              <span
-                :class="
-                  selected ? 'body-caption-medium text-slate-900' : 'body-caption text-slate-950'
-                "
-              >
+              <span class="body-caption-semibold text-slate-950">
                 {{ feature.text }}
               </span>
             </div>
