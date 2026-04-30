@@ -96,22 +96,34 @@
     return statsArray
   })
 
+  // Helper function to format term value (array or string)
+  const formatTermValue = (value: string | string[]) => {
+    return Array.isArray(value)
+      ? `<ol>${value.map(item => `<li>${item}</li>`).join('')}</ol>`
+      : value
+  }
+
+  // Helper function to generate terms and conditions content
+  const generateTermsContent = (termsCondition: { label: string; value: string | string[] }[]) => {
+    return termsCondition
+      .map(term => {
+        const labelHtml = term.label
+          ? `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>`
+          : ''
+        return `${labelHtml}${formatTermValue(term.value)}`
+      })
+      .join('')
+  }
+
   // Terms items - Single "Syarat dan Ketentuan" accordion containing all terms
   const termsItems = computed(() => {
     if (!lottery.value?.termsCondition || lottery.value.termsCondition.length === 0) return []
-
-    // Combine all terms into single content
-    const allTermsContent = lottery.value.termsCondition
-      .map(term => {
-        return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
-      })
-      .join('<div></div>') // Add spacing between multiple terms
 
     return [
       {
         id: 'terms-and-conditions',
         title: 'Syarat dan Ketentuan',
-        content: allTermsContent,
+        content: generateTermsContent(lottery.value.termsCondition),
       },
     ]
   })

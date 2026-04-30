@@ -130,7 +130,7 @@
   // Helper function to format term value (array or string)
   const formatTermValue = (value: string | string[]) => {
     return Array.isArray(value)
-      ? `<ol class="list-decimal pl-5 flex flex-col gap-2">${value.map(item => `<li class="pl-1">${item}</li>`).join('')}</ol>`
+      ? `<ol>${value.map(item => `<li>${item}</li>`).join('')}</ol>`
       : value
   }
 
