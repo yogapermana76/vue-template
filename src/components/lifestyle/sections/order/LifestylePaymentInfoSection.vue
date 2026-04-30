@@ -8,6 +8,7 @@
   export interface PaymentBreakdown {
     ticketPrice: number
     adminFee: number
+    discount?: number
     total: number
   }
 
@@ -21,7 +22,7 @@
   defineProps<LifestylePaymentInfoSectionProps>()
 
   const emit = defineEmits<{
-    'update:agreedToTerms': [value: boolean]
+    'update:agreed-to-terms': [value: boolean]
     'view-terms': []
   }>()
 </script>
@@ -45,6 +46,15 @@
         <span class="body-m text-slate-950">{{ formatCurrency(breakdown.adminFee) }}</span>
       </div>
 
+      <!-- Discount (if applicable) -->
+      <div
+        v-if="breakdown.discount && breakdown.discount > 0"
+        class="flex items-center justify-between gap-2"
+      >
+        <span class="body-m text-slate-700">Diskon Voucher</span>
+        <span class="body-m text-success-600">-{{ formatCurrency(breakdown.discount) }}</span>
+      </div>
+
       <!-- Divider -->
       <Divider variant="dashed" />
 
@@ -63,7 +73,7 @@
       <Checkbox
         id="terms-checkbox"
         :checked="agreedToTerms"
-        @update:checked="emit('update:agreedToTerms', $event)"
+        @update:checked="val => emit('update:agreed-to-terms', val === true)"
         class="mt-0.5"
       />
       <div class="flex flex-1 flex-col gap-1">

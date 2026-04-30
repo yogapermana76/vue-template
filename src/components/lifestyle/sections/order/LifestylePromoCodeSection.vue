@@ -1,12 +1,27 @@
 <script setup lang="ts">
-  import { ChevronRight } from 'lucide-vue-next'
+  import { ChevronRight, X } from 'lucide-vue-next'
+  import { Button } from '@/components/ui/button'
   import CouponIcon from '@/assets/icons/coupon.svg?component'
   import EllipseGlowSm from '@/assets/vectors/ellipse-glow-sm.png'
   import LightningGlowLg from '@/assets/vectors/lightning-glow-lg.png'
+  import type { SelectedVoucher } from '@/composables/lifestyle/useVoucherSelection'
 
-  defineEmits<{
+  export interface LifestylePromoCodeSectionProps {
+    /** Selected voucher data */
+    selectedVoucher?: SelectedVoucher | null
+  }
+
+  defineProps<LifestylePromoCodeSectionProps>()
+
+  const emit = defineEmits<{
     'apply-promo': []
+    'remove-voucher': []
   }>()
+
+  const handleRemoveVoucher = (event: Event) => {
+    event.stopPropagation()
+    emit('remove-voucher')
+  }
 </script>
 
 <template>
@@ -30,10 +45,27 @@
 
     <!-- Text -->
     <div class="relative z-10 flex flex-1 flex-col items-start gap-0.5">
-      <span class="body-m-semibold text-white">Masukkan Kode Promo</span>
+      <span v-if="!selectedVoucher" class="body-m-semibold text-white">Masukkan Kode Promo</span>
+      <template v-else>
+        <span class="body-caption text-white/80">Kode Promo Aktif</span>
+        <span class="body-m-semibold text-white">{{ selectedVoucher.title }}</span>
+      </template>
     </div>
 
-    <!-- Chevron -->
-    <ChevronRight class="relative z-10 size-5 shrink-0 text-white" />
+    <!-- Remove button (when voucher is selected) -->
+    <Button
+      v-if="selectedVoucher"
+      variant="tertiary"
+      size="xs"
+      layout="iconOnly"
+      is-dark-bg
+      class="relative z-10 size-7! rounded-full! bg-white/20! p-0! hover:bg-white/30! active:bg-white/25!"
+      @click="handleRemoveVoucher"
+    >
+      <X class="size-5 text-white!" stroke-width="2.5" />
+    </Button>
+
+    <!-- Chevron (when no voucher selected) -->
+    <ChevronRight v-else class="relative z-10 size-5 shrink-0 text-white" />
   </button>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch, onMounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useForm } from 'vee-validate'
   import { toTypedSchema } from '@vee-validate/zod'
@@ -18,9 +18,10 @@
   import type { TicketData } from '@/components/lifestyle/sections/booking'
   import type { PaymentBreakdown, VisitorInfo } from '@/components/lifestyle/sections/order'
   import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
+  import { useVoucherSelection, useBooking } from '@/composables/lifestyle'
   import { getMockEventData } from '@/mocks/lifestyle/ticket-data'
   import { formatCurrency } from '@/utils/currency'
-  import { authStorage } from '@/utils/storage/auth'
+  import { authStorage } from '@/utils/storage'
   import type { LifestyleCreateBookingRequest } from '@/types/services/lifestyle/booking.types'
 
   useSwiperStyles()
@@ -102,14 +103,26 @@
       id: z.string(),
       type: z.string(),
     })
-    .catchall(z.string().optional()) // Allow dynamic fields from API dengan tipe string | undefined
+    .catchall(z.string().optional())
 
-  const orderInfoSchema = z.object({
-    userEmail: z.string().email('Format email tidak valid'),
-    userName: z.string().min(1, 'Nama pengguna diperlukan'),
-    setAsFirstVisitor: z.boolean(),
-    visitors: z.array(visitorInfoSchema).min(1, 'Minimal 1 pengunjung harus diisi'),
-  })
+  const orderInfoSchema = z
+    .object({
+      userEmail: z.string().email('Format email tidak valid'),
+      userName: z.string().min(1, 'Nama pengguna diperlukan'),
+      setAsFirstVisitor: z.boolean(),
+      visitors: z.array(visitorInfoSchema).min(1, 'Minimal 1 pengunjung harus diisi'),
+    })
+    .refine(
+      data =>
+        data.visitors.every(({ id: _id, type: _type, ...fields }) => {
+          const entries = Object.values(fields)
+          return entries.length > 0 && entries.every(val => val && val.trim())
+        }),
+      {
+        message: 'Semua data pengunjung harus diisi lengkap',
+        path: ['visitors'],
+      },
+    )
 
   type OrderInfoFormValues = z.infer<typeof orderInfoSchema>
 
@@ -132,6 +145,9 @@
 
   const route = useRoute()
   const router = useRouter()
+
+  // Voucher selection composable
+  const { selectedVoucher, openVoucherSelection, clearVoucher } = useVoucherSelection()
 
   // Event ID dari route params
   const eventId = computed(() => {
@@ -235,6 +251,20 @@
     [BOOKING_STEPS.PAYMENT]: paymentForm,
   }))
 
+  // Booking state persistence
+  const { restore, clear } = useBooking({
+    eventId,
+    currentStep,
+    forms: {
+      ticketSelection: ticketSelectionForm,
+      orderInfo: orderInfoForm,
+      payment: paymentForm,
+    },
+  })
+
+  // Restore saved state on mount
+  onMounted(restore)
+
   // Step configuration
   const currentStepConfig = computed(() => STEP_CONFIG[currentStep.value])
   const headerTitle = computed(() => currentStepConfig.value.title)
@@ -256,8 +286,34 @@
     ),
   )
 
-  const totalPrice = computed(() => ticketPrice.value + ADMIN_FEE)
-  const formattedTotalPrice = computed(() => formatCurrency(totalPrice.value))
+  // Voucher discount calculation
+  const voucherDiscount = computed(() => {
+    if (!selectedVoucher.value) return 0
+
+    if (selectedVoucher.value.discountAmount) {
+      return selectedVoucher.value.discountAmount
+    }
+
+    if (selectedVoucher.value.discountPercentage) {
+      return Math.floor(ticketPrice.value * (selectedVoucher.value.discountPercentage / 100))
+    }
+
+    return 0
+  })
+
+  const totalPrice = computed(() => {
+    const subtotal = ticketPrice.value + ADMIN_FEE
+    return Math.max(0, subtotal - voucherDiscount.value)
+  })
+
+  const displayPrice = computed(() => {
+    if (currentStep.value === BOOKING_STEPS.PAYMENT) {
+      return totalPrice.value
+    }
+    return ticketPrice.value
+  })
+
+  const formattedDisplayPrice = computed(() => formatCurrency(displayPrice.value))
 
   // Order summary
   const orderSummaryDetails = computed(() =>
@@ -270,6 +326,7 @@
   const paymentBreakdown = computed<PaymentBreakdown>(() => ({
     ticketPrice: ticketPrice.value,
     adminFee: ADMIN_FEE,
+    discount: voucherDiscount.value,
     total: totalPrice.value,
   }))
 
@@ -281,33 +338,30 @@
 
   const isNextButtonDisabled = computed(() => !isCurrentStepValid.value)
 
+  // Watch for voucher selection changes and sync to payment form
+  watch(selectedVoucher, newVoucher => {
+    if (newVoucher) {
+      paymentForm.setFieldValue('promoCode', newVoucher.code)
+    } else {
+      paymentForm.setFieldValue('promoCode', '')
+    }
+  })
+
   // Helper Functions
 
-  /**
-   * Calculate total ticket quantity
-   */
   const getTotalTicketQuantity = (quantities: TicketSelectionFormValues['ticketQuantities']) =>
     quantities.reduce((sum, ticket) => sum + ticket.quantity, 0)
 
-  /**
-   * Create default visitor entry
-   */
-  const createDefaultVisitor = (index: number): VisitorInfo => ({
-    id: String(index + 1),
-    type: '',
+  const createDefaultVisitor = (index: number, ticketType: string = ''): VisitorInfo => ({
+    id: `visitor-${Date.now()}-${index}`,
+    type: ticketType,
     name: '',
     email: '',
     phone: '',
   })
 
-  /**
-   * Get form instance for current step
-   */
   const getCurrentStepForm = () => stepFormMap.value[currentStep.value] || null
 
-  /**
-   * Validate current step form
-   */
   async function validateCurrentStep(): Promise<boolean> {
     const form = getCurrentStepForm()
     if (!form) return false
@@ -316,11 +370,6 @@
     return result.valid
   }
 
-  // Ticket & Visitor Management
-
-  /**
-   * Update ticket quantity and sync visitor list
-   */
   function updateTicketQuantity(ticketId: number, quantity: number, ticketData: TicketData) {
     const quantities = [...ticketSelectionForm.values.ticketQuantities]
     const existingIndex = quantities.findIndex(t => t.ticketId === ticketId)
@@ -341,22 +390,26 @@
     updateVisitorsList(getTotalTicketQuantity(quantities))
   }
 
-  /**
-   * Update visitors list based on total ticket quantity
-   * Preserves existing visitor data when possible
-   */
   function updateVisitorsList(totalQuantity: number) {
     const currentVisitors = orderInfoForm.values.visitors
 
     if (totalQuantity === currentVisitors.length) return
 
-    const newVisitors =
-      totalQuantity === 0
-        ? []
-        : Array.from(
-            { length: totalQuantity },
-            (_, i) => currentVisitors[i] || createDefaultVisitor(i),
-          )
+    if (totalQuantity === 0) {
+      orderInfoForm.setFieldValue(FORM_FIELD_PATHS.VISITORS, [])
+      return
+    }
+
+    const visitorTypes = ticketSelectionForm.values.ticketQuantities.flatMap(ticket =>
+      Array(ticket.quantity).fill(ticket.ticketName),
+    )
+
+    const newVisitors = Array.from({ length: totalQuantity }, (_, i) => {
+      const existing = currentVisitors[i]
+      const ticketType = visitorTypes[i] || ''
+
+      return existing?.type === ticketType ? existing : createDefaultVisitor(i, ticketType)
+    })
 
     orderInfoForm.setFieldValue(FORM_FIELD_PATHS.VISITORS, newVisitors)
   }
@@ -412,10 +465,9 @@
 
   /**
    * Handle promo code modal
-   * TODO: Implement promo code modal
    */
   const handlePromoCode = () => {
-    // Modal implementation pending
+    openVoucherSelection()
   }
 
   // Data Transformation
@@ -502,6 +554,10 @@
     // TODO: Call booking API with bookingData
     // eslint-disable-next-line no-console
     console.log('Process payment with validated data:', bookingData)
+
+    // Clear saved state after successful payment
+    clear()
+    clearVoucher()
   }
 </script>
 
@@ -560,8 +616,10 @@
       :visitors="formVisitors"
       :payment-breakdown="paymentBreakdown"
       :terms-agreed="termsAgreed"
+      :selected-voucher="selectedVoucher"
       @update:terms-agreed="termsAgreed = $event"
       @apply-promo="handlePromoCode"
+      @remove-voucher="clearVoucher"
     />
   </main>
 
@@ -571,10 +629,14 @@
       <!-- Price Section -->
       <div class="flex flex-1 flex-col items-start gap-0">
         <Button variant="tertiary" size="xs" class="h-auto w-full justify-between p-0">
-          <span class="body-l-semibold text-primary-600">{{ formattedTotalPrice }}</span>
+          <span class="body-l-semibold text-primary-600">{{ formattedDisplayPrice }}</span>
           <ChevronDown class="size-4 text-slate-950" />
         </Button>
-        <span class="body-caption text-slate-950">Belum termasuk pajak</span>
+        <span class="body-caption text-slate-950">
+          {{
+            currentStep < BOOKING_STEPS.PAYMENT ? 'Total pembelian tiket' : 'Belum termasuk pajak'
+          }}
+        </span>
       </div>
 
       <!-- Action Button -->

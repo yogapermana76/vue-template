@@ -42,6 +42,7 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/eco-journey-points/terms-and-conditions'
       | '/(default)/lifestyle/[id]'
       | '/(default)/lifestyle/ticket/[id]'
+      | '/(default)/lifestyle/vouchers'
       | '/(default)/rewards/catalog/[id]'
       | '/(default)/rewards/complete-address'
       | '/(default)/rewards/fyi/[id]'
@@ -121,6 +122,13 @@ declare module 'vue-router/auto-routes' {
       '/lifestyle/ticket/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | never
+    >,
+    '/(default)/lifestyle/vouchers': RouteRecordInfo<
+      '/(default)/lifestyle/vouchers',
+      '/lifestyle/vouchers',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     '/(default)/rewards/catalog/[id]': RouteRecordInfo<
@@ -292,6 +300,7 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/eco-journey-points/terms-and-conditions'
         | '/(default)/lifestyle/[id]'
         | '/(default)/lifestyle/ticket/[id]'
+        | '/(default)/lifestyle/vouchers'
         | '/(default)/rewards/catalog/[id]'
         | '/(default)/rewards/complete-address'
         | '/(default)/rewards/fyi/[id]'
@@ -362,6 +371,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(default)/lifestyle/ticket/[id].vue': {
       routes:
         | '/(default)/lifestyle/ticket/[id]'
+      views:
+        | never
+    }
+    'src/pages/(default)/lifestyle/vouchers.vue': {
+      routes:
+        | '/(default)/lifestyle/vouchers'
       views:
         | never
     }
