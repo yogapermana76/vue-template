@@ -4,7 +4,7 @@
   import { cn } from '@/utils/cn'
   import { CircleCheck, CirclePercent, Ticket, ThumbsUp } from 'lucide-vue-next'
 
-  export type FlagVariant = 'primary' | 'success' | 'danger' | 'info'
+  export type FlagVariant = 'primary' | 'success' | 'danger' | 'info' | 'neutral'
   export type FlagSize = 'sm' | 'md'
   export type FlagIcon = 'check' | 'discount' | 'ticket' | 'thumbs-up'
 
@@ -42,6 +42,7 @@
     success: 'bg-success-500 text-white',
     danger: 'bg-error-500 text-white',
     info: 'bg-info-500 text-white',
+    neutral: 'bg-slate-300 text-white',
   }
 
   const sizeClasses: Record<FlagSize, string> = {
@@ -60,6 +61,7 @@
     success: 'fill-success-700',
     danger: 'fill-error-700',
     info: 'fill-info-700',
+    neutral: 'fill-slate-700',
   }
 </script>
 

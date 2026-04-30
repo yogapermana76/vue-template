@@ -223,6 +223,7 @@ declare module 'vue' {
     TooltipTrigger: typeof import('./../components/ui/tooltip/TooltipTrigger.vue')['default']
     TransactionHistorySection: typeof import('./../components/rewards/sections/history/TransactionHistorySection.vue')['default']
     TransitionedRouterView: typeof import('./../components/shared/TransitionedRouterView.vue')['default']
+    VoucherCard: typeof import('./../components/lifestyle/cards/voucher-card/VoucherCard.vue')['default']
     VoucherCodesBottomSheet: typeof import('./../components/rewards/bottom-sheets/voucher-codes-bottom-sheet/VoucherCodesBottomSheet.vue')['default']
     VoucherInputCard: typeof import('./../components/lifestyle/cards/voucher-input-card/VoucherInputCard.vue')['default']
     WinnerCard: typeof import('./../components/rewards/cards/winner-card/WinnerCard.vue')['default']
