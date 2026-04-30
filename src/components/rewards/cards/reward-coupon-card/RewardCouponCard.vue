@@ -8,7 +8,7 @@
   import { Divider } from '@/components/ui/divider'
   import { Image } from '@/components/ui'
   import CoinIcon from '@/assets/icons/coin.svg?component'
-  import EllipseSvg from '@/assets/icons/ellipse.svg?component'
+  import EllipseSvg from '@/assets/vectors/circle.svg?component'
 
   type FlagIcon = 'check' | 'discount' | 'ticket' | 'thumbs-up'
 
