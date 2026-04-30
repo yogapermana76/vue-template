@@ -19,7 +19,7 @@
   import type { PaymentBreakdown, VisitorInfo } from '@/components/lifestyle/sections/order'
   import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
   import { useVoucherSelection, useBooking } from '@/composables/lifestyle'
-  import { getMockEventData } from '@/mocks/lifestyle/ticket-data'
+  import { getMockEventData, getMockTicketTypes } from '@/mocks/lifestyle/ticket-data'
   import { formatCurrency } from '@/utils/currency'
   import { authStorage } from '@/utils/storage'
   import type { LifestyleCreateBookingRequest } from '@/types/services/lifestyle/booking.types'
@@ -157,6 +157,7 @@
 
   // Mock data (TODO: Replace with API integration)
   const eventData = ref(getMockEventData(eventId.value))
+  const ticketCategories = getMockTicketTypes()
 
   /**
    * Get buyer info from session storage
@@ -226,6 +227,13 @@
   const visitDate = computed({
     get: () => ticketSelectionForm.values.visitDate,
     set: (value: string) => ticketSelectionForm.setFieldValue(FORM_FIELD_PATHS.VISIT_DATE, value),
+  })
+
+  // Get selected ticket category name
+  const selectedTicketCategoryName = computed(() => {
+    const categoryId = ticketSelectionForm.values.selectedTicketCategoryId
+    const category = ticketCategories.find(cat => cat.id === String(categoryId))
+    return category?.title || ''
   })
 
   // Step 2 bindings
@@ -316,12 +324,19 @@
   const formattedDisplayPrice = computed(() => formatCurrency(displayPrice.value))
 
   // Order summary
-  const orderSummaryDetails = computed(() =>
-    ticketSelectionForm.values.ticketQuantities
-      .filter(ticket => ticket.quantity > 0)
+  const orderSummaryDetails = computed(() => {
+    const tickets = ticketSelectionForm.values.ticketQuantities.filter(
+      ticket => ticket.quantity > 0,
+    )
+    if (tickets.length === 0) return ''
+
+    const ticketDetails = tickets
       .map(ticket => `${ticket.quantity} ${ticket.ticketName}`)
-      .join(' • '),
-  )
+      .join(' • ')
+    const categoryName = selectedTicketCategoryName.value
+
+    return categoryName ? `${categoryName} • ${ticketDetails}` : ticketDetails
+  })
 
   const paymentBreakdown = computed<PaymentBreakdown>(() => ({
     ticketPrice: ticketPrice.value,
