@@ -6,16 +6,16 @@ export {
   DatePickerCardSkeleton,
   TicketCategoryCard,
   TicketCategoryCardSkeleton,
-  TicketTypeCard,
-  TicketTypeCardSkeleton,
+  TicketCategorySelectionCard,
+  TicketCategorySelectionCardSkeleton,
   type EventCardProps,
   type DatePickerCardProps,
   type TicketCategoryCardProps,
   type TicketCategoryCardBenefit,
   type TicketCategoryCardSkeletonProps,
-  type TicketTypeCardProps,
-  type TicketTypeCardFeature,
-  type TicketTypeCardSkeletonProps,
+  type TicketCategorySelectionCardProps,
+  type TicketCategorySelectionCardFeature,
+  type TicketCategorySelectionCardSkeletonProps,
 } from './cards'
 
 // ContactInfoItem
