@@ -5,16 +5,12 @@
 
 export type {
   BaseResponse,
-  LegacyResponse,
   PaginationParams,
   PaginatedData,
   PaginatedResponse,
   ApiErrorData,
   ApiErrorResponse,
   BusinessError,
-  ReceivedInfo,
-  AddressInfo,
-  FullAddress,
   Nullable,
   Optional,
   MaybeRef,

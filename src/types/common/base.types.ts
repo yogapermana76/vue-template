@@ -18,15 +18,6 @@ export interface BaseResponse<T = unknown> {
   time?: string
 }
 
-/**
- * Legacy response format (without success field)
- */
-export interface LegacyResponse<T = unknown> {
-  code: string
-  msg: string | null
-  data: T
-}
-
 // ============================================
 // Pagination Types
 // ============================================
@@ -81,31 +72,6 @@ export interface BusinessError<T = unknown> {
   response?: {
     data: T
   }
-}
-
-// ============================================
-// Common Field Types
-// ============================================
-
-export interface ReceivedInfo {
-  fullname: string
-  email?: string
-  noHp: string
-}
-
-export interface AddressInfo {
-  provinceId: number
-  provinceName: string
-  cityId: number
-  cityName: string
-  districtId: number
-  districtName: string
-  address: string
-  postalCode: string
-}
-
-export interface FullAddress extends AddressInfo {
-  receivedInfo: ReceivedInfo
 }
 
 // ============================================

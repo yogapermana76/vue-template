@@ -3,7 +3,7 @@
  * Types for authentication and user profile
  */
 
-import type { BaseResponse, LegacyResponse } from '../common/base.types'
+import type { BaseResponse } from '../common/base.types'
 
 // ============================================
 // User Entity
@@ -90,9 +90,6 @@ export interface LoginBasicData {
 export type SyncAccountResponse = BaseResponse<AuthData>
 export type LoginBasicResponse = BaseResponse<LoginBasicData>
 export type UserProfileResponse = BaseResponse<UserProfile>
-
-// Legacy response format
-export type LegacyAuthResponse = LegacyResponse<AuthData>
 
 // ============================================
 // Auth State
