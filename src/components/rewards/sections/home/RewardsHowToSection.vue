@@ -24,18 +24,21 @@
 
   // Responsive breakpoints for slides per view
   const breakpoints = [
-    { query: '(min-width: 340px) and (max-width: 344px)', value: 2.05 },
-    { query: '(max-width: 360px)', value: 2.15 },
-    { query: '(max-width: 375px)', value: 2.27 },
-    { query: '(max-width: 390px)', value: 2.3 },
-    { query: '(max-width: 414px)', value: 2.5 },
-    { query: '(max-width: 430px)', value: 2.6 },
-    { query: '(max-width: 540px)', value: 3.3 },
+    { query: '(max-width: 320px)', value: 1.9 },
+    { query: '(min-width: 321px) and (max-width: 344px)', value: 2.05 },
+    { query: '(min-width: 345px) and (max-width: 360px)', value: 2.15 },
+    { query: '(min-width: 361px) and (max-width: 375px)', value: 2.27 },
+    { query: '(min-width: 376px) and (max-width: 390px)', value: 2.3 },
+    { query: '(min-width: 391px) and (max-width: 414px)', value: 2.5 },
+    { query: '(min-width: 415px) and (max-width: 430px)', value: 2.6 },
+    { query: '(min-width: 431px) and (max-width: 540px)', value: 3.3 },
     { query: '(min-width: 541px) and (max-width: 768px)', value: 4.7 },
     { query: '(min-width: 769px) and (max-width: 820px)', value: 5 },
     { query: '(min-width: 821px) and (max-width: 853px)', value: 5.2 },
     { query: '(min-width: 854px) and (max-width: 912px)', value: 5.7 },
-    { query: '(min-width: 913px)', value: 5.0 },
+    { query: '(min-width: 913px) and (max-width: 1023px)', value: 6.0 },
+    { query: '(min-width: 1024px) and (max-width: 1279px)', value: 6.5 },
+    { query: '(min-width: 1280px)', value: 5.0 },
   ].map(bp => ({ matches: useMediaQuery(bp.query), value: bp.value }))
 
   const slidesPerView = computed(() => {
