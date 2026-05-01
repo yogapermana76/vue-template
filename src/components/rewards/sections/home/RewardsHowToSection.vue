@@ -17,26 +17,30 @@
   useSwiperStyles()
 
   const router = useRouter()
-  const isExtraSmallScreen = useMediaQuery('(max-width: 374px)')
-  const isSmallScreen = useMediaQuery('(max-width: 424px)')
-  const isLargeScreen = useMediaQuery('(min-width: 768px)')
   const { isDesktop, responsiveMaxWidth } = useResponsiveMaxWidth()
 
   const { data: fyiData, isPending, isError } = useFYI()
-
   const fyiItems = computed(() => (fyiData.value?.data ?? []) as FYIItem[])
 
-  const slidesPerView = computed(() => {
-    // Desktop with maxWidth constraint (simulating mobile-like container)
-    if (isDesktop.value && responsiveMaxWidth.value) {
-      return 2.6
-    }
+  // Responsive breakpoints for slides per view
+  const breakpoints = [
+    { query: '(min-width: 340px) and (max-width: 344px)', value: 2.05 },
+    { query: '(max-width: 360px)', value: 2.15 },
+    { query: '(max-width: 375px)', value: 2.27 },
+    { query: '(max-width: 390px)', value: 2.3 },
+    { query: '(max-width: 414px)', value: 2.5 },
+    { query: '(max-width: 430px)', value: 2.6 },
+    { query: '(max-width: 540px)', value: 3.3 },
+    { query: '(min-width: 541px) and (max-width: 768px)', value: 4.7 },
+    { query: '(min-width: 769px) and (max-width: 820px)', value: 5 },
+    { query: '(min-width: 821px) and (max-width: 853px)', value: 5.2 },
+    { query: '(min-width: 854px) and (max-width: 912px)', value: 5.7 },
+    { query: '(min-width: 913px)', value: 5.0 },
+  ].map(bp => ({ matches: useMediaQuery(bp.query), value: bp.value }))
 
-    // Mobile/Tablet breakpoints
-    if (isExtraSmallScreen.value) return 2
-    if (isSmallScreen.value) return 2.3
-    if (isLargeScreen.value) return 4.8
-    return 2.6
+  const slidesPerView = computed(() => {
+    if (isDesktop.value && responsiveMaxWidth.value) return 2.6
+    return breakpoints.find(bp => bp.matches.value)?.value ?? 2.6
   })
 
   const handleInfoCardClick = (item: FYIItem) => {

@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { ArrowRight } from 'lucide-vue-next'
-  import TrophyIllustration from '@/assets/illustrations/trophy.svg?component'
+  import { Image } from '@/components/ui/image'
   import { cn } from '@/utils/cn'
   import ellipseLightImg from '@/assets/vectors/ellipse-lightning.png'
   import lightningGlowSmImg from '@/assets/vectors/lightning-glow-sm.png'
+  import trophyImg from '@/assets/illustrations/trophy.png'
 
   export interface WinnerInfoCardProps {
     /** Card title */
@@ -58,9 +59,14 @@
     </div>
 
     <!-- Trophy Icon -->
-    <div class="relative z-10 flex size-12 shrink-0 items-center justify-center">
-      <TrophyIllustration class="size-12" />
-    </div>
+    <Image
+      :src="trophyImg"
+      alt="Trophy"
+      :lazy="false"
+      object-fit="contain"
+      loading-strategy="none"
+      container-class="size-12 !bg-transparent"
+    />
 
     <!-- Content -->
     <div class="relative z-10 ml-3 flex flex-1 flex-col items-start gap-0.5 text-left">
