@@ -14,7 +14,6 @@ export type {
   SyncAccountResponse,
   LoginBasicResponse,
   UserProfileResponse,
-  LegacyAuthResponse,
   AuthState,
   AuthQueryParams,
 } from './auth.types'
@@ -67,6 +66,9 @@ export type {
 
 // Reward
 export type {
+  ReceivedInfo,
+  AddressInfo,
+  FullAddress,
   Reward,
   RewardCategory,
   RewardDetail,

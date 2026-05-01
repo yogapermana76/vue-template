@@ -6,11 +6,11 @@
 import type {
   BaseResponse,
   PaginatedData,
-  FullAddress,
   MaybeRef,
   BaseComposableParams,
   PaginationOnly,
 } from '../common/base.types'
+import type { FullAddress } from './reward.types'
 
 // ============================================
 // Lottery Entities

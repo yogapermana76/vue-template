@@ -6,11 +6,35 @@
 import type {
   BaseResponse,
   PaginatedData,
-  FullAddress,
   MaybeRef,
   BaseComposableParams,
   PaginationOnly,
 } from '../common/base.types'
+
+// ============================================
+// Address & Recipient Info
+// ============================================
+
+export interface ReceivedInfo {
+  fullname: string
+  email?: string
+  noHp: string
+}
+
+export interface AddressInfo {
+  provinceId: number
+  provinceName: string
+  cityId: number
+  cityName: string
+  districtId: number
+  districtName: string
+  address: string
+  postalCode: string
+}
+
+export interface FullAddress extends AddressInfo {
+  receivedInfo: ReceivedInfo
+}
 
 // ============================================
 // Reward Entities
