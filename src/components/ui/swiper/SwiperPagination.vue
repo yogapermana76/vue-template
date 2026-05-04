@@ -9,10 +9,13 @@
     class?: HTMLAttributes['class']
     /** Variant for different bullet styles */
     variant?: 'default' | 'large' | 'small'
+    /** Color variant */
+    color?: 'white' | 'primary'
   }
 
   const props = withDefaults(defineProps<SwiperPaginationProps>(), {
     variant: 'default',
+    color: 'white',
   })
 </script>
 
@@ -21,6 +24,7 @@
     :id="id"
     :class="cn('swiper-pagination-container flex justify-start gap-1', props.class)"
     :data-variant="variant"
+    :data-color="color"
     data-swiper-pagination
   ></div>
 </template>
@@ -34,7 +38,7 @@
     opacity: 0.4;
     border-radius: 9999px;
     transition: all 200ms ease-in-out;
-    margin: 0 0.125rem;
+    margin: 0 !important;
   }
 
   .swiper-pagination-container :deep(.swiper-pagination-bullet-active) {
@@ -60,5 +64,10 @@
 
   .swiper-pagination-container[data-variant='small'] :deep(.swiper-pagination-bullet-active) {
     width: 1.5rem;
+  }
+
+  /* Primary color variant */
+  .swiper-pagination-container[data-color='primary'] :deep(.swiper-pagination-bullet) {
+    background-color: var(--color-primary-600);
   }
 </style>

@@ -2,17 +2,28 @@
   import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
+  import { Check, Clock } from 'lucide-vue-next'
   import {
     ScrollablePillTabs,
     ScrollablePillTabsSkeleton,
     type PillTabItem,
   } from '@/components/ui/pill-tab'
-  import { RewardCouponCard, RewardCouponCardSkeleton } from '@/components/rewards'
+  import {
+    RewardCouponCard,
+    RewardCouponCardSkeleton,
+    VoucherCodesBottomSheet,
+  } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
-  import { useVoucherPagesInfinite, useVoucherCategories } from '@/composables/services'
+  import {
+    useVoucherPagesInfinite,
+    useVoucherCategories,
+    useVoucherCategoryFilter,
+    useVoucherDetailsPages,
+  } from '@/composables/services'
   import type { Voucher } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
+  import { formatDate } from '@/utils/date'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
@@ -20,27 +31,8 @@
   // Fetch voucher categories
   const { data: categoriesData, isPending: isCategoriesPending } = useVoucherCategories()
 
-  // Get first enabled category ID as default, or null for "Semua"
-  const defaultCategoryId = computed(() => {
-    // Return null to show "Semua" as default (no filter)
-    return null
-  })
-
-  const activeCategoryId = ref<number | null>(null)
-
-  // Set default category when categories load
-  watch(
-    defaultCategoryId,
-    newDefaultId => {
-      if (newDefaultId !== null && activeCategoryId.value === null) {
-        activeCategoryId.value = newDefaultId
-      }
-    },
-    { immediate: true },
-  )
-
-  // Convert null to undefined for API call (MaybeRef<number | undefined>)
-  const categoryIdForApi = computed(() => activeCategoryId.value ?? undefined)
+  // Use shared category filter state
+  const { categoryIdForApi, activeFilterKey } = useVoucherCategoryFilter()
 
   // Fetch user vouchers with infinite scroll
   const {
@@ -97,19 +89,60 @@
     return pills
   })
 
-  // Active filter key for ScrollablePillTabs (string-based v-model)
-  const activeFilterKey = computed({
-    get: () => (activeCategoryId.value !== null ? String(activeCategoryId.value) : 'all'),
-    set: (value: string) => {
-      activeCategoryId.value = value === 'all' ? null : Number(value)
+  // Codenames that require showing voucher code in bottomsheet
+  const voucherCodeSheetCodenames = ['general_voucher_code', 'ultra_voucher', 'raw_voucher']
+
+  // State for voucher code bottomsheet
+  const showVoucherCodeSheet = ref(false)
+  const selectedVoucherData = ref<Voucher | null>(null)
+
+  // State for fetching single voucher code when availableQuota === 1
+  const voucherIdToFetch = ref<number | undefined>()
+
+  // Fetch single voucher code detail when availableQuota === 1
+  const { data: voucherCodeData } = useVoucherDetailsPages({
+    query: {
+      voucherId: computed(() => voucherIdToFetch.value),
+      page: 0,
+      size: 1,
+    },
+    options: {
+      enabled: computed(() => voucherIdToFetch.value !== undefined),
     },
   })
 
-  const handleVoucherClick = (voucherId: string) => {
-    router.push({
-      path: `/rewards/my-rewards/${voucherId}`,
-      query: { type: 'voucher' },
-    })
+  // Watch for voucher code and auto-redirect
+  watch(
+    () => voucherCodeData.value?.data?.data?.[0],
+    voucherCode => {
+      if (voucherCode) {
+        router.push({
+          path: `/rewards/my-rewards/${voucherCode.voucherId}`,
+          query: { type: 'voucher', voucherCode: voucherCode.voucherCode },
+        })
+        voucherIdToFetch.value = undefined
+      }
+    },
+  )
+
+  // Handle button click - check codename to decide action
+  const handleVoucherCardClick = (voucher: Voucher) => {
+    if (voucherCodeSheetCodenames.includes(voucher.codename)) {
+      // Check if only 1 voucher code available - fetch and redirect directly
+      if (voucher.availableQuota === 1) {
+        voucherIdToFetch.value = voucher.voucherId
+      } else {
+        // Show bottomsheet for voucher code display (multiple codes)
+        selectedVoucherData.value = voucher
+        showVoucherCodeSheet.value = true
+      }
+    } else {
+      // Navigate to detail page for other types
+      router.push({
+        path: `/rewards/my-rewards/${voucher.voucherId}`,
+        query: { type: 'voucher' },
+      })
+    }
   }
 </script>
 
@@ -150,13 +183,23 @@
           <RewardCouponCard
             :title="voucher.title"
             :image-url="voucher.imageUrl"
-            :points="0"
             button-label="Lihat Detail"
-            :flag-text="
-              voucher.availableQuota > 0 ? `Tersisa ${voucher.availableQuota}` : undefined
+            :stock-text="
+              voucher.availableQuota > 1 ? `${voucher.availableQuota} Voucher` : undefined
             "
-            :on-button-click="() => handleVoucherClick(voucher.voucherId.toString())"
-          />
+            stock-variant="secondary"
+            :status-text="`Hingga ${formatDate(voucher.expiredDate, 'dd/MM/yyyy')}`"
+            :status-icon="Clock"
+            @button-click="handleVoucherCardClick(voucher)"
+            @card-click="handleVoucherCardClick(voucher)"
+          >
+            <template #footer>
+              <div class="flex flex-1 items-center gap-1">
+                <Check class="size-4 shrink-0 text-teal-600" :stroke-width="4" />
+                <span class="body-caption-medium text-teal-700"> Voucher dimiliki </span>
+              </div>
+            </template>
+          </RewardCouponCard>
         </div>
 
         <!-- Infinite Scroll Trigger -->
@@ -176,5 +219,13 @@
         description="Mohon maaf voucher sedang tidak tersedia untuk saat ini."
       />
     </div>
+
+    <!-- Voucher Codes Bottom Sheet (for general_voucher_code, ultra_voucher, raw_voucher) -->
+    <VoucherCodesBottomSheet
+      v-if="selectedVoucherData"
+      v-model:open="showVoucherCodeSheet"
+      :voucher-id="selectedVoucherData.voucherId"
+      :title="selectedVoucherData.title"
+    />
   </div>
 </template>

@@ -1,286 +1,259 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import { Package, Calendar, Truck, CheckCircle2, Ticket } from 'lucide-vue-next'
+  import { useClipboard } from '@vueuse/core'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { RewardProgramInfo, RewardTermsSection } from '@/components/rewards/sections'
-  import CoinIcon from '@/assets/icons/coin.svg?component'
+  import { useToast, usePullToRefresh } from '@/composables/ui'
+  import {
+    RewardProgramInfo,
+    RewardTermsSection,
+    RewardDetailSkeleton,
+  } from '@/components/rewards/sections'
+  import { LotteryCodesBottomSheet } from '@/components/rewards/bottom-sheets'
+  import {
+    useUserLotteryDetail,
+    useUserGiftInstantlyDetail,
+    useVoucherDetail,
+    lotteryKeys,
+    rewardKeys,
+    voucherKeys,
+  } from '@/composables/services'
+  import { PullToRefresh } from '@/components/shared'
 
   definePage({
     meta: {
-      title: 'Detail Reward Saya',
+      title: 'Detail',
     },
   })
 
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
+
+  // Bottom sheet state for lottery coupon codes
+  const isLotteryCodesOpen = ref(false)
 
   // Get ID and type from route params and query
-  const rewardId = computed(() => route.params.id as string)
+  const rewardId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
   const rewardType = computed(() => (route.query.type as string) || 'voucher')
 
-  // Dynamic page title based on type
-  const pageTitle = computed(() => {
-    switch (rewardType.value) {
-      case 'lottery-coupon':
-        return 'Detail Kupon Undian Saya'
-      case 'item':
-        return 'Detail Barang Saya'
-      default:
-        return 'Detail Voucher Saya'
-    }
+  // Fetch lottery detail if type is lottery-coupon
+  const { data: lotteryDetailData, isPending: isLotteryPending } = useUserLotteryDetail({
+    params: { id: rewardId },
+    options: {
+      enabled: computed(() => rewardType.value === 'lottery-coupon'),
+    },
   })
 
-  // Dynamic data based on type - TODO: Fetch based on rewardId and rewardType
+  const lotteryDetail = computed(() => lotteryDetailData.value?.data)
+
+  // Fetch gift instantly detail if type is item
+  const { data: giftInstantlyDetailData, isPending: isGiftPending } = useUserGiftInstantlyDetail({
+    params: { userPointId: rewardId },
+    options: {
+      enabled: computed(() => rewardType.value === 'item'),
+    },
+  })
+
+  const giftInstantlyDetail = computed(() => giftInstantlyDetailData.value?.data)
+
+  // Fetch voucher detail if type is voucher
+  const voucherCode = computed(() => (route.query.voucherCode as string) || '')
+  const { data: voucherDetailData, isPending: isVoucherPending } = useVoucherDetail({
+    params: {
+      voucherId: rewardId,
+      voucherCode: voucherCode,
+    },
+    options: {
+      enabled: computed(() => rewardType.value === 'voucher'),
+    },
+  })
+
+  const voucherDetail = computed(() => voucherDetailData.value?.data)
+
+  // Combined loading state
+  const isPending = computed(() => {
+    if (rewardType.value === 'lottery-coupon') return isLotteryPending.value
+    if (rewardType.value === 'item') return isGiftPending.value
+    return isVoucherPending.value
+  })
+
+  // Image URL - uses API data for all types
+  const imageUrl = computed(() => {
+    if (rewardType.value === 'lottery-coupon' && lotteryDetail.value) {
+      return lotteryDetail.value.imageUrl
+    }
+    if (rewardType.value === 'item' && giftInstantlyDetail.value) {
+      return giftInstantlyDetail.value.imageUrl || undefined
+    }
+    if (rewardType.value === 'voucher' && voucherDetail.value) {
+      return voucherDetail.value.imageUrl || undefined
+    }
+    return undefined
+  })
+
+  // Program info - uses API data for all types
   const programInfo = computed(() => {
-    switch (rewardType.value) {
-      case 'lottery-coupon':
-        return {
-          title: 'Kupon Undian Gelegar SwaCam',
-          description:
-            'Kupon undian untuk program Gelegar SwaCam yang sudah berhasil Anda tukarkan. Kupon ini akan otomatis diikutkan dalam undian berhadiah periode Mei - November 2026. Tunggu pengumuman pemenang melalui aplikasi PLN Mobile.',
-        }
-      case 'item':
-        return {
-          title: 'Blender Philips HR2106',
-          description:
-            'Blender berkualitas tinggi dari Philips yang sudah berhasil Anda tukarkan. Barang akan dikirimkan ke alamat yang terdaftar dalam waktu 7-14 hari kerja. Pastikan alamat pengiriman Anda sudah lengkap dan benar.',
-        }
-      default:
-        return {
-          title: 'Voucher Listrik Rp20.000',
-          description:
-            'Voucher listrik senilai Rp20.000 yang sudah berhasil Anda tukarkan. Voucher ini dapat digunakan untuk pembelian token listrik melalui aplikasi PLN Mobile. Gunakan voucher sebelum masa berlaku habis.',
-        }
+    if (rewardType.value === 'lottery-coupon' && lotteryDetail.value) {
+      return {
+        title: lotteryDetail.value.title,
+        description: lotteryDetail.value.description,
+      }
+    }
+
+    if (rewardType.value === 'item' && giftInstantlyDetail.value) {
+      return {
+        title: giftInstantlyDetail.value.title,
+        description: giftInstantlyDetail.value.description,
+      }
+    }
+
+    if (rewardType.value === 'voucher' && voucherDetail.value) {
+      return {
+        title: voucherDetail.value.title,
+        description: voucherDetail.value.description,
+      }
+    }
+
+    // Fallback for voucher type when no data
+    return {
+      title: '',
+      description: '',
     }
   })
 
-  const stats = computed(() => {
-    switch (rewardType.value) {
-      case 'lottery-coupon':
-        return [
-          {
-            id: 'status',
-            label: 'Status',
-            value: 'Aktif',
-            icon: CheckCircle2,
-          },
-          {
-            id: 'coupon-number',
-            label: 'Nomor Kupon',
-            value: 'GLC-2026-001234',
-            icon: Ticket,
-          },
-          {
-            id: 'draw-period',
-            label: 'Periode Undian',
-            value: 'Mei - November 2026',
-            icon: Calendar,
-          },
-          {
-            id: 'points',
-            label: 'Ditukar dengan',
-            value: '50 Poin',
-            icon: CoinIcon,
-          },
-        ]
-      case 'item':
-        return [
-          {
-            id: 'status',
-            label: 'Status Pengiriman',
-            value: 'Dalam Proses',
-            icon: Truck,
-          },
-          {
-            id: 'tracking',
-            label: 'Nomor Resi',
-            value: 'JNE1234567890',
-            icon: Package,
-          },
-          {
-            id: 'estimated',
-            label: 'Estimasi Tiba',
-            value: '25 April 2026',
-            icon: Calendar,
-          },
-          {
-            id: 'points',
-            label: 'Ditukar dengan',
-            value: '15.000 Poin',
-            icon: CoinIcon,
-          },
-        ]
-      default:
-        return [
-          {
-            id: 'status',
-            label: 'Status',
-            value: 'Aktif',
-            icon: CheckCircle2,
-          },
-          {
-            id: 'remaining',
-            label: 'Sisa Penggunaan',
-            value: '1 kali',
-            icon: Package,
-          },
-          {
-            id: 'expiry',
-            label: 'Berlaku Hingga',
-            value: '31 Desember 2026',
-            icon: Calendar,
-          },
-          {
-            id: 'points',
-            label: 'Ditukar dengan',
-            value: '3.500 Poin',
-            icon: CoinIcon,
-          },
-        ]
-    }
-  })
+  // Helper function to format term value (array or string)
+  const formatTermValue = (value: string | string[]) => {
+    return Array.isArray(value)
+      ? `<ol>${value.map(item => `<li>${item}</li>`).join('')}</ol>`
+      : value
+  }
 
+  // Helper function to generate terms and conditions content
+  const generateTermsContent = (termsCondition: { label: string; value: string | string[] }[]) => {
+    return termsCondition
+      .map(term => {
+        const labelHtml = term.label
+          ? `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>`
+          : ''
+        return `${labelHtml}${formatTermValue(term.value)}`
+      })
+      .join('')
+  }
+
+  // Terms items - includes both "Cara Penggunaan" and "Syarat dan Ketentuan"
   const termsItems = computed(() => {
-    switch (rewardType.value) {
-      case 'lottery-coupon':
-        return [
-          {
-            id: 'draw-info',
-            title: 'Informasi Undian',
-            content: `
-              <ol class="list-decimal pl-5 flex flex-col gap-2">
-                <li class="pl-1">Kupon undian Anda telah terdaftar dalam sistem</li>
-                <li class="pl-1">Pengundian akan dilakukan pada akhir periode promo</li>
-                <li class="pl-1">Pemenang akan diumumkan melalui aplikasi PLN Mobile dan media sosial resmi</li>
-                <li class="pl-1">Jika Anda menjadi pemenang, kami akan menghubungi melalui nomor telepon terdaftar</li>
-                <li class="pl-1">Hadiah akan dikirimkan sesuai dengan alamat yang terdaftar di akun Anda</li>
-              </ol>
-            `,
-          },
-          {
-            id: 'prizes',
-            title: 'Hadiah Undian',
-            content: `
-              <ul class="list-disc pl-5 flex flex-col gap-2">
-                <li class="pl-1">4 unit Mobil Listrik</li>
-                <li class="pl-1">12 unit Motor Listrik</li>
-                <li class="pl-1">24 unit Sepeda Listrik</li>
-                <li class="pl-1">24 unit Mesin Cuci</li>
-                <li class="pl-1">24 unit Kulkas</li>
-                <li class="pl-1">200 Voucher menarik</li>
-              </ul>
-            `,
-          },
-          {
-            id: 'terms',
-            title: 'Syarat & Ketentuan',
-            content: `
-              <ol class="list-decimal pl-5 flex flex-col gap-2">
-                <li class="pl-1">Kupon undian berlaku untuk periode yang tertera.</li>
-                <li class="pl-1">Satu kupon undian memberikan 1 (satu) kesempatan menang.</li>
-                <li class="pl-1">Pemenang akan diverifikasi terlebih dahulu sebelum penyerahan hadiah.</li>
-                <li class="pl-1">Keputusan panitia bersifat final dan tidak dapat diganggu gugat.</li>
-                <li class="pl-1">Pajak hadiah ditanggung oleh PLN.</li>
-                <li class="pl-1">Hadiah tidak dapat ditukar dengan uang tunai.</li>
-              </ol>
-            `,
-          },
-        ]
-      case 'item':
-        return [
-          {
-            id: 'shipping-info',
-            title: 'Informasi Pengiriman',
-            content: `
-              <ol class="list-decimal pl-5 flex flex-col gap-2">
-                <li class="pl-1">Barang akan dikirim ke alamat yang terdaftar di akun Anda</li>
-                <li class="pl-1">Estimasi waktu pengiriman adalah 7-14 hari kerja</li>
-                <li class="pl-1">Anda akan menerima notifikasi ketika barang sudah dikirim</li>
-                <li class="pl-1">Nomor resi pengiriman akan dikirimkan melalui email dan aplikasi</li>
-                <li class="pl-1">Pastikan ada yang menerima paket saat kurir datang</li>
-                <li class="pl-1">Periksa kondisi barang sebelum menerima dari kurir</li>
-              </ol>
-            `,
-          },
-          {
-            id: 'product-specs',
-            title: 'Spesifikasi Produk',
-            content: `
-              <ul class="list-disc pl-5 flex flex-col gap-2">
-                <li class="pl-1">Merk: Philips</li>
-                <li class="pl-1">Tipe: HR2106</li>
-                <li class="pl-1">Kapasitas: 1.5 Liter</li>
-                <li class="pl-1">Daya: 400 Watt</li>
-                <li class="pl-1">Garansi Resmi: 1 Tahun</li>
-                <li class="pl-1">Warna: Putih</li>
-              </ul>
-            `,
-          },
-          {
-            id: 'terms',
-            title: 'Syarat & Ketentuan',
-            content: `
-              <ol class="list-decimal pl-5 flex flex-col gap-2">
-                <li class="pl-1">Barang yang sudah dikirim tidak dapat dikembalikan atau ditukar.</li>
-                <li class="pl-1">Pastikan alamat pengiriman lengkap dan benar sebelum konfirmasi.</li>
-                <li class="pl-1">Kerusakan akibat pengiriman menjadi tanggung jawab ekspedisi.</li>
-                <li class="pl-1">Laporkan jika ada kerusakan atau ketidaksesuaian dalam 1x24 jam.</li>
-                <li class="pl-1">Garansi produk mengikuti ketentuan dari pabrik.</li>
-                <li class="pl-1">Komplain hanya diterima dengan bukti foto dan video unboxing.</li>
-              </ol>
-            `,
-          },
-        ]
-      default:
-        return [
-          {
-            id: 'usage',
-            title: 'Cara Penggunaan',
-            content: `
-              <ol class="list-decimal pl-5 flex flex-col gap-2">
-                <li class="pl-1">Buka aplikasi PLN Mobile</li>
-                <li class="pl-1">Navigasi ke menu pembelian token listrik</li>
-                <li class="pl-1">Pilih nominal token yang ingin dibeli</li>
-                <li class="pl-1">Pada halaman pembayaran, pilih "Gunakan Voucher"</li>
-                <li class="pl-1">Pilih voucher yang ingin digunakan dari daftar voucher aktif Anda</li>
-                <li class="pl-1">Selesaikan transaksi untuk mendapatkan token listrik</li>
-              </ol>
-            `,
-          },
-          {
-            id: 'terms',
-            title: 'Syarat & Ketentuan',
-            content: `
-              <ol class="list-decimal pl-5 flex flex-col gap-2">
-                <li class="pl-1">Voucher hanya dapat digunakan untuk pembelian token listrik.</li>
-                <li class="pl-1">Voucher berlaku hingga tanggal yang tertera.</li>
-                <li class="pl-1">Voucher tidak dapat diuangkan atau dikembalikan.</li>
-                <li class="pl-1">Voucher hanya dapat digunakan 1 (satu) kali.</li>
-                <li class="pl-1">Setelah digunakan, voucher tidak dapat dibatalkan.</li>
-                <li class="pl-1">PLN berhak membatalkan voucher jika ditemukan penyalahgunaan.</li>
-              </ol>
-            `,
-          },
-        ]
+    const items = []
+
+    // For item type, use API data
+    if (rewardType.value === 'item' && giftInstantlyDetail.value?.termsCondition?.length) {
+      items.push({
+        id: 'terms-and-conditions',
+        title: 'Syarat dan Ketentuan',
+        content: generateTermsContent(giftInstantlyDetail.value.termsCondition),
+      })
+      return items
     }
+
+    // For voucher type, use API data
+    if (rewardType.value === 'voucher' && voucherDetail.value) {
+      // Add "Cara Penggunaan" if exists
+      if (voucherDetail.value.howToUse?.length) {
+        const howToUseSteps = voucherDetail.value.howToUse.map(step => `<li>${step}</li>`).join('')
+        items.push({
+          id: 'how-to-use',
+          title: 'Cara Penggunaan',
+          content: `<ol>${howToUseSteps}</ol>`,
+        })
+      }
+
+      // Add "Syarat dan Ketentuan" if exists (array of strings)
+      if (voucherDetail.value.termsCondition?.length) {
+        const termsSteps = voucherDetail.value.termsCondition
+          .map(term => `<li>${term}</li>`)
+          .join('')
+        items.push({
+          id: 'terms-and-conditions',
+          title: 'Syarat dan Ketentuan',
+          content: `<ol>${termsSteps}</ol>`,
+        })
+      }
+
+      return items
+    }
+
+    // For lottery-coupon type, use API data
+    if (rewardType.value === 'lottery-coupon' && lotteryDetail.value?.termsCondition?.length) {
+      items.push({
+        id: 'terms-and-conditions',
+        title: 'Syarat dan Ketentuan',
+        content: generateTermsContent(lotteryDetail.value.termsCondition),
+      })
+      return items
+    }
+
+    return []
   })
+
+  // Clipboard and toast for voucher code copy
+  const { copy } = useClipboard()
+  const { success: toastSuccess } = useToast()
+
+  // Voucher code info from API
+  const voucherCodeInfo = computed(() => voucherDetail.value?.voucherCode)
 
   // Dynamic button configuration
-  const showFooterButton = computed(() => rewardType.value !== 'lottery-coupon')
+  const showFooterButton = computed(() => {
+    // Hide footer for item type
+    if (rewardType.value === 'item') return false
+    // Show footer for voucher type if voucherCode info exists
+    if (rewardType.value === 'voucher') {
+      return !!voucherCodeInfo.value
+    }
+    return true
+  })
 
   const buttonConfig = computed(() => {
-    if (rewardType.value === 'item') {
+    if (rewardType.value === 'lottery-coupon') {
       return {
-        label: 'Lacak Pengiriman',
+        label: 'Lihat Kupon',
         action: () => {
-          // TODO: Implement tracking logic
-          console.log('Track shipment for:', rewardId.value)
+          isLotteryCodesOpen.value = true
         },
       }
     }
-    // voucher
+
+    // Voucher type with CODE - copy to clipboard
+    if (rewardType.value === 'voucher' && voucherCodeInfo.value?.type === 'CODE') {
+      return {
+        label: 'Salin Kode',
+        action: () => {
+          if (voucherCodeInfo.value?.value) {
+            copy(voucherCodeInfo.value.value)
+            toastSuccess('Kode berhasil disalin')
+          }
+        },
+      }
+    }
+
+    // Voucher type with LINK - open URL
+    if (rewardType.value === 'voucher' && voucherCodeInfo.value?.type === 'LINK') {
+      return {
+        label: 'Klaim Voucher',
+        action: () => {
+          if (voucherCodeInfo.value?.value) {
+            window.open(voucherCodeInfo.value.value, '_blank')
+          }
+        },
+      }
+    }
+
+    // Default fallback
     return {
       label: 'Gunakan Voucher',
       action: () => {
@@ -288,28 +261,115 @@
       },
     }
   })
+
+  // Lottery coupon count for footer display
+  const lotteryCouponCount = computed(() => {
+    if (rewardType.value === 'lottery-coupon' && lotteryDetail.value) {
+      return lotteryDetail.value.redeemCount
+    }
+    return 0
+  })
+
+  // Footer display info
+  const footerDisplayInfo = computed(() => {
+    if (rewardType.value === 'lottery-coupon' && lotteryDetail.value) {
+      return {
+        label: 'Jumlah Kupon',
+        value: `${lotteryCouponCount.value} Kupon`,
+      }
+    }
+
+    if (rewardType.value === 'voucher' && voucherCodeInfo.value?.type === 'CODE') {
+      return {
+        label: 'Kode',
+        value: voucherCodeInfo.value.value,
+      }
+    }
+
+    return null
+  })
+
+  // Address for item type
+  const address = computed(() => {
+    if (rewardType.value === 'item' && giftInstantlyDetail.value) {
+      return {
+        fullname: giftInstantlyDetail.value.fullname,
+        phoneNumber: giftInstantlyDetail.value.phoneNumber,
+        provinceName: giftInstantlyDetail.value.provinceName,
+        cityName: giftInstantlyDetail.value.cityName,
+        districtName: giftInstantlyDetail.value.districtName,
+        postalCode: giftInstantlyDetail.value.postalCode,
+      }
+    }
+    return undefined
+  })
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      const queries = []
+
+      if (rewardType.value === 'lottery-coupon') {
+        queries.push(queryClient.resetQueries({ queryKey: lotteryKeys.userDetail(rewardId.value) }))
+      } else if (rewardType.value === 'item') {
+        queries.push(
+          queryClient.resetQueries({
+            queryKey: rewardKeys.userGiftInstantlyDetail(rewardId.value),
+          }),
+        )
+      } else if (rewardType.value === 'voucher') {
+        queries.push(
+          queryClient.resetQueries({
+            queryKey: voucherKeys.detail(rewardId.value, voucherCode.value),
+          }),
+        )
+      }
+
+      await Promise.all(queries)
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
-  <Header :title="pageTitle" positioning="sticky" />
+  <Header title="Detail" positioning="sticky" />
 
-  <!-- Hero Banner Section -->
-  <HeroBanner />
+  <!-- Loading State -->
+  <template v-if="isPending">
+    <RewardDetailSkeleton />
+  </template>
 
-  <!-- Content -->
-  <main class="flex flex-1 flex-col gap-6 px-4" :class="showFooterButton ? 'pb-24' : 'pb-6'">
-    <!-- Program Info Section -->
-    <RewardProgramInfo :program-info="programInfo" :stats="stats" />
+  <!-- Loaded State -->
+  <template v-else>
+    <!-- Hero Banner Section -->
+    <HeroBanner :src="imageUrl" />
 
-    <!-- Terms & Conditions Section -->
-    <RewardTermsSection :items="termsItems" />
-  </main>
+    <!-- Content -->
+    <main class="flex flex-1 flex-col gap-6 px-4" :class="showFooterButton ? 'pb-24' : 'pb-6'">
+      <!-- Program Info Section -->
+      <RewardProgramInfo :program-info="programInfo" :address="address" />
 
-  <!-- Footer with Button (conditional) -->
-  <Footer v-if="showFooterButton" position="fixed">
-    <Button variant="primary" size="sm" class="w-full" @click="buttonConfig.action">
-      {{ buttonConfig.label }}
-    </Button>
-  </Footer>
+      <!-- Terms & Conditions Section -->
+      <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
+    </main>
+
+    <!-- Footer with Button -->
+    <Footer v-if="showFooterButton && !isPending" position="fixed">
+      <!-- Footer display info -->
+      <div v-if="footerDisplayInfo" class="flex w-full items-center justify-between gap-2">
+        <p class="body-m text-slate-950">{{ footerDisplayInfo.label }}</p>
+        <p class="body-l-semibold text-slate-950">{{ footerDisplayInfo.value }}</p>
+      </div>
+
+      <Button variant="primary" size="sm" class="w-full" @click="buttonConfig.action">
+        {{ buttonConfig.label }}
+      </Button>
+    </Footer>
+  </template>
+
+  <!-- Lottery Codes Bottom Sheet -->
+  <LotteryCodesBottomSheet v-model:open="isLotteryCodesOpen" :lottery-detail="lotteryDetail" />
 </template>

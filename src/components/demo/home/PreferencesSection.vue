@@ -15,8 +15,8 @@
   import { FormField } from '@/components/ui/form'
   import { CountryCodeSelector } from '@/components/ui/country-code-selector'
   import { CircleCheck, Copy } from 'lucide-vue-next'
-  import MakeSureIllustration from '@/assets/illustrations/make-sure.svg'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import MascotConfirmIllustration from '@/assets/illustrations/mascot-confirm.png'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const notifications = ref({
     email: true,
@@ -367,7 +367,7 @@
             <div class="flex flex-col gap-6">
               <!-- With title, description, and button -->
               <EmptyState
-                :image="MakeSureIllustration"
+                :image="MascotConfirmIllustration"
                 title="Title"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 class="rounded-lg border border-dashed border-neutral-300 p-6"
@@ -379,7 +379,7 @@
 
               <!-- With title and button only -->
               <EmptyState
-                :image="MakeSureIllustration"
+                :image="MascotConfirmIllustration"
                 title="Title"
                 class="rounded-lg border border-dashed border-neutral-300 p-6"
               >
@@ -390,7 +390,7 @@
 
               <!-- With title and description only -->
               <EmptyState
-                :image="MakeSureIllustration"
+                :image="MascotConfirmIllustration"
                 title="Title"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 class="rounded-lg border border-dashed border-neutral-300 p-6"
@@ -398,14 +398,14 @@
 
               <!-- With title only -->
               <EmptyState
-                :image="MakeSureIllustration"
+                :image="MascotConfirmIllustration"
                 title="Title"
                 class="rounded-lg border border-dashed border-neutral-300 p-6"
               />
 
               <!-- With two buttons -->
               <EmptyState
-                :image="MakeSureIllustration"
+                :image="MascotConfirmIllustration"
                 title="Title"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                 class="rounded-lg border border-dashed border-neutral-300 p-6"

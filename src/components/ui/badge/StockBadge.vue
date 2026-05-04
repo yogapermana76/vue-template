@@ -4,7 +4,7 @@
   import { cn } from '@/utils/cn'
   import { Ticket } from 'lucide-vue-next'
 
-  export type StockBadgeVariant = 'success' | 'danger'
+  export type StockBadgeVariant = 'success' | 'danger' | 'secondary'
   export type StockBadgeIcon = 'ticket' | 'none'
 
   interface Props {
@@ -33,6 +33,7 @@
   const variantClasses: Record<StockBadgeVariant, string> = {
     success: 'bg-green-500',
     danger: 'bg-red-500',
+    secondary: 'bg-secondary-500',
   }
 </script>
 
@@ -40,7 +41,7 @@
   <div
     :class="
       cn(
-        'inline-flex items-center justify-center gap-0.5 rounded-tl-xs px-2 py-1 shadow-sm',
+        'inline-flex items-center justify-center gap-0.5 rounded-tl-sm px-2 py-1 shadow-sm',
         variantClasses[variant],
         props.class,
       )

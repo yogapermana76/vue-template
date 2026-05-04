@@ -6,11 +6,11 @@
 import type {
   BaseResponse,
   PaginatedData,
-  FullAddress,
   MaybeRef,
   BaseComposableParams,
   PaginationOnly,
 } from '../common/base.types'
+import type { FullAddress } from './reward.types'
 
 // ============================================
 // Lottery Entities
@@ -34,8 +34,52 @@ export interface Lottery {
   status?: 'ACTIVE' | 'ENDED'
 }
 
+export interface AddRules {
+  is_show_up: boolean
+  reward_qty: number
+  reward_qty_type: string
+  couponClaimedDesc: string
+  freeRedeemLotteryId: number
+}
+
+export interface Profile {
+  gender: string
+  village: string | null
+  district: {
+    id: number
+    name: string
+  }
+  province: {
+    id: number
+    name: string
+  }
+  birth_date: {
+    date: string
+  }
+  subdistrict: {
+    id: number
+    name: string
+  }
+  address_detail: string
+}
+
 export interface LotteryDetail extends Lottery {
   termsCondition: LotteryTermsCondition[]
+  addRules?: AddRules
+  drawnDate?: string
+  generatedCount?: number
+  created?: string
+  updated?: string
+  createdBy?: number
+  updatedBy?: number
+  expiredDate?: string
+  generatedLimit?: number
+  announceDate?: string
+  reward?: string
+  timingCategory?: 'MONTHLY' | 'ANNUAL'
+  specification?: string | null
+  profile?: Profile
+  redeemCount?: number
 }
 
 // ============================================
@@ -75,11 +119,13 @@ export interface LotteryRedeemRequest extends FullAddress {
 }
 
 export interface LotteryRedeemResult {
-  id: string
+  id: number
+  userId: number
   lotteryId: number
-  point: number
-  status: 'SUCCESS' | 'PENDING' | 'FAILED'
-  transactionId?: string
+  lotteryCode: string
+  created: string
+  updated: string
+  tUserPointId: number
 }
 
 export type LotteryRedeemResponse = BaseResponse<LotteryRedeemResult>

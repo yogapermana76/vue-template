@@ -1,18 +1,33 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Package, Ticket } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { ConfirmationBottomSheet } from '@/components/shared'
+  import { ConfirmationBottomSheet, PullToRefresh } from '@/components/shared'
   import {
     RewardProgramInfo,
     RewardTermsSection,
     RewardDetailSkeleton,
   } from '@/components/rewards/sections'
-  import { useRewardRedeemableDetail, usePointSummary } from '@/composables/services'
-  import { formatNumber } from '@/utils'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import {
+    useRewardRedeemableDetail,
+    usePointSummary,
+    useLastAddress,
+    useRewardExchange,
+    rewardKeys,
+    pointKeys,
+  } from '@/composables/services'
+  import { usePullToRefresh } from '@/composables/ui'
+  import { authStorage } from '@/utils/storage'
+  import { formatNumber, extractApiError } from '@/utils'
+  import { openDeeplink } from '@/utils/native-bridge'
+  import type { User } from '@/types/services/auth.types'
+  import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
+  import LocationIllustration from '@/assets/illustrations/location.png'
+  import PensiveMascotIllustration from '@/assets/illustrations/pensive-mascot.png'
+  import DisappointedMascotIllustration from '@/assets/illustrations/disappointed-mascot.png'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
@@ -23,10 +38,22 @@
 
   const route = useRoute()
   const router = useRouter()
-  const showLocationSheet = ref(false)
+  const queryClient = useQueryClient()
+  const showConfirmationSheet = ref(false)
+  const showAddressSheet = ref(false)
+  const showErrorSheet = ref(false)
+  const errorTitle = ref('')
+  const errorDescription = ref('')
+  const errorDeeplink = ref('')
+
+  // Get user profile from storage
+  const userProfile = authStorage.getUser<User>()
 
   // Get ID from route params
-  const rewardId = computed(() => route.params.id as string)
+  const rewardId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
 
   // Fetch reward detail
   const { data: rewardDetail, isPending } = useRewardRedeemableDetail({
@@ -35,6 +62,12 @@
 
   // Fetch user points
   const { data: userPointsData } = usePointSummary()
+
+  // Fetch last address for exchange
+  const { data: lastAddressData } = useLastAddress()
+
+  // Exchange mutation
+  const { mutate: exchangeReward, isPending: isExchanging } = useRewardExchange()
 
   const reward = computed(() => rewardDetail.value?.data)
   const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
@@ -88,7 +121,7 @@
     // Points
     statsArray.push({
       id: 'points',
-      label: 'Koin yang ditukar',
+      label: 'Poin yang dibutuhkan',
       value: `${formatNumber(reward.value.pricePoint)} Poin`,
       icon: CoinIcon,
     })
@@ -106,6 +139,25 @@
     return statsArray
   })
 
+  // Helper function to format term value (array or string)
+  const formatTermValue = (value: string | string[]) => {
+    return Array.isArray(value)
+      ? `<ol>${value.map(item => `<li>${item}</li>`).join('')}</ol>`
+      : value
+  }
+
+  // Helper function to generate terms and conditions content
+  const generateTermsContent = (termsCondition: { label: string; value: string | string[] }[]) => {
+    return termsCondition
+      .map(term => {
+        const labelHtml = term.label
+          ? `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>`
+          : ''
+        return `${labelHtml}${formatTermValue(term.value)}`
+      })
+      .join('')
+  }
+
   // Terms items - includes both "Cara Penggunaan" and "Syarat dan Ketentuan"
   const termsItems = computed(() => {
     if (!reward.value) return []
@@ -119,23 +171,16 @@
       items.push({
         id: 'how-to-use',
         title: 'Cara Penggunaan',
-        content: `<ol style="list-style-type: decimal; padding-left: 1.25rem;">${howToUseSteps}</ol>`,
+        content: `<ol>${howToUseSteps}</ol>`,
       })
     }
 
     // Add "Syarat dan Ketentuan" from termsCondition
     if (reward.value.termsCondition && reward.value.termsCondition.length > 0) {
-      // Combine all terms into single content
-      const allTermsContent = reward.value.termsCondition
-        .map(term => {
-          return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
-        })
-        .join('<div class="mt-4"></div>') // Add spacing between multiple terms
-
       items.push({
         id: 'terms-and-conditions',
         title: 'Syarat dan Ketentuan',
-        content: allTermsContent,
+        content: generateTermsContent(reward.value.termsCondition),
       })
     }
 
@@ -143,12 +188,93 @@
   })
 
   const handleExchangeClick = () => {
-    showLocationSheet.value = true
+    if (reward.value?.type === 'ITEM') {
+      showAddressSheet.value = true
+    } else {
+      showConfirmationSheet.value = true
+    }
   }
 
-  const handleCompleteAddress = () => {
-    showLocationSheet.value = false
-    router.push('/rewards/complete-address')
+  const handleCancelExchange = () => {
+    showConfirmationSheet.value = false
+  }
+
+  const handleConfirmExchange = () => {
+    // Reset error state before submission
+    errorTitle.value = ''
+    errorDescription.value = ''
+    // Don't close confirmation sheet - keep it open until mutation completes
+
+    const address = lastAddressData.value?.data
+    const isItemType = reward.value?.type === 'ITEM'
+
+    // For non-ITEM types, send empty values for address fields (user might not have last address)
+    // For ITEM types, use actual address data
+    const addressData =
+      isItemType && address
+        ? {
+            provinceId: address.provinceId,
+            provinceName: address.provinceName,
+            cityId: address.cityId,
+            cityName: address.cityName,
+            districtId: address.districtId,
+            districtName: address.districtName,
+            address: address.address,
+            postalCode: address.postalCode,
+          }
+        : {
+            provinceId: 0,
+            provinceName: '',
+            cityId: 0,
+            cityName: '',
+            districtId: 0,
+            districtName: '',
+            address: '',
+            postalCode: '',
+          }
+
+    exchangeReward(
+      {
+        rewardId: Number(rewardId.value),
+        ...addressData,
+        receivedInfo: {
+          fullname: userProfile?.fullname || '',
+          email: userProfile?.email || '',
+          noHp: userProfile?.phoneNumber || '',
+        },
+      },
+      {
+        onSuccess: response => {
+          // Only close sheet on success
+          showConfirmationSheet.value = false
+          const redemptionId = response.data?.id
+          if (redemptionId) {
+            router.push(`/rewards/redemption/${redemptionId}`)
+          }
+        },
+        onError: (error: unknown) => {
+          showConfirmationSheet.value = false
+          const { title, description, deeplink, hasData } = extractApiError(
+            error,
+            'Gagal Menukar Hadiah',
+          )
+          // Only show error sheet if response has valid error data structure
+          if (!hasData) return
+          errorTitle.value = title
+          errorDescription.value = description
+          errorDeeplink.value = deeplink || ''
+          showErrorSheet.value = true
+        },
+      },
+    )
+  }
+
+  const handleConfirmAddress = () => {
+    showAddressSheet.value = false
+    router.push({
+      path: '/rewards/complete-address',
+      query: { id: rewardId.value, type: 'reward' },
+    })
   }
 
   // Footer message for disabled state
@@ -158,9 +284,88 @@
     if (!hasEnoughPoints.value) return 'Poin anda tidak mencukupi'
     return null
   })
+
+  // Confirmation description
+  const confirmationDescription = computed(() => {
+    if (!reward.value) return ''
+    return `Apakah anda ingin menukarkan <strong>${formatNumber(reward.value.pricePoint)} poin</strong> untuk mendapatkan hadiah ini?`
+  })
+
+  // Error illustration based on error title
+  const errorIllustration = computed(() => {
+    if (errorTitle.value === 'Ups, hadiah sudah habis') {
+      return DisappointedMascotIllustration
+    }
+    return PensiveMascotIllustration
+  })
+
+  // Handle email verification redirect
+  const handleVerifyEmail = () => {
+    if (errorDeeplink.value) {
+      openDeeplink(errorDeeplink.value)
+    }
+    showErrorSheet.value = false
+  }
+
+  // Close error sheet handler
+  const handleCloseError = (): void => {
+    showErrorSheet.value = false
+  }
+
+  // Lowercase error title for case-insensitive comparison
+  const errorTitleLower = computed(() => errorTitle.value.toLowerCase())
+
+  // Verification error titles to button labels map
+  const verificationLabels: Record<string, string> = {
+    'verifikasi email dulu, yuk!': 'Verifikasi Email',
+    'verifikasi nomor hp dulu, yuk!': 'Verifikasi Nomor HP',
+    'verifikasi akun dulu, yuk!': 'Verifikasi Akun',
+  }
+
+  // Dynamic error bottom sheet buttons
+  const errorSheetButtons = computed(() => {
+    const verificationLabel = verificationLabels[errorTitleLower.value]
+
+    if (verificationLabel) {
+      return [
+        {
+          label: verificationLabel,
+          variant: 'primary' as const,
+          onClick: handleVerifyEmail,
+        },
+        {
+          label: 'Tutup',
+          variant: 'secondary' as const,
+          onClick: handleCloseError,
+        },
+      ]
+    }
+
+    return [
+      {
+        label: 'Kembali',
+        variant: 'primary' as const,
+        onClick: handleCloseError,
+      },
+    ]
+  })
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.resetQueries({ queryKey: rewardKeys.redeemableDetail(rewardId.value) }),
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
+        queryClient.resetQueries({ queryKey: rewardKeys.lastAddress() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Detail" positioning="sticky" />
 
@@ -182,38 +387,61 @@
       <!-- Terms & Conditions Section -->
       <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
     </main>
+
+    <!-- Footer with Button -->
+    <Footer position="fixed">
+      <!-- Disabled state message -->
+      <div v-if="disabledMessage">
+        <p class="body-m text-slate-950">{{ disabledMessage }}</p>
+      </div>
+
+      <!-- Enabled state with points display -->
+      <div v-if="canExchange && reward" class="flex w-full items-center justify-between gap-2">
+        <p class="body-m flex-1 text-slate-950">Tukar dengan</p>
+        <p class="body-l-semibold text-primary-700 flex-1 text-right">
+          {{ formatNumber(reward.pricePoint) }} poin
+        </p>
+      </div>
+
+      <!-- Button -->
+      <Button
+        :variant="canExchange ? 'primary' : 'secondary'"
+        size="sm"
+        class="w-full"
+        :disabled="!canExchange"
+        :loading="isExchanging"
+        @click="handleExchangeClick"
+      >
+        Tukar Poin
+      </Button>
+    </Footer>
   </template>
 
-  <!-- Footer with Button -->
-  <Footer position="fixed">
-    <!-- Disabled state message -->
-    <div v-if="disabledMessage" class="mb-2">
-      <p class="body-m text-slate-950">{{ disabledMessage }}</p>
-    </div>
-
-    <!-- Enabled state with points display -->
-    <div v-if="canExchange && reward" class="mb-2 flex w-full items-center justify-between gap-2">
-      <p class="body-m flex-1 text-slate-950">Tukar dengan</p>
-      <p class="body-l-semibold text-primary-700 flex-1 text-right">
-        {{ formatNumber(reward.pricePoint) }} poin
-      </p>
-    </div>
-
-    <!-- Button -->
-    <Button
-      :variant="canExchange ? 'primary' : 'secondary'"
-      size="sm"
-      class="w-full"
-      :disabled="!canExchange"
-      @click="handleExchangeClick"
-    >
-      Tukar Poin
-    </Button>
-  </Footer>
-
-  <!-- Location Confirmation Bottom Sheet -->
+  <!-- Exchange Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet
-    v-model:open="showLocationSheet"
+    v-model:open="showConfirmationSheet"
+    :image="MascotIllustration"
+    title="Menukarkan hadiah?"
+    :description="confirmationDescription"
+    button-layout="row"
+    :buttons="[
+      {
+        label: 'Kembali',
+        variant: 'secondary',
+        onClick: handleCancelExchange,
+      },
+      {
+        label: 'Tukar Poin',
+        variant: 'primary',
+        loading: isExchanging,
+        onClick: handleConfirmExchange,
+      },
+    ]"
+  />
+
+  <!-- Location Confirmation Bottom Sheet (for ITEM type) -->
+  <ConfirmationBottomSheet
+    v-model:open="showAddressSheet"
     :image="LocationIllustration"
     title="Alamat belum lengkap"
     description="Lengkapi dahulu alamat anda agar kami mudah dalam mengirim hadiah untuk anda."
@@ -222,8 +450,18 @@
       {
         label: 'Lengkapi alamat',
         variant: 'primary',
-        onClick: handleCompleteAddress,
+        onClick: handleConfirmAddress,
       },
     ]"
+  />
+
+  <!-- Error Bottom Sheet -->
+  <ConfirmationBottomSheet
+    v-model:open="showErrorSheet"
+    :image="errorIllustration"
+    :title="errorTitle"
+    :description="errorDescription"
+    :button-layout="'column'"
+    :buttons="errorSheetButtons"
   />
 </template>

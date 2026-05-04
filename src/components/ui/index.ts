@@ -20,16 +20,6 @@ export { Badge, badgeVariants } from './badge'
 // Button
 export { Button, IconButton, buttonVariants } from './button'
 
-// Carousel
-export {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-  CarouselIndicators,
-} from './carousel'
-
 // Card
 export {
   Card,
@@ -91,6 +81,9 @@ export {
 // Label
 export { Label } from './label'
 
+// NumberStepper
+export { NumberStepper } from './number-stepper'
+
 // PillTab
 export {
   PillTab,
@@ -105,6 +98,9 @@ export { RoundedOverlap } from './rounded-overlap'
 
 // Skeleton
 export { Skeleton } from './skeleton'
+
+// Image
+export { Image, type ImageProps } from './image'
 
 // Sonner (Toaster)
 export { Toaster } from './sonner'

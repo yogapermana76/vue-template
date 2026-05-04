@@ -15,7 +15,7 @@
   const router = useRouter()
 
   // Fetch point summary
-  const { data: pointSummaryData, isPending: isLoadingPoints } = usePointSummary()
+  const { data: pointSummaryData } = usePointSummary()
 
   // Fetch winners category
   const { data: winnersCategoryData, isPending: isLoadingWinners } = useWinnersCategory({
@@ -45,7 +45,7 @@
     return categories.map(item => ({
       id: item.lotteryId,
       title: item.title,
-      description: `Undian periode ${formatDate(item.startDate, 'dd MMM yyyy')} - ${formatDate(item.endDate, 'dd MMM yyyy')}`,
+      description: `Periode ${formatDate(item.startDate, 'dd MMM yyyy')} - ${formatDate(item.endDate, 'dd MMM yyyy')}`,
     }))
   })
 
@@ -71,6 +71,7 @@
 
     <!-- Winner Info Cards -->
     <WinnerInfoSwiper
+      v-if="isLoadingWinners || winnerItems.length > 0"
       :items="winnerItems"
       :is-loading="isLoadingWinners"
       @click="handleViewWinners"

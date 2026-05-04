@@ -1,33 +1,21 @@
 <script setup lang="ts">
   import { RouterLink } from 'vue-router'
-  import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+  import { Card, CardContent, CardHeader, CardTitle, Image } from '@/components/ui'
   import { formatCurrency } from '@/utils/currency'
-  import type { Product } from '@/services/product'
+  import type { Product } from '@/services/demo/product.service'
 
   interface Props {
     product: Product
   }
 
   defineProps<Props>()
-
-  const handleImageError = (event: Event) => {
-    const img = event.target as HTMLImageElement
-    img?.remove()
-  }
 </script>
 
 <template>
   <Card class="hover:border-primary-300 overflow-hidden transition-shadow hover:shadow-lg">
     <RouterLink :to="`/demo/examples/products/${product.id}`">
-      <CardHeader class="bg-neutral-100 p-0">
-        <img
-          :src="product.image"
-          :alt="product.title"
-          class="aspect-square w-full object-cover"
-          loading="lazy"
-          decoding="async"
-          @error="handleImageError"
-        />
+      <CardHeader class="p-0">
+        <Image :src="product.image" :alt="product.title" aspect-ratio="square" />
       </CardHeader>
       <CardContent class="space-y-1 p-3">
         <CardTitle class="line-clamp-2 text-xs leading-tight font-medium">

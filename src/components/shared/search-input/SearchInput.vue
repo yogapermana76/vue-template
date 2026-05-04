@@ -31,9 +31,12 @@
 
 <template>
   <InputGroup
-    :class="props.class"
+    :class="[
+      props.class,
+      'h-11 rounded-full',
+      disabled ? 'border-0 bg-slate-100' : 'border border-slate-200 bg-white',
+    ]"
     :disabled="disabled"
-    class="h-11 rounded-full border-slate-200 bg-white"
   >
     <template #prefix>
       <SearchIcon class="size-4 text-slate-500" />
@@ -43,13 +46,14 @@
       :placeholder="placeholder"
       :model-value="modelValue"
       :disabled="disabled"
-      class="h-11 rounded-full border-0 text-sm text-slate-950 placeholder:text-slate-400"
+      unstyled
+      class="text-sm text-slate-950 placeholder:text-slate-400 disabled:text-slate-500 disabled:placeholder:text-slate-500"
       @input="handleInput"
     />
     <template v-if="modelValue" #suffix>
       <button
         type="button"
-        class="-mr-1 flex h-full items-center justify-center text-slate-500 transition-colors hover:text-slate-700 disabled:pointer-events-none disabled:opacity-50"
+        class="flex shrink-0 items-center justify-center text-slate-500 hover:text-slate-700 disabled:opacity-50"
         :disabled="disabled"
         @click="handleClear"
       >

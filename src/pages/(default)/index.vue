@@ -1,37 +1,80 @@
 <script setup lang="ts">
+  import { defineAsyncComponent } from 'vue'
   import { useRouter } from 'vue-router'
-  import { Header, GradientSection } from '@/components/layout'
-  import {
-    RewardsFaqSection,
-    RewardsInfoSection,
-    RewardsOurCouponsSection,
-    RewardsAlertSection,
-    RewardsFollowDrawSection,
-    RewardsHowToSection,
-  } from '@/components/rewards'
-  import { IconButton } from '@/components/ui/button'
   import { History } from 'lucide-vue-next'
+  import { useQueryClient } from '@tanstack/vue-query'
+  import { Header, GradientSection } from '@/components/layout'
+  import { RewardsInfoSection } from '@/components/rewards'
+  import { IconButton } from '@/components/ui/button'
+  import { PullToRefresh } from '@/components/shared'
+  import { usePullToRefresh } from '@/composables/ui'
+  import { rewardKeys, pointKeys, publicKeys } from '@/composables/services'
+
+  // Async components (below the fold)
+  const RewardsAlertSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsAlertSection.vue'),
+  )
+  const RewardsFollowDrawSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsFollowDrawSection.vue'),
+  )
+  const RewardsOurCouponsSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsOurCouponsSection.vue'),
+  )
+  const RewardsHowToSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsHowToSection.vue'),
+  )
+  const RewardsFaqSection = defineAsyncComponent(
+    () => import('@/components/rewards/sections/home/RewardsFaqSection.vue'),
+  )
 
   definePage({
     meta: {
       title: 'Rewards',
+      keepAlive: true,
     },
   })
 
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const handleNavigateToHistory = () => {
     router.push('/rewards/history')
   }
+
+  // Pull to refresh - invalidate specific queries for home page sections
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        // RewardsInfoSection
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
+        queryClient.resetQueries({ queryKey: ['public', 'category'] }),
+        // RewardsAlertSection
+        queryClient.resetQueries({ queryKey: rewardKeys.verifyInfo() }),
+        // RewardsFollowDrawSection
+        queryClient.resetQueries({ queryKey: ['lottery', 'redeemable-pages'] }),
+        // RewardsOurCouponsSection
+        queryClient.resetQueries({ queryKey: rewardKeys.categories() }),
+        queryClient.resetQueries({ queryKey: ['reward', 'gift-instantly'] }),
+        queryClient.resetQueries({ queryKey: rewardKeys.lastAddress() }),
+        // RewardsHowToSection
+        queryClient.resetQueries({ queryKey: publicKeys.fyi() }),
+        // RewardsFaqSection
+        queryClient.resetQueries({ queryKey: publicKeys.faq() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Rewards" :show-back="false" positioning="fixed" transparent>
     <template #actions="{ isDarkBg, iconClass }">
       <IconButton
         variant="tertiary"
-        :class="['-mr-2', iconClass]"
+        :class="['-mr-2 [&_svg]:size-[unset]!', iconClass]"
         :is-dark-bg="isDarkBg"
         @click="handleNavigateToHistory"
       >
@@ -41,7 +84,7 @@
   </Header>
 
   <!-- Hero Section -->
-  <GradientSection gradient="navy">
+  <GradientSection gradient="navy" show-ellipse-glow>
     <RewardsInfoSection />
   </GradientSection>
 

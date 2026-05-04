@@ -18,15 +18,6 @@ export interface BaseResponse<T = unknown> {
   time?: string
 }
 
-/**
- * Legacy response format (without success field)
- */
-export interface LegacyResponse<T = unknown> {
-  code: string
-  msg: string | null
-  data: T
-}
-
 // ============================================
 // Pagination Types
 // ============================================
@@ -50,6 +41,28 @@ export type PaginatedResponse<T> = BaseResponse<PaginatedData<T>>
 // ============================================
 
 /**
+ * API error data structure for user-facing errors
+ * Used when API returns error with displayable title and description
+ */
+export interface ApiErrorData {
+  title: string
+  desc: string
+  deeplink?: string
+}
+
+/**
+ * API error response structure
+ * Matches the backend error response format
+ */
+export interface ApiErrorResponse {
+  success: false
+  message: string
+  code: string
+  data?: ApiErrorData
+  time?: string
+}
+
+/**
  * Business error type from HTTP interceptor
  * Used when API returns 200 but with success: false or code !== '2000'
  */
@@ -59,31 +72,6 @@ export interface BusinessError<T = unknown> {
   response?: {
     data: T
   }
-}
-
-// ============================================
-// Common Field Types
-// ============================================
-
-export interface ReceivedInfo {
-  fullname: string
-  email?: string
-  noHp: string
-}
-
-export interface AddressInfo {
-  provinceId: number
-  provinceName: string
-  cityId: number
-  cityName: string
-  districtId: number
-  districtName: string
-  address: string
-  postalCode: string
-}
-
-export interface FullAddress extends AddressInfo {
-  receivedInfo: ReceivedInfo
 }
 
 // ============================================

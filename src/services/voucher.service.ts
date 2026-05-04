@@ -8,9 +8,11 @@ import { VoucherEndpoint } from './endpoints'
 import type {
   VoucherPagesResponse,
   VoucherDetailResponse,
+  VoucherCodesResponse,
   VoucherCategoryResponse,
   VoucherPagesParams,
   VoucherDetailParams,
+  VoucherDetailsPagesParams,
 } from '@/types'
 
 export const voucherService = {
@@ -27,6 +29,14 @@ export const voucherService = {
    */
   async detail(params: VoucherDetailParams): Promise<VoucherDetailResponse> {
     const { data } = await http.get<VoucherDetailResponse>(VoucherEndpoint.DETAIL, { params })
+    return data
+  },
+
+  /**
+   * Get voucher codes details with pagination for a specific voucherId
+   */
+  async detailsPages(params: VoucherDetailsPagesParams): Promise<VoucherCodesResponse> {
+    const { data } = await http.get<VoucherCodesResponse>(VoucherEndpoint.DETAILS_PAGES, { params })
     return data
   },
 

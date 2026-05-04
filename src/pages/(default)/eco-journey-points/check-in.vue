@@ -5,7 +5,7 @@
   import { Button } from '@/components/ui/button'
   import { QrScanner } from '@/components/ui/qr-scanner'
   import { ConfirmationBottomSheet } from '@/components/shared'
-  import MascotIllustration from '@/assets/illustrations/mascot.svg?component'
+  import MascotIllustration from '@/assets/illustrations/mascot-confirm.png'
 
   definePage({
     meta: {

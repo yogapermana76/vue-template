@@ -6,12 +6,16 @@ import type { User, SyncAccountRequest } from '@/types'
 interface AuthState {
   user: User | null
   tokenJwt: string | null
+  isInitialized: boolean
+  isLoading: boolean
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: authStorage.getUser<User>(),
     tokenJwt: authStorage.getToken(),
+    isInitialized: false,
+    isLoading: false,
   }),
 
   getters: {
@@ -27,19 +31,25 @@ export const useAuthStore = defineStore('auth', {
      * @returns Response from auth service
      */
     async authenticate(param: SyncAccountRequest) {
-      const response = await authService.syncAccount(param)
+      this.isLoading = true
+      try {
+        const response = await authService.syncAccount(param)
 
-      if (response.code === '2000' && response.data) {
-        // Successful authentication
-        this.user = response.data.user
-        this.tokenJwt = `${response.data.tokenType} ${response.data.token}`
+        if (response.code === '2000' && response.data) {
+          // Successful authentication
+          this.user = response.data.user
+          this.tokenJwt = `${response.data.tokenType} ${response.data.token}`
 
-        // Persist to localStorage
-        authStorage.setUser(this.user)
-        authStorage.setToken(this.tokenJwt)
+          // Persist to localStorage
+          authStorage.setUser(this.user)
+          authStorage.setToken(this.tokenJwt)
+        }
+
+        return response
+      } finally {
+        this.isLoading = false
+        this.isInitialized = true
       }
-
-      return response
     },
 
     /**
@@ -58,6 +68,16 @@ export const useAuthStore = defineStore('auth', {
     restoreSession() {
       this.user = authStorage.getUser<User>()
       this.tokenJwt = authStorage.getToken()
+      this.isInitialized = true
+    },
+
+    /**
+     * Reset initialization flag for re-authentication
+     */
+    resetInitialization() {
+      this.isInitialized = false
+      this.user = null
+      this.tokenJwt = null
     },
   },
 })

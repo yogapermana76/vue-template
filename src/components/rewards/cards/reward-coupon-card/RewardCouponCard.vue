@@ -1,11 +1,14 @@
 <script setup lang="ts">
   import { computed, type Component, type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
+  import { formatNumber } from '@/utils/currency'
   import { Button } from '@/components/ui/button'
   import { Flag, type FlagVariant } from '@/components/ui/flag'
+  import { StockBadge, type StockBadgeVariant, type StockBadgeIcon } from '@/components/ui/badge'
   import { Divider } from '@/components/ui/divider'
+  import { Image } from '@/components/ui'
   import CoinIcon from '@/assets/icons/coin.svg?component'
-  import EllipseSvg from '@/assets/icons/ellipse.svg?component'
+  import EllipseSvg from '@/assets/vectors/circle.svg?component'
 
   type FlagIcon = 'check' | 'discount' | 'ticket' | 'thumbs-up'
 
@@ -17,7 +20,7 @@
     /** Card title */
     title: string
     /** Points required to redeem */
-    points: number
+    points?: number
     /** Button label (e.g., "Tukar Voucher") */
     buttonLabel?: string
     /** Optional flag content (e.g., "Tersisa 5 Voucher") */
@@ -26,6 +29,12 @@
     flagVariant?: FlagVariant
     /** Flag icon type */
     flagIcon?: FlagIcon
+    /** Optional stock badge content (e.g., "Tersisa 5") */
+    stockText?: string
+    /** Stock badge variant */
+    stockVariant?: StockBadgeVariant
+    /** Stock badge icon type */
+    stockIcon?: StockBadgeIcon
     /** Status text (e.g., "Sudah digunakan", "Hingga 31/12/2025") */
     statusText?: string
     /** Status icon (from lucide-vue-next) */
@@ -43,6 +52,8 @@
     buttonLabel: 'Tukar',
     flagVariant: 'success',
     flagIcon: 'ticket',
+    stockVariant: 'secondary',
+    stockIcon: 'ticket',
     ellipseColor: '#ffffff',
     disabled: false,
   })
@@ -56,7 +67,8 @@
 
   // Compute display text for points
   const pointsDisplay = computed(() => {
-    return `${props.points.toLocaleString('id-ID')} poin`
+    if (props.points === undefined) return ''
+    return `${formatNumber(props.points)} poin`
   })
 
   const handleButtonClick = (event: Event) => {
@@ -84,20 +96,31 @@
     @click="handleCardClick"
   >
     <!-- Flag Badge (Top-right corner) -->
-    <div v-if="flagText" class="absolute -top-3 -right-3.25 z-10">
+    <div v-if="flagText" class="absolute -top-3 -right-3.25 z-1">
       <Flag :variant="flagVariant" :icon="flagIcon" pointer size="sm">
         {{ flagText }}
       </Flag>
     </div>
 
     <!-- Image Container -->
-    <div class="h-42.75 w-full overflow-hidden rounded-t-sm rounded-b-sm border-b border-slate-200">
-      <img
-        :src="imageUrl"
-        :alt="imageAlt"
-        :class="cn('h-full w-full object-cover', disabled && 'grayscale')"
-      />
-    </div>
+    <Image
+      :src="imageUrl"
+      :alt="imageAlt"
+      :class="disabled && 'grayscale'"
+      :container-class="
+        cn(
+          'h-42.75 w-full rounded-t-sm rounded-bl-sm border-b border-slate-200',
+          !stockText && 'rounded-br-sm',
+        )
+      "
+    >
+      <!-- Stock Badge (Bottom-right of image) -->
+      <div v-if="stockText" class="absolute right-0 bottom-0">
+        <StockBadge class="rounded-bl-sm" :variant="stockVariant" :icon="stockIcon">
+          {{ stockText }}
+        </StockBadge>
+      </div>
+    </Image>
 
     <!-- Content Container -->
     <div class="relative flex flex-col gap-1 py-3">
@@ -135,14 +158,16 @@
 
       <!-- Points and Button -->
       <div class="flex items-center justify-between gap-2 px-4">
-        <!-- Points Display -->
-        <div class="flex flex-1 items-center gap-1">
-          <CoinIcon class="size-4 shrink-0" aria-hidden="true" />
-          <span class="body-caption-medium text-slate-800/75">{{ pointsDisplay }}</span>
-        </div>
+        <!-- Points Display or Custom Footer Slot -->
+        <slot name="footer">
+          <div class="flex flex-1 items-center gap-1">
+            <CoinIcon class="size-4 shrink-0" aria-hidden="true" />
+            <span class="body-caption-medium text-slate-800/75">{{ pointsDisplay }}</span>
+          </div>
+        </slot>
 
         <!-- Action Button -->
-        <Button variant="secondary" size="xs" :disabled="disabled" @click="handleButtonClick">
+        <Button variant="primary" size="xs" :disabled="disabled" @click="handleButtonClick">
           {{ buttonLabel }}
         </Button>
       </div>

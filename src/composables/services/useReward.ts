@@ -9,10 +9,13 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
+import type { UseMutationOptions } from '@tanstack/vue-query'
 import { rewardService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
+import { pointKeys } from './usePoint'
+import { voucherKeys } from './useVoucher'
 import type {
   UseRewardGiftInstantlyParams,
   UseRewardRedeemableParams,
@@ -26,6 +29,7 @@ import type {
   RewardPagesParams,
   UserGiftInstantly,
   GiftInstantly,
+  SetExpiredTokenResponse,
 } from '@/types'
 
 // ============================================
@@ -49,6 +53,7 @@ export const rewardKeys = {
   exchangePointDetail: (tUserPointId?: string | number) =>
     [...rewardKeys.all, 'exchange-point-detail', tUserPointId] as const,
   verifyInfo: () => [...rewardKeys.all, 'verify-info'] as const,
+  setExpiredToken: () => [...rewardKeys.all, 'set-expired-token'] as const,
 }
 
 // ============================================
@@ -285,10 +290,10 @@ export function useUserGiftInstantly(params: UseUserGiftInstantlyParams = {}) {
  */
 export function useUserGiftInstantlyDetail(params: UseUserGiftInstantlyDetailParams = {}) {
   const { params: pathParams = {}, options = {} } = params
-  const { id } = pathParams
+  const { userPointId } = pathParams
 
   const authStore = useAuthStore()
-  const resolvedId = computed(() => unref(id))
+  const resolvedId = computed(() => unref(userPointId))
 
   const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedId.value)
   const resolvedEnabled = computed(() =>
@@ -299,7 +304,7 @@ export function useUserGiftInstantlyDetail(params: UseUserGiftInstantlyDetailPar
 
   return useQuery({
     queryKey: computed(() => rewardKeys.userGiftInstantlyDetail(resolvedId.value)),
-    queryFn: () => rewardService.userGiftInstantlyDetail({ id: resolvedId.value! }),
+    queryFn: () => rewardService.userGiftInstantlyDetail({ userPointId: resolvedId.value! }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
@@ -333,7 +338,7 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
       : defaultEnabled.value,
   )
 
-  return useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery({
     queryKey: computed(() =>
       rewardKeys.userGiftInstantly({
         size: resolvedSize.value,
@@ -351,6 +356,7 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
       return {
         data: items,
         page: pageParam,
+        total,
         hasMore: (pageParam + 1) * resolvedSize.value < total,
       }
     },
@@ -358,7 +364,16 @@ export function useUserGiftInstantlyInfinite(params: UseUserGiftInstantlyParams 
     getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
+    placeholderData: keepPreviousData,
   })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
 }
 
 /**
@@ -457,7 +472,27 @@ export function useVerifyInfo(params: UseVerifyInfoParams = {}) {
  * ```
  */
 export function useRewardExchange(options?: { showErrorToast?: boolean }) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (request: ExchangeRequest) => rewardService.exchange(request, options),
+    onSuccess: () => {
+      // Invalidate point summary to refetch updated balance
+      queryClient.invalidateQueries({ queryKey: pointKeys.summary() })
+      // Invalidate voucher pages to reflect new exchange
+      queryClient.invalidateQueries({ queryKey: voucherKeys.pages() })
+      // Invalidate gift instantly list to reflect new exchange
+      queryClient.invalidateQueries({ queryKey: rewardKeys.userGiftInstantly() })
+    },
+  })
+}
+
+/**
+ * Set expired token
+ */
+export function useSetExpiredToken(options?: UseMutationOptions<SetExpiredTokenResponse>) {
+  return useMutation({
+    mutationFn: () => rewardService.setExpiredToken(),
+    ...options,
   })
 }

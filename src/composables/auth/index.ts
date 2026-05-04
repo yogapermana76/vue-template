@@ -7,3 +7,5 @@ export {
   type User,
   type LoginCredentials,
 } from './useAuth'
+
+export { useTokenAuth } from './useTokenAuth'

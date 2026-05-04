@@ -16,6 +16,7 @@ import type {
   ExchangeResponse,
   ExchangePointDetailResponse,
   VerifyInfoResponse,
+  SetExpiredTokenResponse,
   RewardPagesParams,
   RewardDetailParams,
   UserGiftInstantlyParams,
@@ -137,6 +138,14 @@ export const rewardService = {
       showErrorToast: false,
     }
     const { data } = await http.get<VerifyInfoResponse>(RewardEndpoint.VERIFY_INFO, config)
+    return data
+  },
+
+  /**
+   * Set expired token
+   */
+  async setExpiredToken(): Promise<SetExpiredTokenResponse> {
+    const { data } = await http.post<SetExpiredTokenResponse>(RewardEndpoint.SET_EXPIRED_TOKEN)
     return data
   },
 }

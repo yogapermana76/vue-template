@@ -4,6 +4,9 @@ export { SearchInput } from './search-input'
 // Pull to refresh
 export { PullToRefresh } from './pull-to-refresh'
 
+// Router
+export { default as TransitionedRouterView } from './TransitionedRouterView.vue'
+
 // Bottom sheets
 export {
   ConfirmationBottomSheet,
@@ -12,3 +15,6 @@ export {
   InformationBottomSheet,
   type InformationBottomSheetProps,
 } from './bottom-sheets'
+
+// Ticket quantity selector
+export { TicketQuantitySelector } from './ticket-quantity-selector'

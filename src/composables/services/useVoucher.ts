@@ -17,7 +17,9 @@ import { useAuthStore } from '@/stores/auth'
 import type {
   UseVoucherPagesParams,
   UseVoucherDetailParams,
+  UseVoucherDetailsPagesParams,
   UseVoucherCategoriesParams,
+  VoucherDetailParams,
   Voucher,
 } from '@/types'
 
@@ -29,7 +31,10 @@ export const voucherKeys = {
   all: ['voucher'] as const,
   pages: (query?: { page?: number; size?: number; categoryId?: number }) =>
     [...voucherKeys.all, 'pages', query] as const,
-  detail: (id?: string) => [...voucherKeys.all, 'detail', id] as const,
+  detail: (voucherId?: string, voucherCode?: string) =>
+    [...voucherKeys.all, 'detail', { voucherId, voucherCode }] as const,
+  detailsPages: (query?: { page?: number; size?: number; voucherId?: string | number }) =>
+    [...voucherKeys.all, 'detailsPages', query] as const,
   categories: () => [...voucherKeys.all, 'categories'] as const,
 }
 
@@ -96,27 +101,40 @@ export function useVoucherPages(params: UseVoucherPagesParams = {}) {
 }
 
 /**
- * Get voucher detail by ID
+ * Get voucher detail by code and ID
  *
  * @example
- * // Static ID
- * const { data } = useVoucherDetail({ params: { id: '123' } })
+ * // Static parameters
+ * const { data } = useVoucherDetail({ params: { voucherCode: 'LVXH9KNMDVO6', voucherId: '434' } })
  *
  * @example
- * // Reactive ID (from route) with options
+ * // Reactive parameters (from route) with options
  * const route = useRoute()
- * const id = computed(() => route.params.id as string)
+ * const voucherCode = computed(() => route.params.code as string)
+ * const voucherId = computed(() => route.params.id as string)
  * const { data } = useVoucherDetail({
- *   params: { id },
+ *   params: { voucherCode, voucherId },
  *   options: { enabled: isReady }
  * })
  */
 export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
   const { params: pathParams = {}, options = {} } = params
-  const { id } = pathParams
+  const { voucherCode, voucherId } = pathParams
 
   const authStore = useAuthStore()
-  const resolvedId = computed(() => unref(id))
+  const resolvedCode = computed(() => unref(voucherCode))
+  const resolvedId = computed(() => unref(voucherId))
+
+  // Build service params reactively
+  const serviceParams = computed(() => {
+    const params: VoucherDetailParams = {
+      voucherId: String(resolvedId.value || ''),
+    }
+    if (resolvedCode.value) {
+      params.voucherCode = resolvedCode.value
+    }
+    return params
+  })
 
   const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedId.value)
   const resolvedEnabled = computed(() =>
@@ -126,8 +144,61 @@ export function useVoucherDetail(params: UseVoucherDetailParams = {}) {
   )
 
   return useQuery({
-    queryKey: computed(() => voucherKeys.detail(resolvedId.value)),
-    queryFn: () => voucherService.detail({ id: resolvedId.value! }),
+    queryKey: computed(() =>
+      voucherKeys.detail(String(resolvedId.value || ''), resolvedCode.value),
+    ),
+    queryFn: () => voucherService.detail(serviceParams.value),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
+/**
+ * Get voucher codes details with pagination for a specific voucherId
+ *
+ * @example
+ * // Static parameters
+ * const { data } = useVoucherDetailsPages({ query: { voucherId: '422', page: 0, size: 10 } })
+ *
+ * @example
+ * // Reactive parameters with pagination
+ * const voucherId = ref('422')
+ * const page = ref(0)
+ * const { data } = useVoucherDetailsPages({
+ *   query: { voucherId, page, size: 10 }
+ * })
+ */
+export function useVoucherDetailsPages(params: UseVoucherDetailsPagesParams = {}) {
+  const { query = {}, options = {} } = params
+  const { page = 0, size = 10, voucherId } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedPage = computed(() => unref(page))
+  const resolvedSize = computed(() => unref(size))
+  const resolvedVoucherId = computed(() => unref(voucherId))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedVoucherId.value)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() =>
+      voucherKeys.detailsPages({
+        page: resolvedPage.value,
+        size: resolvedSize.value,
+        voucherId: resolvedVoucherId.value,
+      }),
+    ),
+    queryFn: () =>
+      voucherService.detailsPages({
+        page: resolvedPage.value,
+        size: resolvedSize.value,
+        voucherId: String(resolvedVoucherId.value || ''),
+      }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
@@ -194,7 +265,7 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
       : defaultEnabled.value,
   )
 
-  return useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery({
     queryKey: computed(() =>
       voucherKeys.pages({
         size: resolvedSize.value,
@@ -214,6 +285,73 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
       return {
         data: items,
         page: pageParam,
+        total,
+        hasMore: (pageParam + 1) * resolvedSize.value < total,
+      }
+    },
+    initialPageParam: 0,
+    getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+    placeholderData: keepPreviousData,
+  })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
+}
+
+/**
+ * Get voucher codes details with infinite scroll pagination
+ *
+ * @example
+ * // Basic usage
+ * const voucherId = ref(422)
+ * const { data } = useVoucherDetailsPagesInfinite({
+ *   query: { voucherId, size: 10 }
+ * })
+ */
+export function useVoucherDetailsPagesInfinite(params: UseVoucherDetailsPagesParams = {}) {
+  const { query = {}, options = {} } = params
+  const { size = 10, voucherId } = query
+
+  const authStore = useAuthStore()
+
+  const resolvedSize = computed(() => unref(size))
+  const resolvedVoucherId = computed(() => unref(voucherId))
+
+  const defaultEnabled = computed(() => authStore.isAuthenticated && !!resolvedVoucherId.value)
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && defaultEnabled.value
+      : defaultEnabled.value,
+  )
+
+  const infiniteQuery = useInfiniteQuery({
+    queryKey: computed(() =>
+      voucherKeys.detailsPages({
+        size: resolvedSize.value,
+        voucherId: resolvedVoucherId.value,
+      }),
+    ),
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await voucherService.detailsPages({
+        page: pageParam,
+        size: resolvedSize.value,
+        voucherId: String(resolvedVoucherId.value || ''),
+      })
+
+      const items = response.data?.data ?? []
+      const total = response.data?.total ?? 0
+
+      return {
+        data: items,
+        page: pageParam,
+        total,
         hasMore: (pageParam + 1) * resolvedSize.value < total,
       }
     },
@@ -222,4 +360,12 @@ export function useVoucherPagesInfinite(params: UseVoucherPagesParams = {}) {
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
   })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
 }

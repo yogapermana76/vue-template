@@ -21,7 +21,6 @@
     items: AccordionListItem[]
     type?: 'single' | 'multiple'
     collapsible?: boolean
-    modelValue?: string | string[] | undefined
     defaultValue?: string | string[]
     class?: HTMLAttributes['class']
     ariaLabel?: string
@@ -36,19 +35,10 @@
   })
 
   const emit = defineEmits<{
-    'update:modelValue': [value: string | string[] | undefined]
     change: [value: string | string[] | undefined]
   }>()
 
-  const isControlled = () => 'modelValue' in props
-
-  const getCurrentValue = () => {
-    return isControlled() ? props.modelValue : props.defaultValue
-  }
-
-  // Emit both events for backward compatibility
   const handleValueChange = (value: string | string[] | undefined) => {
-    emit('update:modelValue', value)
     emit('change', value)
   }
 
@@ -73,7 +63,7 @@
   }
 
   const getContentClass = (item: AccordionListItem): string => {
-    const defaultClass = 'pt-3 pb-4 px-0 body-caption text-slate-700'
+    const defaultClass = 'pb-4 px-0 body-caption text-slate-700'
     return item.contentClass ? `${defaultClass} ${item.contentClass}` : defaultClass
   }
 </script>
@@ -82,8 +72,7 @@
   <Accordion
     :type="props.type"
     :collapsible="props.collapsible"
-    :default-value="getCurrentValue()"
-    :model-value="isControlled() ? props.modelValue : undefined"
+    :default-value="props.defaultValue"
     :class="`${props.class} *:border-0`"
     :aria-label="props.ariaLabel"
     @update:model-value="handleValueChange"
@@ -103,7 +92,7 @@
         <slot :name="`content-${item.id}`" :item="item">
           <template v-if="isStringContent(item.content)">
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div v-html="item.content" />
+            <div class="html-content" v-html="item.content" />
           </template>
           <component v-else :is="item.content" :item="item" />
         </slot>

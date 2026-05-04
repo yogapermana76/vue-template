@@ -2,12 +2,13 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
+  import { Check } from 'lucide-vue-next'
   import { RewardCouponCard, RewardCouponCardSkeleton } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { useUserGiftInstantlyInfinite } from '@/composables/services'
   import type { UserGiftInstantly } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
@@ -76,10 +77,17 @@
         <RewardCouponCard
           :title="item.title"
           :image-url="item.imageUrl || 'https://via.placeholder.com/343x171?text=No+Image'"
-          :points="0"
           button-label="Lihat Detail"
-          :on-button-click="() => handleItemClick(item.tUserPointId)"
-        />
+          @button-click="handleItemClick(item.tUserPointId)"
+          @card-click="handleItemClick(item.tUserPointId)"
+        >
+          <template #footer>
+            <div class="flex flex-1 items-center gap-1">
+              <Check class="size-4 shrink-0 text-teal-600" :stroke-width="4" />
+              <span class="body-caption-medium text-teal-700"> Sudah ditukar </span>
+            </div>
+          </template>
+        </RewardCouponCard>
       </div>
 
       <!-- Infinite Scroll Trigger -->

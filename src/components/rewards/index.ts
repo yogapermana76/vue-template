@@ -26,13 +26,10 @@ export {
   type WinnerInfoCardProps,
   InfoCard,
   InfoCardSkeleton,
+  RecipientInfoCard,
+  RecipientInfoCardSkeleton,
+  type RecipientInfoCardProps,
 } from './cards'
-
-export {
-  RecipientInfoItem,
-  RecipientInfoItemSkeleton,
-  type RecipientInfoItemProps,
-} from './recipient-info-item'
 
 export { RewardsFaqSection, type RewardsFaqSectionProps } from './sections'
 
@@ -41,6 +38,8 @@ export {
   type CouponListBottomSheetProps,
   RecipientInfoBottomSheet,
   type RecipientInfoBottomSheetProps,
+  VoucherCodesBottomSheet,
+  WinnerInformationBottomSheet,
 } from './bottom-sheets'
 
 export {

@@ -37,9 +37,8 @@
         </template>
       </AccordionTrigger>
       <AccordionContent class="pr-0 pl-0">
-        <p class="body-caption text-slate-700">
-          {{ answer }}
-        </p>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="html-content body-caption text-slate-700" v-html="answer" />
       </AccordionContent>
     </AccordionItem>
   </Accordion>

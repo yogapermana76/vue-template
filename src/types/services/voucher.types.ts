@@ -38,7 +38,30 @@ export interface VoucherCategory {
   sort: number
 }
 
-export type VoucherDetail = Voucher
+export interface VoucherCodeInfo {
+  type: 'LINK' | 'CODE'
+  value: string
+}
+
+export interface VoucherDetail {
+  id: number
+  title: string
+  description: string
+  imageUrl: string
+  expiredDate: string
+  termsCondition?: string[]
+  howToUse?: string[]
+  voucherCode: VoucherCodeInfo
+}
+
+export interface VoucherCodeDetail {
+  id: number
+  voucherCode: string
+  voucherId: number
+  title: string
+  imageUrl: string
+  expiredDate: string
+}
 
 // ============================================
 // Response Types
@@ -46,6 +69,7 @@ export type VoucherDetail = Voucher
 
 export type VoucherPagesResponse = BaseResponse<PaginatedData<Voucher>>
 export type VoucherDetailResponse = BaseResponse<VoucherDetail>
+export type VoucherCodesResponse = BaseResponse<PaginatedData<VoucherCodeDetail>>
 export type VoucherCategoryResponse = BaseResponse<VoucherCategory[]>
 
 // ============================================
@@ -59,7 +83,14 @@ export interface VoucherPagesParams {
 }
 
 export interface VoucherDetailParams {
-  id: string
+  voucherCode?: string
+  voucherId: string | number
+}
+
+export interface VoucherDetailsPagesParams {
+  page?: number
+  size?: number
+  voucherId: string | number
 }
 
 // ============================================
@@ -72,7 +103,17 @@ export type UseVoucherPagesParams = BaseComposableParams<{
 }>
 
 /** Parameters for useVoucherDetail composable */
-export type UseVoucherDetailParams = BaseComposableParams<never, { id?: MaybeRef<string> }>
+export type UseVoucherDetailParams = BaseComposableParams<
+  never,
+  { voucherCode?: MaybeRef<string>; voucherId?: MaybeRef<string | number> }
+>
+
+/** Parameters for useVoucherDetailsPages composable */
+export type UseVoucherDetailsPagesParams = BaseComposableParams<{
+  page?: MaybeRef<number>
+  size?: MaybeRef<number>
+  voucherId?: MaybeRef<string | number | undefined>
+}>
 
 /** Parameters for useVoucherCategories composable */
 export type UseVoucherCategoriesParams = BaseComposableParams

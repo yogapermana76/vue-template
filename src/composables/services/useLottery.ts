@@ -9,10 +9,11 @@
  */
 
 import { computed, unref } from 'vue'
-import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/vue-query'
 import { lotteryService } from '@/services'
 import { config } from '@/config'
 import { useAuthStore } from '@/stores/auth'
+import { pointKeys } from './usePoint'
 import type {
   UseLotteryRedeemablePagesParams,
   UseLotteryDetailParams,
@@ -224,7 +225,7 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
       : defaultEnabled.value,
   )
 
-  return useInfiniteQuery({
+  const infiniteQuery = useInfiniteQuery({
     queryKey: computed(() =>
       lotteryKeys.userList({
         size: resolvedSize.value,
@@ -242,6 +243,7 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
       return {
         data: items,
         page: pageParam,
+        total,
         hasMore: (pageParam + 1) * resolvedSize.value < total,
       }
     },
@@ -249,7 +251,16 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
     getNextPageParam: lastPage => (lastPage.hasMore ? lastPage.page + 1 : undefined),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
     enabled: resolvedEnabled,
+    placeholderData: keepPreviousData,
   })
+
+  // Extract total from first page
+  const total = computed(() => infiniteQuery.data.value?.pages?.[0]?.total ?? 0)
+
+  return {
+    ...infiniteQuery,
+    total,
+  }
 }
 
 // ============================================
@@ -272,7 +283,15 @@ export function useUserLotteryListInfinite(params: UseUserLotteryListParams = {}
  * ```
  */
 export function useLotteryRedeem(options?: { showErrorToast?: boolean }) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (request: LotteryRedeemRequest) => lotteryService.redeem(request, options),
+    onSuccess: () => {
+      // Invalidate point summary to refetch updated balance
+      queryClient.invalidateQueries({ queryKey: pointKeys.summary() })
+      // Invalidate user lottery list to reflect new redemption
+      queryClient.invalidateQueries({ queryKey: lotteryKeys.userList() })
+    },
   })
 }

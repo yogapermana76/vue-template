@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { computed } from 'vue'
   import { AccordionList } from '@/components/ui/accordion'
 
   interface AccordionItem {
@@ -11,11 +12,19 @@
     items: AccordionItem[]
   }
 
-  defineProps<Props>()
+  const props = defineProps<Props>()
+
+  const firstItemId = computed(() => props.items[0]?.id)
 </script>
 
 <template>
   <section class="flex flex-col gap-4">
-    <AccordionList :items="items" type="single" collapsible />
+    <AccordionList
+      :key="firstItemId"
+      :items="items"
+      :default-value="firstItemId"
+      type="single"
+      collapsible
+    />
   </section>
 </template>

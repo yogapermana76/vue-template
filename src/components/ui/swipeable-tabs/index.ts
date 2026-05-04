@@ -2,6 +2,7 @@ export { default as SwipeableTabs } from './SwipeableTabs.vue'
 export { default as SwipeableTabBar } from './SwipeableTabBar.vue'
 export { default as SwipeableTabPanels } from './SwipeableTabPanels.vue'
 export { default as SwipeableTabPanel } from './SwipeableTabPanel.vue'
+export { default as BottomNavTabPanel } from './BottomNavTabPanel.vue'
 export {
   SWIPEABLE_TABS_INJECTION_KEY,
   type SwipeableTabsProps,

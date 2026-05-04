@@ -1,6 +1,12 @@
 <script setup lang="ts">
-  import { ref, nextTick, type ComponentPublicInstance, type HTMLAttributes } from 'vue'
-  import { cn } from '@/utils/cn'
+  import {
+    ref,
+    nextTick,
+    watch,
+    onMounted,
+    type ComponentPublicInstance,
+    type HTMLAttributes,
+  } from 'vue'
   import PillTab from './PillTab.vue'
   import type { PillTabVariants } from '.'
 
@@ -41,15 +47,31 @@
     itemRefs.value[index] = el
   }
 
+  /**
+   * Scroll to active item - always centered when possible
+   */
   const scrollToItem = (index: number) => {
     const container = containerRef.value
     const itemInstance = itemRefs.value[index]
     const activeItemEl = itemInstance?.$el as HTMLElement | undefined
     if (!container || !activeItemEl) return
 
-    const scrollTarget =
-      activeItemEl.offsetLeft - (container.offsetWidth - activeItemEl.offsetWidth) / 2
-    container.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' })
+    const containerRect = container.getBoundingClientRect()
+    const itemRect = activeItemEl.getBoundingClientRect()
+
+    const containerWidth = containerRect.width
+    const scrollableWidth = container.scrollWidth
+    const maxScroll = scrollableWidth - containerWidth
+
+    // Calculate item position relative to container's current scroll
+    const itemRelativeLeft = itemRect.left - containerRect.left + container.scrollLeft
+    const itemWidth = itemRect.width
+    const itemCenter = itemRelativeLeft + itemWidth / 2
+
+    // Target: center item di viewport
+    const scrollTarget = Math.max(0, Math.min(itemCenter - containerWidth / 2, maxScroll))
+
+    container.scrollTo({ left: scrollTarget, behavior: 'smooth' })
   }
 
   const handleItemClick = (key: string, index: number) => {
@@ -62,6 +84,25 @@
     return props.modelValue === key ? props.activeState : props.inactiveState
   }
 
+  // Auto-scroll saat modelValue berubah (e.g., dari sessionStorage)
+  watch(
+    () => props.modelValue,
+    newValue => {
+      const index = props.items.findIndex(item => item.key === newValue)
+      if (index !== -1) {
+        nextTick(() => scrollToItem(index))
+      }
+    },
+  )
+
+  // Scroll ke item aktif saat pertama kali di-mount
+  onMounted(() => {
+    const activeIndex = props.items.findIndex(item => item.key === props.modelValue)
+    if (activeIndex !== -1) {
+      setTimeout(() => scrollToItem(activeIndex), 100)
+    }
+  })
+
   // Slots
   defineSlots<{
     default?: (props: { item: PillTabItem; isActive: boolean }) => unknown
@@ -71,12 +112,8 @@
 <template>
   <div
     ref="containerRef"
-    :class="
-      cn(
-        'flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-        props.class,
-      )
-    "
+    :class="props.class"
+    class="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     data-slot="scrollable-pill-tabs"
   >
     <PillTab

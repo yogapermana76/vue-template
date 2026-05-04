@@ -1,15 +1,14 @@
 <script setup lang="ts">
-  import { useCarouselState } from '@/composables/carousel'
-  import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselPrevious,
-    CarouselNext,
-    CarouselIndicators,
-  } from '@/components/ui/carousel'
-  import { Button } from '@/components/ui/button'
+  import { Swiper, SwiperSlide } from 'swiper/vue'
+  import { Pagination, Autoplay, Navigation } from 'swiper/modules'
+  import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+  import { Button, IconButton } from '@/components/ui/button'
   import { Badge } from '@/components/ui/badge'
+  import { Image } from '@/components/ui'
+  import { SwiperPagination } from '@/components/ui/swiper'
+  import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
+
+  useSwiperStyles()
 
   interface Props {
     slides?: Array<{
@@ -51,69 +50,85 @@
     ],
   })
 
-  // Use composable for carousel state synchronization
-  const { carouselRef, currentIndex, handlePrevious, handleNext, handleDotClick } =
-    useCarouselState()
+  const modules = [Pagination, Autoplay, Navigation]
 </script>
 
 <template>
-  <section class="w-full">
-    <Carousel ref="carouselRef" :autoplay="true" :autoplay-delay="5000" class="h-72 w-full">
-      <CarouselContent>
-        <CarouselItem v-for="slide in props.slides" :key="slide.id" basis="full">
-          <div class="relative h-full w-full overflow-hidden rounded-lg">
-            <!-- Background Image -->
-            <img
-              v-if="slide.image"
-              :src="slide.image"
-              :alt="slide.title"
-              class="absolute inset-0 size-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+  <section class="relative w-full">
+    <swiper
+      :modules="modules"
+      :slides-per-view="1"
+      :autoplay="{ delay: 5000, disableOnInteraction: false }"
+      :loop="true"
+      :pagination="{ clickable: true, el: '#swiper-pagination-banner' }"
+      :navigation="{
+        prevEl: '#swiper-button-prev-banner',
+        nextEl: '#swiper-button-next-banner',
+      }"
+      class="h-72 w-full rounded-lg"
+    >
+      <swiper-slide v-for="slide in props.slides" :key="slide.id">
+        <div class="relative h-full w-full overflow-hidden rounded-lg">
+          <!-- Background Image -->
+          <Image
+            v-if="slide.image"
+            :src="slide.image"
+            :alt="slide.title"
+            loading-strategy="none"
+            container-class="absolute inset-0 size-full"
+          />
 
-            <!-- Overlay gradient -->
-            <div
-              class="absolute inset-0 bg-linear-to-r from-black/60 via-black/40 to-transparent"
-            />
+          <!-- Overlay gradient -->
+          <div class="absolute inset-0 bg-linear-to-r from-black/60 via-black/40 to-transparent" />
 
-            <!-- Content -->
-            <div class="absolute inset-0 flex flex-col justify-center px-6">
-              <Badge v-if="slide.badge" variant="secondary" class="mb-3 w-fit">
-                {{ slide.badge }}
-              </Badge>
+          <!-- Content -->
+          <div class="absolute inset-0 flex flex-col justify-center px-6">
+            <Badge v-if="slide.badge" variant="secondary" class="mb-3 w-fit">
+              {{ slide.badge }}
+            </Badge>
 
-              <h2 class="heading-m mb-2 max-w-xl text-white">
-                {{ slide.title }}
-              </h2>
+            <h2 class="heading-m mb-2 max-w-xl text-white">
+              {{ slide.title }}
+            </h2>
 
-              <p class="body-m mb-4 max-w-md text-neutral-200">
-                {{ slide.description }}
-              </p>
+            <p class="body-m mb-4 max-w-md text-neutral-200">
+              {{ slide.description }}
+            </p>
 
-              <div>
-                <Button
-                  size="lg"
-                  class="bg-white text-neutral-950 hover:bg-neutral-100 active:bg-neutral-200 disabled:bg-neutral-100 disabled:text-neutral-400"
-                >
-                  {{ slide.cta || 'Learn More' }}
-                </Button>
-              </div>
+            <div>
+              <Button
+                size="lg"
+                class="bg-white text-neutral-950 hover:bg-neutral-100 active:bg-neutral-200 disabled:bg-neutral-100 disabled:text-neutral-400"
+              >
+                {{ slide.cta || 'Learn More' }}
+              </Button>
             </div>
           </div>
-        </CarouselItem>
-      </CarouselContent>
+        </div>
+      </swiper-slide>
+    </swiper>
 
-      <!-- Navigation -->
-      <CarouselPrevious :disabled="!carouselRef?.canScrollPrev" @click="handlePrevious" />
-      <CarouselNext :disabled="!carouselRef?.canScrollNext" @click="handleNext" />
+    <!-- Custom Navigation Buttons -->
+    <IconButton
+      id="swiper-button-prev-banner"
+      variant="primary"
+      size="md"
+      class="absolute top-1/2 left-2 z-10 -translate-y-1/2"
+      title="Previous slide"
+    >
+      <ChevronLeft />
+    </IconButton>
+    <IconButton
+      id="swiper-button-next-banner"
+      variant="primary"
+      size="md"
+      class="absolute top-1/2 right-2 z-10 -translate-y-1/2"
+      title="Next slide"
+    >
+      <ChevronRight />
+    </IconButton>
 
-      <!-- Indicators -->
-      <CarouselIndicators
-        :total="props.slides.length"
-        :selected="currentIndex"
-        @dot-click="handleDotClick"
-      />
-    </Carousel>
+    <!-- Pagination -->
+    <SwiperPagination id="swiper-pagination-banner" variant="small" class="mt-2" />
   </section>
 </template>

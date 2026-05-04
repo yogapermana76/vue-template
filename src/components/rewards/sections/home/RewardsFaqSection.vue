@@ -4,7 +4,7 @@
   import { ExpandableItem, ExpandableItemSkeleton } from '@/components/ui/accordion'
   import { EmptyState } from '@/components/ui/empty-state'
   import { useFAQ } from '@/composables/services'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   export interface Props {
     title?: string

@@ -31,7 +31,10 @@
 </script>
 
 <template>
-  <div :class="cn('flex justify-center py-4', props.class)">
+  <div
+    v-if="isFetching || shouldShowEndMessage()"
+    :class="cn('flex justify-center py-4', props.class)"
+  >
     <!-- Loading state -->
     <div v-if="isFetching" class="flex items-center gap-2">
       <Loader2 class="text-primary-500 size-5 animate-spin" />

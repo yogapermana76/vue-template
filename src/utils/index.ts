@@ -8,7 +8,13 @@ export {
   type LocaleCode,
 } from './currency'
 export { formatDate, formatRelativeDate, formatDateTime, formatTime, isValidDate } from './date'
-export { toAppError, getErrorMessage, type AppError } from './error'
+export {
+  toAppError,
+  getErrorMessage,
+  extractApiError,
+  type AppError,
+  type ExtractedApiError,
+} from './error'
 export {
   // Storage modules
   authStorage,
@@ -20,3 +26,12 @@ export {
   DEMO_STORAGE_KEYS,
   UI_STORAGE_KEYS,
 } from './storage'
+export {
+  // Native bridge functions
+  openDeeplink,
+  setStatusBar,
+  getSafeAreaInsets,
+  // Native bridge types
+  type StatusBarConfig,
+  type SafeAreaInsets,
+} from './native-bridge'

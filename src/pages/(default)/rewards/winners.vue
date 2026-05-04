@@ -2,21 +2,32 @@
   import { ref, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Header, GradientSection } from '@/components/layout'
-  import { WinnerCard, WinnerCardSkeleton, type WinnerData } from '@/components/rewards'
-  import { InformationBottomSheet } from '@/components/shared'
+  import {
+    WinnerCard,
+    WinnerCardSkeleton,
+    type WinnerData,
+    WinnerInformationBottomSheet,
+  } from '@/components/rewards'
   import { IconButton } from '@/components/ui/button'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
-  import { useWinnerListInfinite, usePublicWinnerTnc } from '@/composables/services'
-  import { config } from '@/config'
+  import { EmptyState } from '@/components/ui/empty-state'
+  import { useWinnerListInfinite, usePublicWinnerTnc, publicKeys } from '@/composables/services'
+  import { useResponsiveMaxWidth, usePullToRefresh } from '@/composables/ui'
+  import { formatDate } from '@/utils/date'
   import { AlertCircle } from 'lucide-vue-next'
   import type { Winner } from '@/types'
+  import PemenangIllustration from '@/assets/illustrations/history.png'
+  import { PullToRefresh } from '@/components/shared'
 
   definePage({
     meta: {
       title: 'Pemenang',
     },
   })
+
+  const queryClient = useQueryClient()
 
   const route = useRoute()
   const isInfoOpen = ref(false)
@@ -68,7 +79,26 @@
     return items
   })
 
-  const periodLabel = 'Pemenang Undian Periode Januari - Maret 2025'
+  // Dynamic period label from API response (Single Source of Truth)
+  const periodLabel = computed(() => {
+    // Priority 1: Generate from first winner's dates
+    const firstWinner = allWinners.value[0]
+    if (firstWinner?.startDate && firstWinner?.drawnDate) {
+      const startFormatted = formatDate(firstWinner.startDate, 'MMMM yyyy')
+      const endFormatted = formatDate(firstWinner.drawnDate, 'MMMM yyyy')
+      return `Pemenang Undian Periode ${startFormatted} - ${endFormatted}`
+    }
+
+    // Priority 2: Generate from detailUserWinner dates
+    if (currentUser.value?.startDate && currentUser.value?.drawnDate) {
+      const startFormatted = formatDate(currentUser.value.startDate, 'MMMM yyyy')
+      const endFormatted = formatDate(currentUser.value.drawnDate, 'MMMM yyyy')
+      return `Pemenang Undian Periode ${startFormatted} - ${endFormatted}`
+    }
+
+    // Default fallback
+    return 'Pemenang Undian'
+  })
 
   interface WinnerItem {
     rank: number
@@ -122,21 +152,32 @@
       winner: {
         name: currentUser.value.fullname || 'Anda',
         email: currentUser.value.email || '',
-        phone: '',
+        phone: currentUser.value.phoneNumber || '',
       },
       prizeImage: currentUser.value.img || 'https://via.placeholder.com/56',
     }
   })
 
-  const fixedCardStyle = computed(() => ({
-    maxWidth: `${config.ui.maxWidth}px`,
-  }))
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
 
   // Dynamic padding bottom based on currentUserCard
   const mainPaddingClass = computed(() => (currentUserCard.value ? 'pb-32' : 'pb-4'))
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.resetQueries({ queryKey: ['winner', 'list-infinite'] }),
+        queryClient.resetQueries({ queryKey: publicKeys.winnerTnc() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <Header title="Pemenang" positioning="fixed" transparent>
     <template #actions="{ isDarkBg, iconClass }">
       <IconButton
@@ -151,35 +192,53 @@
   </Header>
 
   <GradientSection gradient="teal" class="pt-14">
-    <div class="z-10 flex justify-center px-4 pb-3">
-      <div
-        class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
-      >
-        <span class="body-caption-semibold flex-1 text-center text-white">
-          {{ periodLabel }}
-        </span>
-      </div>
-    </div>
-
     <div v-if="isPending" class="z-10 flex flex-col gap-2 px-4 pb-8">
       <WinnerCardSkeleton v-for="i in 3" :key="i" :show-rank-icon="true" />
     </div>
 
-    <div v-else-if="isError" class="z-10 flex flex-col gap-2 px-4 pb-8">
-      <p class="body-m text-center text-white">Gagal memuat data pemenang.</p>
-    </div>
-
-    <div v-else class="z-10 flex flex-col gap-2 px-4 pb-8">
-      <WinnerCard
-        v-for="item in featuredWinners"
-        :key="item.rank"
-        :rank="item.rank"
-        :prize="item.prize"
-        :winner="item.winner"
-        :prize-image="item.prizeImage"
-        :show-rank-icon="true"
+    <div v-else-if="isError" class="z-10 flex flex-col items-center justify-center gap-2 px-4 pb-8">
+      <EmptyState
+        :image="PemenangIllustration"
+        title="Gagal memuat data"
+        description="Terjadi kesalahan saat memuat data pemenang. Silakan coba lagi."
       />
     </div>
+
+    <template v-else>
+      <div v-if="featuredWinners.length > 0" class="z-10 flex justify-center px-4 pb-3">
+        <div
+          class="flex flex-row items-center justify-between gap-1 rounded-full bg-slate-800/30 px-4 py-2 backdrop-blur-md"
+        >
+          <span class="body-caption-semibold flex-1 text-center text-white">
+            {{ periodLabel }}
+          </span>
+        </div>
+      </div>
+
+      <div
+        v-if="featuredWinners.length === 0"
+        class="z-10 flex flex-col items-center justify-center px-4 pb-8"
+      >
+        <EmptyState
+          :image="PemenangIllustration"
+          title="Belum ada pemenang"
+          description="Saat ini belum ada pemenang untuk periode ini."
+          class="[&_h3]:text-white! [&_p]:text-white/80!"
+        />
+      </div>
+
+      <div v-else class="z-10 flex flex-col gap-2 px-4 pb-8">
+        <WinnerCard
+          v-for="item in featuredWinners"
+          :key="item.rank"
+          :rank="item.rank"
+          :prize="item.prize"
+          :winner="item.winner"
+          :prize-image="item.prizeImage"
+          :show-rank-icon="true"
+        />
+      </div>
+    </template>
   </GradientSection>
 
   <main :class="['flex flex-1 flex-col gap-2 px-4', mainPaddingClass]">
@@ -187,32 +246,53 @@
       <WinnerCardSkeleton v-for="i in 5" :key="i" />
     </div>
 
-    <div v-else-if="isError" class="flex flex-col items-center justify-center py-8">
-      <p class="body-m text-slate-500">Gagal memuat data pemenang.</p>
+    <div v-else-if="isError" class="flex flex-1 flex-col items-center justify-center py-8">
+      <EmptyState
+        :image="PemenangIllustration"
+        title="Gagal memuat data"
+        description="Terjadi kesalahan saat memuat data pemenang. Silakan coba lagi."
+      />
     </div>
 
     <template v-else>
-      <WinnerCard
-        v-for="item in otherWinners"
-        :key="item.rank"
-        :rank="item.rank"
-        :prize="item.prize"
-        :winner="item.winner"
-        :prize-image="item.prizeImage"
-      />
-
-      <!-- Infinite Scroll Trigger -->
-      <div ref="loadMoreRef">
-        <InfiniteScrollTrigger
-          :is-fetching="isFetchingNextPage"
-          :has-more="hasNextPage"
-          :current-page="currentPageCount"
+      <div
+        v-if="otherWinners.length === 0 && featuredWinners.length === 0"
+        class="flex flex-1 flex-col items-center justify-center py-8"
+      >
+        <EmptyState
+          :image="PemenangIllustration"
+          title="Belum ada pemenang"
+          description="Saat ini belum ada pemenang untuk periode ini."
         />
       </div>
+
+      <template v-else>
+        <WinnerCard
+          v-for="item in otherWinners"
+          :key="item.rank"
+          :rank="item.rank"
+          :prize="item.prize"
+          :winner="item.winner"
+          :prize-image="item.prizeImage"
+        />
+
+        <!-- Infinite Scroll Trigger -->
+        <div ref="loadMoreRef">
+          <InfiniteScrollTrigger
+            :is-fetching="isFetchingNextPage"
+            :has-more="hasNextPage"
+            :current-page="currentPageCount"
+          />
+        </div>
+      </template>
     </template>
   </main>
 
-  <div v-if="currentUserCard" class="fixed inset-x-0 bottom-0 z-40 mx-auto" :style="fixedCardStyle">
+  <div
+    v-if="currentUserCard"
+    class="fixed inset-x-0 bottom-0 z-40 mx-auto"
+    :style="responsiveMaxWidthStyle"
+  >
     <WinnerCard
       :rank="currentUserCard.rank"
       :prize="currentUserCard.prize"
@@ -225,23 +305,9 @@
     />
   </div>
 
-  <InformationBottomSheet v-model:open="isInfoOpen" title="Informasi">
-    <div class="flex flex-col">
-      <!-- Loading State -->
-      <div v-if="isTncLoading" class="flex flex-col gap-3">
-        <div class="h-4 w-3/4 animate-pulse rounded bg-slate-200" />
-        <div class="h-4 w-full animate-pulse rounded bg-slate-200" />
-        <div class="h-4 w-5/6 animate-pulse rounded bg-slate-200" />
-      </div>
-
-      <!-- Terms and Conditions Items -->
-      <div v-else class="flex flex-col gap-4">
-        <div v-for="item in tncItems" :key="item.order" class="flex flex-col gap-2">
-          <h3 class="body-m-semibold text-neutral-90">{{ item.title }}</h3>
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="body-caption text-neutral-80" v-html="item.value" />
-        </div>
-      </div>
-    </div>
-  </InformationBottomSheet>
+  <WinnerInformationBottomSheet
+    v-model:open="isInfoOpen"
+    :is-tnc-loading="isTncLoading"
+    :tnc-items="tncItems"
+  />
 </template>

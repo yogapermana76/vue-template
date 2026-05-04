@@ -3,7 +3,7 @@
   import { useRouter } from 'vue-router'
   import { EmptyState } from '@/components/ui/empty-state'
   import { RewardCouponCard } from '@/components/rewards'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
 

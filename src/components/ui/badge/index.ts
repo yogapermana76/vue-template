@@ -14,6 +14,11 @@ export const badgeVariants = cva(
           'border-transparent bg-red-600 text-white [a&]:hover:bg-red-700 focus-visible:ring-red-600/20 dark:focus-visible:ring-red-600/40 dark:bg-red-600',
         outline:
           'text-foreground border-border [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+        warning: 'border-transparent bg-warning-50 text-warning-700',
+        info: 'border-transparent bg-info-50 text-info-700',
+        success: 'border-transparent bg-success-50 text-success-800',
+        error: 'border-transparent bg-error-50 text-error-700',
+        neutral: 'border-transparent bg-neutral-100 text-neutral-800/75',
       },
     },
     defaultVariants: {

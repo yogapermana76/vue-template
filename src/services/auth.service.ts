@@ -3,7 +3,7 @@ import { AuthEndpoint } from './endpoints'
 import { config } from '@/config'
 import type {
   SyncAccountRequest,
-  LegacyAuthResponse,
+  SyncAccountResponse,
   LoginBasicRequest,
   LoginBasicResponse,
   UserProfileResponse,
@@ -11,11 +11,11 @@ import type {
 
 export const authService = {
   // Exchange PLN Mobile token for JWT
-  async syncAccount(params: SyncAccountRequest): Promise<LegacyAuthResponse> {
+  async syncAccount(params: SyncAccountRequest): Promise<SyncAccountResponse> {
     const plnmClient = createHttpClient(config.api.url.base, 'none')
     plnmClient.defaults.headers.common['Authorization'] = params.token
 
-    const { data } = await plnmClient.post<LegacyAuthResponse>(AuthEndpoint.SYNC_ACCOUNT, {
+    const { data } = await plnmClient.post<SyncAccountResponse>(AuthEndpoint.SYNC_ACCOUNT, {
       token: params.token,
     })
     return data

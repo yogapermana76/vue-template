@@ -13,4 +13,5 @@ export const RewardEndpoint = {
   CATEGORY: '/v1/reward/categories',
   EXCHANGE_POINT_DETAIL: '/v1/user/reward/exchange-point/detail',
   VERIFY_INFO: '/v1/user/reward/verify/info',
+  SET_EXPIRED_TOKEN: '/v1/reward/set-expired-token',
 } as const

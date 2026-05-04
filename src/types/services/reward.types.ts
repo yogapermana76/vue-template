@@ -6,11 +6,35 @@
 import type {
   BaseResponse,
   PaginatedData,
-  FullAddress,
   MaybeRef,
   BaseComposableParams,
   PaginationOnly,
 } from '../common/base.types'
+
+// ============================================
+// Address & Recipient Info
+// ============================================
+
+export interface ReceivedInfo {
+  fullname: string
+  email?: string
+  noHp: string
+}
+
+export interface AddressInfo {
+  provinceId: number
+  provinceName: string
+  cityId: number
+  cityName: string
+  districtId: number
+  districtName: string
+  address: string
+  postalCode: string
+}
+
+export interface FullAddress extends AddressInfo {
+  receivedInfo: ReceivedInfo
+}
 
 // ============================================
 // Reward Entities
@@ -22,6 +46,7 @@ export interface Reward {
   description: string
   imageUrl: string
   pricePoint: number
+  type?: 'ITEM' | 'VOUCHER'
   categoryId?: number
   categoryName?: string
   stock?: number
@@ -38,7 +63,7 @@ export interface RewardCategory {
 
 export interface TermCondition {
   label: string
-  value: string
+  value: string | string[]
 }
 
 export interface AddRules {
@@ -86,7 +111,16 @@ export interface UserGiftInstantly {
   title: string
 }
 
-export interface UserGiftInstantlyDetail extends UserGiftInstantly, FullAddress {}
+export interface UserGiftInstantlyDetail extends UserGiftInstantly {
+  description: string
+  termsCondition?: TermCondition[]
+  fullname: string
+  phoneNumber: string
+  provinceName: string
+  cityName: string
+  districtName: string
+  postalCode: string
+}
 
 // ============================================
 // Exchange Point Detail
@@ -94,6 +128,8 @@ export interface UserGiftInstantlyDetail extends UserGiftInstantly, FullAddress 
 
 export interface ExchangePointAddress {
   id: number
+  fullname: string
+  nohp: string
   provinceId: string
   provinceName: string
   cityId: string
@@ -109,6 +145,8 @@ export interface ExchangePointDetail {
   point: number
   title: string
   address: ExchangePointAddress | null
+  description?: string
+  typeOfService?: string
 }
 
 // ============================================
@@ -133,15 +171,14 @@ export interface LastAddress extends FullAddress {
 // ============================================
 
 export interface ExchangeRequest extends FullAddress {
-  itemId: number
+  rewardId: number
 }
 
 export interface ExchangeResult {
-  id: string
-  itemId: number
-  point: number
-  status: 'SUCCESS' | 'PENDING' | 'FAILED'
-  transactionId?: string
+  id: number
+  pricePoint: number
+  total: number
+  transactionDate: string
 }
 
 export type ExchangeResponse = BaseResponse<ExchangeResult>
@@ -162,6 +199,7 @@ export type LastAddressResponse = BaseResponse<LastAddress | null>
 
 export type ExchangePointDetailResponse = BaseResponse<ExchangePointDetail>
 export type VerifyInfoResponse = BaseResponse<VerifyInfoData | null>
+export type SetExpiredTokenResponse = BaseResponse<null>
 
 // ============================================
 // Request Parameters
@@ -184,7 +222,7 @@ export interface UserGiftInstantlyParams {
 }
 
 export interface UserGiftInstantlyDetailParams {
-  id: string
+  userPointId: string
 }
 
 export interface ExchangePointDetailParams {
@@ -221,7 +259,7 @@ export type UseUserGiftInstantlyParams = BaseComposableParams<PaginationOnly>
 /** Parameters for useUserGiftInstantlyDetail composable */
 export type UseUserGiftInstantlyDetailParams = BaseComposableParams<
   never,
-  { id?: MaybeRef<string> }
+  { userPointId?: MaybeRef<string> }
 >
 
 /** Parameters for useExchangePointDetail composable */

@@ -14,7 +14,6 @@ export type {
   SyncAccountResponse,
   LoginBasicResponse,
   UserProfileResponse,
-  LegacyAuthResponse,
   AuthState,
   AuthQueryParams,
 } from './auth.types'
@@ -67,6 +66,9 @@ export type {
 
 // Reward
 export type {
+  ReceivedInfo,
+  AddressInfo,
+  FullAddress,
   Reward,
   RewardCategory,
   RewardDetail,
@@ -89,6 +91,7 @@ export type {
   LastAddressResponse,
   ExchangePointDetailResponse,
   VerifyInfoResponse,
+  SetExpiredTokenResponse,
   RewardPagesParams,
   RewardDetailParams,
   UserGiftInstantlyParams,
@@ -110,14 +113,18 @@ export type {
   Voucher,
   VoucherCategory,
   VoucherDetail,
+  VoucherCodeDetail,
   VoucherPagesResponse,
   VoucherDetailResponse,
+  VoucherCodesResponse,
   VoucherCategoryResponse,
   VoucherPagesParams,
   VoucherDetailParams,
+  VoucherDetailsPagesParams,
   // Composable Params
   UseVoucherPagesParams,
   UseVoucherDetailParams,
+  UseVoucherDetailsPagesParams,
   UseVoucherCategoriesParams,
 } from './voucher.types'
 
@@ -168,3 +175,6 @@ export type {
   UseWinnersCategoryParams,
   UsePublicWinnerTncParams,
 } from './public.types'
+
+// Lifestyle
+export * from './lifestyle'

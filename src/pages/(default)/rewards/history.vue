@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useIntersectionObserver } from '@vueuse/core'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Header } from '@/components/layout'
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
@@ -9,16 +10,20 @@
     TransactionHistorySection,
   } from '@/components/rewards/sections/history'
   import { RewardsTransactionCardSkeleton } from '@/components/rewards'
-  import { usePointHistoryInfinite, usePointSummary } from '@/composables/services'
+  import { usePointHistoryInfinite, usePointSummary, pointKeys } from '@/composables/services'
   import { formatDate } from '@/utils/date'
   import type { PointHistoryItem } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
+  import { PullToRefresh } from '@/components/shared'
+  import { usePullToRefresh } from '@/composables/ui'
 
   definePage({
     meta: {
       title: 'Riwayat Penukaran Point',
     },
   })
+
+  const queryClient = useQueryClient()
 
   interface TransactionItem {
     id: number
@@ -100,9 +105,22 @@
   const currentPageCount = computed(() => pointHistoryData.value?.pages?.length ?? 0)
 
   const hasData = computed(() => transactionHistory.value.length > 0)
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
+        queryClient.resetQueries({ queryKey: ['point', 'history-infinite'] }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <Header title="Riwayat" positioning="sticky" />
 
   <PointsInfoSection

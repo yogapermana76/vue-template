@@ -1,19 +1,21 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { Ticket, Calendar } from 'lucide-vue-next'
   import { Header, Footer, HeroBanner } from '@/components/layout'
   import { Button } from '@/components/ui/button'
-  import { ConfirmationBottomSheet } from '@/components/shared'
+  import { ConfirmationBottomSheet, PullToRefresh } from '@/components/shared'
   import {
     RewardProgramInfo,
     RewardTermsSection,
     RewardDetailSkeleton,
   } from '@/components/rewards/sections'
-  import { useUserLotteryDetail, usePointSummary } from '@/composables/services'
+  import { useLotteryDetail, usePointSummary, lotteryKeys, pointKeys } from '@/composables/services'
+  import { usePullToRefresh } from '@/composables/ui'
   import { formatDate } from '@/utils/date'
   import { formatNumber } from '@/utils'
-  import LocationIllustration from '@/assets/illustrations/location.svg?component'
+  import LocationIllustration from '@/assets/illustrations/location.png'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   definePage({
@@ -24,20 +26,24 @@
 
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const showConfirmationSheet = ref(false)
 
   // Get ID from route params
-  const lotteryId = computed(() => route.params.id as string)
+  const lotteryId = computed(() => {
+    const params = route.params as { id?: string }
+    return params.id || ''
+  })
 
   // Fetch lottery detail
-  const { data: lotteryDetail, isPending } = useUserLotteryDetail({
+  const { data: lotteryDetail, isPending } = useLotteryDetail({
     params: { id: lotteryId },
   })
 
   // Fetch user points
   const { data: userPointsData } = usePointSummary()
 
-  const lottery = computed(() => lotteryDetail.value?.data)
+  const lottery = computed(() => lotteryDetail.value)
   const userPoints = computed(() => userPointsData.value?.data?.balance ?? 0)
 
   // Program info
@@ -90,22 +96,34 @@
     return statsArray
   })
 
+  // Helper function to format term value (array or string)
+  const formatTermValue = (value: string | string[]) => {
+    return Array.isArray(value)
+      ? `<ol>${value.map(item => `<li>${item}</li>`).join('')}</ol>`
+      : value
+  }
+
+  // Helper function to generate terms and conditions content
+  const generateTermsContent = (termsCondition: { label: string; value: string | string[] }[]) => {
+    return termsCondition
+      .map(term => {
+        const labelHtml = term.label
+          ? `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>`
+          : ''
+        return `${labelHtml}${formatTermValue(term.value)}`
+      })
+      .join('')
+  }
+
   // Terms items - Single "Syarat dan Ketentuan" accordion containing all terms
   const termsItems = computed(() => {
     if (!lottery.value?.termsCondition || lottery.value.termsCondition.length === 0) return []
-
-    // Combine all terms into single content
-    const allTermsContent = lottery.value.termsCondition
-      .map(term => {
-        return `<p class="body-caption-semibold text-slate-950 mb-2">${term.label}</p>${term.value}`
-      })
-      .join('<div class="mt-4"></div>') // Add spacing between multiple terms
 
     return [
       {
         id: 'terms-and-conditions',
         title: 'Syarat dan Ketentuan',
-        content: allTermsContent,
+        content: generateTermsContent(lottery.value.termsCondition),
       },
     ]
   })
@@ -137,12 +155,25 @@
     showConfirmationSheet.value = false
     router.push({
       path: '/rewards/complete-address',
-      query: { lotteryId: lotteryId.value },
+      query: { id: lotteryId.value, type: 'lottery' },
     })
   }
+
+  // Pull to refresh
+  const { pullDistance, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await Promise.all([
+        queryClient.resetQueries({ queryKey: lotteryKeys.detail(lotteryId.value) }),
+        queryClient.resetQueries({ queryKey: pointKeys.summary() }),
+      ])
+    },
+  })
 </script>
 
 <template>
+  <!-- Pull to Refresh Indicator -->
+  <PullToRefresh :pull-distance="pullDistance" :is-refreshing="isRefreshing" />
+
   <!-- Header -->
   <Header title="Detail" positioning="sticky" />
 
@@ -164,34 +195,34 @@
       <!-- Terms & Conditions Section -->
       <RewardTermsSection v-if="termsItems.length > 0" :items="termsItems" />
     </main>
+
+    <!-- Footer with Button -->
+    <Footer position="fixed">
+      <!-- Disabled state message -->
+      <div v-if="disabledMessage">
+        <p class="body-m text-slate-950">{{ disabledMessage }}</p>
+      </div>
+
+      <!-- Enabled state with points display -->
+      <div v-if="canExchange && lottery" class="flex w-full items-center justify-between gap-2">
+        <p class="body-m text-slate-950">Tukar dengan</p>
+        <p class="body-l-semibold text-primary-700">
+          {{ formatNumber(lottery.pricePoint ?? 0) }} poin
+        </p>
+      </div>
+
+      <!-- Button -->
+      <Button
+        :variant="canExchange ? 'primary' : 'secondary'"
+        size="sm"
+        class="w-full"
+        :disabled="!canExchange"
+        @click="handleExchangeClick"
+      >
+        Tukar Poin
+      </Button>
+    </Footer>
   </template>
-
-  <!-- Footer with Button -->
-  <Footer position="fixed">
-    <!-- Disabled state message -->
-    <div v-if="disabledMessage" class="mb-2">
-      <p class="body-m text-slate-950">{{ disabledMessage }}</p>
-    </div>
-
-    <!-- Enabled state with points display -->
-    <div v-if="canExchange && lottery" class="mb-2 flex w-full items-center justify-between gap-2">
-      <p class="body-m text-slate-950">Tukar dengan</p>
-      <p class="body-l-semibold text-primary-700">
-        {{ formatNumber(lottery.pricePoint ?? 0) }} poin
-      </p>
-    </div>
-
-    <!-- Button -->
-    <Button
-      :variant="canExchange ? 'primary' : 'secondary'"
-      size="sm"
-      class="w-full"
-      :disabled="!canExchange"
-      @click="handleExchangeClick"
-    >
-      Tukar Poin
-    </Button>
-  </Footer>
 
   <!-- Location Confirmation Bottom Sheet -->
   <ConfirmationBottomSheet

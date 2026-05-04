@@ -1,12 +1,16 @@
 <script setup lang="ts">
-  import { RouterView } from 'vue-router'
   import { AppLayout } from '@/components/layout'
+  import { TransitionedRouterView } from '@/components/shared'
   import { Toaster } from '@/components/ui/sonner'
+  import { useAppInit } from '@/composables/app'
+
+  // Initialize app (auth, watchers, etc.)
+  useAppInit()
 </script>
 
 <template>
   <AppLayout>
-    <RouterView />
+    <TransitionedRouterView />
   </AppLayout>
   <Toaster />
 </template>

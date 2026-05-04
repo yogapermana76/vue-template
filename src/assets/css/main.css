@@ -659,4 +659,58 @@
   .bg-gradient-blue-cyan {
     background: linear-gradient(to bottom, #04619f 0%, #177bad 30%, #12cbe4 70%);
   }
+
+  .bg-gradient-voucher {
+    background: linear-gradient(to bottom, #003557 0%, #0d5580 35%, #0c6594 70%, #0d6fa0 100%);
+  }
+
+  .bg-gradient-date-selected {
+    background: linear-gradient(to bottom, #004471 0%, #004979 30%, #0f79af 100%);
+  }
+
+  /* HTML Content Lists - Restore default list styling for v-html rendered content */
+  .html-content ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-left: 0.25rem;
+  }
+
+  .html-content ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-left: 0.25rem;
+  }
+
+  .html-content li {
+    padding-left: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Nested lists styling - reduce indentation */
+  .html-content ol ol,
+  .html-content ul ul,
+  .html-content ol ul,
+  .html-content ul ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    margin-left: 0;
+  }
+
+  /* Preserve list-style-type for nested lists */
+  .html-content ol[type='a'] {
+    list-style-type: lower-alpha;
+  }
+
+  .html-content ol[type='A'] {
+    list-style-type: upper-alpha;
+  }
+
+  .html-content ol[type='i'] {
+    list-style-type: lower-roman;
+  }
+
+  .html-content ol[type='I'] {
+    list-style-type: upper-roman;
+  }
 }

@@ -11,6 +11,8 @@
     variant?: 'primary' | 'secondary' | 'tertiary'
     /** Button size */
     size?: 'xs' | 'sm' | 'md' | 'lg'
+    /** Loading state */
+    loading?: boolean
     /** Click handler */
     onClick: () => void
   }
@@ -74,7 +76,11 @@
       <div class="flex w-full flex-col items-center justify-center gap-2 px-4 text-center">
         <h3 class="heading-s w-full text-slate-950">{{ title }}</h3>
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <p v-if="description" class="body-m w-full text-slate-800" v-html="description" />
+        <p
+          v-if="description"
+          class="html-content body-m w-full text-slate-800"
+          v-html="description"
+        />
       </div>
     </div>
 
@@ -88,6 +94,7 @@
           :key="index"
           :variant="button.variant || 'primary'"
           :size="button.size || 'sm'"
+          :loading="button.loading"
           :class="buttonLayout === 'row' ? 'flex-1' : 'w-full'"
           @click="button.onClick"
         >

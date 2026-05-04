@@ -42,3 +42,9 @@ export {
 } from './winner-info-card'
 
 export { InfoCard, InfoCardSkeleton } from './info-card'
+
+export {
+  RecipientInfoCard,
+  RecipientInfoCardSkeleton,
+  type RecipientInfoCardProps,
+} from './recipient-info-card'

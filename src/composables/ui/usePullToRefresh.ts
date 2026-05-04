@@ -1,11 +1,23 @@
-import { ref, onMounted, onUnmounted, type Ref } from 'vue'
+import { ref, computed, toValue, onMounted, onUnmounted, type MaybeRefOrGetter } from 'vue'
+
+/** Default overlay selectors for pull-to-refresh detection */
+const DEFAULT_OVERLAY_SELECTORS = [
+  '[role="dialog"]',
+  '[role="alertdialog"]',
+  '[data-state="open"][data-vaul-drawer]',
+  '[data-radix-dialog-content]',
+  '[data-radix-alert-dialog-content]',
+  '.modal',
+  '.drawer',
+  '.bottom-sheet',
+] as const
 
 export interface UsePullToRefreshOptions {
   /**
    * The element to attach the pull-to-refresh behavior
-   * If not provided, uses document.body
+   * If not provided, uses document
    */
-  containerRef?: Ref<HTMLElement | null>
+  containerRef?: MaybeRefOrGetter<HTMLElement | null>
   /**
    * Minimum pull distance to trigger refresh (in pixels)
    * @default 80
@@ -17,78 +29,122 @@ export interface UsePullToRefreshOptions {
    */
   maxPull?: number
   /**
+   * Resistance factor for pull gesture (0-1, lower = more resistance)
+   * @default 0.5
+   */
+  resistance?: number
+  /**
    * Callback function when refresh is triggered
    */
   onRefresh: () => Promise<void>
   /**
-   * Whether pull-to-refresh is enabled
+   * Whether pull-to-refresh is enabled (reactive)
    * @default true
    */
-  enabled?: boolean
+  enabled?: MaybeRefOrGetter<boolean>
+  /**
+   * Additional overlay selectors to ignore pull gestures
+   */
+  overlaySelectors?: string[]
 }
 
 export function usePullToRefresh(options: UsePullToRefreshOptions) {
-  const { threshold = 80, maxPull = 120, onRefresh, enabled = true } = options
+  const {
+    threshold = 80,
+    maxPull = 120,
+    resistance = 0.5,
+    onRefresh,
+    overlaySelectors = [],
+  } = options
 
+  // Reactive state
   const isRefreshing = ref(false)
   const pullDistance = ref(0)
   const isPulling = ref(false)
 
-  let startY = 0
-  let currentY = 0
+  // Touch tracking (encapsulated in object for cleaner reset)
+  const touchState = {
+    startY: 0,
+    currentY: 0,
+    target: null as EventTarget | null,
+  }
+
+  // Merge default and custom overlay selectors
+  const allOverlaySelectors = [...DEFAULT_OVERLAY_SELECTORS, ...overlaySelectors]
 
   /**
-   * Check if touch event originates from inside an overlay (modal, drawer, dialog, etc.)
-   * Uses a generic approach that works with any overlay library
+   * Check if touch event originates from inside an overlay
    */
   const isInsideOverlay = (target: EventTarget | null): boolean => {
     if (!(target instanceof Element)) return false
-
-    // Generic selectors for common overlay patterns
-    const overlaySelectors = [
-      '[role="dialog"]',
-      '[role="alertdialog"]',
-      '[data-state="open"][data-vaul-drawer]',
-      '[data-radix-dialog-content]',
-      '[data-radix-alert-dialog-content]',
-      '.modal',
-      '.drawer',
-      '.bottom-sheet',
-    ]
-
-    return overlaySelectors.some(selector => target.closest(selector))
+    return allOverlaySelectors.some(selector => target.closest(selector))
   }
 
-  const canPull = (): boolean => {
-    if (!enabled) return false
-    if (isRefreshing.value) return false
+  /**
+   * Check if element is scrollable
+   */
+  const isScrollableElement = (element: Element): boolean => {
+    const style = window.getComputedStyle(element)
+    return style.overflowY === 'auto' || style.overflowY === 'scroll'
+  }
 
-    // Check if we're at the top of the page
-    const container = options.containerRef?.value || document.documentElement
+  /**
+   * Check if any scrollable parent is not at top
+   */
+  const isAnyParentScrolled = (target: EventTarget | null): boolean => {
+    if (!(target instanceof Element)) return false
+
+    let element: Element | null = target
+
+    while (element && element !== document.documentElement) {
+      if (isScrollableElement(element) && element.scrollTop > 0) {
+        return true
+      }
+      element = element.parentElement
+    }
+
+    return false
+  }
+
+  /**
+   * Determine if pull gesture can be initiated
+   */
+  const canPull = (target?: EventTarget | null): boolean => {
+    if (!toValue(options.enabled ?? true)) return false
+    if (isRefreshing.value) return false
+    if (target && isAnyParentScrolled(target)) return false
+
+    const container = toValue(options.containerRef) || document.documentElement
     return container.scrollTop <= 0
   }
 
-  const handleTouchStart = (e: TouchEvent) => {
-    // Check overlay at touch start to avoid interference
-    if (isInsideOverlay(e.target)) return
-    if (!canPull()) return
+  /**
+   * Reset touch state to initial values
+   */
+  const resetTouchState = () => {
+    touchState.startY = 0
+    touchState.currentY = 0
+    touchState.target = null
+  }
 
-    startY = e.touches[0].clientY
+  const handleTouchStart = (e: TouchEvent) => {
+    if (isInsideOverlay(e.target)) return
+    if (!canPull(e.target)) return
+
+    touchState.target = e.target
+    touchState.startY = e.touches[0].clientY
     isPulling.value = true
   }
 
   const handleTouchMove = (e: TouchEvent) => {
-    if (!isPulling.value || !canPull()) return
+    if (!isPulling.value || !canPull(touchState.target)) return
 
-    currentY = e.touches[0].clientY
-    const diff = currentY - startY
+    touchState.currentY = e.touches[0].clientY
+    const diff = touchState.currentY - touchState.startY
 
     if (diff > 0) {
-      // Apply resistance to make pull feel natural
-      const resistance = 0.5
       pullDistance.value = Math.min(diff * resistance, maxPull)
 
-      // Prevent default scroll when pulling
       if (pullDistance.value > 0) {
         e.preventDefault()
       }
@@ -102,7 +158,8 @@ export function usePullToRefresh(options: UsePullToRefreshOptions) {
 
     if (pullDistance.value >= threshold) {
       isRefreshing.value = true
-      pullDistance.value = threshold * 0.6 // Show loading indicator
+      // Keep indicator visible at reduced height during refresh
+      pullDistance.value = threshold * 0.6
 
       try {
         await onRefresh()
@@ -114,36 +171,38 @@ export function usePullToRefresh(options: UsePullToRefreshOptions) {
       pullDistance.value = 0
     }
 
-    startY = 0
-    currentY = 0
+    resetTouchState()
+  }
+
+  const handleTouchCancel = () => {
+    isPulling.value = false
+    pullDistance.value = 0
+    resetTouchState()
   }
 
   const setupListeners = () => {
-    const container = options.containerRef?.value || document
+    const container = toValue(options.containerRef) || document
 
     container.addEventListener('touchstart', handleTouchStart as EventListener, { passive: true })
     container.addEventListener('touchmove', handleTouchMove as EventListener, { passive: false })
     container.addEventListener('touchend', handleTouchEnd as EventListener, { passive: true })
+    container.addEventListener('touchcancel', handleTouchCancel as EventListener, { passive: true })
   }
 
   const removeListeners = () => {
-    const container = options.containerRef?.value || document
+    const container = toValue(options.containerRef) || document
 
     container.removeEventListener('touchstart', handleTouchStart as EventListener)
     container.removeEventListener('touchmove', handleTouchMove as EventListener)
     container.removeEventListener('touchend', handleTouchEnd as EventListener)
+    container.removeEventListener('touchcancel', handleTouchCancel as EventListener)
   }
 
-  onMounted(() => {
-    setupListeners()
-  })
+  onMounted(setupListeners)
+  onUnmounted(removeListeners)
 
-  onUnmounted(() => {
-    removeListeners()
-  })
-
-  // Calculate progress (0 to 1)
-  const progress = () => Math.min(pullDistance.value / threshold, 1)
+  // Computed progress (0 to 1) - reactive unlike function
+  const progress = computed(() => Math.min(pullDistance.value / threshold, 1))
 
   return {
     isRefreshing,

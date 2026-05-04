@@ -82,6 +82,6 @@ Program Eco Journey Points adalah bagian dari gerakan "Green Future Powered Toda
   <!-- Content -->
   <main class="flex flex-1 flex-col gap-4 px-4 py-4">
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="termsContent" />
+    <div class="html-content" v-html="termsContent" />
   </main>
 </template>

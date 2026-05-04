@@ -1,13 +1,12 @@
 <script setup lang="ts">
   import { computed, watch } from 'vue'
-  import { config } from '@/config'
   import { Header, Footer } from '@/components/layout'
   import { Button } from '@/components/ui/button'
   import { Divider } from '@/components/ui/divider'
   import { SearchInput } from '@/components/shared/search-input'
   import LocationListGroup from './LocationListGroup.vue'
   import LocationSelectedFields from './LocationSelectedFields.vue'
-  import { useLocationPicker } from '@/composables/ui'
+  import { useLocationPicker, useResponsiveMaxWidth } from '@/composables/ui'
   import { EMPTY_STATE_MESSAGES } from './constants'
   import type { LocationPickerProps, LocationPickerEmits } from './types'
 
@@ -26,8 +25,6 @@
     currentLevel,
     groupedData,
     selectedId,
-    selectedProvinceId,
-    selectedCityId,
     selectedDistrictId,
     selectedProvinceName,
     selectedCityName,
@@ -37,25 +34,22 @@
     canSave,
     searchPlaceholder,
     sectionTitle,
+    editingLevel,
     handleSelect,
     handleReset,
-    handleEditProvince,
-    handleEditCity,
-    handleEditDistrict,
+    handleEditLevel,
+    syncFromSelection,
     getSelectedLocation,
   } = useLocationPicker({
     initialSelection: props.selectedLocation,
   })
 
-  // Watch for prop changes to sync state when picker opens
+  // Sync selection when picker opens with existing selection
   watch(
     () => props.open,
     isOpen => {
       if (isOpen && props.selectedLocation) {
-        // Sync selected IDs when picker opens with existing selection
-        selectedProvinceId.value = props.selectedLocation.provinceId
-        selectedCityId.value = props.selectedLocation.cityId
-        selectedDistrictId.value = props.selectedLocation.districtId
+        syncFromSelection(props.selectedLocation)
       }
     },
   )
@@ -70,23 +64,50 @@
   })
 
   const handleClose = () => {
+    // Reset editing state when closing modal
+    editingLevel.value = null
+    searchQuery.value = ''
     isOpen.value = false
   }
 
+  const handleResetAndEdit = () => {
+    handleReset()
+    // After reset, set to editing province so search is enabled
+    handleEditLevel('province')
+  }
+
   const handleSave = () => {
-    const selection = getSelectedLocation()
-    emit('save', selection)
+    emit('save', getSelectedLocation())
     handleClose()
   }
 
   // ============================================
-  // Empty State Message
+  // Computed
   // ============================================
 
   const emptyStateMessage = computed(() => {
     if (isError.value) return EMPTY_STATE_MESSAGES.error
     if (searchQuery.value) return EMPTY_STATE_MESSAGES.noResults
     return EMPTY_STATE_MESSAGES.noData
+  })
+
+  // Hide district list if district is already selected and not being edited
+  const shouldShowList = computed(() => {
+    // Always show list for province and city
+    if (currentLevel.value !== 'district') return true
+
+    // For district: only show if user is actively editing (clicked the field)
+    // or if district is not yet selected
+    return !selectedDistrictId.value || editingLevel.value === 'district'
+  })
+
+  const { responsiveMaxWidthStyle } = useResponsiveMaxWidth()
+
+  // Disable search when all fields are filled and not editing
+  const isSearchDisabled = computed(() => canSave.value && !editingLevel.value)
+
+  const finalSearchPlaceholder = computed(() => {
+    return isSearchDisabled.value ? 'Cari Provinsi, Kota, Kecamatan' : searchPlaceholder.value
   })
 </script>
 
@@ -118,7 +139,7 @@
         <!-- Centered container with max-width and white background -->
         <div
           class="relative mx-auto flex h-full w-full flex-col bg-white"
-          :style="{ maxWidth: `${config.ui.maxWidth}px` }"
+          :style="responsiveMaxWidthStyle"
         >
           <!-- Header -->
           <Header
@@ -133,7 +154,11 @@
           <div class="flex min-h-0 flex-1 flex-col overflow-y-auto pb-4">
             <!-- Search Input (Sticky) -->
             <div class="sticky top-0 z-10 bg-white px-4 pt-4 pb-3">
-              <SearchInput v-model="searchQuery" :placeholder="searchPlaceholder" />
+              <SearchInput
+                v-model="searchQuery"
+                :placeholder="finalSearchPlaceholder"
+                :disabled="isSearchDisabled"
+              />
             </div>
 
             <!-- Selected Location Section -->
@@ -143,18 +168,16 @@
                 :province-name="selectedProvinceName"
                 :city-name="selectedCityName"
                 :district-name="selectedDistrictName"
-                @reset="handleReset"
-                @edit-province="handleEditProvince"
-                @edit-city="handleEditCity"
-                @edit-district="handleEditDistrict"
+                @reset="handleResetAndEdit"
+                @edit-level="handleEditLevel"
               />
             </div>
 
             <!-- Divider -->
-            <Divider class="shrink-0" thick />
+            <Divider v-if="shouldShowList" class="shrink-0" thick />
 
             <!-- Location List Section -->
-            <div class="flex-1 px-4 pt-4 pb-20">
+            <div v-if="shouldShowList" class="flex-1 px-4 pt-4 pb-20">
               <h2 class="body-l-semibold mb-3 text-neutral-950">
                 {{ sectionTitle }}
               </h2>

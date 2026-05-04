@@ -2,14 +2,14 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useIntersectionObserver } from '@vueuse/core'
-  import { Clock } from 'lucide-vue-next'
+  import { Clock, Ticket } from 'lucide-vue-next'
   import { RewardBannerCard, RewardBannerCardSkeleton } from '@/components/rewards'
   import { EmptyState } from '@/components/ui/empty-state'
   import { InfiniteScrollTrigger } from '@/components/ui/infinite-scroll-trigger'
   import { useUserLotteryListInfinite } from '@/composables/services'
   import { formatDate } from '@/utils/date'
   import type { UserLottery } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
 
   const router = useRouter()
   const loadMoreRef = ref<HTMLElement | null>(null)
@@ -87,6 +87,7 @@
           :image-url="coupon.imageUrl"
           :duration-text="formatDuration(coupon.startDate, coupon.endDate)"
           :duration-icon="Clock"
+          :status-icon="Ticket"
           :status-text="coupon.redeemCount > 0 ? `${coupon.redeemCount} Kupon` : undefined"
           button-label="Lihat Detail"
           @button-click="handleLotteryCouponClick(coupon.id)"

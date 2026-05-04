@@ -39,16 +39,16 @@ export function useAuthService() {
 
   /**
    * Check and initialize authentication
-   * Restores from localStorage or authenticates with provided token
+   * Authenticates with provided token or restores from localStorage
    */
   const checkAuth = async (token?: string): Promise<boolean> => {
-    // Try restore from localStorage first
-    if (restoreSession()) return true
-
-    // Authenticate with provided token
+    // Prioritize token from query params if provided
     if (token) {
       return await authenticate(token)
     }
+
+    // Fallback to restore from localStorage
+    if (restoreSession()) return true
 
     return false
   }

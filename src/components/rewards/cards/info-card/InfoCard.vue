@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
+  import lightningGlowImg from '@/assets/vectors/lightning-glow-md.png'
 
   interface Props {
     /**
@@ -62,13 +63,18 @@
       "
     />
 
+    <!-- Lightning Glow -->
+    <div class="pointer-events-none absolute -top-8 -right-11">
+      <img :src="lightningGlowImg" alt="" />
+    </div>
+
     <!-- Title -->
     <h3 class="relative z-10 text-sm leading-5 font-semibold text-white">
       {{ title }}
     </h3>
 
-    <!-- Image Container - positioned at bottom left -->
-    <div class="absolute bottom-0 left-0 z-10 h-24 w-24">
+    <!-- Image Container - positioned at bottom left with spacing -->
+    <div class="absolute bottom-3 left-3 z-10 size-20">
       <img :src="image" :alt="title" class="h-full w-full object-contain" />
     </div>
   </div>

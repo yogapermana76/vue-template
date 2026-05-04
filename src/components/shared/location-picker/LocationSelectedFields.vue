@@ -16,32 +16,39 @@
     districtName?: string
   }
 
-  defineProps<Props>()
+  const props = defineProps<Props>()
 
   const emit = defineEmits<{
     reset: []
-    editProvince: []
-    editCity: []
-    editDistrict: []
+    editLevel: [level: LocationLevel]
   }>()
 
-  const handleReset = () => {
-    emit('reset')
-  }
-
-  const handleEditProvince = () => {
-    emit('editProvince')
-  }
-
-  const handleEditCity = () => {
-    emit('editCity')
-  }
-
-  const handleEditDistrict = () => {
-    emit('editDistrict')
-  }
-
-  const getFieldLabel = (level: LocationLevel): string => FIELD_LABELS[level]
+  /** Field configuration for data-driven rendering */
+  const LOCATION_FIELDS: {
+    level: LocationLevel
+    placeholder: string
+    showWhen: () => boolean
+    getValue: () => string | undefined
+  }[] = [
+    {
+      level: 'province',
+      placeholder: 'Pilih Provinsi',
+      showWhen: () => true, // Always show
+      getValue: () => props.provinceName,
+    },
+    {
+      level: 'city',
+      placeholder: 'Pilih Kota',
+      showWhen: () => !!props.provinceName,
+      getValue: () => props.cityName,
+    },
+    {
+      level: 'district',
+      placeholder: 'Pilih Kecamatan',
+      showWhen: () => !!props.cityName,
+      getValue: () => props.districtName,
+    },
+  ]
 </script>
 
 <template>
@@ -53,46 +60,25 @@
           variant="tertiary"
           size="sm"
           class="mt-2 h-auto w-auto p-0 text-xs font-semibold"
-          @click="handleReset"
+          @click="emit('reset')"
         >
           Atur Ulang
         </Button>
       </div>
 
-      <!-- Province Field - Always clickable -->
-      <TextField
-        :label="getFieldLabel('province')"
-        :model-value="provinceName"
-        :suffix-icon="provinceName ? CheckCircle2 : undefined"
-        :input-class="'cursor-pointer'"
-        placeholder="Pilih Provinsi"
-        readonly
-        @click="handleEditProvince"
-      />
-
-      <!-- City Field - Always clickable when visible -->
-      <TextField
-        v-if="provinceName"
-        :label="getFieldLabel('city')"
-        :model-value="cityName"
-        :suffix-icon="cityName ? CheckCircle2 : undefined"
-        input-class="cursor-pointer"
-        placeholder="Pilih Kota"
-        readonly
-        @click="handleEditCity"
-      />
-
-      <!-- District Field - Always clickable when visible -->
-      <TextField
-        v-if="cityName"
-        :label="getFieldLabel('district')"
-        :model-value="districtName"
-        :suffix-icon="districtName ? CheckCircle2 : undefined"
-        input-class="cursor-pointer"
-        placeholder="Pilih Kecamatan"
-        readonly
-        @click="handleEditDistrict"
-      />
+      <!-- Location Fields - Data-driven rendering -->
+      <template v-for="field in LOCATION_FIELDS" :key="field.level">
+        <TextField
+          v-if="field.showWhen()"
+          :label="FIELD_LABELS[field.level]"
+          :model-value="field.getValue()"
+          :suffix-icon="field.getValue() ? CheckCircle2 : undefined"
+          :placeholder="field.placeholder"
+          input-class="cursor-pointer"
+          readonly
+          @click="emit('editLevel', field.level)"
+        />
+      </template>
     </div>
   </div>
 </template>

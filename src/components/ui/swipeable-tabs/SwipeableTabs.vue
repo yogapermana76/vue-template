@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes, CSSProperties } from 'vue'
   import { provide, computed } from 'vue'
-  import { useSwipeableTabs } from '@/composables/ui'
+  import { useSwipeableTabs, useResponsiveMaxWidth } from '@/composables/ui'
   import { cn } from '@/utils/cn'
   import {
     SWIPEABLE_TABS_INJECTION_KEY,
@@ -24,6 +24,8 @@
     change: [value: string]
   }>()
 
+  const { responsiveMaxWidth } = useResponsiveMaxWidth()
+
   // Composable
   const swipeableTabs = useSwipeableTabs({
     tabs: props.tabs,
@@ -33,8 +35,11 @@
   })
 
   // Computed
+  // Only apply maxWidth on desktop (viewport wider than maxWidth)
   const containerStyle = computed<CSSProperties>(() => ({
+    top: props.heightOffset,
     height: `calc(100dvh - ${props.heightOffset})`,
+    ...(responsiveMaxWidth.value && { maxWidth: responsiveMaxWidth.value }),
   }))
 
   // Methods
@@ -70,7 +75,7 @@
 
 <template>
   <div
-    :class="cn('swipeable-tabs flex flex-col', props.class)"
+    :class="cn('swipeable-tabs fixed inset-x-0 bottom-0 mx-auto flex flex-col', props.class)"
     :style="containerStyle"
     data-slot="swipeable-tabs"
   >

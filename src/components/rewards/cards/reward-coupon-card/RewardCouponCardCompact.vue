@@ -1,8 +1,10 @@
 <script setup lang="ts">
   import { computed, type Component, type HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
+  import { formatNumber } from '@/utils/currency'
   import { Button } from '@/components/ui/button'
   import { StockBadge } from '@/components/ui/badge'
+  import { Image } from '@/components/ui'
   import CoinIcon from '@/assets/icons/coin.svg?component'
 
   type FlagIcon = 'check' | 'discount' | 'ticket' | 'thumbs-up'
@@ -55,7 +57,7 @@
 
   // Compute display text for points
   const pointsDisplay = computed(() => {
-    return `${props.points.toLocaleString('id-ID')} poin`
+    return `${formatNumber(props.points)} poin`
   })
 
   const handleButtonClick = (event: Event) => {
@@ -83,20 +85,20 @@
     @click="handleCardClick"
   >
     <!-- Image Container -->
-    <div class="relative aspect-2/1 w-full overflow-hidden rounded-t-sm border-b border-slate-200">
-      <img
-        :src="imageUrl"
-        :alt="imageAlt"
-        :class="cn('h-full w-full object-cover', disabled && 'grayscale')"
-      />
-
+    <Image
+      :src="imageUrl"
+      :alt="imageAlt"
+      :class="disabled && 'grayscale'"
+      aspect-ratio="2/1"
+      container-class="w-full rounded-t-sm border-b border-slate-200"
+    >
       <!-- Stock Badge (Bottom-right of image) -->
       <div v-if="flagText" class="absolute right-0 bottom-0 z-10">
         <StockBadge :variant="disabled ? 'danger' : 'success'" :icon="disabled ? 'none' : 'ticket'">
           {{ flagText }}
         </StockBadge>
       </div>
-    </div>
+    </Image>
 
     <!-- Content Container -->
     <div class="relative flex flex-col items-start gap-4 p-2">

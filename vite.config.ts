@@ -99,6 +99,53 @@ export default defineConfig({
     cssCodeSplit: true,
     sourcemap: false,
     chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Core Vue ecosystem - loaded on every page
+          if (id.includes('node_modules/vue/') || id.includes('node_modules/@vue/')) {
+            return 'vue-vendor'
+          }
+          if (id.includes('node_modules/vue-router/')) {
+            return 'vue-vendor'
+          }
+          if (id.includes('node_modules/pinia/')) {
+            return 'vue-vendor'
+          }
+          // Data fetching layer
+          if (id.includes('node_modules/@tanstack/')) {
+            return 'query-vendor'
+          }
+          // UI utilities
+          if (id.includes('node_modules/@vueuse/')) {
+            return 'ui-vendor'
+          }
+          if (
+            id.includes('node_modules/class-variance-authority/') ||
+            id.includes('node_modules/clsx/') ||
+            id.includes('node_modules/tailwind-merge/')
+          ) {
+            return 'ui-vendor'
+          }
+          // Heavy UI library
+          if (id.includes('node_modules/reka-ui/')) {
+            return 'reka-ui'
+          }
+          // Icons
+          if (id.includes('node_modules/lucide-vue-next/')) {
+            return 'icons'
+          }
+          // Date utilities
+          if (id.includes('node_modules/date-fns/')) {
+            return 'date-fns'
+          }
+          // Swiper - only loaded when needed
+          if (id.includes('node_modules/swiper/')) {
+            return 'swiper'
+          }
+        },
+      },
+    },
   },
 
   // Server configuration

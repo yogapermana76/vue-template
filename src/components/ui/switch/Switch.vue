@@ -5,13 +5,22 @@
   import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from 'reka-ui'
   import { cn } from '@/utils/cn'
 
-  const props = defineProps<SwitchRootProps & { class?: HTMLAttributes['class'] }>()
+  const props = defineProps<
+    SwitchRootProps & {
+      class?: HTMLAttributes['class']
+      checked?: boolean
+    }
+  >()
 
-  const emits = defineEmits<SwitchRootEmits>()
+  const emits = defineEmits<SwitchRootEmits & { 'update:checked': [value: boolean] }>()
 
-  const delegatedProps = reactiveOmit(props, 'class')
+  const delegatedProps = reactiveOmit(props, 'class', 'checked')
 
   const forwarded = useForwardPropsEmits(delegatedProps, emits)
+
+  function handleUpdateModelValue(value: boolean) {
+    emits('update:checked', value)
+  }
 </script>
 
 <template>
@@ -19,6 +28,8 @@
     v-slot="slotProps"
     data-slot="switch"
     v-bind="forwarded"
+    :model-value="props.checked"
+    @update:model-value="handleUpdateModelValue"
     :class="
       cn(
         'peer inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 shadow-xs transition-all outline-none',

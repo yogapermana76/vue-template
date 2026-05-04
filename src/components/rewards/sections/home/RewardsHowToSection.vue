@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useMediaQuery } from '@vueuse/core'
   import { Swiper, SwiperSlide } from 'swiper/vue'
   import { Pagination } from 'swiper/modules'
   import { GradientSection } from '@/components/layout'
@@ -8,14 +9,42 @@
   import { SwiperPagination } from '@/components/ui/swiper'
   import { EmptyState } from '@/components/ui/empty-state'
   import { useFYI } from '@/composables/services'
+  import { useResponsiveMaxWidth } from '@/composables/ui/useResponsiveMaxWidth'
+  import { useSwiperStyles } from '@/composables/ui/useSwiperStyles'
   import type { FYIItem } from '@/types'
-  import RiwayatIllustration from '@/assets/illustrations/riwayat.svg'
+  import RiwayatIllustration from '@/assets/illustrations/history.png'
+
+  useSwiperStyles()
 
   const router = useRouter()
+  const { isDesktop, responsiveMaxWidth } = useResponsiveMaxWidth()
 
   const { data: fyiData, isPending, isError } = useFYI()
-
   const fyiItems = computed(() => (fyiData.value?.data ?? []) as FYIItem[])
+
+  // Responsive breakpoints for slides per view
+  const breakpoints = [
+    { query: '(max-width: 320px)', value: 1.9 },
+    { query: '(min-width: 321px) and (max-width: 344px)', value: 2.05 },
+    { query: '(min-width: 345px) and (max-width: 360px)', value: 2.15 },
+    { query: '(min-width: 361px) and (max-width: 375px)', value: 2.27 },
+    { query: '(min-width: 376px) and (max-width: 390px)', value: 2.3 },
+    { query: '(min-width: 391px) and (max-width: 414px)', value: 2.5 },
+    { query: '(min-width: 415px) and (max-width: 430px)', value: 2.6 },
+    { query: '(min-width: 431px) and (max-width: 540px)', value: 3.3 },
+    { query: '(min-width: 541px) and (max-width: 768px)', value: 4.7 },
+    { query: '(min-width: 769px) and (max-width: 820px)', value: 5 },
+    { query: '(min-width: 821px) and (max-width: 853px)', value: 5.2 },
+    { query: '(min-width: 854px) and (max-width: 912px)', value: 5.7 },
+    { query: '(min-width: 913px) and (max-width: 1023px)', value: 6.0 },
+    { query: '(min-width: 1024px) and (max-width: 1279px)', value: 6.5 },
+    { query: '(min-width: 1280px)', value: 5.0 },
+  ].map(bp => ({ matches: useMediaQuery(bp.query), value: bp.value }))
+
+  const slidesPerView = computed(() => {
+    if (isDesktop.value && responsiveMaxWidth.value) return 2.6
+    return breakpoints.find(bp => bp.matches.value)?.value ?? 2.6
+  })
 
   const handleInfoCardClick = (item: FYIItem) => {
     router.push(`/rewards/fyi/${item.order}`)
@@ -25,13 +54,13 @@
 </script>
 
 <template>
-  <GradientSection gradient="navy" :rounded-bottom="false" class="py-4">
+  <GradientSection gradient="navy" show-ellipse-glow :rounded-bottom="false" class="py-4">
     <h2 class="body-l-semibold mb-4 px-4 text-white">Cara Menggunakan Rewards</h2>
 
     <div v-if="isPending">
       <swiper
         :modules="modules"
-        :slides-per-view="2.6"
+        :slides-per-view="slidesPerView"
         :slides-offset-before="16"
         :slides-offset-after="8"
       >
@@ -67,7 +96,7 @@
     <div v-else>
       <swiper
         :modules="modules"
-        :slides-per-view="2.6"
+        :slides-per-view="slidesPerView"
         :slides-offset-before="16"
         :slides-offset-after="8"
         :pagination="{ clickable: true, el: '#swiper-pagination-custom' }"

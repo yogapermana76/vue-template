@@ -40,13 +40,16 @@ declare module 'vue-router/auto-routes' {
       | '/(default)/eco-journey-points/history'
       | '/(default)/eco-journey-points/redemption/[id]'
       | '/(default)/eco-journey-points/terms-and-conditions'
+      | '/(default)/lifestyle/[id]'
+      | '/(default)/lifestyle/ticket/[id]'
+      | '/(default)/lifestyle/vouchers'
       | '/(default)/rewards/catalog/[id]'
       | '/(default)/rewards/complete-address'
       | '/(default)/rewards/fyi/[id]'
       | '/(default)/rewards/history'
       | '/(default)/rewards/list'
       | '/(default)/rewards/lottery/[id]'
-      | '/(default)/rewards/my-rewards'
+      | '/(default)/rewards/my-rewards/'
       | '/(default)/rewards/my-rewards/[id]'
       | '/(default)/rewards/redemption/[id]'
       | '/(default)/rewards/winners'
@@ -107,6 +110,27 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/(default)/lifestyle/[id]': RouteRecordInfo<
+      '/(default)/lifestyle/[id]',
+      '/lifestyle/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/(default)/lifestyle/ticket/[id]': RouteRecordInfo<
+      '/(default)/lifestyle/ticket/[id]',
+      '/lifestyle/ticket/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/(default)/lifestyle/vouchers': RouteRecordInfo<
+      '/(default)/lifestyle/vouchers',
+      '/lifestyle/vouchers',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/(default)/rewards/catalog/[id]': RouteRecordInfo<
       '/(default)/rewards/catalog/[id]',
       '/rewards/catalog/:id',
@@ -149,12 +173,12 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
-    '/(default)/rewards/my-rewards': RouteRecordInfo<
-      '/(default)/rewards/my-rewards',
+    '/(default)/rewards/my-rewards/': RouteRecordInfo<
+      '/(default)/rewards/my-rewards/',
       '/rewards/my-rewards',
       Record<never, never>,
       Record<never, never>,
-      | '/(default)/rewards/my-rewards/[id]'
+      | never
     >,
     '/(default)/rewards/my-rewards/[id]': RouteRecordInfo<
       '/(default)/rewards/my-rewards/[id]',
@@ -274,13 +298,16 @@ declare module 'vue-router/auto-routes' {
         | '/(default)/eco-journey-points/history'
         | '/(default)/eco-journey-points/redemption/[id]'
         | '/(default)/eco-journey-points/terms-and-conditions'
+        | '/(default)/lifestyle/[id]'
+        | '/(default)/lifestyle/ticket/[id]'
+        | '/(default)/lifestyle/vouchers'
         | '/(default)/rewards/catalog/[id]'
         | '/(default)/rewards/complete-address'
         | '/(default)/rewards/fyi/[id]'
         | '/(default)/rewards/history'
         | '/(default)/rewards/list'
         | '/(default)/rewards/lottery/[id]'
-        | '/(default)/rewards/my-rewards'
+        | '/(default)/rewards/my-rewards/'
         | '/(default)/rewards/my-rewards/[id]'
         | '/(default)/rewards/redemption/[id]'
         | '/(default)/rewards/winners'
@@ -335,6 +362,24 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/(default)/lifestyle/[id].vue': {
+      routes:
+        | '/(default)/lifestyle/[id]'
+      views:
+        | never
+    }
+    'src/pages/(default)/lifestyle/ticket/[id].vue': {
+      routes:
+        | '/(default)/lifestyle/ticket/[id]'
+      views:
+        | never
+    }
+    'src/pages/(default)/lifestyle/vouchers.vue': {
+      routes:
+        | '/(default)/lifestyle/vouchers'
+      views:
+        | never
+    }
     'src/pages/(default)/rewards/catalog/[id].vue': {
       routes:
         | '/(default)/rewards/catalog/[id]'
@@ -371,12 +416,11 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/(default)/rewards/my-rewards.vue': {
+    'src/pages/(default)/rewards/my-rewards/index.vue': {
       routes:
-        | '/(default)/rewards/my-rewards'
-        | '/(default)/rewards/my-rewards/[id]'
+        | '/(default)/rewards/my-rewards/'
       views:
-        | 'default'
+        | never
     }
     'src/pages/(default)/rewards/my-rewards/[id].vue': {
       routes:
