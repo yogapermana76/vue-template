@@ -1,17 +1,39 @@
 /**
- * Global type declarations for external integrations
+ * Global type declarations for external integrations and native bridges
  */
+
+import type { SafeAreaInsets } from '@/utils/native-bridge'
 
 /**
- * Flutter WebView JavaScript Channel interface
- * Uncomment when Flutter team implements the JavaScript Channel
+ * Native bridge interfaces for mobile WebView communication
+ *
+ * These interfaces are injected by native apps (Flutter, React Native, iOS, Android)
+ * to enable bidirectional communication between web and native layers.
  */
-// interface FlutterChannel {
-//   postMessage: (message: string) => void
-// }
+declare global {
+  interface Window {
+    /** React Native WebView bridge */
+    ReactNativeWebView?: {
+      postMessage: (message: string) => void
+    }
 
-// interface Window {
-//   FlutterChannel?: FlutterChannel
-// }
+    /** iOS WKWebView bridge */
+    webkit?: {
+      messageHandlers?: {
+        [key: string]: {
+          postMessage: (message: Record<string, unknown>) => void
+        }
+      }
+    }
+
+    /** Flutter WebView JavaScript Channel */
+    FlutterChannel?: {
+      postMessage: (message: string) => void
+    }
+
+    /** Safe area insets injected by native app */
+    __SAFE_AREA_INSETS__?: SafeAreaInsets
+  }
+}
 
 export {}

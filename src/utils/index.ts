@@ -26,3 +26,12 @@ export {
   DEMO_STORAGE_KEYS,
   UI_STORAGE_KEYS,
 } from './storage'
+export {
+  // Native bridge functions
+  openDeeplink,
+  setStatusBar,
+  getSafeAreaInsets,
+  // Native bridge types
+  type StatusBarConfig,
+  type SafeAreaInsets,
+} from './native-bridge'

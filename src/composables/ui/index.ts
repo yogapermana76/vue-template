@@ -3,6 +3,12 @@ export { usePullToRefresh, type UsePullToRefreshOptions } from './usePullToRefre
 export { useResponsiveMaxWidth } from './useResponsiveMaxWidth'
 export { useSafeArea } from './useSafeArea'
 export {
+  useStatusBar,
+  useAutoStatusBar,
+  useScrollStatusBar,
+  statusBarPresets,
+} from './useStatusBar'
+export {
   useSwipeableTabs,
   type TabItem,
   type UseSwipeableTabsOptions,
