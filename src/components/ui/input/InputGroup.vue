@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes, Component } from 'vue'
   import { computed, useSlots, provide } from 'vue'
+  import { Primitive } from 'reka-ui'
   import { cn } from '@/utils/cn'
 
   const props = withDefaults(
@@ -12,10 +13,13 @@
       suffixIcon?: Component
       disabled?: boolean
       invalid?: boolean
+      /** Use focus state styling (for combobox/select triggers) */
+      focused?: boolean
     }>(),
     {
       disabled: false,
       invalid: false,
+      focused: false,
     },
   )
 
@@ -29,7 +33,8 @@
 </script>
 
 <template>
-  <div
+  <Primitive
+    as="div"
     data-slot="input-group"
     :class="
       cn(
@@ -37,6 +42,7 @@
         'border-neutral-200',
         'hover:border-neutral-300',
         'focus-within:border-primary-600 focus-within:border-2 focus-within:px-2.75',
+        focused && 'border-primary-600 border-2 px-2.75',
         disabled && 'cursor-not-allowed bg-neutral-100',
         invalid && 'border-error-500 hover:border-error-500 border-2 px-2.75',
         props.class,
@@ -63,5 +69,5 @@
         <span v-else-if="suffix">{{ suffix }}</span>
       </slot>
     </div>
-  </div>
+  </Primitive>
 </template>

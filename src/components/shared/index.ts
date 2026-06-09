@@ -18,3 +18,6 @@ export {
 
 // Ticket quantity selector
 export { TicketQuantitySelector } from './ticket-quantity-selector'
+
+// Card components
+export { default as CardSection } from './CardSection.vue'

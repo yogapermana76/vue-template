@@ -28,5 +28,7 @@ declare module 'vue-router' {
   interface RouteMeta {
     title?: string
     keepAlive?: boolean
+    breadcrumb?: string
+    breadcrumbs?: Array<{ label: string; to?: string }>
   }
 }

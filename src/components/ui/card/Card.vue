@@ -11,10 +11,7 @@
   <div
     data-slot="card"
     :class="
-      cn(
-        'flex flex-col gap-6 rounded-sm border border-neutral-200 bg-white py-6 text-neutral-900 shadow-sm',
-        props.class,
-      )
+      cn('shadow-card flex flex-col gap-6 rounded-md bg-white py-6 text-neutral-900', props.class)
     "
   >
     <slot />

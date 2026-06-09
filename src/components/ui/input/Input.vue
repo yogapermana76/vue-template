@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import type { HTMLAttributes } from 'vue'
+  import type { HTMLAttributes, InputHTMLAttributes } from 'vue'
   import { useVModel } from '@vueuse/core'
-  import { inject } from 'vue'
+  import { inject, computed, useAttrs } from 'vue'
   import { cn } from '@/utils/cn'
 
   const props = defineProps<{
@@ -11,11 +11,14 @@
     unstyled?: boolean
     readonly?: boolean
     disabled?: boolean
+    type?: InputHTMLAttributes['type']
   }>()
 
   const emits = defineEmits<{
     (e: 'update:modelValue', payload: string | number): void
   }>()
+
+  const attrs = useAttrs()
 
   const modelValue = useVModel(props, 'modelValue', emits, {
     passive: true,
@@ -24,6 +27,14 @@
 
   // Check if inside InputGroup by looking for parent data-slot
   const isInsideGroup = inject('input-group', false)
+
+  // Determine input type from props or attrs
+  const inputType = computed(() => {
+    return props.type || (attrs.type as string) || 'text'
+  })
+
+  // Add no-spinner class for number inputs
+  const isNumberInput = computed(() => inputType.value === 'number')
 </script>
 
 <template>
@@ -39,6 +50,8 @@
         'w-full min-w-0 bg-transparent text-sm leading-5 text-neutral-900 outline-none',
         'placeholder:text-neutral-400',
         'disabled:cursor-not-allowed disabled:text-neutral-400',
+        // Hide spinner for number inputs
+        isNumberInput && 'no-spinner',
         // Standalone styles (not inside group)
         !unstyled &&
           !isInsideGroup && [

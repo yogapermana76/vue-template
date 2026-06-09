@@ -4,6 +4,7 @@
   import { FormField } from '.'
   import { Input } from '@/components/ui/input'
   import { InputGroup } from '@/components/ui/input'
+  import { getInputFormat, type InputFormat } from '@/config/input-formats'
 
   export interface TextFieldProps {
     /** Input value (v-model) */
@@ -32,13 +33,15 @@
     error?: string | string[]
     /** Right-side footer text */
     footerRight?: string
-    /** Prefix text */
+    /** Predefined format (currency, percentage, etc.) - Alternative to prefix/suffix props */
+    format?: string
+    /** Prefix text (overrides format if both provided) */
     prefix?: string
-    /** Suffix text */
+    /** Suffix text (overrides format if both provided) */
     suffix?: string
-    /** Prefix icon (from lucide-vue-next) */
+    /** Prefix icon (from lucide-vue-next) - overrides format */
     prefixIcon?: Component
-    /** Suffix icon (from lucide-vue-next) */
+    /** Suffix icon (from lucide-vue-next) - overrides format */
     suffixIcon?: Component
     /** Additional CSS classes for root */
     class?: HTMLAttributes['class']
@@ -62,8 +65,35 @@
     return !!props.error
   })
 
+  // Get format configuration from predefined formats
+  const formatConfig = computed<InputFormat | undefined>(() => {
+    if (!props.format) return undefined
+    return getInputFormat(props.format)
+  })
+
+  // Computed prefix/suffix that prioritizes explicit props over format config
+  const computedPrefix = computed(() => {
+    return props.prefix ?? formatConfig.value?.prefix
+  })
+
+  const computedSuffix = computed(() => {
+    return props.suffix ?? formatConfig.value?.suffix
+  })
+
+  const computedPrefixIcon = computed(() => {
+    return props.prefixIcon ?? formatConfig.value?.prefixIcon
+  })
+
+  const computedSuffixIcon = computed(() => {
+    return props.suffixIcon ?? formatConfig.value?.suffixIcon
+  })
+
   const hasInputGroup = computed(
-    () => props.prefix || props.suffix || props.prefixIcon || props.suffixIcon,
+    () =>
+      computedPrefix.value ||
+      computedSuffix.value ||
+      computedPrefixIcon.value ||
+      computedSuffixIcon.value,
   )
 
   const computedInputClass = computed(() => {
@@ -94,10 +124,10 @@
     <!-- Input with or without Group -->
     <InputGroup
       v-if="hasInputGroup"
-      :prefix="prefix"
-      :suffix="suffix"
-      :prefix-icon="prefixIcon"
-      :suffix-icon="suffixIcon"
+      :prefix="computedPrefix"
+      :suffix="computedSuffix"
+      :prefix-icon="computedPrefixIcon"
+      :suffix-icon="computedSuffixIcon"
       :disabled="disabled"
       :invalid="hasError"
     >

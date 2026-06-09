@@ -208,6 +208,36 @@ declare module 'vue-router/auto-routes' {
       { all: ParamValue<false> },
       | never
     >,
+    '/admin': RouteRecordInfo<
+      '/admin',
+      '/admin',
+      Record<never, never>,
+      Record<never, never>,
+      | '/admin/forms'
+      | '/admin/overview'
+      | '/admin/products'
+    >,
+    '/admin/forms': RouteRecordInfo<
+      '/admin/forms',
+      '/admin/forms',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/admin/overview': RouteRecordInfo<
+      '/admin/overview',
+      '/admin/overview',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/admin/products': RouteRecordInfo<
+      '/admin/products',
+      '/admin/products',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/demo/(bottom-nav)': RouteRecordInfo<
       '/demo/(bottom-nav)',
       '/demo',
@@ -443,6 +473,33 @@ declare module 'vue-router/auto-routes' {
     'src/pages/[...all].vue': {
       routes:
         | '/[...all]'
+      views:
+        | never
+    }
+    'src/pages/admin.vue': {
+      routes:
+        | '/admin'
+        | '/admin/forms'
+        | '/admin/overview'
+        | '/admin/products'
+      views:
+        | 'default'
+    }
+    'src/pages/admin/forms.vue': {
+      routes:
+        | '/admin/forms'
+      views:
+        | never
+    }
+    'src/pages/admin/overview.vue': {
+      routes:
+        | '/admin/overview'
+      views:
+        | never
+    }
+    'src/pages/admin/products.vue': {
+      routes:
+        | '/admin/products'
       views:
         | never
     }
