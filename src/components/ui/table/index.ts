@@ -10,7 +10,7 @@ export { default as TablePagination } from './TablePagination.vue'
 export { default as TableActions } from './TableActions.vue'
 
 // Composite components
-export { default as DataTable } from './composite/DataTable.vue'
+export * from './composite'
 
 // Types
 export type {

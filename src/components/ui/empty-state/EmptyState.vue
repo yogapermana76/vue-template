@@ -6,7 +6,9 @@
     defineProps<{
       class?: HTMLAttributes['class']
       title?: string
+      titleClass?: HTMLAttributes['class']
       description?: string
+      descriptionClass?: HTMLAttributes['class']
       image?: string | Component
       imageSize?: 'sm' | 'md' | 'lg'
     }>(),
@@ -54,12 +56,23 @@
         v-if="title || description || $slots.default"
         class="flex max-w-xs flex-col items-center gap-2"
       >
-        <h3 v-if="title" class="text-center text-lg leading-7 font-semibold text-neutral-950">
+        <h3
+          v-if="title"
+          :class="cn('text-center text-lg leading-7 font-semibold text-neutral-950', titleClass)"
+        >
           {{ title }}
         </h3>
-        <p v-if="description" class="text-center text-sm leading-5 font-normal text-neutral-700">
-          {{ description }}
-        </p>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <p
+          v-if="description"
+          :class="
+            cn(
+              'text-center text-sm leading-5 font-normal whitespace-pre-line text-neutral-700',
+              descriptionClass,
+            )
+          "
+          v-html="description"
+        />
         <slot />
       </div>
     </div>

@@ -7,14 +7,21 @@
   import { cn } from '@/utils/cn'
   import { badgeVariants } from '.'
 
-  const props = defineProps<
-    PrimitiveProps & {
-      variant?: BadgeVariants['variant']
-      class?: HTMLAttributes['class']
-    }
-  >()
+  const props = withDefaults(
+    defineProps<
+      PrimitiveProps & {
+        variant?: BadgeVariants['variant']
+        /** Show a leading colored dot (matches prototype `.badge::before`) */
+        dot?: boolean
+        class?: HTMLAttributes['class']
+      }
+    >(),
+    {
+      dot: false,
+    },
+  )
 
-  const delegatedProps = reactiveOmit(props, 'class')
+  const delegatedProps = reactiveOmit(props, 'class', 'dot')
 </script>
 
 <template>
@@ -23,6 +30,11 @@
     :class="cn(badgeVariants({ variant }), props.class)"
     v-bind="delegatedProps"
   >
+    <span
+      v-if="dot"
+      aria-hidden="true"
+      class="inline-block size-1.5 shrink-0 rounded-full bg-current opacity-90"
+    />
     <slot />
   </Primitive>
 </template>

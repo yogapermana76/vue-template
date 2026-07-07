@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes, InputHTMLAttributes } from 'vue'
   import { useVModel } from '@vueuse/core'
-  import { inject, computed, useAttrs } from 'vue'
+  import { inject, computed } from 'vue'
   import { cn } from '@/utils/cn'
 
   const props = defineProps<{
@@ -18,29 +18,21 @@
     (e: 'update:modelValue', payload: string | number): void
   }>()
 
-  const attrs = useAttrs()
-
   const modelValue = useVModel(props, 'modelValue', emits, {
     passive: true,
     defaultValue: props.defaultValue,
   })
 
-  // Check if inside InputGroup by looking for parent data-slot
   const isInsideGroup = inject('input-group', false)
 
-  // Determine input type from props or attrs
-  const inputType = computed(() => {
-    return props.type || (attrs.type as string) || 'text'
-  })
-
-  // Add no-spinner class for number inputs
-  const isNumberInput = computed(() => inputType.value === 'number')
+  const isNumberInput = computed(() => props.type === 'number')
 </script>
 
 <template>
   <input
     v-model="modelValue"
     data-slot="input"
+    :type="props.type"
     :readonly="readonly"
     :disabled="disabled"
     :tabindex="readonly ? -1 : undefined"

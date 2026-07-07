@@ -9,6 +9,8 @@ export interface SwipeableTabsProps {
   swipeVelocityThreshold?: number
   /** Offset from viewport height (e.g., '3.5rem' for header, '5rem' for bottom nav). Default: '0px' */
   heightOffset?: string
+  /** Enable scroll-flow mode (relative positioning, allows normal page scroll). Default: false */
+  scrollFlow?: boolean
 }
 
 export interface SwipeableTabsContext {
@@ -18,6 +20,7 @@ export interface SwipeableTabsContext {
   translateX: Ref<number>
   isDragging: Ref<boolean>
   indicatorStyle: ComputedRef<{ left: string; width: string }>
+  scrollFlow: boolean
   setActiveTab: (key: string) => void
   setActiveIndex: (index: number) => void
   onDragStart: () => void

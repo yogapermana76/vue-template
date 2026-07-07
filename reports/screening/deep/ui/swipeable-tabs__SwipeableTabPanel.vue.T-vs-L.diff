@@ -1,0 +1,44 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/swipeable-tabs/SwipeableTabPanel.vue	2026-07-07 22:06:48
++++ /Users/yogapermana/Desktop/reward-loyalty-microapps-v2/src/components/ui/swipeable-tabs/SwipeableTabPanel.vue	2026-05-11 11:27:17
+@@ -10,10 +10,7 @@
+     noPadding?: boolean
+   }
+ 
+-  const props = withDefaults(defineProps<Props>(), {
+-    lazy: false,
+-    noPadding: false,
+-  })
++  const props = withDefaults(defineProps<Props>(), { lazy: false, noPadding: false })
+ 
+   const context = inject<SwipeableTabsContext>(SWIPEABLE_TABS_INJECTION_KEY)
+   if (!context) throw new Error('SwipeableTabPanel must be used within SwipeableTabs')
+@@ -26,27 +23,18 @@
+   })
+ 
+   const shouldRender = computed(() => !props.lazy || hasBeenActive.value)
+-
+-  // Scroll-flow mode: collapse inactive panels when not dragging to prevent affecting wrapper height
+-  const shouldCollapse = computed(
+-    () => context.scrollFlow && !isActive.value && !context.isDragging.value,
+-  )
+-
+-  const panelWidth = computed(() => `${100 / context.tabs.length}%`)
+ </script>
+ 
+ <template>
+   <div
+     :class="
+       cn(
+-        'h-full w-full shrink-0',
+-        !context.scrollFlow && 'overflow-y-auto overscroll-contain',
+-        shouldCollapse && 'pointer-events-none max-h-0 overflow-hidden opacity-0',
++        'h-full w-full shrink-0 overflow-y-auto overscroll-contain',
+         !noPadding && 'p-4',
+         props.class,
+       )
+     "
+-    :style="{ width: panelWidth }"
++    :style="{ width: `${100 / context.tabs.length}%` }"
+     :data-state="isActive ? 'active' : 'inactive'"
+     data-slot="swipeable-tab-panel"
+   >

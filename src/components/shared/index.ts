@@ -21,3 +21,9 @@ export { TicketQuantitySelector } from './ticket-quantity-selector'
 
 // Card components
 export { default as CardSection } from './CardSection.vue'
+
+// Page header (title, back button, actions, badges, meta, below slot)
+export { default as PageHeader } from './PageHeader.vue'
+
+// Date picker (mobile-friendly bottom sheet)
+export { DatePickerBottomSheet, type DatePickerBottomSheetProps } from './date-picker-bottom-sheet'

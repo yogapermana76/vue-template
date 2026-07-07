@@ -1,0 +1,228 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/calendar/Calendar.vue	2026-05-06 20:44:10
++++ /Users/yogapermana/Desktop/versace/src/components/ui/calendar/Calendar.vue	2026-07-05 13:59:18
+@@ -1,117 +1,125 @@
+ <script setup lang="ts">
+-  import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
+-  import {
+-    CalendarCell,
+-    CalendarCellTrigger,
+-    CalendarGrid,
+-    CalendarGridBody,
+-    CalendarGridHead,
+-    CalendarGridRow,
+-    CalendarHeadCell,
+-    CalendarHeader,
+-    CalendarHeading,
+-    CalendarNext,
+-    CalendarPrev,
+-    CalendarRoot,
+-    type CalendarRootEmits,
+-    type CalendarRootProps,
+-  } from 'reka-ui'
+-  import { cn } from '@/utils/cn'
++  import { ref, computed } from 'vue'
++  import { today, getLocalTimeZone } from '@internationalized/date'
++  import type { DateValue } from '@internationalized/date'
++  import type { DateValue as RekaDateValue } from 'reka-ui'
++  import { CalendarRoot, type CalendarRootEmits, type CalendarRootProps } from 'reka-ui'
++  import { parseISO, getDaysInMonth, isAfter, isBefore } from 'date-fns'
++  import { dateValueToISO } from '@/utils/date'
++  import CalendarHolidayLegend from './CalendarHolidayLegend.vue'
++  import CalendarHeader from './CalendarHeader.vue'
++  import CalendarYearPicker from './CalendarYearPicker.vue'
++  import CalendarMonthPicker from './CalendarMonthPicker.vue'
++  import CalendarMonthGrid from './CalendarMonthGrid.vue'
++  import { useHolidayMap, type HolidayMarker } from './composables/useHolidayMap'
+ 
+-  const props = defineProps<CalendarRootProps>()
++  export type { HolidayMarker }
++
++  interface Props extends CalendarRootProps {
++    holidays?: HolidayMarker[]
++  }
++
++  // Destructure holidays so it's not forwarded to CalendarRoot via v-bind
++  const { holidays, ...calendarProps } = defineProps<Props>()
+   const emits = defineEmits<CalendarRootEmits>()
++
++  const { holidayMap } = useHolidayMap(() => holidays)
++
++  type PickerMode = 'month' | 'year' | null
++  const pickerMode = ref<PickerMode>(null)
++  const internalPlaceholder = ref<DateValue | undefined>(undefined)
++
++  // Cast needed: Volar cannot verify ZonedDateTime #private field compatibility
++  // between @internationalized/date and reka-ui's re-exported DateValue.
++  const placeholderProps = computed(() =>
++    internalPlaceholder.value
++      ? { placeholder: internalPlaceholder.value as RekaDateValue }
++      : {},
++  )
++
++  function onPlaceholderChange(date: DateValue) {
++    internalPlaceholder.value = date
++  }
++
++  function openYearPicker() {
++    if (pickerMode.value === 'year') {
++      pickerMode.value = null
++      return
++    }
++    if (!internalPlaceholder.value) {
++      internalPlaceholder.value = today(getLocalTimeZone())
++    }
++    pickerMode.value = 'year'
++  }
++
++  function onYearSelected(date: DateValue | DateValue[] | undefined) {
++    if (!date || Array.isArray(date)) return
++    internalPlaceholder.value = date
++    pickerMode.value = 'month'
++  }
++
++  function onMonthSelected(date: DateValue | DateValue[] | undefined) {
++    if (!date || Array.isArray(date)) return
++    internalPlaceholder.value = date
++    pickerMode.value = null
++  }
++
++  function holidaysForGrid(grid: { value: { year: number; month: number } }[]): HolidayMarker[] {
++    if (!holidays?.length || !grid.length) return []
++    return holidays.filter(h => {
++      const hStart = parseISO(h.startDate)
++      const hEnd = parseISO(h.endDate)
++      return grid.some(({ value: { year, month } }) => {
++        // First and last day of the displayed month
++        const monthStart = parseISO(dateValueToISO({ year, month, day: 1 }))
++        const monthEnd = parseISO(dateValueToISO({ year, month, day: getDaysInMonth(monthStart) }))
++        // Holiday overlaps if it starts before/on month end AND ends after/on month start
++        return !isAfter(hStart, monthEnd) && !isBefore(hEnd, monthStart)
++      })
++    })
++  }
+ </script>
+ 
+ <template>
+   <CalendarRoot
+-    v-bind="props"
++    v-bind="{ ...calendarProps, ...placeholderProps }"
+     v-slot="{ grid, weekDays }"
++    locale="id-ID"
++    @update:placeholder="onPlaceholderChange"
+     @update:model-value="value => emits('update:modelValue', value)"
+   >
+-    <CalendarHeader class="flex items-center justify-between pb-3">
+-      <CalendarPrev
+-        :class="
+-          cn(
+-            'flex size-8 items-center justify-center rounded-md text-neutral-600 transition-colors outline-none',
+-            'hover:bg-neutral-100 hover:text-neutral-900',
+-            'focus-visible:ring-primary-500 focus-visible:ring-2',
+-            'disabled:pointer-events-none disabled:opacity-50',
+-          )
+-        "
+-      >
+-        <ChevronLeft class="size-5" />
+-      </CalendarPrev>
++    <CalendarHeader :picker-mode="pickerMode" @open-year-picker="openYearPicker" />
+ 
+-      <CalendarHeading class="text-sm font-semibold text-neutral-900" />
++    <!-- Year picker overlay (shown first) -->
++    <CalendarYearPicker
++      v-if="pickerMode === 'year'"
++      :placeholder-props="placeholderProps"
++      @update:model-value="onYearSelected"
++    />
+ 
+-      <CalendarNext
+-        :class="
+-          cn(
+-            'flex size-8 items-center justify-center rounded-md text-neutral-600 transition-colors outline-none',
+-            'hover:bg-neutral-100 hover:text-neutral-900',
+-            'focus-visible:ring-primary-500 focus-visible:ring-2',
+-            'disabled:pointer-events-none disabled:opacity-50',
+-          )
+-        "
+-      >
+-        <ChevronRight class="size-5" />
+-      </CalendarNext>
+-    </CalendarHeader>
++    <!-- Month picker overlay (shown after year is selected) -->
++    <CalendarMonthPicker
++      v-else-if="pickerMode === 'month'"
++      :placeholder-props="placeholderProps"
++      @update:model-value="onMonthSelected"
++      @back-to-year="pickerMode = 'year'"
++    />
+ 
+-    <CalendarGrid v-for="month in grid" :key="month.value.toString()" class="w-full">
+-      <CalendarGridHead>
+-        <CalendarGridRow class="flex">
+-          <CalendarHeadCell
+-            v-for="day in weekDays"
+-            :key="day"
+-            class="w-9 py-1.5 text-center text-xs font-medium text-neutral-500"
+-          >
+-            {{ day }}
+-          </CalendarHeadCell>
+-        </CalendarGridRow>
+-      </CalendarGridHead>
++    <!-- Calendar grid (hidden when picker overlay is open) -->
++    <template v-else>
++      <CalendarMonthGrid
++        v-for="month in grid"
++        :key="month.value.toString()"
++        :month="month"
++        :week-days="weekDays"
++        :holiday-map="holidayMap"
++      />
+ 
+-      <CalendarGridBody>
+-        <CalendarGridRow
+-          v-for="(weekDates, index) in month.rows"
+-          :key="`week-${index}`"
+-          class="flex"
+-        >
+-          <CalendarCell
+-            v-for="weekDate in weekDates"
+-            :key="weekDate.toString()"
+-            :date="weekDate"
+-            class="p-0"
+-          >
+-            <CalendarCellTrigger
+-              :day="weekDate"
+-              :month="month.value"
+-              :class="
+-                cn(
+-                  'flex size-9 items-center justify-center rounded-md text-sm transition-colors outline-none',
+-                  // Default state
+-                  'text-neutral-900 hover:bg-neutral-100',
+-                  // Focus state
+-                  'focus-visible:ring-primary-500 focus-visible:ring-2 focus-visible:ring-offset-1',
+-                  // Selected state
+-                  'data-selected:bg-primary-600 data-selected:hover:bg-primary-700 data-selected:text-white',
+-                  // Today state
+-                  'data-today:text-primary-600 data-today:font-semibold data-selected:data-today:text-white',
+-                  // Outside view (other months)
+-                  'data-outside-view:text-neutral-300 data-outside-view:hover:bg-transparent',
+-                  // Disabled state
+-                  'data-disabled:pointer-events-none data-disabled:text-neutral-300',
+-                  // Unavailable state
+-                  'data-unavailable:pointer-events-none data-unavailable:text-neutral-300 data-unavailable:line-through',
+-                )
+-              "
+-            />
+-          </CalendarCell>
+-        </CalendarGridRow>
+-      </CalendarGridBody>
+-    </CalendarGrid>
++      <!-- Holiday legend — filtered to only show holidays visible in the current month view -->
++      <CalendarHolidayLegend v-if="holidays?.length" :holidays="holidaysForGrid(grid)" />
+ 
+-    <!-- Footer slot -->
+-    <slot name="footer" />
++      <!-- Footer slot -->
++      <slot name="footer" />
++    </template>
+   </CalendarRoot>
+ </template>

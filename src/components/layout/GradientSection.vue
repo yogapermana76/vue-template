@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { computed } from 'vue'
-  import { RoundedOverlap } from '@/components/ui'
+  import { CurvedEdge } from '@/components/ui'
   import { cn } from '@/utils/cn'
   import lightningGlowImg from '@/assets/vectors/lightning-glow-lg.png'
   import ellipseGlowSvg from '@/assets/vectors/ellipse-glow.png'
@@ -75,6 +75,6 @@
     <slot />
 
     <!-- Rounded Bottom Shape -->
-    <RoundedOverlap v-if="roundedBottom" />
+    <CurvedEdge v-if="roundedBottom" />
   </div>
 </template>

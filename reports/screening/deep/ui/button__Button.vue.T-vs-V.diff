@@ -1,0 +1,27 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/button/Button.vue	2026-07-07 11:53:43
++++ /Users/yogapermana/Desktop/versace/src/components/ui/button/Button.vue	2026-07-05 13:59:18
+@@ -14,8 +14,6 @@
+     size?: ButtonVariants['size']
+     layout?: ButtonVariants['layout']
+     isDarkBg?: ButtonVariants['isDarkBg']
+-    /** Use a muted background + colored text tone for the given variant */
+-    soft?: boolean
+     state?: ButtonState
+     class?: HTMLAttributes['class']
+     disabled?: boolean
+@@ -28,7 +26,6 @@
+     size: 'md',
+     layout: 'iconLeft',
+     isDarkBg: false,
+-    soft: false,
+     state: 'default',
+     disabled: false,
+     loading: false,
+@@ -47,7 +44,6 @@
+         size: props.size,
+         layout: props.layout,
+         isDarkBg: props.isDarkBg,
+-        soft: props.soft,
+       }),
+       props.class,
+     )

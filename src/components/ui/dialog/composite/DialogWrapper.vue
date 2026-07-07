@@ -76,23 +76,25 @@
     full: 'sm:max-w-full sm:w-[calc(100%-2rem)]',
   }
 
-  // Header classes
+  // Header classes — mirror prototype .dlg-h (bg-primary-50 tinted band, subtle border)
   const headerClasses = computed(() => {
     return cn(
-      'flex flex-row items-center justify-between gap-3 px-4 py-2',
-      props.headerShowBorder && 'border-b',
+      'flex flex-row items-center justify-between gap-3 border-b border-neutral-100 bg-primary-50/60 px-5 py-3.5',
+      props.headerShowBorder === false && 'border-b-0',
       props.headerClass,
     )
   })
 
-  // Body classes
-  const bodyClasses = computed(() => {
-    return cn('p-4', props.bodyClass)
-  })
+  // Body classes — 16px vertical / 18px horizontal (prototype .dlg-b)
+  const bodyClasses = computed(() => cn('px-5 py-4', props.bodyClass))
 
-  // Footer classes
+  // Footer classes — parchment-ish tint + divider top, right aligned
   const footerClasses = computed(() => {
-    return cn('p-4 justify-end', props.footerShowBorder && 'border-t', props.footerClass)
+    return cn(
+      'justify-end gap-2.5 border-t border-neutral-100 bg-primary-50/60 px-5 py-3',
+      props.footerShowBorder === false && 'border-t-0',
+      props.footerClass,
+    )
   })
 
   // Methods
@@ -133,9 +135,8 @@
 <template>
   <Dialog v-model:open="openValue" :modal="modal">
     <DialogContent
-      :class="cn(sizeClasses[size], contentClass)"
+      :class="cn('gap-0 p-0', sizeClasses[size], contentClass)"
       :show-close-button="false"
-      class="gap-0 p-0"
       @interact-outside="handleInteractOutside"
     >
       <!-- Dialog Header -->
@@ -143,10 +144,10 @@
         <!-- Back Button -->
         <Button
           v-if="showBackButton"
-          variant="tertiary"
+          variant="secondary"
           size="xs"
           layout="iconOnly"
-          class="-ml-2 size-8 shrink-0"
+          class="shrink-0"
           @click="handleBack"
         >
           <ArrowLeft class="size-4" />
@@ -170,10 +171,10 @@
         <!-- Close Button -->
         <Button
           v-if="showCloseButton"
-          variant="tertiary"
+          variant="secondary"
           size="xs"
           layout="iconOnly"
-          class="-mr-2 size-8 shrink-0"
+          class="shrink-0"
           @click="handleClose"
         >
           <X class="size-4" />

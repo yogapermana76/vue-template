@@ -14,6 +14,8 @@
     size?: ButtonVariants['size']
     layout?: ButtonVariants['layout']
     isDarkBg?: ButtonVariants['isDarkBg']
+    /** Use a muted background + colored text tone for the given variant */
+    soft?: boolean
     state?: ButtonState
     class?: HTMLAttributes['class']
     disabled?: boolean
@@ -26,6 +28,7 @@
     size: 'md',
     layout: 'iconLeft',
     isDarkBg: false,
+    soft: false,
     state: 'default',
     disabled: false,
     loading: false,
@@ -44,6 +47,7 @@
         size: props.size,
         layout: props.layout,
         isDarkBg: props.isDarkBg,
+        soft: props.soft,
       }),
       props.class,
     )

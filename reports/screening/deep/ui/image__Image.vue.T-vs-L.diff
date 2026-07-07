@@ -1,0 +1,15 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/image/Image.vue	2026-07-07 22:06:05
++++ /Users/yogapermana/Desktop/reward-loyalty-microapps-v2/src/components/ui/image/Image.vue	2026-05-11 11:27:17
+@@ -102,7 +102,11 @@
+   })
+ 
+   const containerClasses = computed(() => {
+-    return cn('relative overflow-hidden', aspectRatioClass.value, props.containerClass)
++    return cn(
++      'relative overflow-hidden bg-neutral-100',
++      aspectRatioClass.value,
++      props.containerClass,
++    )
+   })
+ 
+   const imageClasses = computed(() => {

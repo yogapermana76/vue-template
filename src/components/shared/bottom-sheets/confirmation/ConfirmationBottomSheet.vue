@@ -13,6 +13,8 @@
     size?: 'xs' | 'sm' | 'md' | 'lg'
     /** Loading state */
     loading?: boolean
+    /** Disabled state */
+    disabled?: boolean
     /** Click handler */
     onClick: () => void
   }
@@ -82,6 +84,11 @@
           v-html="description"
         />
       </div>
+
+      <!-- Optional extra content slot (e.g. voucher code box, form input) -->
+      <div v-if="$slots.default" class="w-full px-4">
+        <slot />
+      </div>
     </div>
 
     <!-- Footer: Buttons -->
@@ -95,6 +102,7 @@
           :variant="button.variant || 'primary'"
           :size="button.size || 'sm'"
           :loading="button.loading"
+          :disabled="button.disabled"
           :class="buttonLayout === 'row' ? 'flex-1' : 'w-full'"
           @click="button.onClick"
         >

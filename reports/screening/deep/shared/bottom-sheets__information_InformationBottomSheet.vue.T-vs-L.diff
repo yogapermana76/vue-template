@@ -1,0 +1,21 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/shared/bottom-sheets/information/InformationBottomSheet.vue	2026-07-07 22:07:43
++++ /Users/yogapermana/Desktop/reward-loyalty-microapps-v2/src/components/shared/bottom-sheets/information/InformationBottomSheet.vue	2026-05-11 11:27:17
+@@ -7,7 +7,7 @@
+     open?: boolean
+     /** Title text */
+     title: string
+-    /** Description text (supports HTML) - optional, will use slot if not provided */
++    /** Description text (plain text) - optional, will use slot if not provided */
+     description?: string
+     /** Allow dismissing by backdrop click or escape key */
+     dismissible?: boolean
+@@ -32,8 +32,7 @@
+   <BottomSheet v-model:open="isOpen" :dismissible="dismissible" :show-close="false" :title="title">
+     <!-- Slot takes priority, fallback to description prop -->
+     <slot>
+-      <!-- eslint-disable-next-line vue/no-v-html -->
+-      <div v-if="description" class="body-caption text-neutral-80" v-html="description" />
++      <p v-if="description" class="body-caption text-neutral-80">{{ description }}</p>
+     </slot>
+   </BottomSheet>
+ </template>

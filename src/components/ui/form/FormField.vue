@@ -55,9 +55,9 @@
     <!-- Header: Label + Action -->
     <div v-if="hasHeader" class="flex items-center justify-between gap-2">
       <!-- Label -->
-      <Label v-if="label || $slots.label" :for="props.for" class="flex items-center gap-0.5">
-        <slot name="label">{{ label }}</slot>
-        <span v-if="required" class="text-error-500">*</span>
+      <Label v-if="label || $slots.label" :for="props.for" class="inline">
+        <slot name="label">{{ label }}</slot
+        ><span v-if="required" class="text-error-500">*</span>
       </Label>
 
       <!-- Label Right: action, info, or any content -->

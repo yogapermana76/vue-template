@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { Skeleton } from '@/components/ui/skeleton'
-  import { RoundedOverlap } from '@/components/ui'
+  import { CurvedEdge } from '@/components/ui'
 </script>
 
 <template>
   <!-- Hero Banner Skeleton -->
   <div class="relative h-46.75 w-full">
     <Skeleton class="h-full w-full rounded-none" />
-    <RoundedOverlap />
+    <CurvedEdge />
   </div>
 
   <!-- Content Skeleton -->

@@ -33,18 +33,25 @@
     window.removeEventListener('resize', updateContainerWidth)
   })
 
+  const isInsideHorizontalScrollable = (target: EventTarget | null): boolean => {
+    let el = target as HTMLElement | null
+    while (el && el !== panelContainerRef.value) {
+      if (el.scrollWidth > el.clientWidth) return true
+      el = el.parentElement
+    }
+    return false
+  }
+
   // Setup drag gesture for horizontal swipes only
   useDrag(
     state => {
-      const { movement, velocities, dragging, direction, first } = state
+      const { movement, velocities, dragging, direction, first, event } = state
       const mx = movement[0]
       const my = movement[1]
       const vx = velocities[0]
       const dx = direction[0]
 
-      // On first move, determine if it's horizontal or vertical
-      // If vertical, cancel the gesture to allow scroll
-      if (first && Math.abs(my) > Math.abs(mx)) {
+      if (first && (Math.abs(my) > Math.abs(mx) || isInsideHorizontalScrollable(event.target))) {
         state.cancel()
         return
       }

@@ -98,7 +98,7 @@
 <template>
   <div
     data-slot="table-pagination"
-    class="flex flex-col gap-3 border-t border-neutral-200 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
+    class="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
   >
     <!-- Page size selector (Left side) -->
     <div

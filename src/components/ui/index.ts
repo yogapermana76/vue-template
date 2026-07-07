@@ -62,6 +62,19 @@ export {
   DialogTrigger,
 } from './dialog'
 
+// Dialog composites
+export { DialogWrapper, ConfirmDialog, DetailDialog, FormDialog } from './dialog/composite'
+
+// RightSheet (bundled) + Detail/Form composites
+export {
+  RightSheet,
+  DetailSheet,
+  DetailSection,
+  DetailField,
+  CrudFormSheet,
+  FormSection,
+} from './right-sheet'
+
 // Divider
 export { Divider } from './divider'
 
@@ -149,8 +162,21 @@ export {
   pillTabVariants,
 } from './pill-tab'
 
-// RoundedOverlap
-export { RoundedOverlap } from './rounded-overlap'
+// CurvedEdge
+export { CurvedEdge } from './curved-edge'
+
+// Sheet
+export {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetOverlay,
+  SheetTitle,
+  SheetTrigger,
+} from './sheet'
 
 // Skeleton
 export { Skeleton } from './skeleton'

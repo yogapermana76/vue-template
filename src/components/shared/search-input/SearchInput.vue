@@ -1,23 +1,36 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
-  import { SearchIcon, XIcon } from 'lucide-vue-next'
+  import { computed } from 'vue'
+  import { SearchIcon, XCircleIcon } from 'lucide-vue-next'
   import { Input, InputGroup } from '@/components/ui/input'
+  import { searchInputVariants } from './variants'
 
   interface Props {
     modelValue?: string
     placeholder?: string
     class?: HTMLAttributes['class']
     disabled?: boolean
+    variant?: 'default' | 'glass'
+    clearable?: boolean
+    /** Height preset: 'md' (h-11, default) or 'sm' (h-10 for toolbars) */
+    size?: 'sm' | 'md'
   }
 
   const props = withDefaults(defineProps<Props>(), {
     placeholder: 'Search...',
     disabled: false,
+    clearable: true,
+    variant: 'default',
+    size: 'md',
   })
+
+  const heightClass = computed(() => (props.size === 'sm' ? 'h-10' : 'h-11'))
 
   const emit = defineEmits<{
     'update:modelValue': [value: string]
   }>()
+
+  const showClear = computed(() => !!props.modelValue && props.clearable)
 
   const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement
@@ -31,33 +44,54 @@
 
 <template>
   <InputGroup
-    :class="[
-      props.class,
-      'h-11 rounded-full',
-      disabled ? 'border-0 bg-slate-100' : 'border border-slate-200 bg-white',
-    ]"
+    :class="
+      searchInputVariants({
+        variant: props.variant,
+        disabled: props.disabled,
+        class: [props.class, 'rounded-full', heightClass],
+      })
+    "
     :disabled="disabled"
   >
     <template #prefix>
-      <SearchIcon class="size-4 text-slate-500" />
+      <SearchIcon
+        :class="
+          searchInputVariants({
+            variant: props.variant,
+            element: 'icon',
+          })
+        "
+      />
     </template>
     <Input
       type="text"
       :placeholder="placeholder"
       :model-value="modelValue"
       :disabled="disabled"
+      :class="
+        searchInputVariants({
+          variant: props.variant,
+          disabled: props.disabled,
+          element: 'input',
+        })
+      "
       unstyled
-      class="text-sm text-slate-950 placeholder:text-slate-400 disabled:text-slate-500 disabled:placeholder:text-slate-500"
       @input="handleInput"
     />
-    <template v-if="modelValue" #suffix>
+    <template v-if="clearable" #suffix>
       <button
+        v-if="showClear"
         type="button"
-        class="flex shrink-0 items-center justify-center text-slate-500 hover:text-slate-700 disabled:opacity-50"
+        :class="
+          searchInputVariants({
+            variant: props.variant,
+            element: 'button',
+          })
+        "
         :disabled="disabled"
         @click="handleClear"
       >
-        <XIcon class="size-4" />
+        <XCircleIcon class="size-4" />
       </button>
     </template>
   </InputGroup>

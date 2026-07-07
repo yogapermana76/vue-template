@@ -1,0 +1,149 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/form/TextField.vue	2026-06-09 13:24:58
++++ /Users/yogapermana/Desktop/reward-loyalty-microapps-v2/src/components/ui/form/TextField.vue	2026-05-11 11:27:17
+@@ -1,10 +1,9 @@
+ <script setup lang="ts">
+   import type { HTMLAttributes, Component, InputHTMLAttributes } from 'vue'
+-  import { computed, useSlots } from 'vue'
++  import { computed } from 'vue'
+   import { FormField } from '.'
+   import { Input } from '@/components/ui/input'
+   import { InputGroup } from '@/components/ui/input'
+-  import { getInputFormat, type InputFormat } from '@/config/input-formats'
+ 
+   export interface TextFieldProps {
+     /** Input value (v-model) */
+@@ -33,15 +32,13 @@
+     error?: string | string[]
+     /** Right-side footer text */
+     footerRight?: string
+-    /** Predefined format (currency, percentage, etc.) - Alternative to prefix/suffix props */
+-    format?: string
+-    /** Prefix text (overrides format if both provided) */
++    /** Prefix text */
+     prefix?: string
+-    /** Suffix text (overrides format if both provided) */
++    /** Suffix text */
+     suffix?: string
+-    /** Prefix icon (from lucide-vue-next) - overrides format */
++    /** Prefix icon (from lucide-vue-next) */
+     prefixIcon?: Component
+-    /** Suffix icon (from lucide-vue-next) - overrides format */
++    /** Suffix icon (from lucide-vue-next) */
+     suffixIcon?: Component
+     /** Additional CSS classes for root */
+     class?: HTMLAttributes['class']
+@@ -49,8 +46,6 @@
+     inputClass?: HTMLAttributes['class']
+   }
+ 
+-  const slots = useSlots()
+-
+   const props = withDefaults(defineProps<TextFieldProps>(), {
+     type: 'text',
+     required: false,
+@@ -67,36 +62,8 @@
+     return !!props.error
+   })
+ 
+-  // Get format configuration from predefined formats
+-  const formatConfig = computed<InputFormat | undefined>(() => {
+-    if (!props.format) return undefined
+-    return getInputFormat(props.format)
+-  })
+-
+-  // Computed prefix/suffix that prioritizes explicit props over format config
+-  const computedPrefix = computed(() => {
+-    return props.prefix ?? formatConfig.value?.prefix
+-  })
+-
+-  const computedSuffix = computed(() => {
+-    return props.suffix ?? formatConfig.value?.suffix
+-  })
+-
+-  const computedPrefixIcon = computed(() => {
+-    return props.prefixIcon ?? formatConfig.value?.prefixIcon
+-  })
+-
+-  const computedSuffixIcon = computed(() => {
+-    return props.suffixIcon ?? formatConfig.value?.suffixIcon
+-  })
+-
+   const hasInputGroup = computed(
+-    () =>
+-      !!computedPrefix.value ||
+-      !!computedSuffix.value ||
+-      !!computedPrefixIcon.value ||
+-      !!computedSuffixIcon.value ||
+-      !!slots.suffix,
++    () => props.prefix || props.suffix || props.prefixIcon || props.suffixIcon,
+   )
+ 
+   const computedInputClass = computed(() => {
+@@ -106,18 +73,6 @@
+     }
+     return classes.filter(Boolean).join(' ')
+   })
+-
+-  const inputProps = computed(() => ({
+-    id: props.id,
+-    name: props.name,
+-    type: props.type,
+-    modelValue: props.modelValue,
+-    placeholder: props.placeholder,
+-    disabled: props.disabled,
+-    readonly: props.readonly,
+-    ariaInvalid: hasError.value || undefined,
+-    class: computedInputClass.value,
+-  }))
+ </script>
+ 
+ <template>
+@@ -139,18 +94,23 @@
+     <!-- Input with or without Group -->
+     <InputGroup
+       v-if="hasInputGroup"
+-      :prefix="computedPrefix"
+-      :suffix="computedSuffix"
+-      :prefix-icon="computedPrefixIcon"
+-      :suffix-icon="slots.suffix ? undefined : computedSuffixIcon"
++      :prefix="prefix"
++      :suffix="suffix"
++      :prefix-icon="prefixIcon"
++      :suffix-icon="suffixIcon"
+       :disabled="disabled"
+       :invalid="hasError"
+     >
+-      <template v-if="slots.suffix" #suffix>
+-        <slot name="suffix" />
+-      </template>
+       <Input
+-        v-bind="inputProps"
++        :id="id"
++        :name="name"
++        :type="type"
++        :model-value="modelValue"
++        :placeholder="placeholder"
++        :disabled="disabled"
++        :readonly="readonly"
++        :aria-invalid="hasError || undefined"
++        :class="computedInputClass"
+         @update:model-value="emit('update:modelValue', $event)"
+         @blur="emit('blur', $event)"
+       />
+@@ -158,7 +118,15 @@
+ 
+     <Input
+       v-else
+-      v-bind="inputProps"
++      :id="id"
++      :name="name"
++      :type="type"
++      :model-value="modelValue"
++      :placeholder="placeholder"
++      :disabled="disabled"
++      :readonly="readonly"
++      :aria-invalid="hasError || undefined"
++      :class="computedInputClass"
+       @update:model-value="emit('update:modelValue', $event)"
+       @blur="emit('blur', $event)"
+     />

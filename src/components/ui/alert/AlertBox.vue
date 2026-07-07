@@ -44,7 +44,8 @@
     />
     <div class="flex flex-1 flex-col items-start gap-0.5">
       <div v-if="title" class="leading-xs text-xs font-semibold">{{ title }}</div>
-      <div v-if="description" class="leading-xs text-xs font-normal">{{ description }}</div>
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div v-if="description" class="leading-xs text-xs font-normal" v-html="description" />
       <slot />
     </div>
   </div>

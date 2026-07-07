@@ -102,11 +102,7 @@
   })
 
   const containerClasses = computed(() => {
-    return cn(
-      'relative overflow-hidden bg-neutral-100',
-      aspectRatioClass.value,
-      props.containerClass,
-    )
+    return cn('relative overflow-hidden', aspectRatioClass.value, props.containerClass)
   })
 
   const imageClasses = computed(() => {

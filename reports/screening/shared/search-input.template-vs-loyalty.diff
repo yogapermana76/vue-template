@@ -1,0 +1,96 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/shared/search-input/SearchInput.vue	2026-07-07 12:46:14
++++ /Users/yogapermana/Desktop/reward-loyalty-microapps-v2/src/components/shared/search-input/SearchInput.vue	2026-05-11 11:27:17
+@@ -1,80 +1,59 @@
+ <script setup lang="ts">
+   import type { HTMLAttributes } from 'vue'
+-  import { computed } from 'vue'
+   import { SearchIcon, XIcon } from 'lucide-vue-next'
+   import { Input, InputGroup } from '@/components/ui/input'
+-  import { cn } from '@/utils/cn'
+ 
+-  type SearchSize = 'sm' | 'md'
+-
+   interface Props {
+     modelValue?: string
+     placeholder?: string
+     class?: HTMLAttributes['class']
+     disabled?: boolean
+-    /** Height preset: 'md' (h-11, default) or 'sm' (h-9 for toolbars) */
+-    size?: SearchSize
+   }
+ 
+   const props = withDefaults(defineProps<Props>(), {
+     placeholder: 'Search...',
+     disabled: false,
+-    size: 'md',
+   })
+ 
+   const emit = defineEmits<{
+     'update:modelValue': [value: string]
+   }>()
+ 
+-  // ---------- Style tokens ----------
+-  const heightClass: Record<SearchSize, string> = {
+-    sm: 'h-10',
+-    md: 'h-11',
+-  }
+-
+-  const stateClass = computed(() =>
+-    props.disabled ? 'border-0 bg-slate-100' : 'border border-slate-200 bg-white',
+-  )
+-
+-  const wrapperClass = computed(() =>
+-    cn('rounded-full', heightClass[props.size], stateClass.value, props.class),
+-  )
+-
+-  const inputClass =
+-    'text-sm text-slate-950 placeholder:text-slate-400 disabled:text-slate-500 disabled:placeholder:text-slate-500'
+-
+-  const clearButtonClass =
+-    'flex shrink-0 items-center justify-center text-slate-500 hover:text-slate-700 disabled:opacity-50'
+-
+-  // ---------- Handlers ----------
+   const handleInput = (event: Event) => {
+     const target = event.target as HTMLInputElement
+     emit('update:modelValue', target.value)
+   }
+ 
+-  const handleClear = () => emit('update:modelValue', '')
++  const handleClear = () => {
++    emit('update:modelValue', '')
++  }
+ </script>
+ 
+ <template>
+-  <InputGroup :class="wrapperClass" :disabled="disabled">
++  <InputGroup
++    :class="[
++      props.class,
++      'h-11 rounded-full',
++      disabled ? 'border-0 bg-slate-100' : 'border border-slate-200 bg-white',
++    ]"
++    :disabled="disabled"
++  >
+     <template #prefix>
+       <SearchIcon class="size-4 text-slate-500" />
+     </template>
+-
+     <Input
+       type="text"
+       :placeholder="placeholder"
+       :model-value="modelValue"
+       :disabled="disabled"
+       unstyled
+-      :class="inputClass"
++      class="text-sm text-slate-950 placeholder:text-slate-400 disabled:text-slate-500 disabled:placeholder:text-slate-500"
+       @input="handleInput"
+     />
+-
+     <template v-if="modelValue" #suffix>
+       <button
+         type="button"
+-        :class="clearButtonClass"
++        class="flex shrink-0 items-center justify-center text-slate-500 hover:text-slate-700 disabled:opacity-50"
+         :disabled="disabled"
+         @click="handleClear"
+       >

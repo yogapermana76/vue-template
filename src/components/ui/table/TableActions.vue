@@ -65,26 +65,29 @@
 </script>
 
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger as-child>
-      <Button variant="tertiary" size="sm" layout="iconOnly">
-        <slot name="trigger">
-          <MoreVertical class="size-4" />
-        </slot>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent :align="align">
-      <template v-for="(action, index) in actions" :key="action.key">
-        <DropdownMenuItem
-          :disabled="action.disabled"
-          :class="action.variant === 'destructive' ? 'text-error-600' : ''"
-          @click="action.onClick"
-        >
-          <component :is="action.icon" v-if="action.icon" class="mr-2 size-4" />
-          <span>{{ action.label }}</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator v-if="action.separator && index < actions.length - 1" />
-      </template>
-    </DropdownMenuContent>
-  </DropdownMenu>
+  <!-- Wrap in a stopPropagation container so row-click doesn't fire when opening actions -->
+  <div class="inline-flex" @click.stop @pointerdown.stop>
+    <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <Button variant="tertiary" size="sm" layout="iconOnly">
+          <slot name="trigger">
+            <MoreVertical class="size-4" />
+          </slot>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent :align="align">
+        <template v-for="(action, index) in actions" :key="action.key">
+          <DropdownMenuItem
+            :disabled="action.disabled"
+            :class="action.variant === 'destructive' ? 'text-error-600' : ''"
+            @click="action.onClick"
+          >
+            <component :is="action.icon" v-if="action.icon" class="mr-2 size-4" />
+            <span>{{ action.label }}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator v-if="action.separator && index < actions.length - 1" />
+        </template>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
 </template>

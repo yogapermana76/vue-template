@@ -8,10 +8,17 @@
     XCircleIcon,
     XIcon,
   } from 'lucide-vue-next'
+  import { computed } from 'vue'
   import { Toaster as Sonner } from 'vue-sonner'
   import { cn } from '@/utils/cn'
+  import { useSafeArea } from '@/composables/ui/useSafeArea'
 
   const props = defineProps<ToasterProps>()
+
+  const { safeAreaBottom } = useSafeArea()
+  const bottomOffset = computed(() =>
+    safeAreaBottom.value > 0 ? { bottom: safeAreaBottom.value + 16 } : undefined,
+  )
 </script>
 
 <template>
@@ -35,11 +42,13 @@
       '--info-text': 'var(--color-white)',
       '--info-border': 'var(--color-info-600)',
     }"
-    v-bind="props"
+    v-bind="{ ...props, offset: undefined, mobileOffset: undefined }"
     position="bottom-center"
     rich-colors
     close-button
     :swipe-directions="['top', 'right']"
+    :offset="bottomOffset"
+    :mobile-offset="bottomOffset"
   >
     <template #success-icon>
       <CircleCheckIcon class="text-success-100 size-5" />

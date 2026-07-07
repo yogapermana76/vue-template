@@ -1,0 +1,12 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/alert/AlertBox.vue	2026-07-07 22:06:05
++++ /Users/yogapermana/Desktop/reward-loyalty-microapps-v2/src/components/ui/alert/AlertBox.vue	2026-05-11 11:27:17
+@@ -44,8 +44,7 @@
+     />
+     <div class="flex flex-1 flex-col items-start gap-0.5">
+       <div v-if="title" class="leading-xs text-xs font-semibold">{{ title }}</div>
+-      <!-- eslint-disable-next-line vue/no-v-html -->
+-      <div v-if="description" class="leading-xs text-xs font-normal" v-html="description" />
++      <div v-if="description" class="leading-xs text-xs font-normal">{{ description }}</div>
+       <slot />
+     </div>
+   </div>

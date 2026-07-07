@@ -1,3 +1,5 @@
 export { default as TextField, type TextFieldProps } from './TextField.vue'
+export { default as PasswordField } from './PasswordField.vue'
 export { default as TextAreaField, type TextAreaFieldProps } from './TextAreaField.vue'
 export { default as FormField } from './FormField.vue'
+export { default as DatePickerField } from './DatePickerField.vue'

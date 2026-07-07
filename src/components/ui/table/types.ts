@@ -266,6 +266,13 @@ export interface DataTableProps<T = Record<string, unknown>> {
    * Additional table classes
    */
   class?: string
+
+  /**
+   * Wrap the table in a bordered card (border + rounded + shadow).
+   * When true, use the `#toolbar` slot to render toolbar content above the table
+   * inside the same card.
+   */
+  bordered?: boolean
 }
 
 /**

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { HTMLAttributes, Component, InputHTMLAttributes } from 'vue'
-  import { computed } from 'vue'
+  import { computed, useSlots } from 'vue'
   import { FormField } from '.'
   import { Input } from '@/components/ui/input'
   import { InputGroup } from '@/components/ui/input'
@@ -49,6 +49,8 @@
     inputClass?: HTMLAttributes['class']
   }
 
+  const slots = useSlots()
+
   const props = withDefaults(defineProps<TextFieldProps>(), {
     type: 'text',
     required: false,
@@ -90,10 +92,11 @@
 
   const hasInputGroup = computed(
     () =>
-      computedPrefix.value ||
-      computedSuffix.value ||
-      computedPrefixIcon.value ||
-      computedSuffixIcon.value,
+      !!computedPrefix.value ||
+      !!computedSuffix.value ||
+      !!computedPrefixIcon.value ||
+      !!computedSuffixIcon.value ||
+      !!slots.suffix,
   )
 
   const computedInputClass = computed(() => {
@@ -103,6 +106,18 @@
     }
     return classes.filter(Boolean).join(' ')
   })
+
+  const inputProps = computed(() => ({
+    id: props.id,
+    name: props.name,
+    type: props.type,
+    modelValue: props.modelValue,
+    placeholder: props.placeholder,
+    disabled: props.disabled,
+    readonly: props.readonly,
+    ariaInvalid: hasError.value || undefined,
+    class: computedInputClass.value,
+  }))
 </script>
 
 <template>
@@ -127,20 +142,15 @@
       :prefix="computedPrefix"
       :suffix="computedSuffix"
       :prefix-icon="computedPrefixIcon"
-      :suffix-icon="computedSuffixIcon"
+      :suffix-icon="slots.suffix ? undefined : computedSuffixIcon"
       :disabled="disabled"
       :invalid="hasError"
     >
+      <template v-if="slots.suffix" #suffix>
+        <slot name="suffix" />
+      </template>
       <Input
-        :id="id"
-        :name="name"
-        :type="type"
-        :model-value="modelValue"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :readonly="readonly"
-        :aria-invalid="hasError || undefined"
-        :class="computedInputClass"
+        v-bind="inputProps"
         @update:model-value="emit('update:modelValue', $event)"
         @blur="emit('blur', $event)"
       />
@@ -148,15 +158,7 @@
 
     <Input
       v-else
-      :id="id"
-      :name="name"
-      :type="type"
-      :model-value="modelValue"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      :readonly="readonly"
-      :aria-invalid="hasError || undefined"
-      :class="computedInputClass"
+      v-bind="inputProps"
       @update:model-value="emit('update:modelValue', $event)"
       @blur="emit('blur', $event)"
     />

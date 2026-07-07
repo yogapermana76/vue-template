@@ -1,0 +1,14 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/shared/bottom-sheets/confirmation/ConfirmationBottomSheet.vue	2026-05-04 13:26:54
++++ /Users/yogapermana/Desktop/versace/src/components/shared/bottom-sheets/confirmation/ConfirmationBottomSheet.vue	2026-07-05 14:31:15
+@@ -82,6 +82,11 @@
+           v-html="description"
+         />
+       </div>
++
++      <!-- Optional extra content slot (e.g. voucher code box) -->
++      <div v-if="$slots.default" class="w-full px-4">
++        <slot />
++      </div>
+     </div>
+ 
+     <!-- Footer: Buttons -->

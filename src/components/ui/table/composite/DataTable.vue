@@ -28,6 +28,7 @@
     striped: false,
     dense: false,
     maxHeight: 'calc(100vh - 250px)',
+    bordered: false,
   })
 
   const emit = defineEmits<DataTableEmits<T>>()
@@ -141,7 +142,11 @@
       'left-0',
       'z-30',
       props.dense && 'py-2',
-      hasData && (isOdd ? 'bg-neutral-50!' : 'bg-white!'),
+      // Base bg per stripe (sticky column needs opaque bg to hide horizontal-scrolled content underneath)
+      hasData && (isOdd ? 'bg-neutral-50' : 'bg-white'),
+      // Inherit row states (hover & selected) so the sticky checkbox column tints along
+      '[tr:hover>&]:bg-neutral-50/60',
+      '[tr[data-selected="true"]>&]:bg-primary-50',
     ]
   }
 
@@ -175,7 +180,23 @@
 </script>
 
 <template>
-  <div data-slot="data-table" class="w-full">
+  <div
+    data-slot="data-table"
+    :class="[
+      'w-full',
+      bordered && 'bg-card shadow-card overflow-hidden rounded-md border border-neutral-200',
+    ]"
+  >
+    <div
+      v-if="$slots.toolbar"
+      data-slot="data-table-toolbar"
+      :class="
+        bordered && 'from-primary-50 to-background border-b border-neutral-200 bg-linear-to-b'
+      "
+    >
+      <slot name="toolbar" />
+    </div>
+
     <Table ref="tableComponentRef" :class="props.class" :max-height="props.maxHeight">
       <!-- Table Header -->
       <TableHeader>
@@ -262,8 +283,13 @@
           :class="getRowClasses(rowIndex)"
           @click="handleRowClick(row, rowIndex, $event)"
         >
-          <!-- Selection checkbox -->
-          <TableCell v-if="selectable" :class="getCheckboxCellClasses(rowIndex)">
+          <!-- Selection checkbox — stopPropagation so row-click doesn't fire -->
+          <TableCell
+            v-if="selectable"
+            :class="getCheckboxCellClasses(rowIndex)"
+            @click.stop
+            @pointerdown.stop
+          >
             <Checkbox
               :checked="tableState.isRowSelected(tableState.getRowKey(row, rowIndex))"
               @update:checked="handleRowSelection(tableState.getRowKey(row, rowIndex))"
@@ -302,11 +328,17 @@
     </Table>
 
     <!-- Pagination -->
-    <TablePagination
+    <div
       v-if="isPaginationEnabled && !loading"
-      :pagination="tableState.paginationOptions.value"
-      @page-change="handlePageChange"
-      @page-size-change="handlePageSizeChange"
-    />
+      :class="
+        bordered && 'from-primary-50 to-background border-t border-neutral-200 bg-linear-to-t'
+      "
+    >
+      <TablePagination
+        :pagination="tableState.paginationOptions.value"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
+      />
+    </div>
   </div>
 </template>

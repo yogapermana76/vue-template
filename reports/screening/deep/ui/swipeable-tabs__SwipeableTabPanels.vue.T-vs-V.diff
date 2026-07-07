@@ -1,0 +1,91 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/swipeable-tabs/SwipeableTabPanels.vue	2026-07-07 22:07:18
++++ /Users/yogapermana/Desktop/versace/src/components/ui/swipeable-tabs/SwipeableTabPanels.vue	2026-07-05 13:59:18
+@@ -1,5 +1,5 @@
+ <script setup lang="ts">
+-  import { inject, onMounted, onUnmounted, ref, type HTMLAttributes } from 'vue'
++  import { computed, inject, onMounted, onUnmounted, ref, type HTMLAttributes } from 'vue'
+   import { useDrag } from '@vueuse/gesture'
+   import { cn } from '@/utils/cn'
+   import { SWIPEABLE_TABS_INJECTION_KEY, type SwipeableTabsContext } from './types'
+@@ -16,8 +16,17 @@
+   }
+ 
+   const containerRef = ref<HTMLElement | null>(null)
+-  const panelContainerRef = ref<HTMLElement | null>(null)
++  const panelsWrapperRef = ref<HTMLElement | null>(null)
+ 
++  // Transform calculation for horizontal sliding
++  const wrapperTransform = computed(() => {
++    const offsetPercent = (context.activeIndex.value * 100) / context.tabs.length
++    const dragOffset = context.translateX.value
++    return `translateX(calc(-${offsetPercent}% + ${dragOffset}px))`
++  })
++
++  const wrapperWidth = computed(() => `${context.tabs.length * 100}%`)
++
+   const updateContainerWidth = () => {
+     if (containerRef.value) {
+       context.setContainerWidth(containerRef.value.offsetWidth)
+@@ -33,25 +42,18 @@
+     window.removeEventListener('resize', updateContainerWidth)
+   })
+ 
+-  const isInsideHorizontalScrollable = (target: EventTarget | null): boolean => {
+-    let el = target as HTMLElement | null
+-    while (el && el !== panelContainerRef.value) {
+-      if (el.scrollWidth > el.clientWidth) return true
+-      el = el.parentElement
+-    }
+-    return false
+-  }
+-
+   // Setup drag gesture for horizontal swipes only
+   useDrag(
+     state => {
+-      const { movement, velocities, dragging, direction, first, event } = state
++      const { movement, velocities, dragging, direction, first } = state
+       const mx = movement[0]
+       const my = movement[1]
+       const vx = velocities[0]
+       const dx = direction[0]
+ 
+-      if (first && (Math.abs(my) > Math.abs(mx) || isInsideHorizontalScrollable(event.target))) {
++      // On first move, determine if it's horizontal or vertical
++      // If vertical, cancel the gesture to allow scroll
++      if (first && Math.abs(my) > Math.abs(mx)) {
+         state.cancel()
+         return
+       }
+@@ -68,7 +70,7 @@
+       }
+     },
+     {
+-      domTarget: panelContainerRef,
++      domTarget: panelsWrapperRef,
+       eventOptions: { passive: false },
+       filterTaps: true,
+       pointer: { touch: true },
+@@ -84,12 +86,18 @@
+     data-slot="swipeable-tab-panels"
+   >
+     <div
+-      ref="panelContainerRef"
+-      class="absolute inset-0 flex"
+-      :class="!context.isDragging.value && 'transition-transform duration-300 ease-out'"
++      ref="panelsWrapperRef"
++      :class="
++        cn(
++          'flex',
++          !context.scrollFlow && 'absolute inset-0',
++          context.scrollFlow && 'items-start',
++          !context.isDragging.value && 'transition-transform duration-300 ease-out',
++        )
++      "
+       :style="{
+-        transform: `translateX(calc(-${(context.activeIndex.value * 100) / context.tabs.length}% + ${context.translateX.value}px))`,
+-        width: `${context.tabs.length * 100}%`,
++        transform: wrapperTransform,
++        width: wrapperWidth,
+       }"
+     >
+       <slot />

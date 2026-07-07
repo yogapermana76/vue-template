@@ -18,6 +18,8 @@
     indicatorClass?: HTMLAttributes['class']
     /** Max number of tabs to apply equal width. Set > 0 to enable equal width for small tab counts. Default: 0 (content-based) */
     equalWidthMaxTabs?: number
+    /** Make tab bar sticky (for scroll-flow mode). Provide top offset value (e.g., 'top-12'). Default: none */
+    sticky?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +42,7 @@
     cn(
       'relative z-40 flex w-full shrink-0 border-b border-slate-200 bg-white px-4',
       useEqualWidth.value ? 'gap-0' : 'gap-5 overflow-x-auto scrollbar-none',
+      props.sticky && `sticky ${props.sticky}`,
       props.class,
     ),
   )

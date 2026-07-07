@@ -1,0 +1,46 @@
+--- /Users/yogapermana/Desktop/vite-vue-template/src/components/ui/bottom-sheet/BottomSheet.vue	2026-05-04 13:26:54
++++ /Users/yogapermana/Desktop/versace/src/components/ui/bottom-sheet/BottomSheet.vue	2026-07-05 13:59:18
+@@ -27,6 +27,8 @@
+     open?: boolean
+     /** Allow dismissing by backdrop click or escape key */
+     dismissible?: boolean
++    /** Whether this is a nested bottom sheet inside another */
++    nested?: boolean
+ 
+     // Content Props
+     /** Title of the bottom sheet */
+@@ -55,6 +57,7 @@
+   const props = withDefaults(defineProps<Props>(), {
+     open: false,
+     dismissible: true,
++    nested: false,
+     title: undefined,
+     description: undefined,
+     showClose: true,
+@@ -93,18 +96,20 @@
+ </script>
+ 
+ <template>
+-  <Drawer v-model:open="isOpen" direction="bottom" :dismissible="dismissible">
++  <Drawer v-model:open="isOpen" direction="bottom" :dismissible="dismissible" :nested="nested">
+     <slot name="trigger" />
+ 
+     <DrawerContent :class="contentClass" :show-drag-handle="!showClose" class="flex flex-col">
+       <!-- Header (optional) -->
+-      <template v-if="title || description || showClose">
++      <template v-if="title || description || showClose || $slots.header">
+         <DrawerHeader class="shrink-0 flex-row gap-2! px-4 py-2">
+           <div class="flex-1">
+-            <DrawerTitle v-if="title">{{ title }}</DrawerTitle>
+-            <DrawerDescription v-if="description">
+-              {{ description }}
+-            </DrawerDescription>
++            <slot name="header">
++              <DrawerTitle v-if="title">{{ title }}</DrawerTitle>
++              <DrawerDescription v-if="description">
++                {{ description }}
++              </DrawerDescription>
++            </slot>
+           </div>
+           <DrawerClose v-if="showClose" as-child>
+             <button class="-mr-1.5 shrink-0 rounded-full p-1 hover:bg-neutral-100">
