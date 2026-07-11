@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { computed } from 'vue'
   import RightSheet from '../RightSheet.vue'
-  import SheetHeader from '../SheetHeader.vue'
+  import SideSheetHeader from '../SideSheetHeader.vue'
 
   interface Props {
     open?: boolean
@@ -68,7 +68,7 @@
 
     <!-- Custom hero header: gradient band + avatar + badges -->
     <template #header>
-      <SheetHeader variant="hero" :show-close="showClose" @close="closeSheet">
+      <SideSheetHeader variant="hero" :show-close="showClose" @close="closeSheet">
         <div class="flex items-start gap-4 pr-8">
           <div
             class="bg-primary-600 heading-s flex size-14 shrink-0 items-center justify-center rounded-md text-white"
@@ -93,7 +93,7 @@
             </div>
           </div>
         </div>
-      </SheetHeader>
+      </SideSheetHeader>
     </template>
 
     <!-- Sections -->

@@ -23,7 +23,7 @@
     :class="
       cn(
         'flex cursor-pointer items-center gap-3 rounded-sm border border-neutral-200 bg-white p-3 transition-all',
-        props.selected && 'border-primary-600 border-2 p-[11px]',
+        props.selected && 'border-primary-600 border-2 p-2.75',
         props.class,
       )
     "

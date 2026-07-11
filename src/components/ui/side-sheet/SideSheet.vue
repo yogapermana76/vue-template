@@ -2,7 +2,7 @@
   import { computed } from 'vue'
   import { Drawer, DrawerContent } from '@/components/ui/drawer'
   import { cn } from '@/utils/cn'
-  import SheetHeader from './SheetHeader.vue'
+  import SideSheetHeader from './SideSheetHeader.vue'
   import type { SheetWidth, SideSheetProps } from './types'
 
   const props = withDefaults(defineProps<SideSheetProps>(), {
@@ -73,7 +73,7 @@
     <slot name="trigger" />
 
     <DrawerContent :class="contentClasses" :show-drag-handle="false">
-      <SheetHeader
+      <SideSheetHeader
         v-if="hasHeader"
         :variant="headerVariant"
         :title="title"
@@ -85,7 +85,7 @@
         @back="emit('back')"
       >
         <slot name="header" />
-      </SheetHeader>
+      </SideSheetHeader>
 
       <slot v-else name="header" />
 

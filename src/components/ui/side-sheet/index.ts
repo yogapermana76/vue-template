@@ -5,7 +5,7 @@ export { default as SideSheet } from './SideSheet.vue'
 export { default as RightSheet } from './RightSheet.vue'
 export { default as LeftSheet } from './LeftSheet.vue'
 
-export { default as SheetHeader } from './SheetHeader.vue'
+export { default as SideSheetHeader } from './SideSheetHeader.vue'
 
 export type {
   SheetDirection,
