@@ -2,12 +2,9 @@
  * Utility functions for detecting if app is running in a mobile webview
  */
 
-// Type definitions for native bridge objects
+// ReactNativeWebView + webkit are already declared globally in types/global.d.ts.
+// Extend Window here only with the Android/NativeApp fields specific to webview detection.
 interface WindowWithNativeBridge extends Window {
-  ReactNativeWebView?: unknown
-  webkit?: {
-    messageHandlers?: unknown
-  }
   Android?: unknown
   NativeApp?: unknown
 }

@@ -5,8 +5,8 @@
   "targets": {
     "gamify-c9cd4": {
       "hosting": {
-        "loket-lifestyle-v2": [
-          "loket-lifestyle-v2"
+        "backup-loket-lifestyle": [
+          "backup-loket-lifestyle"
         ]
       }
     }

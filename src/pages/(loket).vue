@@ -14,6 +14,7 @@
   import { LoketScanDialog, LoketScanTriggerButton, useLoketScanModal } from '@/features/loket-scan'
   import { useLoketAuthStore } from '@/stores'
   import { useToast } from '@/composables/ui'
+  import plnLogo from '@/assets/images/pln-mobile-logo.png'
 
   const scanModal = useLoketScanModal()
   const router = useRouter()
@@ -47,7 +48,7 @@
 <template>
   <DashboardLayout>
     <template #sidebar>
-      <DashboardSidebar logo="/src/assets/images/pln-mobile-logo.png" title="Loket Lifestyle">
+      <DashboardSidebar :logo="plnLogo" title="Loket Lifestyle">
         <template #default="{ collapsed }">
           <DashboardSidebarContent
             :nav-groups="dashboardNavGroups"

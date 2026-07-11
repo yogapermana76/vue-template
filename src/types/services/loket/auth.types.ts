@@ -52,3 +52,4 @@ export interface LoketLoginData {
 
 export type LoketLoginResponse = BaseResponse<LoketLoginData>
 export type LoketRefreshTokenResponse = BaseResponse<{ AccessToken: string; RefreshToken: string }>
+export type LoketLogoutResponse = BaseResponse<Record<string, never>>

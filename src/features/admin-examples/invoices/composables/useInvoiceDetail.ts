@@ -5,12 +5,10 @@ import type { InvoiceStatus } from '../types'
 
 export function useInvoiceDetail() {
   const store = useInvoicesStore()
-  const route = useRoute()
+  const route = useRoute('/docs/admin-examples/invoices/[id]')
   const router = useRouter()
 
-  const invoiceId = computed(() =>
-    Array.isArray(route.params.id) ? route.params.id[0]! : (route.params.id as string),
-  )
+  const invoiceId = computed(() => route.params.id)
   const invoice = computed(() => store.findInvoice(invoiceId.value))
 
   const back = () => router.push('/docs/admin-examples/invoices')

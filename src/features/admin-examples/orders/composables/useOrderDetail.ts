@@ -23,12 +23,10 @@ const buildForm = (order: Order): OrderEditFormValues => ({
 
 export function useOrderDetail() {
   const store = useOrdersStore()
-  const route = useRoute()
+  const route = useRoute('/docs/admin-examples/orders/[id]')
   const router = useRouter()
 
-  const orderId = computed(
-    () => (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) as string,
-  )
+  const orderId = computed(() => route.params.id)
   const order = computed(() => store.findOrder(orderId.value))
 
   const isEditing = ref(route.query.mode === 'edit')

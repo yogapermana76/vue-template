@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "target": "loket-lifestyle-v2",
+      "target": "backup-loket-lifestyle",
       "public": "dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [

@@ -14,7 +14,7 @@
     "format": "prettier --write \"src/**/*.{vue,ts,js,json,css}\"",
     "format:check": "prettier --check \"src/**/*.{vue,ts,js,json,css}\"",
     "prepare": "husky",
-    "deploy:dev": "npm run build:dev && firebase deploy --only hosting:loket-lifestyle-v2"
+    "deploy:dev": "npm run build:dev && firebase deploy --only hosting:backup-loket-lifestyle"
   },
   "lint-staged": {
     "*.{vue,ts,js}": [
