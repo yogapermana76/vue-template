@@ -10,12 +10,9 @@ import type {
   AxiosRequestConfig,
 } from 'axios'
 import { toast } from 'vue-sonner'
-import { authStorage } from '@/utils'
-import { refreshTokenWithQueue } from './token-refresh'
 import type { ApiErrorData } from '@/types'
 
 type RequestConfig = InternalAxiosRequestConfig & {
-  _retry?: boolean
   showErrorToast?: boolean
 }
 
@@ -32,21 +29,27 @@ const DEFAULT_ERROR_MESSAGE = 'Something went wrong'
 interface ApiResponse {
   success?: boolean
   code?: string
+  /** HTTP-style numeric status echoed in the body (Loket convention). */
+  statusCode?: number
   message?: string
   data?: unknown | ApiErrorData
 }
 
 /**
- * Check if response is a business logic error
- * API returns 200 but with success: false or code !== '2000'
+ * Detect a business error from a 2xx HTTP response. Handles PLN Mobile
+ * (`code` field), Loket (`statusCode` in body), and generic
+ * (`success: false`) response shapes.
  */
 const isBusinessError = (data: unknown): data is ApiResponse => {
   if (!data || typeof data !== 'object') return false
 
   const response = data as ApiResponse
-  return (
-    response.success === false || (response.code !== undefined && response.code !== SUCCESS_CODE)
-  )
+
+  if (response.success === false) return true
+  if (response.code !== undefined && response.code !== SUCCESS_CODE) return true
+  if (response.statusCode !== undefined && response.statusCode >= 400) return true
+
+  return false
 }
 
 /**
@@ -80,56 +83,16 @@ const showErrorToast = (message: string) => {
 }
 
 /**
- * Setup request interceptor to inject JWT token
+ * Setup response interceptor for error handling. Loket auth (Bearer +
+ * refresh on 401) is handled in `loket-interceptors.ts`; this interceptor
+ * just surfaces error messages via toast.
  */
-export const setupAuthInterceptor = (instance: AxiosInstance) => {
-  instance.interceptors.request.use(config => {
-    const token = authStorage.getToken()
-    if (token) {
-      config.headers.Authorization = token
-    }
-    return config
-  })
-}
-
-/**
- * Handle 401 unauthorized error with token refresh
- */
-const handleUnauthorized = async (error: AxiosError, instance: AxiosInstance): Promise<unknown> => {
-  const originalRequest = error.config as RequestConfig
-
-  if (!originalRequest || originalRequest._retry) {
-    return Promise.reject(error)
-  }
-
-  originalRequest._retry = true
-
-  try {
-    const newToken = await refreshTokenWithQueue()
-
-    if (originalRequest.headers) {
-      originalRequest.headers.Authorization = newToken
-    }
-
-    return instance(originalRequest)
-  } catch (refreshError) {
-    authStorage.clearSession()
-    return Promise.reject(refreshError)
-  }
-}
-
-/**
- * Setup response interceptor for error handling
- */
-export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean) => {
+export const setupErrorInterceptor = (instance: AxiosInstance) => {
   instance.interceptors.response.use(
     response => {
-      // Check for business logic errors in successful HTTP responses
       if (response.data && isBusinessError(response.data)) {
         const errorMessage = response.data.message || 'Request failed'
 
-        // Skip toast if error has structured data (will be shown in bottomsheet)
-        // or if explicitly disabled via config
         const config = response.config as RequestConfig
         const hasUIErrorData = hasStructuredErrorData(response.data)
         const shouldShowToast = config.showErrorToast !== false && !hasUIErrorData
@@ -138,7 +101,6 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
           showErrorToast(errorMessage)
         }
 
-        // Reject as error so it can be caught in try-catch
         return Promise.reject({
           response,
           message: errorMessage,
@@ -152,18 +114,6 @@ export const setupErrorInterceptor = (instance: AxiosInstance, withAuth: boolean
       const status = error.response?.status
       const config = error.config as RequestConfig
 
-      // Handle 401 with token refresh for authenticated clients
-      if (status === 401 && withAuth) {
-        return handleUnauthorized(error, instance)
-      }
-
-      // Clear session on 401 for non-auth clients
-      if (status === 401) {
-        authStorage.clearSession()
-      }
-
-      // Skip toast if error has structured data (will be shown in bottomsheet)
-      // or if explicitly disabled via config
       const hasUIErrorData = hasStructuredErrorData(error.response?.data)
       const shouldShowToast = config?.showErrorToast !== false && !hasUIErrorData
 

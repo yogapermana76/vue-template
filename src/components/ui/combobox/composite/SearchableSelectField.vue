@@ -2,7 +2,7 @@
   import type { HTMLAttributes, Component } from 'vue'
   import type { ComboboxOption, ComboboxGroup } from '../types'
   import { computed, ref } from 'vue'
-  import { ChevronsUpDown } from 'lucide-vue-next'
+  import { ChevronsUpDown, X } from 'lucide-vue-next'
   import { cn } from '@/utils/cn'
   import { FormField } from '@/components/ui/form'
   import { InputGroup } from '@/components/ui/input'
@@ -47,6 +47,13 @@
     suffixIcon?: Component
     /** Hide the suffix icon */
     hideSuffixIcon?: boolean
+    /**
+     * Show a clear (X) button in the trailing edge when a value is selected.
+     * Emits `update:modelValue` with `undefined`. Default: false — opt in
+     * where "no selection" is a valid state (e.g. filters). Alternative to
+     * adding a manual "All / Semua" option to the list.
+     */
+    clearable?: boolean
     /** Popover side positioning */
     side?: 'top' | 'right' | 'bottom' | 'left'
     /** Popover alignment */
@@ -62,12 +69,13 @@
     disabled: false,
     hideSearch: false,
     hideSuffixIcon: false,
+    clearable: false,
     side: 'bottom',
     align: 'start',
   })
 
   const emit = defineEmits<{
-    'update:modelValue': [value: T]
+    'update:modelValue': [value: T | undefined]
   }>()
 
   const open = ref(false)
@@ -76,6 +84,15 @@
     if (Array.isArray(props.error)) return props.error.length > 0
     return !!props.error
   })
+
+  const hasValue = computed(() => props.modelValue !== undefined && props.modelValue !== null)
+
+  const clear = (event: MouseEvent) => {
+    // Stop the click from bubbling to the trigger (which would toggle the
+    // popover) — clearing should be a distinct affordance from opening.
+    event.stopPropagation()
+    emit('update:modelValue', undefined)
+  }
 </script>
 
 <template>
@@ -112,7 +129,6 @@
       <template #trigger="{ selectedOption }">
         <InputGroup
           :prefix-icon="prefixIcon"
-          :suffix-icon="!hideSuffixIcon ? suffixIcon || ChevronsUpDown : undefined"
           :disabled="disabled"
           :invalid="hasError"
           :focused="open"
@@ -121,11 +137,30 @@
           tabindex="0"
           :class="cn('cursor-pointer', disabled && 'cursor-not-allowed')"
         >
-          <span
-            :class="cn('flex-1 truncate text-left text-sm', !selectedOption && 'text-neutral-400')"
-          >
+          <span :class="cn('truncate text-sm', !selectedOption && 'text-neutral-400')">
             {{ selectedOption?.label || placeholder }}
           </span>
+
+          <!-- Trailing control: X button when clearable + value is set, else
+               the caret icon. Living in InputGroup's `#suffix` slot keeps
+               it right-anchored regardless of label length. -->
+          <template #suffix>
+            <button
+              v-if="clearable && hasValue && !disabled"
+              type="button"
+              class="-mr-1 flex size-6 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700"
+              :aria-label="'Hapus pilihan'"
+              @mousedown.stop
+              @click="clear"
+            >
+              <X class="size-4" />
+            </button>
+            <component
+              v-else-if="!hideSuffixIcon"
+              :is="suffixIcon || ChevronsUpDown"
+              class="size-5"
+            />
+          </template>
         </InputGroup>
       </template>
 

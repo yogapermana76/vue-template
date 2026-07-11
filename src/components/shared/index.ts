@@ -4,9 +4,6 @@ export { SearchInput } from './search-input'
 // Pull to refresh
 export { PullToRefresh } from './pull-to-refresh'
 
-// Router
-export { default as TransitionedRouterView } from './TransitionedRouterView.vue'
-
 // Bottom sheets
 export {
   ConfirmationBottomSheet,
@@ -19,11 +16,14 @@ export {
 // Ticket quantity selector
 export { TicketQuantitySelector } from './ticket-quantity-selector'
 
-// Card components
-export { default as CardSection } from './CardSection.vue'
+// Section header (uppercase-tracked label + optional divider)
+export { SectionHeader } from './section-header'
 
-// Page header (title, back button, actions, badges, meta, below slot)
-export { default as PageHeader } from './PageHeader.vue'
+// Detail section (container) + DetailField (label/value pair)
+export { DetailSection, DetailField } from './detail-section'
 
 // Date picker (mobile-friendly bottom sheet)
 export { DatePickerBottomSheet, type DatePickerBottomSheetProps } from './date-picker-bottom-sheet'
+
+// Copyright footer
+export { AppCopyrightFooter } from './app-copyright-footer'

@@ -20,9 +20,7 @@ export const config = {
     timeout: 30000,
     url: {
       base: import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com',
-      // Add more API endpoints here as needed
-      // Example:
-      // payment: import.meta.env.VITE_API_PAYMENT_URL || 'https://payment-api.example.com',
+      loket: import.meta.env.VITE_LOKET_API_URL || 'https://loket-lifestyle.beyondkwh.id/api',
     },
   },
 

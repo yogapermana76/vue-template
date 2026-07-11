@@ -6,9 +6,10 @@ export { default as UserDropdown } from './UserDropdown.vue'
 
 // Dashboard content components
 export { default as DashboardSidebarContent } from './DashboardSidebarContent.vue'
-export { default as DashboardFooterContent } from './DashboardFooterContent.vue'
 export { default as DashboardHeaderContent } from './DashboardHeaderContent.vue'
 export { default as DashboardBreadcrumb } from './DashboardBreadcrumb.vue'
+export { default as PageHeader } from './PageHeader.vue'
+export { default as DetailPageLayout } from './DetailPageLayout.vue'
 
 // Sidebar atomic components
 export { default as SidebarHeader } from './SidebarHeader.vue'
@@ -18,6 +19,7 @@ export { default as SidebarNavGroup } from './SidebarNavGroup.vue'
 export { default as SidebarNavItemCollapsible } from './SidebarNavItemCollapsible.vue'
 export { default as SidebarNavDropdown } from './SidebarNavDropdown.vue'
 export { default as SidebarToggle } from './SidebarToggle.vue'
+export { default as SidebarLogoutButton } from './SidebarLogoutButton.vue'
 
 // Types
 export type { SidebarNavItem as SidebarNavItemType, LayoutContext } from './types'

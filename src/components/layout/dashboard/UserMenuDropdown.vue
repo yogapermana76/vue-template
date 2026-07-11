@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { LogOut, Settings, HelpCircle } from 'lucide-vue-next'
+  import { LogOut } from 'lucide-vue-next'
   import {
     DropdownMenuContent,
     DropdownMenuItem,
@@ -9,11 +9,8 @@
   import type { UserRole } from '@/config/navigation'
 
   interface Props {
-    /** User display name */
     userName: string
-    /** User email */
     userEmail?: string
-    /** User role */
     userRole?: UserRole
   }
 
@@ -21,8 +18,6 @@
 
   const emit = defineEmits<{
     logout: []
-    settings: []
-    help: []
   }>()
 </script>
 
@@ -40,19 +35,6 @@
         </p>
       </div>
     </DropdownMenuLabel>
-
-    <DropdownMenuSeparator />
-
-    <!-- Menu Items -->
-    <DropdownMenuItem @click="emit('settings')">
-      <Settings class="mr-2 h-4 w-4" />
-      <span>Settings</span>
-    </DropdownMenuItem>
-
-    <DropdownMenuItem @click="emit('help')">
-      <HelpCircle class="mr-2 h-4 w-4" />
-      <span>Help & Support</span>
-    </DropdownMenuItem>
 
     <DropdownMenuSeparator />
 

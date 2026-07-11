@@ -8,12 +8,16 @@
 // ============================================
 
 /**
- * Standard API response wrapper
+ * Standard API response envelope. `code` is PLN Mobile convention,
+ * `statusCode` is Loket convention; `success` is present on both.
  */
 export interface BaseResponse<T = unknown> {
   success: boolean
   message: string | null
-  code: string
+  /** PLN Mobile-style success code (e.g. `'2000'`). */
+  code?: string
+  /** HTTP-style numeric status in the body (Loket). */
+  statusCode?: number
   data: T
   time?: string
 }
@@ -118,6 +122,10 @@ export interface BaseQueryOptions {
   retry?: boolean | number
   /** Delay between retries in ms */
   retryDelay?: number | ((attemptIndex: number) => number)
+  /** Polling interval in ms; `false`/omit disables. Pauses in background. */
+  refetchInterval?: number | false
+  /** Continue polling out of focus (default: false). */
+  refetchIntervalInBackground?: boolean
 }
 
 /**

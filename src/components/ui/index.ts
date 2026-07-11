@@ -65,15 +65,17 @@ export {
 // Dialog composites
 export { DialogWrapper, ConfirmDialog, DetailDialog, FormDialog } from './dialog/composite'
 
-// RightSheet (bundled) + Detail/Form composites
+// SideSheet (bundled) + Detail/Form composites
 export {
+  SideSheet,
   RightSheet,
+  LeftSheet,
   DetailSheet,
   DetailSection,
   DetailField,
   CrudFormSheet,
   FormSection,
-} from './right-sheet'
+} from './side-sheet'
 
 // Divider
 export { Divider } from './divider'

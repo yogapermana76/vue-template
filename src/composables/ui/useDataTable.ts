@@ -5,19 +5,15 @@ import type {
   SortDirection,
   SortOptions,
 } from '@/components/ui/table/types'
-import type { ComputedRef, Ref } from 'vue'
-import { computed, ref, watch } from 'vue'
+import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue'
+import { computed, ref, toValue, watch } from 'vue'
 
 export interface UseDataTableOptions<T = Record<string, unknown>> {
-  /**
-   * Table data
-   */
-  data: T[]
+  /** Table data. Reactive-accepting so query results propagate through. */
+  data: MaybeRefOrGetter<T[]>
 
-  /**
-   * Column definitions
-   */
-  columns: ColumnDef<T>[]
+  /** Column definitions. Reactive-accepting like `data`. */
+  columns: MaybeRefOrGetter<ColumnDef<T>[]>
 
   /**
    * Row key field for selection tracking
@@ -102,6 +98,11 @@ export function useDataTable<T = Record<string, unknown>>(
     clientSidePagination = true,
   } = options
 
+  // Wrap in `computed(() => toValue(...))` so refs/getters re-evaluate;
+  // a bare destructure captured the array at setup time and never updated.
+  const dataRef = computed(() => toValue(data))
+  const columnsRef = computed(() => toValue(columns))
+
   // Sorting state
   const sortBy = ref<string | null>(initialSort?.sortBy ?? null)
   const sortDirection = ref<SortDirection>(initialSort?.sortDirection ?? false)
@@ -152,11 +153,11 @@ export function useDataTable<T = Record<string, unknown>>(
 
   // Processed data (sorted)
   const processedData = computed(() => {
-    const result = [...data]
+    const result = [...dataRef.value]
 
     // Client-side sorting
     if (clientSideSorting && sortBy.value && sortDirection.value) {
-      const column = columns.find(col => col.key === sortBy.value)
+      const column = columnsRef.value.find(col => col.key === sortBy.value)
       if (column) {
         result.sort((a, b) => {
           // Use custom sort function if provided

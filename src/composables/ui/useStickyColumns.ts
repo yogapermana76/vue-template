@@ -1,5 +1,5 @@
 import type { ColumnDef } from '@/components/ui/table/types'
-import { computed, onMounted, onUnmounted, ref, type Ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch, type Ref } from 'vue'
 
 export interface UseStickyColumnsOptions<T> {
   /** Reference to the table wrapper element */
@@ -285,6 +285,18 @@ export function useStickyColumns<T extends Record<string, unknown>>(
     resizeObserver = new ResizeObserver(calculateStickyOffsets)
     resizeObserver.observe(wrapper)
   })
+
+  // Recompute offsets when columns arrive late (e.g. API-driven headers).
+  // Without this, cold reloads capture 0-width offsets because `onMounted`
+  // fires before the `<th>` cells render.
+  watch(
+    () => visibleColumns.value.map(c => c.key).join('|'),
+    async () => {
+      await nextTick()
+      calculateStickyOffsets()
+      updateScrollShadows()
+    },
+  )
 
   onUnmounted(() => {
     const wrapper = tableRef.value?.wrapperRef

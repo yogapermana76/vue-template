@@ -1,20 +1,31 @@
-/**
- * HTTP Client
- * Central export for all HTTP-related functionality
- */
-
 import { config } from '@/config'
-import { createHttpClient } from './client'
+import { setupLoketAuthInterceptor } from './loket-interceptors'
+import { setupErrorInterceptor } from './interceptors'
+import axios from 'axios'
 
-// Pre-configured clients
-export const http = createHttpClient(config.api.url.base, 'jwt')
-export const publicHttp = createHttpClient(config.api.url.base, 'none')
+// `withAuth` flips the token-refresh interceptor. Error interceptor is always on.
+function createLoketHttpClient(withAuth: boolean) {
+  const instance = axios.create({
+    baseURL: config.api.url.loket,
+    timeout: config.api.timeout,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  })
 
-// Export factory for custom clients
-export { createHttpClient } from './client'
+  if (withAuth) {
+    setupLoketAuthInterceptor(instance)
+  }
+  setupErrorInterceptor(instance)
 
-// Export utilities
-export { refreshTokenWithQueue } from './token-refresh'
+  return instance
+}
 
-// Export types
+export const loketHttp = createLoketHttpClient(true)
+export const loketPublicHttp = createLoketHttpClient(false)
+
+export { setupLoketAuthInterceptor, registerSessionExpiredHandler } from './loket-interceptors'
+export { stripEmpty } from './params'
+
 export type { HttpConfig } from './interceptors'

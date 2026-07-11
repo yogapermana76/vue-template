@@ -1,2 +1,2 @@
 export { useThemeStore } from './theme'
-export { useAuthStore } from './auth'
+export { useLoketAuthStore } from './loket-auth'

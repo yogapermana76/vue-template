@@ -7,6 +7,7 @@
 @import '@fontsource/figtree/800.css';
 
 @import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -345,6 +346,7 @@
   /* Custom animations */
   --animation-bounce-up: bounceUp 0.5s ease-out;
   --animation-bounce-down: bounceDown 0.5s ease-in;
+  --animation-scan-sweep: scanSweep 2.4s ease-in-out infinite;
 }
 
 @keyframes bounceUp {
@@ -365,6 +367,27 @@
   }
 }
 
+/*
+ * Scan line sweep: top → bottom → top of the positioning parent.
+ * Animating `top` (not `translateY`) so the line — which is only 2px tall —
+ * actually traverses the full frame; a percentage transform would resolve
+ * against the element, not the parent.
+ */
+@keyframes scanSweep {
+  0% {
+    top: 0;
+    opacity: 0.4;
+  }
+  50% {
+    top: calc(100% - 2px);
+    opacity: 1;
+  }
+  100% {
+    top: 0;
+    opacity: 0.4;
+  }
+}
+
 /* Animation utilities */
 @layer utilities {
   .animate-bounce-up {
@@ -373,6 +396,19 @@
 
   .animate-bounce-down {
     animation: bounceDown 0.5s ease-in;
+  }
+
+  .animate-scan-sweep {
+    animation: var(--animation-scan-sweep);
+    will-change: top, opacity;
+  }
+}
+
+/* Respect OS-level reduced-motion preference across all custom animations. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-scan-sweep {
+    animation: none;
+    top: 50%;
   }
 }
 
@@ -634,6 +670,36 @@
   }
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+
+  /**
+   * Themed thin scrollbar.
+   *
+   * Why we need it: macOS/iOS switch between overlay scrollbars (thin, hover
+   * to show) and classic scrollbars (thick, always visible) based on system
+   * settings + whether a mouse is connected. That flip is why table
+   * scrollbars sometimes appear chunky and "get fixed by reload" — the
+   * browser only picks up the new preference on next paint. This utility
+   * locks the size + colour regardless of OS state so the UI stays visually
+   * consistent whether a trackpad, mouse, or nothing is connected.
+   */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-300) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral-300);
+    border-radius: 999px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-neutral-400);
   }
 
   /* Safe area insets for mobile */

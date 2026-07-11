@@ -1,5 +1,0 @@
-export { default as DetailSheet } from './DetailSheet.vue'
-export { default as DetailSection } from './DetailSection.vue'
-export { default as DetailField } from './DetailField.vue'
-export { default as CrudFormSheet } from './CrudFormSheet.vue'
-export { default as FormSection } from './FormSection.vue'

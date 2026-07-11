@@ -3,7 +3,8 @@
   import { computed, onMounted, onUnmounted, ref } from 'vue'
   import { Checkbox } from '@/components/ui/checkbox'
   import { EmptyState } from '@/components/ui/empty-state'
-  import { Skeleton } from '@/components/ui/skeleton'
+  import { Spinner } from '@/components/ui/spinner'
+  import { IndeterminateProgress } from '@/components/ui/progress'
   import { useDataTable } from '@/composables/ui/useDataTable'
   import { useStickyColumns } from '@/composables/ui/useStickyColumns'
   import { useTableColumns } from '@/composables/ui/useTableColumns'
@@ -41,10 +42,15 @@
   const visibleColumns = computed(() => props.columns.filter(col => !col.hidden))
   const isPaginationEnabled = computed(() => props.pagination !== false)
 
-  // Initialize table state
+  // Initialize table state.
+  // `data` and `columns` are passed as GETTERS (`() => props.x`) so the
+  // composable stays reactive when the parent replaces the array — most
+  // notably when TanStack Query returns a fresh page or the user switches
+  // the Loket program. Passing `props.data` directly captured the array
+  // reference at setup time and left the table frozen on the initial fetch.
   const tableState = useDataTable({
-    data: props.data,
-    columns: props.columns,
+    data: () => props.data,
+    columns: () => props.columns,
     rowKey: props.rowKey,
     initialSort: props.sort,
     initialPagination:
@@ -183,7 +189,7 @@
   <div
     data-slot="data-table"
     :class="[
-      'w-full',
+      'relative w-full',
       bordered && 'bg-card shadow-card overflow-hidden rounded-md border border-neutral-200',
     ]"
   >
@@ -196,6 +202,23 @@
     >
       <slot name="toolbar" />
     </div>
+
+    <!-- Indeterminate loading rail — pinned to the very top of the table
+         surface. Rendered via `<Transition>` for a soft fade in/out and
+         `z-20` so it clears sticky headers and the toolbar shadow. -->
+    <Transition
+      enter-active-class="transition-opacity duration-200"
+      leave-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <IndeterminateProgress
+        v-if="loading"
+        thickness="h-0.5"
+        tone="primary"
+        class="absolute inset-x-0 top-0 z-20"
+      />
+    </Transition>
 
     <Table ref="tableComponentRef" :class="props.class" :max-height="props.maxHeight">
       <!-- Table Header -->
@@ -250,14 +273,17 @@
         </TableRow>
       </TableHeader>
 
-      <!-- Table Body - Loading State -->
-      <TableBody v-if="loading">
-        <TableRow v-for="i in loadingRows" :key="`loading-${i}`">
-          <TableCell v-if="selectable">
-            <Skeleton class="h-4 w-4" />
-          </TableCell>
-          <TableCell v-for="column in visibleColumns" :key="column.key" :align="column.align">
-            <Skeleton class="h-4 w-full" />
+      <!-- Table Body - Initial Loading (no prior data): centered spinner.
+           When we already have rows from a previous fetch, we DON'T swap in
+           this loading view — the top progress rail communicates "refetching"
+           without hiding what the user was looking at. -->
+      <TableBody v-if="loading && tableState.paginatedData.value.length === 0">
+        <TableRow>
+          <TableCell :colspan="visibleColumns.length + (selectable ? 1 : 0)" class="py-16">
+            <div class="flex flex-col items-center justify-center gap-3">
+              <Spinner size="lg" tone="primary" />
+              <p class="body-caption text-neutral-500">Memuat data...</p>
+            </div>
           </TableCell>
         </TableRow>
       </TableBody>
@@ -327,12 +353,13 @@
       </TableBody>
     </Table>
 
-    <!-- Pagination -->
+    <!-- Pagination.
+         No `border-t` here — the last TableCell already carries `border-b`,
+         which acts as the visual divider. Stacking a second border made the
+         line look 2px thick even though both are 1px each. -->
     <div
       v-if="isPaginationEnabled && !loading"
-      :class="
-        bordered && 'from-primary-50 to-background border-t border-neutral-200 bg-linear-to-t'
-      "
+      :class="bordered && 'from-primary-50 to-background bg-linear-to-t'"
     >
       <TablePagination
         :pagination="tableState.paginationOptions.value"

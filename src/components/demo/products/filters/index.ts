@@ -1,5 +1,0 @@
-export { default as FilterChips } from './FilterChips.vue'
-export { default as ActiveFiltersDisplay } from './ActiveFiltersDisplay.vue'
-export { default as CategoryFilterBottomSheet } from './CategoryFilterBottomSheet.vue'
-export { default as SortFilterBottomSheet } from './SortFilterBottomSheet.vue'
-export { default as FilterFooter } from './FilterFooter.vue'

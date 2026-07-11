@@ -56,7 +56,9 @@
     :class="
       cn(
         'fixed top-0 right-0 z-30 flex items-center gap-2 px-4',
-        'border-border bg-background border-b',
+        // Glass / frosted background — modern floating look
+        'bg-background/70 backdrop-blur-md backdrop-saturate-150',
+        'border-b border-white/40 shadow-[0_1px_0_0_rgba(15,23,42,0.04)]',
         'transition-all duration-300',
       )
     "

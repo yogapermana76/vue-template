@@ -46,7 +46,9 @@
       'flex w-full items-center rounded-lg transition-all duration-200',
       'text-white/70 hover:bg-white/10 hover:text-white',
       props.collapsed ? 'justify-center p-2.5' : 'gap-3 px-3 py-2.5',
-      hasActiveChild.value && 'bg-white/10 text-white',
+      // Parent-active (any child route matches) — gradient wash + left accent bar (prototype .nav a.on)
+      hasActiveChild.value &&
+        'bg-linear-to-r from-primary-400/25 to-primary-400/5 text-white font-semibold shadow-[inset_3px_0_0_var(--color-primary-400)]',
     ),
   )
 

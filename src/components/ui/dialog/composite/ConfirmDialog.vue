@@ -89,7 +89,7 @@
     buttonLayout: 'row',
     dismissible: true,
     hideClose: false,
-    size: 'sm',
+    size: 'md',
   })
 
   const emit = defineEmits<{

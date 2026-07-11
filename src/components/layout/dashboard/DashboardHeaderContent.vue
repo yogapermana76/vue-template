@@ -7,13 +7,9 @@
   import type { UserRole } from '@/config/navigation'
 
   interface Props {
-    /** User display name */
     userName: string
-    /** User email */
     userEmail?: string
-    /** Current user role */
     userRole: UserRole
-    /** User avatar URL */
     userAvatar?: string
     /** Show user info text (name, email, role) */
     showUserInfo?: boolean
@@ -25,17 +21,19 @@
 
   const emit = defineEmits<{
     logout: []
-    settings: []
-    help: []
   }>()
 </script>
 
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
+      <!-- Trigger: on <lg only the avatar is shown, so the pill wrapper
+           (border + padding + bg) would double-frame the avatar. Strip
+           the wrapper styling on mobile and re-apply from `lg:` up where
+           the info text + chevron give the pill something to hold. -->
       <button
         type="button"
-        class="-mx-2 -my-1.5 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5"
+        class="flex cursor-pointer items-center gap-2.5 rounded-full transition-colors lg:border lg:border-transparent lg:py-1 lg:pr-3 lg:pl-1 lg:hover:border-neutral-200 lg:hover:bg-white lg:data-[state=open]:border-neutral-200 lg:data-[state=open]:bg-white"
       >
         <!-- Avatar -->
         <UserAvatarButton :user-name="userName" :user-avatar="userAvatar" />
@@ -63,8 +61,6 @@
       :user-email="userEmail"
       :user-role="userRole"
       @logout="emit('logout')"
-      @settings="emit('settings')"
-      @help="emit('help')"
     />
   </DropdownMenu>
 </template>

@@ -1,11 +1,8 @@
-/**
- * Router Configuration
- * File-based routing with auto-generated routes from src/pages/
- */
-
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { config } from '@/config'
+import { useLoketAuthStore } from '@/stores'
+import { isAuthPath, isProtectedPath } from './paths'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +17,15 @@ const router = createRouter({
 router.beforeEach(to => {
   const title = to.meta.title as string | undefined
   document.title = title ? `${title} | ${config.app.name}` : config.app.name
+
+  const auth = useLoketAuthStore()
+
+  if (isProtectedPath(to.path) && !auth.isAuthenticated) {
+    return { path: '/login', query: { redirect: to.fullPath } }
+  }
+  if (auth.isAuthenticated && isAuthPath(to.path)) {
+    return { path: '/dashboard' }
+  }
 })
 
 export default router
@@ -27,7 +33,6 @@ export default router
 declare module 'vue-router' {
   interface RouteMeta {
     title?: string
-    keepAlive?: boolean
     breadcrumb?: string
     breadcrumbs?: Array<{ label: string; to?: string }>
   }

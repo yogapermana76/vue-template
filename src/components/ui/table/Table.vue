@@ -20,8 +20,16 @@
     props.maxHeight ? { maxHeight: props.maxHeight, overflowY: 'auto' as const } : {},
   )
 
+  /**
+   * Always apply `scrollbar-thin` to the scroll wrapper. macOS switches
+   * between overlay (thin) and classic (thick) scrollbars depending on the
+   * "Show scroll bars" system setting + whether a mouse is connected,
+   * which is why the table scrollbar can appear chunky then "get fixed" by
+   * a reload. Locking the size here keeps the visual consistent across OS
+   * states — see `.scrollbar-thin` in `main.css` for the full rationale.
+   */
   const wrapperClasses = computed(() =>
-    cn('relative w-full overflow-x-auto', props.maxHeight && 'overflow-y-auto'),
+    cn('relative w-full overflow-x-auto scrollbar-thin', props.maxHeight && 'overflow-y-auto'),
   )
 </script>
 

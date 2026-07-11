@@ -51,18 +51,13 @@
         </slot>
       </div>
 
-      <!-- Text Content -->
-      <div
-        v-if="title || description || $slots.default"
-        class="flex max-w-xs flex-col items-center gap-2"
-      >
+      <div v-if="title || description" class="flex flex-col items-center gap-2">
         <h3
           v-if="title"
           :class="cn('text-center text-lg leading-7 font-semibold text-neutral-950', titleClass)"
         >
           {{ title }}
         </h3>
-        <!-- eslint-disable-next-line vue/no-v-html -->
         <p
           v-if="description"
           :class="
@@ -71,14 +66,15 @@
               descriptionClass,
             )
           "
-          v-html="description"
-        />
-        <slot />
+        >
+          {{ description }}
+        </p>
       </div>
     </div>
 
-    <!-- Actions -->
-    <div v-if="$slots.actions" class="flex w-full max-w-xs flex-col gap-3">
+    <slot />
+
+    <div v-if="$slots.actions" class="flex w-full flex-col gap-3">
       <slot name="actions" />
     </div>
   </div>

@@ -1,4 +1,5 @@
 export { cn } from './cn'
+export { withAllOption } from './select'
 export {
   formatCurrency,
   formatNumber,
@@ -17,13 +18,9 @@ export {
 } from './error'
 export {
   // Storage modules
-  authStorage,
-  demoStorage,
   uiStorage,
   // Storage keys
-  STORAGE_KEYS,
-  AUTH_STORAGE_KEYS,
-  DEMO_STORAGE_KEYS,
+  LOKET_STORAGE_KEYS,
   UI_STORAGE_KEYS,
 } from './storage'
 export {

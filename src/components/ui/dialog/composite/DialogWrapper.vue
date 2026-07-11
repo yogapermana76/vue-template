@@ -11,7 +11,7 @@
   import { Button } from '@/components/ui/button'
   import { cn } from '@/utils/cn'
 
-  type DialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'full'
+  type DialogSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 
   const props = withDefaults(
     defineProps<{
@@ -67,12 +67,14 @@
     },
   })
 
-  // Size classes mapping
+  // Size classes mapping (Tailwind max-w tokens)
+  // sm≈24rem, md≈28rem, lg≈32rem, xl≈36rem, 2xl≈42rem
   const sizeClasses: Record<DialogSize, string> = {
     sm: 'sm:max-w-sm',
     md: 'sm:max-w-md',
     lg: 'sm:max-w-lg',
     xl: 'sm:max-w-xl',
+    '2xl': 'sm:max-w-2xl',
     full: 'sm:max-w-full sm:w-[calc(100%-2rem)]',
   }
 
@@ -85,8 +87,11 @@
     )
   })
 
-  // Body classes — 16px vertical / 18px horizontal (prototype .dlg-b)
-  const bodyClasses = computed(() => cn('px-5 py-4', props.bodyClass))
+  // Body classes — `flex-1 min-h-0 overflow-y-auto` makes the body the scroll
+  // container so the dialog header + footer stay pinned while long content scrolls.
+  const bodyClasses = computed(() =>
+    cn('flex-1 min-h-0 overflow-y-auto px-5 py-4', props.bodyClass),
+  )
 
   // Footer classes — parchment-ish tint + divider top, right aligned
   const footerClasses = computed(() => {
@@ -134,8 +139,11 @@
 
 <template>
   <Dialog v-model:open="openValue" :modal="modal">
+    <!-- `flex flex-col` overrides DialogContent's default `grid` layout so the
+         body slot can `flex-1 min-h-0` and drive vertical scrolling when the
+         content exceeds `max-h-[90vh]`. -->
     <DialogContent
-      :class="cn('gap-0 p-0', sizeClasses[size], contentClass)"
+      :class="cn('flex max-h-[90vh] flex-col gap-0 p-0', sizeClasses[size], contentClass)"
       :show-close-button="false"
       @interact-outside="handleInteractOutside"
     >
