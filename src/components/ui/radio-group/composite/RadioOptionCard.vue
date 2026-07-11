@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
   import { cn } from '@/utils/cn'
-  import { RadioGroupItem } from '.'
+  import { RadioGroupItem } from '..'
 
   interface Props {
     value: string | number

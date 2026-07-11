@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { formatDateRange } from '@/utils/date'
   import { Divider } from '@/components/ui/divider'
-  import type { HolidayMarker } from './composables/useHolidayMap'
+  import type { HolidayMarker } from '../composables/useHolidayMap'
 
   defineProps<{ holidays: HolidayMarker[] }>()
 </script>

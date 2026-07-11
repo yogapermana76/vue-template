@@ -11,6 +11,8 @@ export {
   type ButtonConfig,
   InformationBottomSheet,
   type InformationBottomSheetProps,
+  DatePickerBottomSheet,
+  type DatePickerBottomSheetProps,
 } from './bottom-sheets'
 
 // Ticket quantity selector
@@ -21,9 +23,6 @@ export { SectionHeader } from './section-header'
 
 // Detail section (container) + DetailField (label/value pair)
 export { DetailSection, DetailField } from './detail-section'
-
-// Date picker (mobile-friendly bottom sheet)
-export { DatePickerBottomSheet, type DatePickerBottomSheetProps } from './date-picker-bottom-sheet'
 
 // Copyright footer
 export { AppCopyrightFooter } from './app-copyright-footer'

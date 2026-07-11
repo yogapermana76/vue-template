@@ -9,10 +9,10 @@ placeholder with alert-like structure * * @component * @example *
 
 <script setup lang="ts">
   import type { HTMLAttributes } from 'vue'
-  import type { AlertVariants } from '.'
+  import type { AlertVariants } from '..'
   import { cn } from '@/utils/cn'
   import { Skeleton } from '@/components/ui/skeleton'
-  import { alertVariants } from '.'
+  import { alertVariants } from '..'
 
   /**
    * Props for AlertBoxSkeleton component

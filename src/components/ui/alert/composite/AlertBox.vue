@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import type { HTMLAttributes, Component } from 'vue'
-  import type { AlertVariants, AlertVariant } from '.'
+  import type { AlertVariants, AlertVariant } from '..'
   import { computed } from 'vue'
   import { cn } from '@/utils/cn'
-  import { alertVariants } from '.'
+  import { alertVariants } from '..'
   import { Info, CircleCheck, CircleAlert } from 'lucide-vue-next'
 
   const props = withDefaults(
