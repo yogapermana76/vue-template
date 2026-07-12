@@ -6,8 +6,7 @@
    * between single/range without learning a new component surface.
    *
    * External contract: `modelValue` is `{ start: DateValue|undefined,
-   * end: DateValue|undefined }`. Wire from ISO strings via a thin adapter
-   * (see `LoketDateRangeAdapter` example in the loket-dashboard feature).
+   * end: DateValue|undefined }`. Wire from ISO strings via `useIsoDateRange`.
    */
   import type { HTMLAttributes, Component } from 'vue'
   import type { DateValue } from '@internationalized/date'

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { config } from '@/config'
-import { useLoketAuthStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 import { isAuthPath, isProtectedPath } from './paths'
 
 const router = createRouter({
@@ -18,7 +18,7 @@ router.beforeEach(to => {
   const title = to.meta.title as string | undefined
   document.title = title ? `${title} | ${config.app.name}` : config.app.name
 
-  const auth = useLoketAuthStore()
+  const auth = useAuthStore()
 
   if (isProtectedPath(to.path) && !auth.isAuthenticated) {
     return { path: '/login', query: { redirect: to.fullPath } }

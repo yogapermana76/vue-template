@@ -3,7 +3,7 @@
   import { useRouter } from 'vue-router'
   import { ArrowLeft, Home } from 'lucide-vue-next'
   import { Button } from '@/components/ui/button'
-  import { useLoketAuthStore } from '@/stores'
+  import { useAuthStore } from '@/stores'
   import DisappointedMascot from '@/assets/illustrations/disappointed-mascot.png'
 
   definePage({
@@ -13,7 +13,7 @@
   })
 
   const router = useRouter()
-  const auth = useLoketAuthStore()
+  const auth = useAuthStore()
 
   const homePath = computed(() => (auth.isAuthenticated ? '/dashboard' : '/login'))
   const homeLabel = computed(() => (auth.isAuthenticated ? 'Ke Dashboard' : 'Ke Login'))

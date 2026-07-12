@@ -13,7 +13,6 @@ export interface VoucherRequestFormValues {
   fullName: string
   phone: string
   email: string
-  nik: string
   companyName: string
   ticketCategory: string
 }
@@ -21,6 +20,9 @@ export interface VoucherRequestFormValues {
 export interface VoucherProgramInfo {
   name: string
   tagline: string
+  apiProgramId: number
+  apiCategoryId: number
+  apiSlug: string
 }
 
 export interface VoucherSecurityAssurance {

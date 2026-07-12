@@ -15,8 +15,8 @@ import type { NavGroup } from './types'
  * Sidebar navigation for the `/docs/*` surface.
  *
  * These pages are **reference material** for the team building on top of
- * this template — they're not part of the Loket production surface. Kept
- * in its own nav config so the Loket sidebar (`dashboardNavGroups`) stays
+ * this template — they're not part of the production surface. Kept
+ * in its own nav config so the app sidebar (`dashboardNavGroups`) stays
  * lean and doesn't advertise example pages that shouldn't ship.
  *
  * Grouping mirrors the shape of a typical admin console (Catalog / People

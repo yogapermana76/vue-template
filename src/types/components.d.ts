@@ -208,6 +208,7 @@ declare module 'vue' {
     Skeleton: typeof import('./../components/ui/skeleton/Skeleton.vue')['default']
     Sonner: typeof import('./../components/ui/sonner/Sonner.vue')['default']
     Spinner: typeof import('./../components/ui/spinner/Spinner.vue')['default']
+    StatusRadioGroup: typeof import('./../components/ui/radio-group/composite/StatusRadioGroup.vue')['default']
     SwipeableTabBar: typeof import('./../components/ui/swipeable-tabs/SwipeableTabBar.vue')['default']
     SwipeableTabPanel: typeof import('./../components/ui/swipeable-tabs/SwipeableTabPanel.vue')['default']
     SwipeableTabPanels: typeof import('./../components/ui/swipeable-tabs/SwipeableTabPanels.vue')['default']

@@ -1,10 +1,10 @@
 /**
- * Services Types
- * Business domain types for various modules.
- *
- * Non-Loket service types have been removed together with their
- * corresponding services. Only Loket types remain.
+ * Service Types Index
+ * Re-exports all service-related types
  */
 
-// Loket
-export * from './loket'
+export * from './auth.types'
+export * from './program.types'
+export * from './monitoring.types'
+export * from './ticket.types'
+export * from './invitation.types'

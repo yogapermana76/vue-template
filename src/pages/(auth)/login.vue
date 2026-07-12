@@ -5,14 +5,14 @@
   import { useRouter } from 'vue-router'
   import { Button } from '@/components/ui/button'
   import { TextField, PasswordField } from '@/components/ui/form'
-  import { useLoketAuthStore } from '@/stores'
+  import { useAuthStore } from '@/stores'
   import { useToast } from '@/composables/ui/useToast'
   import { AuthCard, extractAuthError, useAuthRedirect } from '@/features/auth'
 
   definePage({ path: '/login', name: 'LoginPage' })
 
   const router = useRouter()
-  const loketAuthStore = useLoketAuthStore()
+  const authStore = useAuthStore()
   const toast = useToast()
 
   const { resolveRedirect } = useAuthRedirect('/dashboard')
@@ -30,7 +30,7 @@
 
   const onSubmit = handleSubmit(async values => {
     try {
-      const response = await loketAuthStore.login({
+      const response = await authStore.login({
         Email: values.email,
         Password: values.password,
       })

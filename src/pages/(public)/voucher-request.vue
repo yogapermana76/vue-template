@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useForm } from 'vee-validate'
   import { toTypedSchema } from '@vee-validate/zod'
   import { z } from 'zod'
   import { useToast } from '@/composables/ui/useToast'
   import { AppCopyrightFooter } from '@/components/shared'
+  import { useInvitationProgramInfo, useRegisterInvitation } from '@/composables/services'
+  import type { InvitationTicketSelection } from '@/types/services'
   import {
     VOUCHER_PROGRAM,
     TICKET_CATEGORY_OPTIONS,
@@ -35,10 +37,6 @@
         .min(1, 'Nomor HP wajib diisi')
         .regex(/^[0-9+\-\s]{8,20}$/, 'Format nomor HP tidak valid'),
       email: z.string().min(1, 'Email wajib diisi').email('Format email tidak valid'),
-      nik: z
-        .string()
-        .min(1, 'NIK wajib diisi')
-        .regex(/^\d{16}$/, 'NIK harus 16 digit angka'),
       companyName: z.string().min(1, 'Nama perusahaan wajib diisi'),
       ticketCategory: z.string().min(1, 'Kategori wajib dipilih'),
     }),
@@ -50,29 +48,44 @@
       fullName: '',
       phone: '',
       email: '',
-      nik: '',
       companyName: '',
       ticketCategory: '',
     },
   })
 
   const vouchers = useVoucherRequest()
-  const submitting = ref(false)
 
   const successOpen = ref(false)
   const successRequestId = ref('')
 
-  // Generate a short human-friendly request ID. Backend eventually authoritative.
-  const generateRequestId = (): string => {
-    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-    let out = 'ER'
-    for (let i = 0; i < 5; i++) {
-      out += alphabet[Math.floor(Math.random() * alphabet.length)]
+  // Form-side voucher ids are labels ('5k' etc.); backend expects numeric TicketIDs.
+  const programInfo = useInvitationProgramInfo({
+    params: { programId: VOUCHER_PROGRAM.apiProgramId },
+  })
+
+  const invitationCategory = computed(() =>
+    programInfo.data.value?.data?.Categories.find(
+      c => c.CategoryID === VOUCHER_PROGRAM.apiCategoryId,
+    ),
+  )
+
+  // Match by TicketName (case-insensitive) so a backend id renumber doesn't require a code change.
+  const buildTicketSelections = (): InvitationTicketSelection[] => {
+    const tickets = invitationCategory.value?.Tickets ?? []
+    const selections: InvitationTicketSelection[] = []
+    for (const category of vouchers.categories) {
+      const quota = vouchers.quantities[category.id] ?? 0
+      if (quota <= 0) continue
+      const match = tickets.find(t => t.TicketName.toLowerCase() === category.label.toLowerCase())
+      if (match) selections.push({ ticketId: match.TicketID, quota })
     }
-    return out
+    return selections
   }
 
-  const onSubmit = handleSubmit(async () => {
+  const register = useRegisterInvitation()
+  const submitting = computed(() => register.isPending.value)
+
+  const onSubmit = handleSubmit(async values => {
     if (!vouchers.hasSelection.value) {
       toast.error({
         title: 'Pilih voucher',
@@ -81,20 +94,36 @@
       return
     }
 
-    submitting.value = true
-    try {
-      // Backend hookup lands here — simulated round-trip so button + form states can be exercised.
-      await new Promise(r => setTimeout(r, 800))
+    const tickets = buildTicketSelections()
+    if (tickets.length === 0) {
+      toast.error({
+        title: 'Data tiket belum siap',
+        description: 'Informasi tiket sedang dimuat. Silakan coba lagi sebentar.',
+      })
+      return
+    }
 
-      successRequestId.value = generateRequestId()
+    try {
+      const res = await register.mutateAsync({
+        programSlug: VOUCHER_PROGRAM.apiSlug,
+        body: {
+          name: values.fullName,
+          phone: values.phone,
+          email: values.email,
+          entity: values.companyName,
+          programId: VOUCHER_PROGRAM.apiProgramId,
+          categoryId: VOUCHER_PROGRAM.apiCategoryId,
+          tickets,
+        },
+      })
+
+      successRequestId.value = res.data?.Code ?? ''
       successOpen.value = true
     } catch {
       toast.error({
         title: 'Pengajuan gagal',
         description: 'Terjadi kesalahan saat mengirim pengajuan. Silakan coba lagi.',
       })
-    } finally {
-      submitting.value = false
     }
   })
 

@@ -21,6 +21,7 @@
     rowKey: 'id',
     selectable: false,
     pagination: false,
+    controlledPagination: false,
     sortable: true,
     loading: false,
     loadingRows: 5,
@@ -42,12 +43,17 @@
   const visibleColumns = computed(() => props.columns.filter(col => !col.hidden))
   const isPaginationEnabled = computed(() => props.pagination !== false)
 
-  // Initialize table state.
-  // `data` and `columns` are passed as GETTERS (`() => props.x`) so the
-  // composable stays reactive when the parent replaces the array — most
-  // notably when TanStack Query returns a fresh page or the user switches
-  // the Loket program. Passing `props.data` directly captured the array
-  // reference at setup time and left the table frozen on the initial fetch.
+  // In controlled mode the parent owns pagination state, so bind the
+  // footer to `props.pagination` directly.
+  const displayedPagination = computed(() => {
+    if (props.controlledPagination && typeof props.pagination === 'object') {
+      return props.pagination
+    }
+    return tableState.paginationOptions.value
+  })
+
+  // `data` and `columns` are getters so `useDataTable` re-evaluates when
+  // the parent swaps the array (e.g. TanStack Query returning a new page).
   const tableState = useDataTable({
     data: () => props.data,
     columns: () => props.columns,
@@ -58,8 +64,10 @@
         ? props.pagination
         : { page: 1, pageSize: 10, total: props.data.length },
     initialSelectedRows: props.selectedRows,
-    clientSideSorting: true,
-    clientSidePagination: typeof props.pagination !== 'boolean' || props.pagination,
+    clientSideSorting: !props.controlledPagination,
+    clientSidePagination: props.controlledPagination
+      ? false
+      : typeof props.pagination !== 'boolean' || props.pagination,
   })
 
   // Use composables
@@ -362,7 +370,7 @@
       :class="bordered && 'from-primary-50 to-background bg-linear-to-t'"
     >
       <TablePagination
-        :pagination="tableState.paginationOptions.value"
+        :pagination="displayedPagination"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       />

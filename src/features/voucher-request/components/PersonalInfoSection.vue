@@ -49,18 +49,6 @@
           :disabled="disabled"
         />
       </Field>
-
-      <Field v-slot="{ field, errorMessage }" name="nik">
-        <TextField
-          id="nik"
-          v-bind="field"
-          label="NIK"
-          placeholder="Masukkan nomor identitas Anda"
-          required
-          :error="errorMessage"
-          :disabled="disabled"
-        />
-      </Field>
     </div>
   </section>
 </template>

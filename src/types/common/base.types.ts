@@ -9,14 +9,14 @@
 
 /**
  * Standard API response envelope. `code` is PLN Mobile convention,
- * `statusCode` is Loket convention; `success` is present on both.
+ * `statusCode` is API convention; `success` is present on both.
  */
 export interface BaseResponse<T = unknown> {
   success: boolean
   message: string | null
   /** PLN Mobile-style success code (e.g. `'2000'`). */
   code?: string
-  /** HTTP-style numeric status in the body (Loket). */
+  /** HTTP-style numeric status in the body (API). */
   statusCode?: number
   data: T
   time?: string

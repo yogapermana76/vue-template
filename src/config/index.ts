@@ -18,10 +18,7 @@ export const config = {
 
   api: {
     timeout: 30000,
-    url: {
-      base: import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com',
-      loket: import.meta.env.VITE_LOKET_API_URL || 'https://loket-lifestyle.beyondkwh.id/api',
-    },
+    baseUrl: import.meta.env.VITE_API_BASE_URL || 'https://loket-lifestyle.beyondkwh.id/api',
   },
 
   auth: {

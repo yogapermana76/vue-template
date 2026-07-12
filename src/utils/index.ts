@@ -16,13 +16,7 @@ export {
   type AppError,
   type ExtractedApiError,
 } from './error'
-export {
-  // Storage modules
-  uiStorage,
-  // Storage keys
-  LOKET_STORAGE_KEYS,
-  UI_STORAGE_KEYS,
-} from './storage'
+export { uiStorage, STORAGE_KEYS, UI_STORAGE_KEYS } from './storage'
 export {
   // Native bridge functions
   openDeeplink,

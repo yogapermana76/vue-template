@@ -8,6 +8,9 @@ import type {
 export const VOUCHER_PROGRAM: VoucherProgramInfo = {
   name: 'PLN Electric Run 2026',
   tagline: 'Bersama melangkah,\nenergi untuk negeri.',
+  apiProgramId: 184,
+  apiCategoryId: 284,
+  apiSlug: 'electric-run-2026',
 }
 
 export const VOUCHER_CATEGORIES: VoucherCategory[] = [

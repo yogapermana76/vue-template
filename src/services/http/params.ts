@@ -2,7 +2,7 @@
  * Parameter helpers for HTTP requests.
  *
  * Backends generally treat `?StartDate=` (empty value) differently from omitting
- * the field entirely — and the loket API is one of them. `stripEmpty()` returns
+ * the field entirely — and this API is one of them. `stripEmpty()` returns
  * a fresh object with all `undefined`, `null`, and empty-string values removed
  * so axios won't serialise them into the query string.
  *

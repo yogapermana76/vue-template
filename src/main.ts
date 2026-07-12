@@ -8,7 +8,7 @@ import router from './router'
 import { isAuthPath } from './router/paths'
 import { vueQueryOptions, setupViewport } from './plugins'
 import { registerSessionExpiredHandler } from './services/http'
-import { useLoketAuthStore } from './stores'
+import { useAuthStore } from './stores'
 
 import './assets/css/main.css'
 import 'vue-sonner/style.css'
@@ -25,7 +25,7 @@ app.component('QuillEditor', QuillEditor)
 // Must run after `app.use(createPinia())` so the store is accessible.
 // Preserves the current path via `?redirect=` for post-login return.
 registerSessionExpiredHandler(() => {
-  useLoketAuthStore().clearSession()
+  useAuthStore().clearSession()
 
   const current = router.currentRoute.value
   if (isAuthPath(current.path)) return

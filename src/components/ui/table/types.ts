@@ -217,6 +217,14 @@ export interface DataTableProps<T = Record<string, unknown>> {
   pagination?: boolean | PaginationOptions
 
   /**
+   * When `true`, pagination state (page/pageSize/total) is owned by the
+   * parent — the table renders `data` as-is and emits `page-change` /
+   * `page-size-change` for the parent to react to. Off (default) means
+   * client-side pagination: the table slices `data` internally.
+   */
+  controlledPagination?: boolean
+
+  /**
    * Enable sorting
    */
   sortable?: boolean
