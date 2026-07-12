@@ -12,10 +12,8 @@
     disabled?: boolean
   }>()
 
-  // Custom-component binding — useField gives us a writable ref + error state
-  // without the manual v-bind="field" plumbing that Field's slot expects for
-  // native inputs. `validateOnValueUpdate: false` waits until blur/submit so
-  // opening the select and choosing an option doesn't flash a "wajib" error.
+  // `validateOnValueUpdate: false` waits until blur/submit so opening the
+  // select + picking an option doesn't flash a "wajib" error.
   const { value: ticketCategory, errorMessage } = useField<string>('ticketCategory', undefined, {
     validateOnValueUpdate: false,
   })
@@ -31,7 +29,7 @@
       id="ticketCategory"
       v-model="ticketCategory"
       label="Pilih Kategori"
-      placeholder="Pilih kategori tiket"
+      placeholder="Pilih kategori"
       :options="ticketCategoryOptions"
       required
       :error="errorMessage"

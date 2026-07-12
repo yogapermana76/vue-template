@@ -1,14 +1,31 @@
-import { computed, reactive } from 'vue'
-import { VOUCHER_CATEGORIES } from '../constants'
+import { computed, reactive, watch, type MaybeRefOrGetter, toValue } from 'vue'
 import type { VoucherCategory } from '../types'
 
-export function useVoucherRequest(categories: VoucherCategory[] = VOUCHER_CATEGORIES) {
-  const quantities = reactive<Record<string, number>>(
-    Object.fromEntries(categories.map(c => [c.id, 0])),
+export function useVoucherRequest(source: MaybeRefOrGetter<VoucherCategory[]>) {
+  const categories = computed(() => toValue(source))
+  const quantities = reactive<Record<string, number>>({})
+
+  // Sync quantities dict with the current categories: add new ids at 0, drop old ones.
+  // Watch a stable id signature — the source array may re-emit new references
+  // for identical content (query refetches), and we don't want that to wipe
+  // user-selected quantities. Skip empty signatures (loading/refetch flash).
+  watch(
+    () => categories.value.map(c => c.id).join('|'),
+    signature => {
+      if (!signature) return
+      const next = categories.value
+      const keep = new Set(next.map(c => c.id))
+      for (const key of Object.keys(quantities)) {
+        if (!keep.has(key)) delete quantities[key]
+      }
+      for (const c of next) {
+        if (!(c.id in quantities)) quantities[c.id] = 0
+      }
+    },
+    { immediate: true },
   )
 
   const totalVouchers = computed(() => Object.values(quantities).reduce((sum, n) => sum + n, 0))
-
   const hasSelection = computed(() => totalVouchers.value > 0)
 
   const setQuantity = (id: string, value: number) => {

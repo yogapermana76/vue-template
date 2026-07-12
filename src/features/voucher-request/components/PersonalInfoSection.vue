@@ -12,41 +12,44 @@
     <SectionHeader title="Informasi Diri" :icon="UserRound" size="md" />
 
     <div class="flex flex-col gap-4">
-      <Field v-slot="{ field, errorMessage }" name="fullName">
+      <Field v-slot="{ value, handleChange, errorMessage }" name="fullName">
         <TextField
           id="fullName"
-          v-bind="field"
+          :model-value="value"
           label="Nama"
           placeholder="Masukkan nama lengkap Anda"
           required
           :error="errorMessage"
           :disabled="disabled"
+          @update:model-value="handleChange"
         />
       </Field>
 
-      <Field v-slot="{ field, errorMessage }" name="phone">
+      <Field v-slot="{ value, handleChange, errorMessage }" name="phone">
         <TextField
           id="phone"
-          v-bind="field"
+          :model-value="value"
           label="Nomor HP"
           type="tel"
           placeholder="Masukkan nomor HP aktif Anda"
           required
           :error="errorMessage"
           :disabled="disabled"
+          @update:model-value="handleChange"
         />
       </Field>
 
-      <Field v-slot="{ field, errorMessage }" name="email">
+      <Field v-slot="{ value, handleChange, errorMessage }" name="email">
         <TextField
           id="email"
-          v-bind="field"
+          :model-value="value"
           label="Email"
           type="email"
           placeholder="Masukkan email aktif Anda"
           required
           :error="errorMessage"
           :disabled="disabled"
+          @update:model-value="handleChange"
         />
       </Field>
     </div>

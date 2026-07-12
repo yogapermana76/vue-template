@@ -70,6 +70,8 @@ export function useInvitationCategoryInfo(params: UseInvitationCategoryInfoParam
         categoryId: resolvedCategoryId.value!,
       }),
     staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    refetchInterval: options.refetchInterval,
+    refetchIntervalInBackground: options.refetchIntervalInBackground,
     enabled: resolvedEnabled,
   })
 }

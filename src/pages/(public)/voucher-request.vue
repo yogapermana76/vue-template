@@ -1,15 +1,20 @@
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
+  import { useRoute } from 'vue-router'
   import { useForm } from 'vee-validate'
   import { toTypedSchema } from '@vee-validate/zod'
   import { z } from 'zod'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { useToast } from '@/composables/ui/useToast'
   import { AppCopyrightFooter } from '@/components/shared'
-  import { useInvitationProgramInfo, useRegisterInvitation } from '@/composables/services'
-  import type { InvitationTicketSelection } from '@/types/services'
+  import {
+    invitationKeys,
+    useInvitationCategoryInfo,
+    useInvitationProgramInfo,
+    useRegisterInvitation,
+  } from '@/composables/services'
   import {
     VOUCHER_PROGRAM,
-    TICKET_CATEGORY_OPTIONS,
     SECURITY_ASSURANCES,
     useVoucherRequest,
     VoucherRequestBrandPanel,
@@ -28,6 +33,25 @@
   })
 
   const toast = useToast()
+  const route = useRoute('PublicVoucherRequest')
+  const queryClient = useQueryClient()
+
+  const programId = computed(() => {
+    const raw = route.query.programId
+    if (typeof raw !== 'string') return undefined
+    const n = Number(raw)
+    return Number.isInteger(n) && n > 0 ? n : undefined
+  })
+  const hasValidParams = computed(() => !!programId.value)
+
+  onMounted(() => {
+    if (!hasValidParams.value) {
+      toast.error({
+        title: 'Link tidak valid',
+        description: 'Parameter programId pada URL tidak valid.',
+      })
+    }
+  })
 
   const schema = toTypedSchema(
     z.object({
@@ -42,7 +66,13 @@
     }),
   )
 
-  const { handleSubmit, isSubmitting, resetForm } = useForm({
+  const {
+    handleSubmit,
+    isSubmitting,
+    resetForm,
+    values: formValues,
+    setFieldValue,
+  } = useForm({
     validationSchema: schema,
     initialValues: {
       fullName: '',
@@ -53,39 +83,63 @@
     },
   })
 
-  const vouchers = useVoucherRequest()
-
-  const successOpen = ref(false)
-  const successRequestId = ref('')
-
-  // Form-side voucher ids are labels ('5k' etc.); backend expects numeric TicketIDs.
   const programInfo = useInvitationProgramInfo({
-    params: { programId: VOUCHER_PROGRAM.apiProgramId },
+    params: { programId },
   })
 
-  const invitationCategory = computed(() =>
-    programInfo.data.value?.data?.Categories.find(
-      c => c.CategoryID === VOUCHER_PROGRAM.apiCategoryId,
-    ),
+  const programName = computed(
+    () => programInfo.data.value?.data?.ProgramName ?? VOUCHER_PROGRAM.name,
   )
 
-  // Match by TicketName (case-insensitive) so a backend id renumber doesn't require a code change.
-  const buildTicketSelections = (): InvitationTicketSelection[] => {
-    const tickets = invitationCategory.value?.Tickets ?? []
-    const selections: InvitationTicketSelection[] = []
-    for (const category of vouchers.categories) {
-      const quota = vouchers.quantities[category.id] ?? 0
-      if (quota <= 0) continue
-      const match = tickets.find(t => t.TicketName.toLowerCase() === category.label.toLowerCase())
-      if (match) selections.push({ ticketId: match.TicketID, quota })
-    }
-    return selections
-  }
+  const ticketCategoryOptions = computed(() =>
+    (programInfo.data.value?.data?.Categories ?? []).map(c => ({
+      value: String(c.CategoryID),
+      label: c.CategoryName,
+    })),
+  )
+
+  // Auto-select first category so category-info fetches without user input.
+  watch(
+    ticketCategoryOptions,
+    options => {
+      if (!formValues.ticketCategory && options.length > 0) {
+        setFieldValue('ticketCategory', options[0].value)
+      }
+    },
+    { immediate: true },
+  )
+
+  const selectedCategoryId = computed(() => {
+    const raw = formValues.ticketCategory
+    const parsed = raw ? Number(raw) : NaN
+    return Number.isFinite(parsed) ? parsed : undefined
+  })
+
+  const categoryInfo = useInvitationCategoryInfo({
+    params: { programId, categoryId: selectedCategoryId },
+    // Poll every 5s so ticket quota reflects near-live availability.
+    options: { refetchInterval: 5000, staleTime: 0 },
+  })
+
+  const voucherCategories = computed(() =>
+    (categoryInfo.data.value?.data?.Tickets ?? []).map(t => ({
+      id: String(t.TicketID),
+      label: t.TicketName,
+      quota: t.Quota,
+    })),
+  )
+
+  const vouchers = useVoucherRequest(voucherCategories)
+
+  // null = dialog closed. String = dialog open, holds the invitation code.
+  const successCode = ref<string | null>(null)
 
   const register = useRegisterInvitation()
   const submitting = computed(() => register.isPending.value)
 
-  const onSubmit = handleSubmit(async values => {
+  const onSubmit = handleSubmit(values => {
+    if (!programId.value || !selectedCategoryId.value) return
+
     if (!vouchers.hasSelection.value) {
       toast.error({
         title: 'Pilih voucher',
@@ -94,7 +148,10 @@
       return
     }
 
-    const tickets = buildTicketSelections()
+    const tickets = vouchers.categories.value
+      .map(c => ({ ticketId: Number(c.id), quota: vouchers.quantities[c.id] ?? 0 }))
+      .filter(t => t.quota > 0)
+
     if (tickets.length === 0) {
       toast.error({
         title: 'Data tiket belum siap',
@@ -103,35 +160,35 @@
       return
     }
 
-    try {
-      const res = await register.mutateAsync({
+    // Errors surface via the global HTTP interceptor toast — no local onError needed.
+    register.mutate(
+      {
         programSlug: VOUCHER_PROGRAM.apiSlug,
         body: {
           name: values.fullName,
           phone: values.phone,
           email: values.email,
           entity: values.companyName,
-          programId: VOUCHER_PROGRAM.apiProgramId,
-          categoryId: VOUCHER_PROGRAM.apiCategoryId,
+          programId: programId.value,
+          categoryId: selectedCategoryId.value,
           tickets,
         },
-      })
-
-      successRequestId.value = res.data?.Code ?? ''
-      successOpen.value = true
-    } catch {
-      toast.error({
-        title: 'Pengajuan gagal',
-        description: 'Terjadi kesalahan saat mengirim pengajuan. Silakan coba lagi.',
-      })
-    }
+      },
+      {
+        onSuccess: res => {
+          successCode.value = res.data?.Code ?? ''
+          // Keep the selected category so the user doesn't see it flash empty
+          // between reset and the watcher re-selecting first.
+          resetForm({ values: { ticketCategory: formValues.ticketCategory } })
+          vouchers.reset()
+          // Reflect updated quotas after the registration lands.
+          queryClient.invalidateQueries({
+            queryKey: invitationKeys.categoryInfo(programId.value, selectedCategoryId.value),
+          })
+        },
+      },
+    )
   })
-
-  const onSuccessAcknowledge = () => {
-    successOpen.value = false
-    resetForm()
-    vouchers.reset()
-  }
 </script>
 
 <template>
@@ -152,12 +209,12 @@
         <div class="flex min-w-0 flex-col gap-10">
           <VoucherRequestHeader
             title="Pengajuan Voucher"
-            :subtitle="`Silakan lengkapi data berikut untuk melakukan request voucher ${VOUCHER_PROGRAM.name}.`"
+            :subtitle="`Silakan lengkapi data berikut untuk melakukan request voucher ${programName}.`"
           />
 
           <div class="flex flex-col gap-10">
-            <PersonalInfoSection :disabled="submitting" />
-            <CompanyInfoSection :disabled="submitting" />
+            <PersonalInfoSection :disabled="submitting || !hasValidParams" />
+            <CompanyInfoSection :disabled="submitting || !hasValidParams" />
           </div>
 
           <SecurityAssuranceBar :items="SECURITY_ASSURANCES" class="hidden lg:flex" />
@@ -165,12 +222,13 @@
 
         <div class="lg:sticky lg:top-14 lg:self-start">
           <VoucherRequestCard
-            :program-name="VOUCHER_PROGRAM.name"
-            :ticket-category-options="TICKET_CATEGORY_OPTIONS"
-            :categories="vouchers.categories"
+            :program-name="programName"
+            :ticket-category-options="ticketCategoryOptions"
+            :categories="vouchers.categories.value"
             :quantities="vouchers.quantities"
             :total="vouchers.totalVouchers.value"
             :submitting="submitting || isSubmitting"
+            :disabled="!hasValidParams"
             @update:quantity="vouchers.setQuantity"
             @submit="onSubmit"
           />
@@ -183,9 +241,10 @@
     </main>
 
     <VoucherRequestSuccessDialog
-      v-model:open="successOpen"
-      :request-id="successRequestId"
-      @acknowledge="onSuccessAcknowledge"
+      :open="successCode !== null"
+      :request-id="successCode ?? ''"
+      @update:open="v => !v && (successCode = null)"
+      @acknowledge="successCode = null"
     />
   </div>
 </template>

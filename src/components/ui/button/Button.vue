@@ -20,6 +20,8 @@
     class?: HTMLAttributes['class']
     disabled?: boolean
     loading?: boolean
+    /** HTML button type. Defaults to 'button' so we never submit forms accidentally. */
+    type?: 'button' | 'submit' | 'reset'
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -32,6 +34,7 @@
     state: 'default',
     disabled: false,
     loading: false,
+    type: 'button',
   })
 
   const computedState = computed<ButtonState>(() => {
@@ -69,6 +72,7 @@
 
 <template>
   <Primitive
+    :type="type"
     data-slot="button"
     :data-variant="variant"
     :data-size="size"

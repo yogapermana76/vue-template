@@ -11,15 +11,16 @@
   <section class="flex flex-col gap-4">
     <SectionHeader title="Informasi Perusahaan" :icon="Building2" size="md" />
 
-    <Field v-slot="{ field, errorMessage }" name="companyName">
+    <Field v-slot="{ value, handleChange, errorMessage }" name="companyName">
       <TextField
         id="companyName"
-        v-bind="field"
+        :model-value="value"
         label="Nama Perusahaan"
         placeholder="Tulis nama perusahaan"
         required
         :error="errorMessage"
         :disabled="disabled"
+        @update:model-value="handleChange"
       />
     </Field>
   </section>

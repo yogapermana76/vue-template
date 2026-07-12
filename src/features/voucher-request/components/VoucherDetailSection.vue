@@ -27,6 +27,7 @@
         :key="category.id"
         :label="category.label"
         :model-value="quantities[category.id] ?? 0"
+        :quota="category.quota"
         :disabled="disabled"
         @update:model-value="value => onUpdate(category.id, value)"
       />
