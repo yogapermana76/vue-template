@@ -35,9 +35,3 @@ export const SUBMISSION_CATEGORY_OPTIONS = [
   { value: 'Invitation', label: 'Invitation' },
   { value: 'Group', label: 'Group' },
 ]
-
-export const SUBMISSION_COMPANY_OPTIONS = [
-  { value: 'PT PLN ICON PLUS', label: 'PT PLN ICON PLUS' },
-  { value: 'PT PLN (Persero)', label: 'PT PLN (Persero)' },
-  { value: 'PT PLN Nusantara Power', label: 'PT PLN Nusantara Power' },
-]

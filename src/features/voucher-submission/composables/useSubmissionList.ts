@@ -5,13 +5,11 @@ import type { SubmissionRow, SubmissionStatus } from '../types'
 
 export interface SubmissionFilters {
   category: string | null
-  company: string | null
   keyword: string
 }
 
 const emptyFilters = (): SubmissionFilters => ({
   category: null,
-  company: null,
   keyword: '',
 })
 
@@ -31,7 +29,6 @@ export function useSubmissionList() {
 
   const setKeyword = (v: string) => (filters.keyword = v)
   const setCategory = (v: string | null) => (filters.category = v)
-  const setCompany = (v: string | null) => (filters.company = v)
   const resetFilters = () => Object.assign(filters, emptyFilters())
 
   const statusCounts = computed<Record<SubmissionStatus, number>>(() => {
@@ -45,7 +42,6 @@ export function useSubmissionList() {
     return rows.value.filter(r => {
       if (r.status !== activeStatus.value) return false
       if (filters.category && r.category !== filters.category) return false
-      if (filters.company && r.company !== filters.company) return false
       if (
         q &&
         !r.id.toLowerCase().includes(q) &&
@@ -107,7 +103,6 @@ export function useSubmissionList() {
     setStatus,
     setKeyword,
     setCategory,
-    setCompany,
     resetFilters,
     toggleAll,
     toggleRow,

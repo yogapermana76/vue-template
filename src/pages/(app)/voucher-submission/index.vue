@@ -133,13 +133,11 @@
           :status-counts="view.statusCounts.value"
           :keyword="view.filters.keyword"
           :category="view.filters.category"
-          :company="view.filters.company"
           :show-bulk-actions="showBulkActions"
           :bulk-disabled="view.selectedIds.value.length === 0"
           @update:active-status="view.setStatus"
           @update:keyword="view.setKeyword"
           @update:category="view.setCategory"
-          @update:company="view.setCompany"
           @approve-selected="openApproveBulk"
           @reject-selected="openRejectBulk"
         />

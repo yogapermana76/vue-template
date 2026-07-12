@@ -18,6 +18,10 @@ router.beforeEach(to => {
   const title = to.meta.title as string | undefined
   document.title = title ? `${title} | ${config.app.name}` : config.app.name
 
+  if (to.path === '/') {
+    return { path: '/dashboard' }
+  }
+
   const auth = useAuthStore()
 
   if (isProtectedPath(to.path) && !auth.isAuthenticated) {
