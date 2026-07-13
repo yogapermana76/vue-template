@@ -2,24 +2,24 @@ import type { ColumnDef } from '@/components/ui/table'
 import type { SubmissionRow } from '../../types'
 
 const BASE_COLUMNS: ColumnDef<SubmissionRow>[] = [
-  { key: 'id', label: 'ID Pengajuan', field: 'id', minWidth: '120px' },
+  { key: 'id', label: 'ID Pengajuan', field: 'id', minWidth: '160px' },
   {
     key: 'submittedAt',
     label: 'Waktu Pengajuan',
     field: 'submittedAt',
     cell: 'submittedAt',
-    minWidth: '160px',
+    minWidth: '200px',
   },
   { key: 'name', label: 'Nama', field: 'name', minWidth: '140px' },
-  { key: 'phone', label: 'Nomor HP', field: 'phone', minWidth: '130px' },
+  { key: 'phone', label: 'Nomor HP', field: 'phone', minWidth: '170px' },
   { key: 'email', label: 'Email', field: 'email', minWidth: '180px' },
   { key: 'company', label: 'Perusahaan/Komunitas', field: 'company', minWidth: '180px' },
-  { key: 'category', label: 'Kategori', field: 'category', minWidth: '110px' },
+  { key: 'category', label: 'Kategori', field: 'category', minWidth: '160px' },
   {
     key: 'totalVouchers',
     label: 'Total Jumlah',
     cell: 'totalVouchers',
-    minWidth: '120px',
+    minWidth: '160px',
     align: 'left',
   },
 ]

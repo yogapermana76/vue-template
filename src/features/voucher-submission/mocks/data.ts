@@ -25,7 +25,7 @@ export const MOCK_QUOTA_GROUPS: QuotaGroup[] = [
   },
 ]
 
-const BASE_ROW: Omit<SubmissionRow, 'id' | 'category' | 'status'> = {
+const BASE_ROW: Omit<SubmissionRow, 'id' | 'backendId' | 'category' | 'status'> = {
   submittedAt: '2026-08-01T10:00:00+07:00',
   name: 'Pangeran Jaka',
   phone: '08123456789',
@@ -34,11 +34,12 @@ const BASE_ROW: Omit<SubmissionRow, 'id' | 'category' | 'status'> = {
   totalVouchers: 30,
 }
 
+let nextBackendId = 1
 const makeRow = (
   id: string,
   status: SubmissionRow['status'],
   category: SubmissionRow['category'],
-): SubmissionRow => ({ id, category, status, ...BASE_ROW })
+): SubmissionRow => ({ id, backendId: nextBackendId++, category, status, ...BASE_ROW })
 
 export const MOCK_SUBMISSION_LIST: SubmissionRow[] = [
   makeRow('ER121IN', 'approved', 'Invitation'),

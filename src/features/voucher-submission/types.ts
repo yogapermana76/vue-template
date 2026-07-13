@@ -17,7 +17,10 @@ export interface QuotaGroup {
 }
 
 export interface SubmissionRow {
+  /** Human-facing identifier (e.g. RequestCode `TUF2FXY`). Used as row key + URL segment. */
   id: string
+  /** Numeric backend ID — required for mutation endpoints (approve/reject). */
+  backendId: number
   submittedAt: string
   name: string
   phone: string

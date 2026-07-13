@@ -5,19 +5,22 @@
   import { SearchInput } from '@/components/shared'
   import { SearchableSelectField } from '@/components/ui/combobox'
   import type { ComboboxOption } from '@/components/ui/combobox'
-  import { SUBMISSION_CATEGORY_OPTIONS } from '../../constants'
   import type { SubmissionStatus } from '../../types'
   import SubmissionStatusTabs from '../tabs/SubmissionStatusTabs.vue'
 
-  const props = defineProps<{
-    activeStatus: SubmissionStatus
-    statusOrder: readonly SubmissionStatus[]
-    statusCounts: Record<SubmissionStatus, number>
-    keyword: string
-    category: string | null
-    showBulkActions?: boolean
-    bulkDisabled?: boolean
-  }>()
+  const props = withDefaults(
+    defineProps<{
+      activeStatus: SubmissionStatus
+      statusOrder: readonly SubmissionStatus[]
+      statusCounts: Record<SubmissionStatus, number>
+      keyword: string
+      category: string | null
+      categoryOptions?: ComboboxOption<string>[]
+      showBulkActions?: boolean
+      bulkDisabled?: boolean
+    }>(),
+    { categoryOptions: () => [] },
+  )
 
   const emit = defineEmits<{
     'update:activeStatus': [value: SubmissionStatus]
@@ -36,10 +39,6 @@
     get: () => props.category ?? undefined,
     set: v => emit('update:category', v ?? null),
   })
-
-  const categoryOptions = computed<ComboboxOption<string>[]>(() =>
-    SUBMISSION_CATEGORY_OPTIONS.map(o => ({ value: o.value, label: o.label })),
-  )
 </script>
 
 <template>

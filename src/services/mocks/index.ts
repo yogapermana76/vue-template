@@ -36,6 +36,12 @@ import type {
   InvitationProgramInfoResponse,
   InvitationCategoryInfoParams,
   InvitationCategoryInfoResponse,
+  InvitationSummaryParams,
+  InvitationSummaryResponse,
+  InvitationCountParams,
+  InvitationCountResponse,
+  InvitationListParams,
+  InvitationListResponse,
   ApproveInvitationBody,
   ApproveInvitationResponse,
 } from '@/types/services'
@@ -286,19 +292,24 @@ export const ticketMockService = {
 // Invitation (voucher-request)
 // ============================================
 
+const MOCK_INVITATION_CATEGORIES_WITH_TICKETS = [
+  {
+    CategoryID: 284,
+    CategoryName: 'Invitation',
+    Tickets: [
+      { TicketID: 355, TicketName: '5K', Quota: 90 },
+      { TicketID: 357, TicketName: '10K', Quota: 90 },
+    ],
+  },
+]
+
 const MOCK_INVITATION_PROGRAM = {
   ProgramID: 184,
   ProgramName: 'Electric Run 2026 [TEST by Naga] 2',
-  Categories: [
-    {
-      CategoryID: 284,
-      CategoryName: 'Invitation',
-      Tickets: [
-        { TicketID: 355, TicketName: '5K', Quota: 90 },
-        { TicketID: 357, TicketName: '10K', Quota: 90 },
-      ],
-    },
-  ],
+  Categories: MOCK_INVITATION_CATEGORIES_WITH_TICKETS.map(c => ({
+    CategoryID: c.CategoryID,
+    CategoryName: c.CategoryName,
+  })),
 }
 
 // Random 7-char code, mirrors backend example (e.g. "SV90EEO").
@@ -321,7 +332,7 @@ export const invitationMockService = {
   async getCategoryInfo(
     params: InvitationCategoryInfoParams,
   ): Promise<InvitationCategoryInfoResponse> {
-    const category = MOCK_INVITATION_PROGRAM.Categories.find(
+    const category = MOCK_INVITATION_CATEGORIES_WITH_TICKETS.find(
       c => c.CategoryID === params.categoryId,
     )
     if (!category) {
@@ -333,6 +344,69 @@ export const invitationMockService = {
       } as unknown as InvitationCategoryInfoResponse)
     }
     return delay(ok(category))
+  },
+
+  async getSummary(_params: InvitationSummaryParams): Promise<InvitationSummaryResponse> {
+    return delay(
+      ok([
+        {
+          CategoryId: 284,
+          CategoryName: 'Invitation',
+          TotalQuota: 200,
+          TotalPending: 89,
+          TotalApproved: 5,
+          TotalDisapproved: 0,
+          Tickets: [
+            { Id: 357, Name: '10K', Quota: 100, Pending: 44, Approved: 2, Disapproved: 0 },
+            { Id: 355, Name: '5K', Quota: 100, Pending: 45, Approved: 3, Disapproved: 0 },
+          ],
+        },
+      ]),
+    )
+  },
+
+  async getCount(_params: InvitationCountParams): Promise<InvitationCountResponse> {
+    return delay(ok({ Pending: 37, Approved: 2, Disapproved: 0 }))
+  },
+
+  async getList(params: InvitationListParams): Promise<InvitationListResponse> {
+    const page = params.query?.page ?? 1
+    const size = params.query?.size ?? 10
+    return delay({
+      success: true,
+      message: 'Berhasil',
+      statusCode: 200,
+      data: [
+        {
+          ID: 71,
+          RequestCode: 'TUF2FXY',
+          CreatedAt: '2026-07-13T14:29:57.13666+07:00',
+          Name: 'Achmad Nagaria',
+          Phone: '+62 812-3300-1100',
+          Email: 'ach.nagaria@gmail.com',
+          CompanyName: 'PLN',
+          CategoryName: 'Tike Invitation',
+          TotalQuota: 1,
+        },
+      ],
+      header: [
+        { Initial: 'RequestCode', Title: 'ID Pengajuan', Type: 'string' },
+        { Initial: 'CreatedAt', Title: 'Tanggal Pengajuan', Type: 'time' },
+        { Initial: 'Name', Title: 'Nama', Type: 'string' },
+        { Initial: 'Phone', Title: 'Nomor HP', Type: 'string' },
+        { Initial: 'Email', Title: 'Email', Type: 'string' },
+        { Initial: 'CompanyName', Title: 'Perusahaan / Komunitas', Type: 'string' },
+        { Initial: 'CategoryName', Title: 'Kategori', Type: 'string' },
+        { Initial: 'TotalQuota', Title: 'Total Jumlah', Type: 'int' },
+      ],
+      pagination: {
+        Total: 1,
+        PerPage: size,
+        CurrentPage: page,
+        FirstPage: 1,
+        LastPage: 1,
+      },
+    })
   },
 
   async approve(_body: ApproveInvitationBody): Promise<ApproveInvitationResponse> {

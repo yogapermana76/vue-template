@@ -30,8 +30,3 @@ export const SUBMISSION_STATUS_META: Record<SubmissionStatus, SubmissionStatusMe
 }
 
 export const SUBMISSION_STATUS_ORDER: SubmissionStatus[] = ['approved', 'pending', 'rejected']
-
-export const SUBMISSION_CATEGORY_OPTIONS = [
-  { value: 'Invitation', label: 'Invitation' },
-  { value: 'Group', label: 'Group' },
-]
