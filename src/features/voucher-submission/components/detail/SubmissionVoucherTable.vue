@@ -35,6 +35,7 @@
     :columns="submissionVoucherColumns"
     row-key="code"
     bordered
+    :sortable="false"
     empty-message="Belum ada kode voucher"
   >
     <template #toolbar>
