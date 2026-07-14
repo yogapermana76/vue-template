@@ -22,8 +22,14 @@ import type {
   InvitationCountResponse,
   InvitationListParams,
   InvitationListResponse,
-  ApproveInvitationBody,
-  ApproveInvitationResponse,
+  InvitationDetailParams,
+  InvitationDetailResponse,
+  ApproveInvitationBulkBody,
+  ApproveInvitationBulkResponse,
+  ApproveInvitationSingleBody,
+  ApproveInvitationSingleResponse,
+  ReleaseVoucherBody,
+  ReleaseVoucherResponse,
 } from '@/types/services'
 
 export const invitationService = {
@@ -76,8 +82,32 @@ export const invitationService = {
     return data
   },
 
-  async approve(body: ApproveInvitationBody): Promise<ApproveInvitationResponse> {
-    const { data } = await http.post<ApproveInvitationResponse>(InvitationEndpoint.APPROVE, body)
+  async getDetail(params: InvitationDetailParams): Promise<InvitationDetailResponse> {
+    const { data } = await http.get<InvitationDetailResponse>(InvitationEndpoint.DETAIL(params.id))
+    return data
+  },
+
+  async approveBulk(body: ApproveInvitationBulkBody): Promise<ApproveInvitationBulkResponse> {
+    const { data } = await http.post<ApproveInvitationBulkResponse>(
+      InvitationEndpoint.APPROVE_BULK,
+      body,
+    )
+    return data
+  },
+
+  async approveSingle(body: ApproveInvitationSingleBody): Promise<ApproveInvitationSingleResponse> {
+    const { data } = await http.post<ApproveInvitationSingleResponse>(
+      InvitationEndpoint.APPROVE_SINGLE,
+      body,
+    )
+    return data
+  },
+
+  async releaseVoucher(body: ReleaseVoucherBody): Promise<ReleaseVoucherResponse> {
+    const { data } = await http.post<ReleaseVoucherResponse>(
+      InvitationEndpoint.RELEASE_VOUCHER,
+      body,
+    )
     return data
   },
 }

@@ -1,14 +1,13 @@
 export * from './types'
 export * from './constants'
 export * from './adapters'
-export * from './mocks/data'
 
 export { useSubmissionList, type SubmissionFilters } from './composables/useSubmissionList'
-export { useSubmissionDetail } from './composables/useSubmissionDetail'
 
 // Quota
 export { default as SubmissionQuotaSection } from './components/quota/SubmissionQuotaSection.vue'
 export { default as SubmissionQuotaGroup } from './components/quota/SubmissionQuotaGroup.vue'
+export { default as SubmissionQuotaGroupSkeleton } from './components/quota/SubmissionQuotaGroupSkeleton.vue'
 export { default as SubmissionQuotaBucket } from './components/quota/SubmissionQuotaBucket.vue'
 
 // Tabs + toolbar + table primitives

@@ -15,14 +15,14 @@
   import { formatDateInTZ } from '@/utils/date'
   import {
     invitationKeys,
-    useApproveInvitation,
+    useApproveInvitationBulk,
     usePrograms,
     useInvitationCount,
     useInvitationList,
     useInvitationProgramInfo,
     useInvitationSummary,
   } from '@/composables/services'
-  import { useToast } from '@/composables/ui'
+  import { useSelectedProgram } from '@/composables/ui'
   import { PROGRAMS_PAGE_SIZE, ProgramSwitcher } from '@/features/dashboard'
   import {
     ApproveSubmissionDialog,
@@ -45,7 +45,6 @@
   })
 
   const router = useRouter()
-  const toast = useToast()
   const queryClient = useQueryClient()
   const view = useSubmissionList()
 
@@ -53,14 +52,14 @@
   // Program switcher
   // ============================================
 
-  const selectedProgramId = ref<number | undefined>()
+  const { selectedProgramId, setSelectedProgramId } = useSelectedProgram()
   const programsQuery = usePrograms({ query: { page: 1, size: PROGRAMS_PAGE_SIZE } })
   const programs = computed(() => programsQuery.data.value?.data ?? [])
   watch(
     programs,
     list => {
       if (selectedProgramId.value === undefined && list.length > 0) {
-        selectedProgramId.value = list[0].ID
+        setSelectedProgramId(list[0].ID)
       }
     },
     { immediate: true },
@@ -86,7 +85,7 @@
   })
 
   const backendStatus = computed(() => toBackendStatus(view.activeStatus.value))
-  const keywordParam = computed(() => view.filters.keyword || undefined)
+  const keywordParam = computed(() => view.debouncedKeyword.value || undefined)
 
   // ============================================
   // Pagination state
@@ -179,29 +178,29 @@
     rejectOpen.value = true
   }
 
-  /** Numeric backend IDs — approve/reject mutations require IDs, not RequestCodes. */
-  const targetBackendIds = (): number[] => {
+  /** Numeric invitation IDs — approve/reject mutations expect ID, not requestCode. */
+  const targetInvitationIds = (): number[] => {
     if (bulkMode.value) {
       const idSet = new Set(view.selectedIds.value)
-      return rows.value.filter(r => idSet.has(r.id)).map(r => r.backendId)
+      return rows.value.filter(r => idSet.has(String(r.id))).map(r => r.id)
     }
-    return pendingRow.value ? [pendingRow.value.backendId] : []
+    return pendingRow.value ? [pendingRow.value.id] : []
   }
 
-  const approve = useApproveInvitation()
+  const approveBulk = useApproveInvitationBulk()
 
   const invalidateInvitationQueries = () => {
     queryClient.invalidateQueries({ queryKey: invitationKeys.all })
   }
 
-  const confirmApprove = () => {
-    const ids = targetBackendIds()
+  const runBulkDecision = (approved: boolean, onClose: () => void) => {
+    const ids = targetInvitationIds()
     if (ids.length === 0) return
-    approve.mutate(
-      { InvitationCodesIds: ids },
+    approveBulk.mutate(
+      { InvitationCodesIds: ids, Approved: approved },
       {
         onSuccess: () => {
-          approveOpen.value = false
+          onClose()
           view.selectedIds.value = []
           invalidateInvitationQueries()
         },
@@ -209,16 +208,16 @@
     )
   }
 
-  // Reject endpoint TBD — for now log + close dialog. Backend hookup lands later.
-  const confirmReject = () => {
-    const ids = targetBackendIds()
-    // eslint-disable-next-line no-console
-    console.log('[TODO reject] backend IDs', ids)
-    toast.info({
-      title: 'Belum tersedia',
-      description: 'Endpoint tolak masih menunggu backend. Tindakan tidak diproses.',
+  const confirmApprove = () => {
+    runBulkDecision(true, () => {
+      approveOpen.value = false
     })
-    rejectOpen.value = false
+  }
+
+  const confirmReject = () => {
+    runBulkDecision(false, () => {
+      rejectOpen.value = false
+    })
   }
 
   const goToDetail = (row: SubmissionRow) => {
@@ -254,7 +253,7 @@
             :programs="programs"
             :model-value="selectedProgramId"
             :loading="programsQuery.isLoading.value"
-            @update:model-value="(v: number | undefined) => (selectedProgramId = v)"
+            @update:model-value="(v: number | undefined) => setSelectedProgramId(v)"
           />
         </div>
       </template>
@@ -264,19 +263,20 @@
             :programs="programs"
             :model-value="selectedProgramId"
             :loading="programsQuery.isLoading.value"
-            @update:model-value="(v: number | undefined) => (selectedProgramId = v)"
+            @update:model-value="(v: number | undefined) => setSelectedProgramId(v)"
           />
         </div>
       </template>
     </PageHeader>
 
-    <SubmissionQuotaSection :groups="quotaGroups" />
+    <SubmissionQuotaSection :groups="quotaGroups" :loading="invitationSummary.isLoading.value" />
 
     <DataTable
       :data="rows"
       :columns="columns"
       :loading="invitationList.isLoading.value"
       :pagination="paginationOptions"
+      controlled-pagination
       :selectable="showBulkActions"
       :selected-rows="view.selectedIds.value"
       row-key="id"
@@ -328,11 +328,16 @@
       </template>
     </DataTable>
 
-    <ApproveSubmissionDialog v-model:open="approveOpen" @confirm="confirmApprove" />
+    <ApproveSubmissionDialog
+      v-model:open="approveOpen"
+      :submitting="approveBulk.isPending.value"
+      @confirm="confirmApprove"
+    />
 
     <RejectSubmissionDialog
       v-model:open="rejectOpen"
       :count="rejectCount"
+      :submitting="approveBulk.isPending.value"
       @confirm="confirmReject"
     />
   </div>

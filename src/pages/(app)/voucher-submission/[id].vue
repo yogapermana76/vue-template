@@ -1,7 +1,14 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { PageHeader } from '@/components/layout'
+  import {
+    invitationKeys,
+    useApproveInvitationBulk,
+    useInvitationDetail,
+    useReleaseVoucher,
+  } from '@/composables/services'
   import {
     ApproveSubmissionDialog,
     RejectSubmissionDialog,
@@ -9,7 +16,7 @@
     SubmissionIdentityCard,
     SubmissionQuantitiesCard,
     SubmissionVoucherTable,
-    useSubmissionDetail,
+    toSubmissionDetail,
   } from '@/features/voucher-submission'
 
   definePage({
@@ -23,35 +30,77 @@
 
   const route = useRoute('/(app)/voucher-submission/[id]')
   const router = useRouter()
-  const id = computed(() => route.params.id ?? '')
+  const queryClient = useQueryClient()
 
-  const { detail, isLoading, approveWithQuantities, reject, releaseVoucher } = useSubmissionDetail(
-    () => id.value,
-  )
+  const invitationId = computed(() => {
+    const n = Number(route.params.id)
+    return Number.isFinite(n) && n > 0 ? n : undefined
+  })
 
+  const detailQuery = useInvitationDetail({ params: { id: invitationId } })
+
+  const detail = computed(() => {
+    const data = detailQuery.data.value?.data
+    return data ? toSubmissionDetail(data) : null
+  })
+
+  const isLoading = computed(() => detailQuery.isLoading.value)
   const isPending = computed(() => detail.value?.status === 'pending')
 
-  const approvedInputs = ref<Record<string, number>>({})
+  const approvedInputs = ref<Record<number, number>>({})
 
   const approveOpen = ref(false)
   const rejectOpen = ref(false)
   const releaseOpen = ref(false)
   const releaseCode = ref<string | null>(null)
 
-  const confirmApprove = () => {
-    approveWithQuantities(approvedInputs.value)
-    approvedInputs.value = {}
-    approveOpen.value = false
+  // Bulk endpoint handles both approve + reject via `Approved` flag.
+  const approveBulk = useApproveInvitationBulk()
+  const releaseMutation = useReleaseVoucher()
+
+  const invalidateAfterMutation = () => {
+    // Invalidate the whole invitation namespace so summary/count/list also refresh,
+    // and force an immediate refetch of the currently-visible detail query.
+    queryClient.invalidateQueries({ queryKey: invitationKeys.all })
+    if (invitationId.value !== undefined) {
+      void queryClient.refetchQueries({ queryKey: invitationKeys.detail(invitationId.value) })
+    }
   }
-  const confirmReject = () => {
-    reject()
-    rejectOpen.value = false
+
+  const runDecision = (approved: boolean, onDone: () => void) => {
+    if (!invitationId.value) return
+    approveBulk.mutate(
+      { InvitationCodesIds: [invitationId.value], Approved: approved },
+      {
+        onSuccess: () => {
+          onDone()
+          approvedInputs.value = {}
+          invalidateAfterMutation()
+        },
+      },
+    )
   }
+
+  const confirmApprove = () => runDecision(true, () => (approveOpen.value = false))
+  const confirmReject = () => runDecision(false, () => (rejectOpen.value = false))
+
   const confirmRelease = () => {
-    if (releaseCode.value) releaseVoucher(releaseCode.value)
-    releaseCode.value = null
-    releaseOpen.value = false
+    const code = releaseCode.value
+    if (!code || !detail.value) return
+    const voucher = detail.value.vouchers.find(v => v.code === code)
+    if (!voucher) return
+    releaseMutation.mutate(
+      { VoucherIds: [voucher.voucherId] },
+      {
+        onSuccess: () => {
+          releaseCode.value = null
+          releaseOpen.value = false
+          invalidateAfterMutation()
+        },
+      },
+    )
   }
+
   const openRelease = (code: string) => {
     releaseCode.value = code
     releaseOpen.value = true
@@ -69,7 +118,7 @@
     </div>
 
     <template v-else-if="detail">
-      <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
         <SubmissionIdentityCard :detail="detail" />
         <SubmissionQuantitiesCard
           :quantities="detail.quantities"
@@ -96,9 +145,18 @@
       v-model:open="approveOpen"
       :quantities="detail?.quantities"
       :approved-inputs="approvedInputs"
+      :submitting="approveBulk.isPending.value"
       @confirm="confirmApprove"
     />
-    <RejectSubmissionDialog v-model:open="rejectOpen" @confirm="confirmReject" />
-    <ReleaseVoucherDialog v-model:open="releaseOpen" @confirm="confirmRelease" />
+    <RejectSubmissionDialog
+      v-model:open="rejectOpen"
+      :submitting="approveBulk.isPending.value"
+      @confirm="confirmReject"
+    />
+    <ReleaseVoucherDialog
+      v-model:open="releaseOpen"
+      :submitting="releaseMutation.isPending.value"
+      @confirm="confirmRelease"
+    />
   </div>
 </template>

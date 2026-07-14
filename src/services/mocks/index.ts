@@ -42,8 +42,14 @@ import type {
   InvitationCountResponse,
   InvitationListParams,
   InvitationListResponse,
-  ApproveInvitationBody,
-  ApproveInvitationResponse,
+  InvitationDetailParams,
+  InvitationDetailResponse,
+  ApproveInvitationBulkBody,
+  ApproveInvitationBulkResponse,
+  ApproveInvitationSingleBody,
+  ApproveInvitationSingleResponse,
+  ReleaseVoucherBody,
+  ReleaseVoucherResponse,
 } from '@/types/services'
 import {
   claimMockTickets,
@@ -409,7 +415,68 @@ export const invitationMockService = {
     })
   },
 
-  async approve(_body: ApproveInvitationBody): Promise<ApproveInvitationResponse> {
-    return delay(ok({}))
+  async getDetail(params: InvitationDetailParams): Promise<InvitationDetailResponse> {
+    return delay(
+      ok({
+        ID: params.id,
+        RequestCode: 'AUGJB46',
+        Status: 'approved' as const,
+        CreatedAt: '2026-07-13T12:18:45.277095+07:00',
+        Name: 'Achmad Nagaria',
+        Phone: '+62 812-3300-1100',
+        Email: 'ach.nagaria@gmail.com',
+        CompanyName: 'PLN',
+        Tickets: [
+          {
+            TicketID: 355,
+            CategoryName: 'Invitation',
+            TicketName: '5K',
+            Quota: 1,
+            QuotaApproved: 1,
+          },
+          {
+            TicketID: 357,
+            CategoryName: 'Invitation',
+            TicketName: '10K',
+            Quota: 1,
+            QuotaApproved: 1,
+          },
+        ],
+        Vouchers: [
+          {
+            VoucherID: 31,
+            Code: 'F421588A',
+            CreatedAt: '2026-07-13T18:23:27.524818+07:00',
+            Status: 'AVAILABLE',
+            CategoryName: 'Invitation',
+            TicketName: '5K',
+            Releasable: false,
+          },
+          {
+            VoucherID: 32,
+            Code: 'A2A03D03',
+            CreatedAt: '2026-07-13T18:23:27.640134+07:00',
+            Status: 'AVAILABLE',
+            CategoryName: 'Invitation',
+            TicketName: '10K',
+            Releasable: false,
+          },
+        ],
+      }),
+    )
+  },
+
+  async approveBulk(_body: ApproveInvitationBulkBody): Promise<ApproveInvitationBulkResponse> {
+    return delay(ok({}, 'Berhasil melakukan distribusi voucher'))
+  },
+
+  async approveSingle(
+    _body: ApproveInvitationSingleBody,
+  ): Promise<ApproveInvitationSingleResponse> {
+    return delay(ok({}, 'Berhasil'))
+  },
+
+  async releaseVoucher(_body: ReleaseVoucherBody): Promise<ReleaseVoucherResponse> {
+    return delay(ok({}, 'Berhasil me-release voucher.'))
   },
 }

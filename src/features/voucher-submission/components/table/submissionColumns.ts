@@ -2,7 +2,7 @@ import type { ColumnDef } from '@/components/ui/table'
 import type { SubmissionRow } from '../../types'
 
 const BASE_COLUMNS: ColumnDef<SubmissionRow>[] = [
-  { key: 'id', label: 'ID Pengajuan', field: 'id', minWidth: '160px' },
+  { key: 'requestCode', label: 'ID Pengajuan', field: 'requestCode', minWidth: '160px' },
   {
     key: 'submittedAt',
     label: 'Waktu Pengajuan',

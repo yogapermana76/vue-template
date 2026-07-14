@@ -183,14 +183,88 @@ export interface InvitationListResponse extends BaseResponse<InvitationListRow[]
 }
 
 // ============================================
-// Approve (private)
+// Detail (private) — single invitation record with tickets + generated vouchers
 // ============================================
 
-export interface ApproveInvitationBody {
-  InvitationCodesIds: number[]
+export interface InvitationDetailTicket {
+  /** Ticket numeric id — needed for the approve-single mutation payload. */
+  TicketID: number
+  CategoryName: string
+  TicketName: string
+  Quota: number
+  QuotaApproved: number
 }
 
-export type ApproveInvitationResponse = BaseResponse<Record<string, never>>
+export interface InvitationDetailVoucher {
+  /** Voucher numeric id — needed for the release-voucher mutation payload. */
+  VoucherID: number
+  Code: string
+  CreatedAt: string
+  Status: string
+  CategoryName: string
+  TicketName: string
+  /** Server-side gate for the release action. */
+  Releasable: boolean
+}
+
+export interface InvitationDetail {
+  ID: number
+  RequestCode: string
+  Status: InvitationStatus
+  CreatedAt: string
+  Name: string
+  Phone: string
+  Email: string
+  CompanyName: string
+  Tickets: InvitationDetailTicket[]
+  Vouchers: InvitationDetailVoucher[]
+}
+
+export interface InvitationDetailParams {
+  id: number
+}
+
+export type InvitationDetailResponse = BaseResponse<InvitationDetail>
+
+// ============================================
+// Approve — bulk (private) — approve or reject one or more invitations at once.
+// ============================================
+
+export interface ApproveInvitationBulkBody {
+  InvitationCodesIds: number[]
+  /** `true` = approve, `false` = reject/disapprove. */
+  Approved: boolean
+}
+
+export type ApproveInvitationBulkResponse = BaseResponse<Record<string, never>>
+
+// ============================================
+// Approve — single (private) — approve/reject a single invitation with
+// per-ticket quota allocation. Used by the detail page.
+// ============================================
+
+export interface ApproveInvitationSingleTicket {
+  TicketId: number
+  QuotaApproved: number
+}
+
+export interface ApproveInvitationSingleBody {
+  InvitationID: number
+  Approved: boolean
+  Tickets: ApproveInvitationSingleTicket[]
+}
+
+export type ApproveInvitationSingleResponse = BaseResponse<Record<string, never>>
+
+// ============================================
+// Release voucher (private)
+// ============================================
+
+export interface ReleaseVoucherBody {
+  VoucherIds: number[]
+}
+
+export type ReleaseVoucherResponse = BaseResponse<Record<string, never>>
 
 // ============================================
 // Composable Parameters (reactive-aware)
@@ -212,6 +286,11 @@ export type UseInvitationCategoryInfoParams = BaseComposableParams<
 export type UseInvitationSummaryParams = BaseComposableParams<
   never,
   { programId?: MaybeRef<number | undefined> }
+>
+
+export type UseInvitationDetailParams = BaseComposableParams<
+  never,
+  { id?: MaybeRef<number | undefined> }
 >
 
 export type UseInvitationCountParams = BaseComposableParams<

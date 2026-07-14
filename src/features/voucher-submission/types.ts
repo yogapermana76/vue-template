@@ -17,10 +17,8 @@ export interface QuotaGroup {
 }
 
 export interface SubmissionRow {
-  /** Human-facing identifier (e.g. RequestCode `TUF2FXY`). Used as row key + URL segment. */
-  id: string
-  /** Numeric backend ID — required for mutation endpoints (approve/reject). */
-  backendId: number
+  id: number
+  requestCode: string
   submittedAt: string
   name: string
   phone: string
@@ -32,7 +30,7 @@ export interface SubmissionRow {
 }
 
 export interface SubmissionQuantityDetail {
-  id: string
+  ticketId: number
   category: SubmissionCategory
   type: string
   requested: number
@@ -43,11 +41,14 @@ export type VoucherUsageStatus = 'used' | 'unused'
 
 export interface SubmissionVoucherCode {
   no: number
+  voucherId: number
   code: string
   generatedAt: string
   status: VoucherUsageStatus
   category: SubmissionCategory
   type: string
+  /** Server-side gate for the release action. */
+  releasable: boolean
 }
 
 export interface SubmissionDetail extends SubmissionRow {

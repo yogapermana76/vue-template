@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue'
+  import { computed, watch } from 'vue'
   import type { PaginationOptions } from '@/components/ui/table'
   import { PageHeader } from '@/components/layout'
   import { DataTable } from '@/components/ui/table'
   import { usePrograms } from '@/composables/services'
+  import { useSelectedProgram } from '@/composables/ui'
   import { PROGRAMS_PAGE_SIZE, ProgramSwitcher } from '@/features/dashboard'
   import {
     AmountCell,
@@ -31,14 +32,14 @@
     },
   })
 
-  const selectedProgramId = ref<number | undefined>()
+  const { selectedProgramId, setSelectedProgramId } = useSelectedProgram()
   const programsQuery = usePrograms({ query: { page: 1, size: PROGRAMS_PAGE_SIZE } })
   const programs = computed(() => programsQuery.data.value?.data ?? [])
   watch(
     programs,
     list => {
       if (selectedProgramId.value === undefined && list.length > 0) {
-        selectedProgramId.value = list[0].ID
+        setSelectedProgramId(list[0].ID)
       }
     },
     { immediate: true },
@@ -77,7 +78,7 @@
             :programs="programs"
             :model-value="selectedProgramId"
             :loading="programsQuery.isLoading.value"
-            @update:model-value="(v: number | undefined) => (selectedProgramId = v)"
+            @update:model-value="(v: number | undefined) => setSelectedProgramId(v)"
           />
         </div>
       </template>
@@ -87,7 +88,7 @@
             :programs="programs"
             :model-value="selectedProgramId"
             :loading="programsQuery.isLoading.value"
-            @update:model-value="(v: number | undefined) => (selectedProgramId = v)"
+            @update:model-value="(v: number | undefined) => setSelectedProgramId(v)"
           />
         </div>
       </template>
@@ -98,6 +99,7 @@
       :columns="columns"
       :loading="view.isLoading.value"
       :pagination="paginationOptions"
+      controlled-pagination
       row-key="TicketCode"
       bordered
       striped

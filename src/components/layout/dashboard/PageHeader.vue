@@ -48,7 +48,7 @@
 </script>
 
 <template>
-  <div :class="cn('mb-5', props.class)" data-slot="page-header">
+  <div :class="cn('flex flex-col gap-4', props.class)" data-slot="page-header">
     <div :class="['flex flex-wrap gap-3', alignItems]">
       <slot v-if="back || $slots.back" name="back">
         <Button
@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <div v-if="$slots.below" class="mt-4">
+    <div v-if="$slots.below" class="contents">
       <slot name="below" />
     </div>
   </div>

@@ -11,7 +11,7 @@
 
 <template>
   <aside
-    class="relative min-w-0 overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-xs"
+    class="bg-card shadow-card relative min-w-0 overflow-hidden rounded-lg border border-neutral-200"
   >
     <SubmissionIdentityHero :detail="detail" />
 

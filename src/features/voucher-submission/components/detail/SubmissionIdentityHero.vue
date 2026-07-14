@@ -31,10 +31,10 @@
       </div>
       <div class="text-right">
         <p class="text-xxs font-semibold tracking-wider text-neutral-500 uppercase">ID Pengajuan</p>
-        <p class="body-l-semibold font-mono text-neutral-950">{{ detail.id }}</p>
+        <p class="body-l-semibold font-mono text-neutral-950">{{ detail.requestCode }}</p>
         <p class="body-caption mt-1 inline-flex items-center gap-1 text-neutral-600 tabular-nums">
           <Calendar class="size-3" />
-          {{ formatDateInTZ(detail.submittedAt, 'dd-MM-yyyy HH:mm') }}
+          {{ formatDateInTZ(detail.submittedAt, 'd MMM yyyy HH:mm') }}
         </p>
       </div>
     </div>

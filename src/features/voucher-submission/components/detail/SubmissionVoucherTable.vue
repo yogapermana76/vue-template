@@ -15,8 +15,9 @@
     release: [code: string]
   }>()
 
+  // Server dictates whether a voucher can be released via `releasable`.
   const rowActions = (row: SubmissionVoucherCode): TableAction[] =>
-    row.status === 'used'
+    row.releasable
       ? [
           {
             key: 'release',
@@ -59,7 +60,7 @@
 
     <template #cell-generatedAt="{ value }">
       <span class="body-m text-neutral-700 tabular-nums">
-        {{ formatDateInTZ(String(value), 'dd MMM yyyy') }}
+        {{ formatDateInTZ(String(value), 'd MMM yyyy') }}
       </span>
     </template>
 

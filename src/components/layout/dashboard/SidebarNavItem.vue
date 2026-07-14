@@ -36,10 +36,11 @@
 
   const route = useRoute()
 
-  // Auto-detect active state from route
+  // Auto-detect active state from route. Match exact path OR any descendant
+  // (e.g. /voucher-submission stays active on /voucher-submission/46).
   const isActive = computed(() => {
     if (!props.to) return false
-    return route.path === props.to
+    return route.path === props.to || route.path.startsWith(`${props.to}/`)
   })
 
   // Styling based on variant

@@ -6,12 +6,13 @@ import {
   useSchedules,
   useStatistics,
 } from '@/composables/services'
+import { useSelectedProgram } from '@/composables/ui'
 import type { Program } from '@/types/services'
 import { DASHBOARD_PAGE_SIZE, PROGRAMS_PAGE_SIZE, STATISTICS_POLL_MS } from '../constants'
 import type { DateRange } from '../types'
 
 export function useDashboard() {
-  const selectedProgramId = ref<number | undefined>()
+  const { selectedProgramId, setSelectedProgramId } = useSelectedProgram()
   const selectedCategoryId = ref<number | undefined>()
   const dateRange = ref<DateRange>({ start: null, end: null })
 
@@ -27,7 +28,7 @@ export function useDashboard() {
 
   const autoSelectFirstProgram = () => {
     if (selectedProgramId.value === undefined && programs.value.length > 0) {
-      selectedProgramId.value = programs.value[0].ID
+      setSelectedProgramId(programs.value[0].ID)
     }
   }
 
@@ -70,7 +71,7 @@ export function useDashboard() {
   const selectedProgram = computed(() => programs.value.find(p => p.ID === selectedProgramId.value))
 
   const selectProgram = (programId: number | undefined) => {
-    selectedProgramId.value = programId
+    setSelectedProgramId(programId)
     // Categories only make sense per program.
     selectedCategoryId.value = undefined
   }

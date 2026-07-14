@@ -8,11 +8,14 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/vue-query'
 import { invitationService } from '@/services'
 import { config } from '@/config'
 import type {
-  ApproveInvitationBody,
+  ApproveInvitationBulkBody,
+  ApproveInvitationSingleBody,
+  ReleaseVoucherBody,
   InvitationStatus,
   RegisterInvitationParams,
   UseInvitationCategoryInfoParams,
   UseInvitationCountParams,
+  UseInvitationDetailParams,
   UseInvitationListParams,
   UseInvitationProgramInfoParams,
   UseInvitationSummaryParams,
@@ -42,6 +45,7 @@ export const invitationKeys = {
       status?: InvitationStatus
     },
   ) => [...invitationKeys.all, 'list', programId, query] as const,
+  detail: (id?: number) => [...invitationKeys.all, 'detail', id] as const,
 }
 
 // ============================================
@@ -203,6 +207,27 @@ export function useInvitationList(params: UseInvitationListParams = {}) {
   })
 }
 
+export function useInvitationDetail(params: UseInvitationDetailParams = {}) {
+  const { params: pathParams = {}, options = {} } = params
+  const { id } = pathParams
+
+  const resolvedId = computed(() => unref(id))
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && !!resolvedId.value
+      : !!resolvedId.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() => invitationKeys.detail(resolvedId.value)),
+    queryFn: () => invitationService.getDetail({ id: resolvedId.value! }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    refetchInterval: options.refetchInterval,
+    refetchIntervalInBackground: options.refetchIntervalInBackground,
+    enabled: resolvedEnabled,
+  })
+}
+
 // ============================================
 // Mutations
 // ============================================
@@ -213,8 +238,23 @@ export function useRegisterInvitation() {
   })
 }
 
-export function useApproveInvitation() {
+/** Bulk approve/reject invitations from the list page. */
+export function useApproveInvitationBulk() {
   return useMutation({
-    mutationFn: (body: ApproveInvitationBody) => invitationService.approve(body),
+    mutationFn: (body: ApproveInvitationBulkBody) => invitationService.approveBulk(body),
+  })
+}
+
+/** Approve/reject a single invitation with per-ticket quota (detail page). */
+export function useApproveInvitationSingle() {
+  return useMutation({
+    mutationFn: (body: ApproveInvitationSingleBody) => invitationService.approveSingle(body),
+  })
+}
+
+/** Release one or more generated vouchers. */
+export function useReleaseVoucher() {
+  return useMutation({
+    mutationFn: (body: ReleaseVoucherBody) => invitationService.releaseVoucher(body),
   })
 }

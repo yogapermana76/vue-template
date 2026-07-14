@@ -7,7 +7,7 @@
   const props = defineProps<{
     open: boolean
     quantities?: SubmissionQuantityDetail[]
-    approvedInputs?: Record<string, number>
+    approvedInputs?: Record<number, number>
     submitting?: boolean
   }>()
 
@@ -38,9 +38,9 @@
 
   const previewBuckets = computed(() =>
     (props.quantities ?? []).map(q => ({
-      id: q.id,
+      id: q.ticketId,
       label: q.type,
-      value: props.approvedInputs?.[q.id] ?? q.approved ?? 0,
+      value: props.approvedInputs?.[q.ticketId] ?? q.approved ?? 0,
     })),
   )
 </script>
