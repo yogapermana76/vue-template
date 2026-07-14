@@ -277,6 +277,7 @@
       :loading="invitationList.isLoading.value"
       :pagination="paginationOptions"
       controlled-pagination
+      :sortable="false"
       :selectable="showBulkActions"
       :selected-rows="view.selectedIds.value"
       row-key="id"

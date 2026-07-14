@@ -58,7 +58,7 @@
       <div class="flex flex-1 flex-wrap items-center gap-2">
         <SearchInput
           v-model="keywordModel"
-          placeholder="Cari nomor, nama atau NIK disini"
+          placeholder="Cari pengajuan..."
           size="sm"
           :prefix-icon="Search"
           class="lg:w-72"
