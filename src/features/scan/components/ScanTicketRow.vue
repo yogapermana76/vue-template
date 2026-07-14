@@ -10,6 +10,8 @@
     ticket: ScanTicketItem
     variant: 'unclaimed' | 'claimed'
     selected?: boolean
+    /** Order-level timezone — inherited when the ticket has no racepack window. */
+    orderTz?: string
   }>()
 
   const emit = defineEmits<{
@@ -31,7 +33,7 @@
     return 'border-neutral-200 bg-neutral-50/60'
   })
 
-  const visit = computed(() => formatVisit(props.ticket))
+  const visit = computed(() => formatVisit(props.ticket, props.orderTz))
 </script>
 
 <template>

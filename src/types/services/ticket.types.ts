@@ -71,6 +71,28 @@ export interface TicketDetail {
 }
 
 /**
+ * Racepack collection window/location for run-events. Attached per-ticket
+ * because different ticket types (5K, 10K, etc.) can have their own pickup
+ * windows. Null-safe: backend omits the whole block when the event is not
+ * a racepack event.
+ */
+export interface RacepackData {
+  CityId?: number
+  ProvinceId?: number
+  DistrictId?: number
+  SubdistrictId?: number
+  Address?: string
+  AddressTitle?: string
+  StartDate?: string
+  EndDate?: string
+  OpenTime?: string
+  CloseTime?: string
+  Timezone?: string
+  MapsUrl?: string
+  [key: string]: unknown
+}
+
+/**
  * Ticket summary as returned inside `ScanResult.Unclaimed[]` /
  * `ScanResult.Claimed[]`. Trimmed shape (does NOT include the full
  * detail — call `getDetail` for that). `Claimable` drives whether the
@@ -89,6 +111,7 @@ export interface ScanTicketItem {
   EndVisitTime?: string
   Claimable: boolean
   TicketExpiredAt?: string | null
+  RacepackData?: RacepackData | null
   [key: string]: unknown
 }
 

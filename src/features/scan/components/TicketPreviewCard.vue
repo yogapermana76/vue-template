@@ -101,6 +101,7 @@
         variant="unclaimed"
         :tickets="selection.unclaimed.value"
         :query="query"
+        :order-tz="order?.Timezone"
         :is-selected="selection.isSelected"
         :all-selected="allFilteredSelected"
         :show-bulk-toggle="filteredClaimableCodes.length > 1"
@@ -114,6 +115,7 @@
         variant="claimed"
         :tickets="selection.claimed.value"
         :query="query"
+        :order-tz="order?.Timezone"
       />
     </CardContent>
   </Card>

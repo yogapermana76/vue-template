@@ -13,6 +13,8 @@
     isSelected?: (code: string) => boolean
     allSelected?: boolean
     showBulkToggle?: boolean
+    /** Order-level timezone forwarded to rows (for visit-window rendering). */
+    orderTz?: string
   }>()
 
   const emit = defineEmits<{
@@ -51,6 +53,7 @@
         :key="t.TicketCode"
         :ticket="t"
         :variant="variant"
+        :order-tz="orderTz"
         :selected="variant === 'unclaimed' && isSelected ? isSelected(t.TicketCode) : false"
         @toggle="code => emit('toggle-ticket', code)"
       />
