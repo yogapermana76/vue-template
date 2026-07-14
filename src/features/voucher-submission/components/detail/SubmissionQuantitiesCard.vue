@@ -24,20 +24,70 @@
 
   const columns = computed(() => buildSubmissionQuantityColumns(props.mode))
 
-  const schemaFor = (max: number) =>
+  // Per-row schema: validates the value against that ticket's requested cap.
+  const rowSchema = (max: number) =>
     z
       .number({ invalid_type_error: `maksimal ${max}` })
       .min(0)
       .max(max, `maksimal ${max}`)
 
+  // Form-level schema: EVERY row must have a positive value AND respect its
+  // per-row max cap. Empty/zero anywhere blocks approval — the operator must
+  // decide a quota for every ticket type explicitly.
+  const approvalSchema = computed(() =>
+    z
+      .array(
+        z.object({
+          ticketId: z.number(),
+          requested: z.number(),
+          value: z.number().optional(),
+        }),
+      )
+      .superRefine((rows, ctx) => {
+        rows.forEach((row, index) => {
+          if (row.value === undefined || row.value === 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: [index, 'value'],
+              message: 'wajib diisi',
+            })
+            return
+          }
+          const result = rowSchema(row.requested).safeParse(row.value)
+          if (!result.success) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: [index, 'value'],
+              message: result.error.issues[0]?.message ?? 'invalid',
+            })
+          }
+        })
+      }),
+  )
+
+  const parsedApproval = computed(() =>
+    approvalSchema.value.safeParse(
+      props.quantities.map(q => ({
+        ticketId: q.ticketId,
+        requested: q.requested,
+        value: props.approvedInputs?.[q.ticketId],
+      })),
+    ),
+  )
+
   const errorFor = (row: SubmissionQuantityDetail): string | null => {
-    const value = props.approvedInputs?.[row.ticketId]
-    if (value === undefined) return null
-    const result = schemaFor(row.requested).safeParse(value)
-    return result.success ? null : (result.error.issues[0]?.message ?? null)
+    // Skip untouched rows — only show a message once the user has interacted.
+    // `canApprove` still blocks the submit until every row is filled.
+    if (props.approvedInputs?.[row.ticketId] === undefined) return null
+    if (parsedApproval.value.success) return null
+    const index = props.quantities.findIndex(q => q.ticketId === row.ticketId)
+    const issue = parsedApproval.value.error.issues.find(
+      i => i.path[0] === index && i.path[1] === 'value',
+    )
+    return issue?.message ?? null
   }
 
-  const hasErrors = computed(() => props.quantities.some(q => errorFor(q) !== null))
+  const canApprove = computed(() => parsedApproval.value.success)
 
   const setApprovedFor = (ticketId: number, raw: string | number) => {
     const n = Number(raw)
@@ -114,7 +164,7 @@
         variant="primary"
         size="md"
         :loading="submitting"
-        :disabled="hasErrors"
+        :disabled="!canApprove"
         @click="emit('approve')"
       >
         Setujui
