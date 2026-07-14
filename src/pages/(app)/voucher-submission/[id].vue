@@ -5,7 +5,7 @@
   import { PageHeader } from '@/components/layout'
   import {
     invitationKeys,
-    useApproveInvitationBulk,
+    useApproveInvitationSingle,
     useInvitationDetail,
     useReleaseVoucher,
   } from '@/composables/services'
@@ -54,8 +54,9 @@
   const releaseOpen = ref(false)
   const releaseCode = ref<string | null>(null)
 
-  // Bulk endpoint handles both approve + reject via `Approved` flag.
-  const approveBulk = useApproveInvitationBulk()
+  // Single endpoint — carries per-ticket QuotaApproved. Handles both approve
+  // (Approved=true) and reject (Approved=false, quotas ignored by backend).
+  const approveSingle = useApproveInvitationSingle()
   const releaseMutation = useReleaseVoucher()
 
   const invalidateAfterMutation = () => {
@@ -68,9 +69,15 @@
   }
 
   const runDecision = (approved: boolean, onDone: () => void) => {
-    if (!invitationId.value) return
-    approveBulk.mutate(
-      { InvitationCodesIds: [invitationId.value], Approved: approved },
+    if (!invitationId.value || !detail.value) return
+    // Backend expects one entry per ticket. On reject the values don't matter,
+    // but the array shape does — send zero so the payload stays consistent.
+    const tickets = detail.value.quantities.map(q => ({
+      TicketId: q.ticketId,
+      QuotaApproved: approved ? (approvedInputs.value[q.ticketId] ?? 0) : 0,
+    }))
+    approveSingle.mutate(
+      { InvitationID: invitationId.value, Approved: approved, Tickets: tickets },
       {
         onSuccess: () => {
           onDone()
@@ -145,12 +152,12 @@
       v-model:open="approveOpen"
       :quantities="detail?.quantities"
       :approved-inputs="approvedInputs"
-      :submitting="approveBulk.isPending.value"
+      :submitting="approveSingle.isPending.value"
       @confirm="confirmApprove"
     />
     <RejectSubmissionDialog
       v-model:open="rejectOpen"
-      :submitting="approveBulk.isPending.value"
+      :submitting="approveSingle.isPending.value"
       @confirm="confirmReject"
     />
     <ReleaseVoucherDialog
