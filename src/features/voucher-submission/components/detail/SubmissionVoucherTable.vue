@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { RotateCcw, Ticket } from 'lucide-vue-next'
   import { Badge } from '@/components/ui/badge'
+  import { Button } from '@/components/ui/button'
   import { DataTable, TableActions, type TableAction } from '@/components/ui/table'
   import { SectionHeader } from '@/components/shared'
   import { formatDateInTZ } from '@/utils/date'
@@ -72,8 +73,25 @@
     </template>
 
     <template #cell-actions="{ row }">
+      <!-- Single action → render the button inline; skip the menu wrapper.
+           Multiple actions → fall back to the overflow menu. -->
+      <template v-if="rowActions(row as SubmissionVoucherCode).length === 1">
+        <Button
+          variant="danger"
+          soft
+          size="xs"
+          @click.stop="rowActions(row as SubmissionVoucherCode)[0].onClick?.()"
+        >
+          <component
+            :is="rowActions(row as SubmissionVoucherCode)[0].icon"
+            v-if="rowActions(row as SubmissionVoucherCode)[0].icon"
+            class="size-3.5"
+          />
+          {{ rowActions(row as SubmissionVoucherCode)[0].label }}
+        </Button>
+      </template>
       <TableActions
-        v-if="rowActions(row as SubmissionVoucherCode).length"
+        v-else-if="rowActions(row as SubmissionVoucherCode).length"
         :actions="rowActions(row as SubmissionVoucherCode)"
         @click.stop
       />
