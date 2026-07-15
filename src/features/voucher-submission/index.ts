@@ -26,3 +26,4 @@ export { default as SubmissionDetailSkeleton } from './components/detail/Submiss
 export { default as ApproveSubmissionDialog } from './components/dialogs/ApproveSubmissionDialog.vue'
 export { default as RejectSubmissionDialog } from './components/dialogs/RejectSubmissionDialog.vue'
 export { default as ReleaseVoucherDialog } from './components/dialogs/ReleaseVoucherDialog.vue'
+export { default as SubmissionApprovalPreview } from './components/dialogs/SubmissionApprovalPreview.vue'
