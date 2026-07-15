@@ -20,6 +20,7 @@ export { default as SubmissionIdentityCard } from './components/detail/Submissio
 export { default as SubmissionStatusRow } from './components/detail/SubmissionStatusRow.vue'
 export { default as SubmissionQuantitiesCard } from './components/detail/SubmissionQuantitiesCard.vue'
 export { default as SubmissionVoucherTable } from './components/detail/SubmissionVoucherTable.vue'
+export { default as SubmissionDetailSkeleton } from './components/detail/SubmissionDetailSkeleton.vue'
 
 // Dialogs
 export { default as ApproveSubmissionDialog } from './components/dialogs/ApproveSubmissionDialog.vue'

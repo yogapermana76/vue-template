@@ -103,6 +103,7 @@
     class="bg-card shadow-card flex min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200"
   >
     <DataTable
+      :sortable="false"
       :data="quantities"
       :columns="columns"
       row-key="ticketId"

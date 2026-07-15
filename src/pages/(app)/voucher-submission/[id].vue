@@ -13,6 +13,7 @@
     ApproveSubmissionDialog,
     RejectSubmissionDialog,
     ReleaseVoucherDialog,
+    SubmissionDetailSkeleton,
     SubmissionIdentityCard,
     SubmissionQuantitiesCard,
     SubmissionVoucherTable,
@@ -120,9 +121,7 @@
   <div class="mx-auto flex w-full max-w-360 flex-col gap-5">
     <PageHeader title="Detail" back back-label="Kembali" class="mb-0!" @back="goBack" />
 
-    <div v-if="isLoading" class="rounded-lg border border-neutral-200 bg-white p-8 text-center">
-      <p class="body-m text-neutral-500">Memuat detail...</p>
-    </div>
+    <SubmissionDetailSkeleton v-if="isLoading" />
 
     <template v-else-if="detail">
       <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-2">
