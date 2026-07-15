@@ -3,6 +3,27 @@ import { formatDateInTZ } from '@/utils/date'
 
 export const EMPTY = '—'
 
+type VisitorInfoKey = 'Fullname' | 'Email' | 'PhoneNumber'
+
+/**
+ * Resolve a visitor field: prefer the value carried inside `Information[]`
+ * (backend's source of truth), fall back to the top-level field. Handles
+ * boolean/array/null coercion consistently with the info panel renderer.
+ */
+export const getVisitorField = (
+  information: Array<{ label: string; value: unknown }> | undefined,
+  key: VisitorInfoKey,
+  fallback: string | undefined,
+): string | undefined => {
+  const match = information?.find(item => item.label === key)
+  if (match === undefined) return fallback
+  const { value } = match
+  if (value === null || value === undefined || value === '') return fallback
+  if (Array.isArray(value)) return value.join(', ')
+  if (typeof value === 'boolean') return value ? 'Ya' : 'Tidak'
+  return String(value)
+}
+
 export const orDash = (v: unknown): string =>
   v === null || v === undefined || v === '' ? EMPTY : String(v)
 

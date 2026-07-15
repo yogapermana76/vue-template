@@ -4,7 +4,7 @@
   import { Badge } from '@/components/ui/badge'
   import { DetailField, DetailSection } from '@/components/shared'
   import type { TicketDetail } from '@/types/services'
-  import { orDash } from '../../utils/detailFormatters'
+  import { getVisitorField, orDash } from '../../utils/detailFormatters'
 
   const props = defineProps<{ detail: TicketDetail }>()
 
@@ -16,6 +16,16 @@
   )
   const badgeLabel = computed(() => (claimed.value ? 'Sudah Digunakan' : 'Belum Digunakan'))
   const hasInformation = computed(() => (props.detail.Information?.length ?? 0) > 0)
+
+  const fullname = computed(() =>
+    getVisitorField(props.detail.Information, 'Fullname', props.detail.Fullname),
+  )
+  const phone = computed(() =>
+    getVisitorField(props.detail.Information, 'PhoneNumber', props.detail.PhoneNumber),
+  )
+  const email = computed(() =>
+    getVisitorField(props.detail.Information, 'Email', props.detail.Email),
+  )
 </script>
 
 <template>
@@ -24,12 +34,12 @@
       <Badge :variant="badgeVariant">{{ badgeLabel }}</Badge>
     </template>
 
-    <DetailField label="Nama" :value="orDash(detail.Fullname)" />
+    <DetailField label="Nama" :value="orDash(fullname)" />
     <DetailField label="Nomor HP">
-      <span class="tabular-nums">{{ orDash(detail.PhoneNumber) }}</span>
+      <span class="tabular-nums">{{ orDash(phone) }}</span>
     </DetailField>
     <DetailField label="Email" wide>
-      <span class="break-all">{{ orDash(detail.Email) }}</span>
+      <span class="break-all">{{ orDash(email) }}</span>
     </DetailField>
     <DetailField label="Kode Tiket">
       <span class="font-mono font-semibold">{{ orDash(detail.TicketCode) }}</span>
