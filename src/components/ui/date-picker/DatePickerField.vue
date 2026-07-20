@@ -157,6 +157,7 @@
           :week-starts-on="weekStartsOn"
           :fixed-weeks="fixedWeeks"
           :disabled="disabled"
+          class="w-72"
           @update:model-value="handleSelect"
         />
       </PopoverContent>
