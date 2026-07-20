@@ -10,7 +10,9 @@ import { config } from '@/config'
 import type {
   UseTicketDetailParams,
   UseScanTicketParams,
+  UseTicketFormParams,
   ClaimTicketRequest,
+  EditVisitorBody,
 } from '@/types/services'
 
 // ============================================
@@ -22,6 +24,8 @@ export const ticketKeys = {
   detail: (programId?: number, code?: string) =>
     [...ticketKeys.all, 'detail', programId, code] as const,
   scan: (code?: string) => [...ticketKeys.all, 'scan', code] as const,
+  form: (programId?: number, code?: string) =>
+    [...ticketKeys.all, 'form', programId, code] as const,
 }
 
 // ============================================
@@ -71,6 +75,30 @@ export function useScanTicket(params: UseScanTicketParams = {}) {
   })
 }
 
+export function useTicketForm(params: UseTicketFormParams = {}) {
+  const { params: pathParams = {}, options = {} } = params
+  const { programId, code } = pathParams
+
+  const resolvedProgramId = computed(() => unref(programId))
+  const resolvedCode = computed(() => unref(code))
+  const resolvedEnabled = computed(() =>
+    options.enabled !== undefined
+      ? unref(options.enabled) && !!resolvedProgramId.value && !!resolvedCode.value
+      : !!resolvedProgramId.value && !!resolvedCode.value,
+  )
+
+  return useQuery({
+    queryKey: computed(() => ticketKeys.form(resolvedProgramId.value, resolvedCode.value)),
+    queryFn: () =>
+      ticketService.getForm({
+        programId: resolvedProgramId.value!,
+        code: resolvedCode.value!,
+      }),
+    staleTime: options.staleTime ?? config.cache.defaultStaleTime,
+    enabled: resolvedEnabled,
+  })
+}
+
 // ============================================
 // Mutations
 // ============================================
@@ -78,5 +106,11 @@ export function useScanTicket(params: UseScanTicketParams = {}) {
 export function useClaimTicket() {
   return useMutation({
     mutationFn: (request: ClaimTicketRequest) => ticketService.claimTicket(request),
+  })
+}
+
+export function useEditVisitor() {
+  return useMutation({
+    mutationFn: (body: EditVisitorBody) => ticketService.editVisitor(body),
   })
 }

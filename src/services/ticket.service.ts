@@ -18,6 +18,10 @@ import type {
   TicketDetailResponse,
   ScanTicketResponse,
   ClaimTicketResponse,
+  TicketFormParams,
+  TicketFormResponse,
+  EditVisitorBody,
+  EditVisitorResponse,
 } from '@/types/services'
 
 /** Axios config with our custom `showErrorToast` flag from `interceptors.ts`. */
@@ -39,6 +43,19 @@ export const ticketService = {
 
   async claimTicket(request: ClaimTicketRequest): Promise<ClaimTicketResponse> {
     const { data } = await http.post<ClaimTicketResponse>(TicketEndpoint.CLAIM, request)
+    return data
+  },
+
+  async getForm(params: TicketFormParams): Promise<TicketFormResponse> {
+    const { data } = await http.get<TicketFormResponse>(
+      TicketEndpoint.FORM(params.programId, params.code),
+      SILENT,
+    )
+    return data
+  },
+
+  async editVisitor(body: EditVisitorBody): Promise<EditVisitorResponse> {
+    const { data } = await http.put<EditVisitorResponse>(TicketEndpoint.EDIT_VISITOR, body)
     return data
   },
 }

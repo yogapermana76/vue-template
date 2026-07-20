@@ -163,6 +163,60 @@ export type ScanTicketResponse = BaseResponse<ScanResult>
 export type ClaimTicketResponse = BaseResponse<ClaimResult>
 
 // ============================================
+// Ticket form (visitor-editable fields per ticket)
+// ============================================
+
+export type TicketFormHtmlType =
+  | 'text'
+  | 'tel'
+  | 'email'
+  | 'date'
+  | 'time'
+  | 'radio'
+  | 'dropdown'
+  | 'checkbox'
+  | 'bool'
+  | 'textarea'
+  | 'number'
+  | (string & {})
+
+/** Choice option for radio/dropdown/checkbox fields. */
+export interface TicketFormFieldOption {
+  id: string
+  label: string
+}
+
+/** Validation rules — mostly opaque to the client but `regex` is enforced UI-side. */
+export interface TicketFormFieldValidation {
+  regex?: string
+  sql?: string
+  [key: string]: unknown
+}
+
+/**
+ * One editable/read-only field returned by `GET /v2/ticket/form/:programId/:code`.
+ * Drives the racepack-collection / visitor-edit form.
+ */
+export interface TicketFormField {
+  Name: string
+  Label: string
+  Value: string
+  /** Selected option id for radio/dropdown; empty for free-text fields. */
+  ValueId: string
+  HtmlType: TicketFormHtmlType
+  Validation: TicketFormFieldValidation | null
+  /** Options for choice fields; null for free-text. */
+  Data: TicketFormFieldOption[] | null
+  IsRequired: boolean
+  IsEditable: boolean
+  EditableRoles: string[] | null
+  EditableUntil: string
+  Description: string
+}
+
+export type TicketFormResponse = BaseResponse<TicketFormField[]>
+
+// ============================================
 // Request Parameters (sent to API)
 // ============================================
 
@@ -179,6 +233,26 @@ export interface ClaimTicketRequest {
   Codes: string[]
 }
 
+export interface TicketFormParams {
+  programId: number
+  code: string
+}
+
+/** Body shape sent to `PUT /v2/visitors/edit` to persist visitor field changes. */
+export interface EditVisitorFieldPayload {
+  name: string
+  value: string
+  /** Required for radio/dropdown fields; empty string for free-text. */
+  valueId: string
+}
+
+export interface EditVisitorBody {
+  code: string
+  fields: EditVisitorFieldPayload[]
+}
+
+export type EditVisitorResponse = BaseResponse<Record<string, never>>
+
 // ============================================
 // Composable Parameters (reactive-aware)
 // ============================================
@@ -191,4 +265,9 @@ export type UseTicketDetailParams = BaseComposableParams<
 export type UseScanTicketParams = BaseComposableParams<
   never,
   { code?: MaybeRef<string | undefined> }
+>
+
+export type UseTicketFormParams = BaseComposableParams<
+  never,
+  { programId?: MaybeRef<number | undefined>; code?: MaybeRef<string | undefined> }
 >

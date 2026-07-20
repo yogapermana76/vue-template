@@ -13,6 +13,7 @@ import type {
   ColumnHeader,
   TicketItem,
   TicketDetail,
+  TicketFormField,
 } from '@/types/services'
 
 // ============================================
@@ -342,18 +343,171 @@ export function claimMockTickets(codes: string[]): { success: string[]; failed: 
   const success: string[] = []
   const failed: string[] = []
   for (const code of codes) {
-    let claimed = false
+    let found = false
+    let alreadyClaimed = false
     for (const [, items] of seedPrograms) {
       const it = items.find(x => x.TicketCode === code)
-      if (it && !it.Claimed) {
+      if (!it) continue
+      found = true
+      if (it.Claimed) {
+        alreadyClaimed = true
+      } else {
         it.Claimed = true
         it.ClaimedAt = new Date().toISOString()
-        claimed = true
-        break
       }
+      break
     }
-    if (claimed) success.push(code)
+    // Unknown codes (not in seed) are treated as valid — real backend owns
+    // that check. Only re-scans of already-claimed tickets fail.
+    if (!found || !alreadyClaimed) success.push(code)
     else failed.push(code)
   }
   return { success, failed }
 }
+
+// ============================================
+// Ticket form (visitor-editable fields)
+// ============================================
+
+/** Seed for `GET /v2/ticket/form/:programId/:code`. Mutated in-place by the mock editVisitor handler. */
+export const mockTicketForm: TicketFormField[] = [
+  {
+    Name: 'phoneNumber',
+    Label: 'Nomor Telpon',
+    Value: '6285781007831',
+    ValueId: '',
+    HtmlType: 'text',
+    Validation: null,
+    Data: null,
+    IsRequired: true,
+    IsEditable: true,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: '',
+  },
+  {
+    Name: 'email',
+    Label: 'Email',
+    Value: 'fafa@yopmail.com',
+    ValueId: '',
+    HtmlType: 'text',
+    Validation: null,
+    Data: null,
+    IsRequired: true,
+    IsEditable: true,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: '',
+  },
+  {
+    Name: 'fullname',
+    Label: 'Nama Lengkap',
+    Value: 'Achmad Nagaria',
+    ValueId: '',
+    HtmlType: 'text',
+    Validation: null,
+    Data: null,
+    IsRequired: true,
+    IsEditable: true,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: '',
+  },
+  {
+    Name: 'apakahAndaMenjalaniPerawatanMedisDalam1BulanTerakhir?',
+    Label: 'Apakah Anda menjalani perawatan medis dalam 1 bulan terakhir?',
+    Value: 'Ya',
+    ValueId: '52827af0-9a99-4d75-bb13-2f3835699794',
+    HtmlType: 'radio',
+    Validation: null,
+    Data: [
+      { id: '52827af0-9a99-4d75-bb13-2f3835699794', label: 'Ya' },
+      { id: '2bda06d3-ddcc-4043-bca0-cd4db5eb2804', label: 'Tidak' },
+    ],
+    IsRequired: true,
+    IsEditable: false,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: 'Masukkan Apakah Anda menjalani perawatan medis dalam 1 bulan terakhir?',
+  },
+  {
+    Name: 'ukuranJersey',
+    Label: 'Ukuran Jersey',
+    Value: 'M',
+    ValueId: '4c95a1d3-9cae-4e75-9c0d-8eaec44b1e67',
+    HtmlType: 'dropdown',
+    Validation: null,
+    Data: [
+      { id: 'e58331f4-ef95-4a58-a5d8-6c45d03c9988', label: 'XS' },
+      { id: 'c79732c2-6e17-4bf5-bca4-f26ca5fe6af4', label: 'S' },
+      { id: '4c95a1d3-9cae-4e75-9c0d-8eaec44b1e67', label: 'M' },
+      { id: 'f4c1d3d9-5db7-43b6-94e4-fb264bc0f872', label: 'L' },
+      { id: '9c365654-4b4e-4bf4-b5b9-77a5d0c42ef5', label: 'XL' },
+      { id: '68c8fcfb-0cb4-49bb-927b-74c4b75bc55b', label: 'XXL' },
+    ],
+    IsRequired: true,
+    IsEditable: false,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: 'Masukkan Ukuran Jersey',
+  },
+  {
+    Name: 'namaPadaBib',
+    Label: 'Nama pada BIB',
+    Value: 'NAGAKEREN',
+    ValueId: '',
+    HtmlType: 'text',
+    Validation: { regex: '^[A-Z0-9\\s]+$' },
+    Data: null,
+    IsRequired: true,
+    IsEditable: false,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: 'Masukkan Nama pada BIB',
+  },
+  {
+    Name: 'nomorHandphoneKontakDarurat',
+    Label: 'Nomor Handphone Kontak Darurat',
+    Value: '081233002200',
+    ValueId: '',
+    HtmlType: 'tel',
+    Validation: { regex: '^(\\+62|62|0)8[1-9][0-9]{6,9}$' },
+    Data: null,
+    IsRequired: true,
+    IsEditable: false,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: 'Masukkan Nomor Handphone Kontak Darurat',
+  },
+  {
+    Name: 'tanggalLahir',
+    Label: 'Tanggal Lahir',
+    Value: '2003-07-28',
+    ValueId: '',
+    HtmlType: 'date',
+    Validation: null,
+    Data: null,
+    IsRequired: true,
+    IsEditable: false,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: 'Masukkan Tanggal Lahir',
+  },
+  {
+    Name: 'jenisKelamin',
+    Label: 'Jenis Kelamin',
+    Value: 'Laki - laki',
+    ValueId: 'd90ef34d-5812-4337-a231-934c40fd7070',
+    HtmlType: 'radio',
+    Validation: null,
+    Data: [
+      { id: 'd90ef34d-5812-4337-a231-934c40fd7070', label: 'Laki - laki' },
+      { id: 'b4de552e-0f1e-4a87-b67c-f6357dedb75a', label: 'Perempuan' },
+    ],
+    IsRequired: true,
+    IsEditable: false,
+    EditableRoles: null,
+    EditableUntil: '',
+    Description: 'Masukkan Jenis Kelamin',
+  },
+]

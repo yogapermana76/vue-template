@@ -29,7 +29,11 @@ import type {
   StatisticsResponse,
   TicketDetailParams,
   TicketDetailResponse,
+  TicketFormParams,
+  TicketFormResponse,
   TicketItem,
+  EditVisitorBody,
+  EditVisitorResponse,
   RegisterInvitationParams,
   RegisterInvitationResponse,
   InvitationProgramInfoParams,
@@ -61,6 +65,7 @@ import {
   mockMonitoringHeaders,
   mockSchedules,
   mockStatistics,
+  mockTicketForm,
 } from './data'
 
 /** Simulate network latency for a more realistic UX during dev. */
@@ -291,6 +296,21 @@ export const ticketMockService = {
   async claimTicket(request: ClaimTicketRequest): Promise<ClaimTicketResponse> {
     const { success, failed } = claimMockTickets(request.Codes)
     return delay(ok({ SuccessCodes: success, FailedCodes: failed }))
+  },
+
+  async getForm(_params: TicketFormParams): Promise<TicketFormResponse> {
+    return delay(ok(mockTicketForm))
+  },
+
+  async editVisitor(body: EditVisitorBody): Promise<EditVisitorResponse> {
+    for (const field of body.fields) {
+      const target = mockTicketForm.find(f => f.Name === field.name)
+      if (target && target.IsEditable) {
+        target.Value = field.value
+        target.ValueId = field.valueId
+      }
+    }
+    return delay(ok({} as Record<string, never>))
   },
 }
 

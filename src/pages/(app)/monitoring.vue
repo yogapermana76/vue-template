@@ -168,6 +168,7 @@
       v-model:open="view.detailOpen.value"
       :detail="view.detail.value"
       :loading="view.isDetailLoading.value"
+      :program-id="selectedProgramId"
     />
   </div>
 </template>

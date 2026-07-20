@@ -1,7 +1,8 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { AlertCircle } from 'lucide-vue-next'
+  import { AlertCircle, Pencil } from 'lucide-vue-next'
   import { Badge } from '@/components/ui/badge'
+  import { Button } from '@/components/ui/button'
   import { EmptyState } from '@/components/ui/empty-state'
   import { DetailField, DetailSection } from '@/components/shared'
   import type { TicketDetail } from '@/types/services'
@@ -10,6 +11,8 @@
   const props = defineProps<{
     detail: TicketDetail
   }>()
+
+  const emit = defineEmits<{ 'go-to-edit': [] }>()
 
   const items = computed(() => props.detail.Information ?? [])
 
@@ -40,7 +43,13 @@
   <div class="flex flex-col">
     <DetailSection title="Detail Pengunjung" variant="emphasized">
       <template #action>
-        <Badge :variant="badgeVariant">{{ badgeLabel }}</Badge>
+        <div class="flex items-center gap-2">
+          <Badge :variant="badgeVariant">{{ badgeLabel }}</Badge>
+          <Button variant="secondary" size="xs" @click="emit('go-to-edit')">
+            <Pencil class="size-3.5" />
+            Edit
+          </Button>
+        </div>
       </template>
 
       <DetailField label="Nama" :value="orDash(fullname)" />

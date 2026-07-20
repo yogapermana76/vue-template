@@ -8,13 +8,16 @@
   import type { TicketDetail } from '@/types/services'
   import TicketDetailPanel from './TicketDetailPanel.vue'
   import TicketInfoPanel from './TicketInfoPanel.vue'
+  import TicketVisitorFormPanel from './TicketVisitorFormPanel.vue'
 
-  type View = 'detail' | 'info'
+  type View = 'detail' | 'info' | 'edit'
 
   const props = defineProps<{
     open: boolean
     detail: TicketDetail | undefined
     loading?: boolean
+    /** Program that owns the ticket — required to fetch the edit form. */
+    programId?: number
   }>()
 
   const emit = defineEmits<{
@@ -22,6 +25,8 @@
   }>()
 
   const nav = useNavStack<View>('detail')
+
+  const onFormSaved = () => nav.pop()
 
   watch(
     () => props.open,
@@ -37,9 +42,16 @@
   })
 
   const infoOpen = computed({
-    get: () => nav.isActive('info'),
+    get: () => nav.isMounted('info'),
     set: v => {
-      if (!v) nav.pop()
+      if (!v && nav.current.value === 'info') nav.pop()
+    },
+  })
+
+  const editOpen = computed({
+    get: () => nav.isMounted('edit'),
+    set: v => {
+      if (!v && nav.current.value === 'edit') nav.pop()
     },
   })
 </script>
@@ -67,7 +79,6 @@
 
     <TicketDetailPanel v-else :detail="detail" @go-to-info="nav.push('info')" />
 
-    <!-- Pushed sheet — only rendered while active; back arrow triggers pop. -->
     <RightSheet
       v-if="detail"
       v-model:open="infoOpen"
@@ -80,7 +91,26 @@
       nested
       @back="nav.pop"
     >
-      <TicketInfoPanel :detail="detail" />
+      <TicketInfoPanel :detail="detail" @go-to-edit="nav.push('edit')" />
+
+      <RightSheet
+        v-model:open="editOpen"
+        title="Edit Data Pengunjung"
+        width="md"
+        header-variant="tinted"
+        content-slot-class="!p-0"
+        show-back
+        :show-close="false"
+        nested
+        @back="nav.pop"
+      >
+        <TicketVisitorFormPanel
+          :program-id="programId"
+          :code="detail.TicketCode"
+          :active="editOpen"
+          @saved="onFormSaved"
+        />
+      </RightSheet>
     </RightSheet>
   </RightSheet>
 </template>

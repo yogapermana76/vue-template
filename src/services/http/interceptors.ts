@@ -25,6 +25,8 @@ import type { ApiErrorData } from '@/types'
 /** Extended Axios config with per-request opt-outs. */
 export type HttpConfig = AxiosRequestConfig & {
   showErrorToast?: boolean
+  /** Opt-out from the auto success toast on mutation methods. Defaults to `true`. */
+  showSuccessToast?: boolean
   /** Per-request opt-out from the refresh-and-retry mechanism. */
   skipTokenRefresh?: boolean
 }
@@ -32,8 +34,11 @@ export type HttpConfig = AxiosRequestConfig & {
 type RequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean
   showErrorToast?: boolean
+  showSuccessToast?: boolean
   skipTokenRefresh?: boolean
 }
+
+const MUTATION_METHODS = new Set(['post', 'put', 'patch', 'delete'])
 
 // ── Auth: refresh queue (module-level singleton) ──────────────────────────
 
@@ -227,6 +232,15 @@ export function setupInterceptors(instance: AxiosInstance, withAuth: boolean) {
           message: errorMessage,
           isBusinessError: true,
         })
+      }
+
+      // Mutation methods surface `response.data.message` as a success toast.
+      // Opt out per request via `showSuccessToast: false`.
+      const cfg = response.config as RequestConfig
+      const method = (cfg.method ?? '').toLowerCase()
+      if (MUTATION_METHODS.has(method) && cfg.showSuccessToast !== false) {
+        const message = (response.data as { message?: string } | undefined)?.message
+        if (message) toast.success(message)
       }
 
       return response

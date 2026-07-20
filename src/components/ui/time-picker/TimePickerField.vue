@@ -116,7 +116,7 @@
         :focused="open"
         role="button"
         tabindex="0"
-        :class="cn('cursor-pointer', disabled && 'cursor-not-allowed')"
+        :class="cn('cursor-pointer', disabled && 'pointer-events-none cursor-not-allowed')"
       >
         <span :class="cn('flex-1 truncate text-left text-sm', !modelValue && 'text-neutral-400')">
           {{ displayValue }}
