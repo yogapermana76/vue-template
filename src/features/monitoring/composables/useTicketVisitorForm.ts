@@ -78,7 +78,7 @@ export function useTicketVisitorForm({ programId, code, enabled }: Options) {
 
     const parsed = buildVisitorFormSchema(fields.value).safeParse(model.value)
     if (!parsed.success) {
-      errors.value = extractFieldErrors(fields.value, parsed)
+      errors.value = extractFieldErrors(parsed)
       return false
     }
     errors.value = {}

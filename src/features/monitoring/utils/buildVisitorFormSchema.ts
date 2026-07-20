@@ -90,7 +90,6 @@ export const buildVisitorFormSchema = (fields: TicketFormField[]) => {
 }
 
 export const extractFieldErrors = (
-  fields: TicketFormField[],
   parsed: ReturnType<ReturnType<typeof buildVisitorFormSchema>['safeParse']>,
 ): Record<string, string> => {
   if (parsed.success) return {}
